@@ -1,1 +1,9 @@
-.idea/*
+logs/*
+!.gitkeep
+node_modules/
+bower_components/
+tmp
+.DS_Store
+.idea
+desktop.ini
+.travis.yml
