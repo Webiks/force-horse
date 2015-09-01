@@ -7,3 +7,4 @@ tmp
 .idea
 desktop.ini
 .travis.yml
+npm-debug.log
