@@ -2,6 +2,10 @@
      class="cesiumButtons">
     <md-button
             class="md-raised"
+            ng-click="viewCtrl.createData()">Add Data to map
+    </md-button>
+    <md-button
+            class="md-raised"
             ng-if="!viewCtrl.drawing"
             ng-click="viewCtrl.draw()">Start Drawing
     </md-button>

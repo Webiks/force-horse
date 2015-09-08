@@ -44,9 +44,21 @@ angular.module('ngCesium', [])
         // constructor
         function cesiumFactory(viewer) {
             this._viewer = viewer;
+            this.pinBuilder = new Cesium.PinBuilder();
         }
 
         cesiumFactory.prototype = {
+            createPin: function pinBuilder(options){
+                if (angular.isUndefined(options.color)){
+                    options.color = Cesium.Color.ROYALBLUE;
+                }
+
+                if (angular.isUndefined(options.size)){
+                    options.size = 48;
+                }
+
+                return this.pinBuilder.fromColor(options.color, options.size).toDataURL();
+            },
             addEntity: function addEntity(options) {
                 return this._viewer.entities.add(options);
             },
@@ -62,20 +74,27 @@ angular.module('ngCesium', [])
                 return new Cesium.ScreenSpaceEventHandler(this._viewer.scene.canvas);
             },
             /**
-             * @name areInsidePolygons
+             * @name areInsidePolygon
              * @param entities
              * @param polygon
+             * @param callback - (optional) to be sent to the  isInsidePolygon function
              * @returns {*}
              * @description runs over an entity collection and checks if the entity's position is inside a given polygon
              */
-            areInsidePolygons: function areInsidePolygons(entities, polygon) {
+            areInsidePolygon: function areInsidePolygon(entities, polygon, callback) {
 
                 // TODO::make sure entities is an entityCollection and polygon is a polygon graphics object
-                if (angular.isUndefined(polygon) || angular.isUndefined(entities)) {
+                if (angular.isUndefined(polygon)) {
                     return;
                 }
+
+                // if entities is empty, just use our viewer's entities
+                if (entities === ''){
+                    entities = this._viewer.entities;
+                }
+
                 return _.filter(entities.values, function (entity) {
-                    return this.isInsidePolygon(entity, polygon);
+                    return this.isInsidePolygon(entity, polygon, callback);
                 })
 
             },
@@ -83,6 +102,7 @@ angular.module('ngCesium', [])
              * @name isInsidePolygon
              * @param entity
              * @param polygon
+             * @param callback - (optional) a function to enact on every entity
              * @returns {boolean}
              * @description checks if an entity's position is inside a polygon
              */
@@ -141,7 +161,11 @@ angular.module('ngCesium', [])
                     }
                 }
                 // we are inside the polygon if the number of crosses on both sides is odd
-                return Boolean((crossCount.before % 2) && (crossCount.after % 2));
+                var isInside = Boolean((crossCount.before % 2) && (crossCount.after % 2));
+                if (angular.isDefined(callback) && angular.isFunction(callback)){
+                    callback(entity, isInside);
+                }
+                return isInside;
             },
             /**
              * @name cartesian3ToCoordinates
