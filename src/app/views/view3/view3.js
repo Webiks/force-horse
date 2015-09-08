@@ -33,8 +33,7 @@ angular.module('myApp.view3', ['ui.router', 'ngCesiumFilter'])
 
         function notify(polygon) {
             // get the polygon and
-
-
+            filterByPolygon(polygon);
         }
 
         var vm = this;
@@ -68,17 +67,20 @@ angular.module('myApp.view3', ['ui.router', 'ngCesiumFilter'])
                 n = 1000;
             }
 
+            var entity;
             for (var i = 0; i < n; i++) {
-                vm.cesiumConfig.cesiumInstance.addEntity({
+                var position = [
+                    (Math.random() * 9) + 10,
+                    (Math.random() * 9) - 1];
+                entity = vm.cesiumConfig.cesiumInstance.addEntity({
                     id: _.uniqueId(i.toString() + '_'),
-                    position: Cesium.Cartesian3.fromDegrees(
-                        (Math.random() * 9) + 10,
-                        (Math.random() * 9) - 1,
-                        0),
+                    position: Cesium.Cartesian3.fromDegrees(position[0], position[1]),
                     billboard: {
                         image: vm.cesiumConfig.cesiumInstance.createPin()
                     }
                 });
+
+                entity.originalPosition = position;
             }
         }
     }]);

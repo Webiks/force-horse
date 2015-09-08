@@ -49,6 +49,10 @@ angular.module('ngCesium', [])
 
         cesiumFactory.prototype = {
             createPin: function pinBuilder(options){
+                if (angular.isUndefined(options)){
+                    options = {};
+                }
+
                 if (angular.isUndefined(options.color)){
                     options.color = Cesium.Color.ROYALBLUE;
                 }
@@ -88,13 +92,14 @@ angular.module('ngCesium', [])
                     return;
                 }
 
+                var that = this;
                 // if entities is empty, just use our viewer's entities
                 if (entities === ''){
                     entities = this._viewer.entities;
                 }
 
                 return _.filter(entities.values, function (entity) {
-                    return this.isInsidePolygon(entity, polygon, callback);
+                    return that.isInsidePolygon(entity, polygon, callback);
                 })
 
             },
@@ -106,12 +111,12 @@ angular.module('ngCesium', [])
              * @returns {boolean}
              * @description checks if an entity's position is inside a polygon
              */
-            isInsidePolygon: function isInsidePolygon(entity, polygon) {
+            isInsidePolygon: function isInsidePolygon(entity, polygon, callback) {
 
                 if (!entity.position) return true;
 
                 // get the Cartographic values of the cartesian position
-                var cartographics = cartesian3ToCoordinates(entity.position);
+                var cartographics = this.cartesian3ToCoordinates(entity.position.getValue());
 
                 // get the cartesian position on height 0
                 var entityPosition = new Cesium.Cartesian3.fromDegrees(cartographics.longitude, cartographics.latitude, 0.0);
