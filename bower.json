@@ -19,5 +19,8 @@
   },
   "resolutions": {
     "angular": "1.4.5"
+  },
+  "devDependencies": {
+    "lodash": "~3.10.1"
   }
 }
