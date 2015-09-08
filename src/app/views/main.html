@@ -1,0 +1,23 @@
+<!-- Top Menu -->
+<md-toolbar layout-padding
+            layout="row"
+            layout-align="space-between center">
+    <ul class="menu"
+        layout="row"
+        layout-align="start center">
+        <li layout-margin
+                ng-repeat="menuItem in mainCtrl.menuItems|filter:{url: '!' + '^'}">
+            <md-button ui-sref="{{menuItem.name}}"
+                class="md-raised"
+                       ng-class="{'md-warn': mainCtrl.viewName === menuItem.data.title}">
+                {{menuItem.data.title}}
+            </md-button>
+        </li>
+    </ul>
+    <h2>{{mainCtrl.viewName}}</h2>
+</md-toolbar>
+
+<!-- Content -->
+<div ui-view
+     layout="column"
+     flex></div>

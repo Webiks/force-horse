@@ -1,0 +1,21 @@
+/* app css stylesheet */
+
+#main, body, .mapWrapper{
+  max-height: 100%;
+  overflow: hidden;
+}
+md-toolbar{
+  max-height: 64px;
+}
+.menu {
+  list-style: none;
+}
+
+.menu > li {
+  display: inline;
+}
+
+.cesiumButtons{
+  position: absolute;
+  z-index: 9;
+}
