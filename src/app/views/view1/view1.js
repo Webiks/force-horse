@@ -25,7 +25,7 @@ angular.module('myApp.view1', ['ui.router'])
 
 .controller('view1MapCtrl', [function () {
     this.cesiumConfig = {
-        config: {
+        /*config: {
             baseLayerPicker: false,
             fullscreenButton: false,
             homeButton: false,
@@ -34,6 +34,6 @@ angular.module('myApp.view1', ['ui.router'])
             timeline: false,
             animation: false,
             geocoder: false
-        }
+        }*/
     }
 }]);

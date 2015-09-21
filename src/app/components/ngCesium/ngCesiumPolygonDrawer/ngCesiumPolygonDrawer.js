@@ -36,7 +36,7 @@ angular.module('ngCesiumPolygonDrawer', ['ngCesium'])
                     show: false,
                     hierarchy: ngCesiumInstance.setCallbackProperty(that.positions)
                 }
-            }
+            };
 
             that.polygonEntity = ngCesiumInstance.addEntity(options);
 
@@ -45,7 +45,7 @@ angular.module('ngCesiumPolygonDrawer', ['ngCesium'])
 
             // setup the drawing flah
             that.currentlyDrawing = false;
-        };
+        }
 
         cesiumPolygonDrawerFactory.prototype = {
             // this starts the drawing on the cesium viewer

@@ -1,46 +1,30 @@
 'use strict';
 
-describe('ngCesium module', function() {
+xdescribe('ngCesium Clustering module tests', function() {
 
-    var $compile, $rootScope;
-    beforeEach(module('ngCesiumAddRemoveButtons'));
+    var $compile, $rootScope, element, ngCesiumClustering;
+    beforeEach(module('ngCesiumClustering'));
 
-    beforeEach(inject(function(_$compile_, _$rootScope_) {
+    beforeEach(inject(function(_$compile_, _$rootScope_, _ngCesiumClustering_) {
         $compile = _$compile_;
         $rootScope = _$rootScope_;
+        ngCesiumClustering = _ngCesiumClustering_;
+        $rootScope.cesiumConfig = {};
+        element = $compile('<div cesium-directive="cesiumConfig" cesium-add-remove-buttons-directive></div>')($rootScope);
     }));
 
-    describe('ngCesiumAddRemoveButtons directive', function() {
-        var element;
-        beforeEach(inject(function() {
-            element = $compile('<div cesium-directive="cesiumConfig" cesium-add-remove-buttons-directive></div>')($rootScope);
-        }));
-
-        it('should instantiate add buttons to the view', function() {
-            var buttonsWrapper = element.find('.cesiumButton');
-            expect(angular.element(element.children()).hasClass('cesium-viewer')).toEqual(true);
+    describe('ngCesiumClustering directive tests', function() {
+        it('ngCesiumClustering should be created with the cesium instance', function(){
+            var isoScope = element.scope().$$childHead;
+            expect(isoScope.cesiumCtrl.cesiumDirective.cesiumInstance.cesiumClusterer).toBeDefined();
         });
-
-        it('clicking the add button should call addButtonCall function', function() {
-
-
-            var cesiumInstance = element.scope().$$childHead.cesiumCtrl.cesiumDirective.cesiumInstance;
-            spyOn(cesiumInstance._addRemoveButtons, 'addButtonCall');
-
-            element.
-            uiGridColumnsFiltersService.filter(gridScope.grid.columns[0]);
-
-            expect(gridScope.grid.api.core.notifyDataChange).toHaveBeenCalledWith(uiGridConstants.dataChange.COLUMN);
-            expect(angular.element(element.children()).hasClass('cesium-viewer')).toEqual(true);
-        });
-
-        it('clicking the remove button should call removeButtonCall function', function() {
-            expect(angular.element(element.children()).hasClass('cesium-viewer')).toEqual(true);
-        });
-
     });
 
-    describe('ngCesiumAddRemoveButtons factory', function() {
+    describe('ngCesiumClustering factory tests', function() {
+        it('ngCesiumClustering should be in the cesium instance', function(){
+            var isoScope = element.scope().$$childHead;
+            expect(isoScope.cesiumCtrl.cesiumDirective.cesiumInstance.cesiumClusterer).toBeDefined();
+        });
 
     });
 });

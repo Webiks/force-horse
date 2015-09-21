@@ -1,6 +1,6 @@
 'use strict';
 
-describe('ngCesium module', function() {
+xdescribe('ngCesium module', function() {
 
     var $compile, $rootScope;
     beforeEach(module('ngCesiumAddRemoveButtons'));

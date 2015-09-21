@@ -18,9 +18,11 @@ angular.module('ngCesium', [])
 
                 // handle the case in which no config is sent
                 if (angular.isUndefined(ctrl.cesiumDirective)) {
-                    ctrl.cesiumDirective = {
-                        config: {}
-                    };
+                    ctrl.cesiumDirective = {};
+                }
+
+                if (angular.isUndefined(ctrl.cesiumDirective.config)) {
+                    ctrl.cesiumDirective.config = {};
                 }
 
                 // create the viewer
@@ -48,35 +50,76 @@ angular.module('ngCesium', [])
         }
 
         cesiumFactory.prototype = {
-            createPin: function pinBuilder(options){
-                if (angular.isUndefined(options)){
+            /**
+             * @name    toCartesian3
+             * @arguments   {array}[, {bool}]/{float}, {float} [,{float}]
+             * @returns {Cartesian3}
+             */
+            toCartesian3: function toCartesian3() {
+                // either we got no arguments or we got only 1 and it is not an array
+                if (arguments.length == 0 || (arguments.length == 1 && !angular.isArray(arguments[0]))) {
+                    // TODO::developer error?
+                    return false;
+                }
+
+                // take care of an array
+                if (angular.isArray(arguments[0])) {
+                    var degreesArray = arguments[0];
+                    if (arguments[1]){
+                        // this means we want array heights
+                        if (degreesArray.length%3){
+                            return false;
+                        }
+                        return Cesium.Cartesian3.fromDegreesArrayHeights(degreesArray);
+                    }
+
+                    if (degreesArray.length%2){
+                        return false;
+                    }
+
+                    return Cesium.Cartesian3.fromDegreesArray(degreesArray);
+
+
+                }
+
+                if (arguments.length == 3){
+                    return Cesium.Cartesian3.fromDegrees(arguments[0], arguments[1], arguments[2]);
+                }
+
+                return Cesium.Cartesian3.fromDegrees(arguments[0], arguments[1]);
+            },
+            createPin: function pinBuilder(options) {
+                if (angular.isUndefined(options)) {
                     options = {};
                 }
 
-                if (angular.isUndefined(options.color)){
+                if (angular.isUndefined(options.color)) {
                     options.color = Cesium.Color.ROYALBLUE;
                 }
 
-                if (angular.isUndefined(options.size)){
+                if (angular.isUndefined(options.size)) {
                     options.size = 48;
                 }
 
                 return this.pinBuilder.fromColor(options.color, options.size).toDataURL();
             },
+            setCallbackProperty: function setCallbackProperty(property) {
+                return new Cesium.CallbackProperty(function () {
+                    return property;
+                }, false);
+            },
+
             addEntity: function addEntity(options) {
                 return this._viewer.entities.add(options);
             },
             removeEntity: function removeEntity(id) {
                 this._viewer.entities.removeById(id);
             },
-            setCallbackProperty: function (property) {
-                return new Cesium.CallbackProperty(function () {
-                    return property;
-                }, false);
-            },
+
             getEventHandler: function () {
                 return new Cesium.ScreenSpaceEventHandler(this._viewer.scene.canvas);
             },
+
             /**
              * @name areInsidePolygon
              * @param entities
@@ -89,18 +132,23 @@ angular.module('ngCesium', [])
 
                 // TODO::make sure entities is an entityCollection and polygon is a polygon graphics object
                 if (angular.isUndefined(polygon)) {
-                    return;
+                    return [];
                 }
 
                 var that = this;
                 // if entities is empty, just use our viewer's entities
-                if (entities === ''){
+                if (entities === '') {
                     entities = this._viewer.entities;
                 }
 
-                return _.filter(entities.values, function (entity) {
-                    return that.isInsidePolygon(entity, polygon, callback);
-                })
+                var filteredEntities = [];
+                for (var i = 0; i < entities.values.length; i++){
+                    if (that.isInsidePolygon(entities.values[i], polygon, callback)){
+                        filteredEntities.push(entities.values[i]);
+                    }
+                }
+                
+                return filteredEntities;
 
             },
             /**
@@ -116,13 +164,13 @@ angular.module('ngCesium', [])
                 if (!entity.position) return true;
 
                 // get the Cartographic values of the cartesian position
-                var cartographics = this.cartesian3ToCoordinates(entity.position.getValue());
+                var cartographics = this.cartesian3ToCoordinates(entity.position.getValue(new Cesium.JulianDate.fromDate(new Date())));
 
                 // get the cartesian position on height 0
                 var entityPosition = new Cesium.Cartesian3.fromDegrees(cartographics.longitude, cartographics.latitude, 0.0);
 
                 // get the polygon position
-                var polygonPositions = _.clone(polygon.hierarchy.getValue());
+                var polygonPositions = angular.copy(polygon.hierarchy.getValue());
 
                 // add the first one to the end of the list, since it's the closing one
                 polygonPositions.push(polygonPositions[0]);
@@ -167,7 +215,7 @@ angular.module('ngCesium', [])
                 }
                 // we are inside the polygon if the number of crosses on both sides is odd
                 var isInside = Boolean((crossCount.before % 2) && (crossCount.after % 2));
-                if (angular.isDefined(callback) && angular.isFunction(callback)){
+                if (angular.isDefined(callback) && angular.isFunction(callback)) {
                     callback(entity, isInside);
                 }
                 return isInside;

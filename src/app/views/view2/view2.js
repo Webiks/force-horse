@@ -25,7 +25,7 @@ angular.module('myApp.view2', ['ui.router'])
 
         var vm = this;
 
-        vm.cesiumConfig = {
+        /*vm.cesiumConfig = {
             config: {
                 baseLayerPicker: false,
                 fullscreenButton: false,
@@ -36,7 +36,7 @@ angular.module('myApp.view2', ['ui.router'])
                 animation: false,
                 geocoder: false
             }
-        };
+        };*/
 
         vm.stopDrawing = function(){
             vm.cesiumConfig.cesiumInstance.cesiumPolygonDrawer.stopDrawing();
