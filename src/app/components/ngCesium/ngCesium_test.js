@@ -83,6 +83,19 @@ describe('ngCesium module', function() {
             expect(cesiumInstance.setCallbackProperty(property).getValue()).toEqual(property);
         });
 
+        describe('cesiumInstance.cartesian3ToCoordinates tests', function(){
+            it('Should return undefined if called without parameters', function() {
+                expect(cesiumInstance.cartesian3ToCoordinates()).toBeUndefined();
+            });
+
+            it('Should return object with longitude and latitude', function() {
+                var cartesian3 = cesiumInstance.toCartesian3(20, 25);
+                var result = cesiumInstance.cartesian3ToCoordinates(cartesian3);
+                expect({long: Number(result.longitude.toFixed(2)), lat: Number(result.latitude.toFixed(2))}).toEqual({long: 20.00, lat: 25.00});
+            });
+
+        });
+
         describe('cesiumInstance.tocartesian3 tests', function(){
             it('Should return false when called without parameters', function() {
                 expect(cesiumInstance.toCartesian3()).toBe(false);

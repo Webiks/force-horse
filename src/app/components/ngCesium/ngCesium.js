@@ -229,13 +229,13 @@ angular.module('ngCesium', [])
             cartesian3ToCoordinates: function cartesian3ToCoordinates(cartesian) {
                 var that = this;
                 var ellipsoid = that._viewer.scene.globe.ellipsoid;
-                var results = {};
+                var results = undefined;
                 if (cartesian) {
+                    results = {};
                     var cartographic = ellipsoid.cartesianToCartographic(cartesian);
                     results.longitude = Cesium.Math.toDegrees(cartographic.longitude);
                     results.latitude = Cesium.Math.toDegrees(cartographic.latitude);
-                } else {
-                    results.latitude = results.longitude = '';
+                    results.cartographics = cartographic;
                 }
                 return results;
             }
