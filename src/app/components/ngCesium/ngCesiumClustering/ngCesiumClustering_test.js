@@ -1,6 +1,50 @@
 'use strict';
 describe('ngCesium Clustering module tests', function () {
 
+    var setData = function setData(viewer, config) {
+        config = options.extensionInstance.config = {
+            defaultRadius: 100,
+            dataSource: undefined,
+            groups: [
+                // standart
+                {
+                    name: 'group1',
+                    color: '#654EA0',
+                    property: {
+                        name: 'type',
+                        value: 'pizzeria'
+                    }
+                },
+                // group value as a function
+                {
+                    name: 'group2',
+                    color: '#111AE9',
+                    property: {
+                        name: 'type',
+                        value: 'burgers bar'
+                    }
+                },
+                // no color
+                {
+                    name: 'group3',
+                    property: {
+                        name: 'type',
+                        value: 'group3'
+                    }
+                }
+            ]
+        };
+        viewer = options.extensionInstance.ngCesiumInstance._viewer;
+        // add entities - 5 groups, with 10 elements each for
+        var i, j, entitySpecs = {};
+        for (i = 0; i < config.groups.length; i++) {
+            entitySpecs[config.groups[i].property.name] = config.groups[i].property.value;
+            for (j = 0; j < 10; j++) {
+                viewer.entities.add(entitySpecs);
+            }
+        }
+    };
+
     var options = {
         extensionName: 'ngCesiumClustering',
         extensionConfig: {
@@ -147,66 +191,40 @@ describe('ngCesium Clustering module tests', function () {
             });
         });
 
-        describe('setGroups() tests', function () {
+        describe('divideIntoGroups() tests', function () {
+            var config, viewer;
 
-            function setData() {
-                config = options.extensionInstance.config = {
-                    defaultRadius: 100,
-                    dataSource: undefined,
-                    groups: [
-                        // standart
-                        {
-                            name: 'group1',
-                            color: '#654EA0',
-                            property: {
-                                name: 'type',
-                                value: 'pizzeria'
-                            }
-                        },
-                        // group value as a function
-                        {
-                            name: 'group2',
-                            color: '#111AE9',
-                            property: {
-                                name: 'type',
-                                value: 'burgers bar'
-                            }
-                        },
-                        // no color
-                        {
-                            name: 'group3',
-                            property: {
-                                name: 'type',
-                                value: 'group3'
-                            }
-                        }
-                    ]
-                };
-                viewer = options.extensionInstance.ngCesiumInstance._viewer;
-                // add entities - 5 groups, with 10 elements each for
-                var i, j, entitySpecs = {};
-                for (i = 0; i < config.groups.length; i++) {
-                    entitySpecs[config.groups[i].property.name] = config.groups[i].property.value;
-                    for (j = 0; j < 10; j++) {
-                        viewer.entities.add(entitySpecs);
-                    }
-                }
-            }
+            // set the data
+            beforeEach(function () {
+                setData(viewer, config);
+            });
+
+            it('should call setInGroup(entity)', function () {
+                spyOn(options.extensionInstance, 'setInGroup');
+                options.extensionInstance.setGroups(); //set the groups
+                options.extensionInstance.divideIntoGroups(); // divide
+                expect(options.extensionInstance.setInGroup.calls.count()).toEqual(30);
+            });
+
+        });
+
+        describe('setGroups() tests', function () {
 
             var config, viewer;
 
             // set the data
             beforeEach(function () {
-                setData();
+                setData(viewer, config);
             });
 
             // clear data after an "it"
             afterEach(function () {
-                viewer.entities.removeAll();
+                options.extensionInstance.ngCesiumInstance._viewer.entities.removeAll();
                 options.extensionInstance.groups.length = 0;
             });
 
             it('should return false if config does not exist', function () {
+                //TODO::when no config is sent or no group is defined, add all entities to one group
                 options.extensionInstance.config = undefined;
                 expect(options.extensionInstance.setGroups()).toBe(false);
             });
@@ -217,23 +235,75 @@ describe('ngCesium Clustering module tests', function () {
                 expect(options.extensionInstance.createGroup.calls.count()).toEqual(3);
             });
 
-            it('should call setInGroup(entity)', function () {
-                spyOn(options.extensionInstance, 'setInGroup');
-                options.extensionInstance.setGroups();
-                expect(options.extensionInstance.setInGroup.calls.count()).toEqual(30);
-            });
-
             it('should return the groups if success', function () {
                 var expectedOutcome = options.extensionInstance.setGroups();
                 expect(expectedOutcome.length).toBe(3);
-                expect(expectedOutcome[0].dataSource.entities.values.length).toBe(10);
-                expect(expectedOutcome[1].dataSource.entities.values.length).toBe(10);
-                expect(expectedOutcome[2].dataSource.entities.values.length).toBe(10);
             });
         });
 
-        describe('clusterGroup(group) tests', function(){
-           //TODO::fill this up!
+        describe('setInGroup(entity) tests', function () {
+            //TODO::fill this up
+            var config, viewer;
+
+            // set the data
+            beforeEach(function () {
+                setData(viewer, config);
+            });
+
+            afterEach(function () {
+                options.extensionInstance.ngCesiumInstance._viewer.entities.removeAll();
+            });
+
+            it('Should return -1 when there are no groups', function () {
+                expect(options.extensionInstance.setInGroup({type: 'pizzeria'})).toEqual(-1);
+            });
+
+            it('Should return -1 when entity does not belong anywhere', function () {
+                options.extensionInstance.setGroups(); // set the groups
+                expect(options.extensionInstance.setInGroup({type: 'no group like this'})).toEqual(-1);
+            });
+
+            it('should return group index 0 when sent an entity with group of index 0', function () {
+                options.extensionInstance.setGroups(); // set the groups
+                expect(options.extensionInstance.setInGroup({type: 'pizzeria'})).toEqual(0);
+            });
+
+        });
+
+        describe('addPointToPolygoneArr(point, arr) tests', function(){
+           //TODO::fill this up
+        });
+
+        describe('createCluster(entity, groupData) tests', function(){
+            //TODO::fill this up
+        });
+
+        describe('isInRadius(radius, entity, centerEntity) tests', function () {
+
+            var entity, centerEntity, distance;
+            var entities = new Cesium.EntityCollection();
+            entity = entities.add({
+                position: new Cesium.Cartesian3.fromDegrees(0, 0)
+            });
+            centerEntity = entities.add({
+                position: new Cesium.Cartesian3.fromDegrees(0, 15)
+            });
+            distance = Cesium.Cartesian3.distance(entity.position.getValue(Cesium.JulianDate.now()), centerEntity.position.getValue(Cesium.JulianDate.now()));
+
+            it('should return false when not in radius', function () {
+                var radius = distance - 1;
+                expect(options.extensionInstance.isInRadius(radius, entity, centerEntity)).toBeFalsy();
+            });
+
+            it('should return true when in radius', function () {
+                var radius = distance + 1;
+                expect(options.extensionInstance.isInRadius(radius, entity, centerEntity)).toBeTruthy();
+            });
+        });
+
+        describe('clusterGroup(group) tests', function () {
+            //TODO::fill this up!
+
         });
 
         it('setConfig(config) should alter the config', function () {
@@ -279,7 +349,8 @@ describe('ngCesium Clustering module tests', function () {
             expect(options.extensionInstance.config).toEqual(config);
         });
 
-    });
+    })
+    ;
 
     describe('ngCesiumClustering constant tests', function () {
         var clusteringConstans;
@@ -391,4 +462,5 @@ describe('ngCesium Clustering module tests', function () {
         })
 
     });
-});
+})
+;

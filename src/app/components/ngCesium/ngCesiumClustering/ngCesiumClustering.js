@@ -4,10 +4,12 @@ angular.module('ngCesiumClustering', ['ngCesium'])
  * @name cesiumClustering
  * @attrs cesiumClustering -> holds the groups definitions:
  * {
-     *      defaultRadius: {float},
+     *      defaultRadius: {float}, //radius in either pixels or km -> default is 100
+     *      defaultRadiusType: {str}, //'pixels' or 'km' -> default is pixels
      *      dataSource: {*}, // can be either {int} (index of ds) or {string} (name of ds). if empty, uses the viewer's entities
      *      groups: {
      *          radius: {float}, // clustering radius of the group, in pixels (TODO::allow for meters)
+     *          radiusType: {string}, //'pixels' or 'km' -> default is defaultRadiusType
      *          name: {string}, // group name
      *          color: {string},// group color (if none given, would be taken from cesiumClusteringConstants.colors)
      *          property: {*} // an entity's property to group by TODO::enable as a function for flexibility
@@ -57,11 +59,117 @@ angular.module('ngCesiumClustering', ['ngCesium'])
                 clusterGroup: function clusterGroup(groupData) {
                     var that = this;
 
+                    var radiusInPixels = that.getRadius(groupData);
+                    var entities = groupData.dataSource.entities.values;
+                    for (var i = 0; i < entities.length; i++){
+                        if (!that.addToCluster(entities[i], groupData)){
+                            that.createCluster(entities[i], groupData);
+                        }
+                    }
+                },
+                /**
+                 * @name addToCluster
+                 * @param entity
+                 * @param groupData
+                 * @description gets an entity and checks if it fits into the cluster. If not, it returns false. If true, it adds it to the cluster by adding it to the polygon and to the list of entities in the cluster
+                 */
+                addToCluster: function addToCluster(entity, groupData){
+                    var that = this;
+                    // for each cluster
+                    for (var i = 0; i < groupData.clusters.length; i++) {
+                        // check if the entity is in it
+                        if (that.isInRadius(that.getRadius(groupData), clusters[i].centerEntity, entity)) {
+                            // add it to the polygon array
+                            that.addPointToPolygoneArr(clusters[i].clusterArr, entity);
+                            clusters[i].entities.push(entity);
 
+                            // set the entities to show false
+                            clusters[i].centerEntity.show = false;
+                            entity.show = false;
+
+                            return true;
+                        }
+                    }
+                    return false;
+                },
+                addPointToPolygoneArr: function addPointToPolygoneArr(arr, point){
+                    var cartographicPosition = this.cesiumInstance._viewer.scene.globe.ellipsoid.cartesianToCartographic(point.position.getValue(Cesium.JulianDate.now()));
+                    var longitude = Cesium.Math.toDegrees(cartographicPosition.longitude);
+                    var latitude = Cesium.Math.toDegrees(cartographicPosition.latitude);
+
+                    var point = {};
+                    point.x= longitude;
+                    point.y= latitude;
+
+                    arr.push(point);
+                    return arr;
+                },
+                /**
+                 * @name isInRadius
+                 * @param radius
+                 * @param entity
+                 * @param centerEntity
+                 * @description gets a radius, an entity and a center and checks if the entity is within the circle's boundaris
+                 * @returns {boolean}
+                 */
+                isInRadius: function isInRadius(radius, entity, centerEntity){
+                    // get the distance between the entity and the center entity
+                    var distance = Cesium.Cartesian3.distance(entity.position.getValue(Cesium.JulianDate.now()), centerEntity.position.getValue(Cesium.JulianDate.now()));
+                    // see if it is less than the radius
+                    return (distance < radius );
+                },
+                /**
+                 * @name createCluster
+                 * @param entity
+                 * @param groupData
+                 * @description gets an entity and groupsData and pushes a new cluster with the entity as its center
+                 */
+                createCluster: function createCluster(entity, groupData){
+                    // clusterArr, centerEntity (should be show = true when created), entities
+                    groupData.clusters.push({
+                        clusterArr: [],
+                        centerEntity: entity,
+                        entities: [entity]
+                    });
+                    this.addPointToPolygoneArr(groupData.clusters[groupData.clusters.length-1].clusterArr, entity);
+                },
+                // TODO::test and comments
+                getRadius: function getRadius(groupData){
+                    if (groupData.radiusType === 'km'){
+                        return groupData.radius;
+                    }
+
+                    // get width and height of the canvas
+                    var width = this.cesiumInstance._viewer.canvas.width;
+                    var height = this.cesiumInstance._viewer.canvas.height;
+
+                    // get a good portion of the center of the canvas (20%)
+                    var point1 = this.cesiumInstance._viewer.camera.pickEllipsoid(new Cesium.Cartesian2(width*40/100,height/2));
+                    var point2 = this.cesiumInstance._viewer.camera.pickEllipsoid(new Cesium.Cartesian2(width*60/100,height/2));
+
+                    // get the distance between the two points (40% to 60%)
+                    var distanceInKilometers = Cesium.Cartesian3.distance(point1, point2);
+                    // get km/pixel ratio
+                    var distancePerPixel = distanceInKilometers/(width*20/100);
+                    // get the radius distance in km
+                    var distanceInPixels = distancePerPixel * groupData.radius;
+                    return distanceInPixels;
+                },
+                /**
+                 * @name divideIntoGroups
+                 * @description Divides the entities in the viewer to the groups
+                 */
+                divideIntoGroups: function divideIntoGroups(){
+                    // now for every entity, set it in a group
+                    var that = this;
+                    var entities = that.ngCesiumInstance._viewer.entities.values;
+                    for (var i = 0; i < entities.length; i++) {
+                        that.setInGroup(entities[i]);
+                    }
                 },
                 /**
                  * @name setGroups
-                 * @description Divides the entities in the viewer to groups according to config. Entities that are in a group become hidden, while those that don't fit any group, remain shown.
+                 * @description Creates the groups according to config.
                  * @returns {*} false for error, the groups array for success
                  */
                 setGroups: function setGroups() {
@@ -78,14 +186,7 @@ angular.module('ngCesiumClustering', ['ngCesium'])
                         that.createGroup(that.config.groups[i]);
                     }
 
-                    // now for every entity, set it in a group
-                    var entities = that.ngCesiumInstance._viewer.entities.values;
-                    for (i = 0; i < entities.length; i++) {
-                        that.setInGroup(entities[i]);
-                    }
-
                     return that.groups;
-
                 },
                 /**
                  * @name createGroup
@@ -112,7 +213,7 @@ angular.module('ngCesiumClustering', ['ngCesium'])
                         propertyValue = angular.isFunction(that.groups[i].property.value) ? that.groups[i].property.value() : that.groups[i].property.value;
 
                         if ($rootScope.$eval(propertyName, entity) === propertyValue) {
-                            that.groups[i].dataSource.entities.add(entity);
+                            that.groups[i].members.push(entity);
                             entity.show = false;
                             return i;
                         }
@@ -139,8 +240,11 @@ angular.module('ngCesiumClustering', ['ngCesium'])
                     that.setConfig(config);
                     // TODO::refresh the data
 
-                    // divide into groups again
+                    // recreate the groups
                     that.setGroups();
+
+                    // divide into the groups
+                    that.divideIntoGroups();
 
                     // cluster anew
                     that.cluster();
@@ -180,15 +284,20 @@ angular.module('ngCesiumClustering', ['ngCesium'])
         function cesiumClusteringGroup(group, config) {
             // TODO::validate group config
             var that = this;
-            this.color = group.color ? group.color : cesiumClusteringConstants.groupsColors.pickColor();
-            this.name = group.name;
+            this.color = group.color ? group.color : cesiumClusteringConstants.groupsColors.pickColor() // group color
+            this.name = group.name; // group name
             this.id = Math.random().toString(36).substring(7); //unique id...
-            this.dataSource = new Cesium.CustomDataSource(this.id);
-            this.radius = group.radius ? group.radius : config.defaultRadius;
-            this.property = group.property;
+            this.dataSource = new Cesium.CustomDataSource(this.id); // group dataSource
+            this.members = []; // entities array
+            this.clusters = []; // clusters array
+            this.radius = group.radius ? group.radius : config.defaultRadius; // radius
+            this.radiusType = group.radiusType ? group.radiusType : config.defaultRadiusType; // radius type (km or pixels)
+            this.property = group.property; // property to group by
 
             return this;
         }
+
+
 
         return cesiumClusteringGroup;
     }]);
