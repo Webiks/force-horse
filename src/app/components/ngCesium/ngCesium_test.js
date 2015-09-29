@@ -3,39 +3,47 @@
 describe('ngCesium module', function() {
 
     var $compile, $rootScope, element;
+
     beforeEach(module('ngCesium'));
 
-    beforeEach(inject(function(_$compile_, _$rootScope_) {
-        $compile = _$compile_;
-        $rootScope = _$rootScope_;
-        $rootScope.cesiumConfig = {};
-        $rootScope.cesiumConfig.config = {
-            baseLayerPicker: false,
-            fullscreenButton: false,
-            homeButton: false,
-            sceneModePicker: false,
-            selectionIndicator: false,
-            timeline: false,
-            animation: false,
-            geocoder: false
-        };
+    function setCesiumInDom(){
+        beforeEach(inject(function(_$compile_, _$rootScope_) {
+            $compile = _$compile_;
+            $rootScope = _$rootScope_;
+            $rootScope.cesiumConfig = {};
+            $rootScope.cesiumConfig.config = {
+                baseLayerPicker: false,
+                fullscreenButton: false,
+                homeButton: false,
+                sceneModePicker: false,
+                selectionIndicator: false,
+                timeline: false,
+                animation: false,
+                geocoder: false
+            };
 
-        element = $compile(angular.element('<div cesium-directive="cesiumConfig"></div>'))($rootScope);
-    }));
+            element = $compile(angular.element('<div cesium-directive="cesiumConfig"></div>'))($rootScope);
+        }));
 
-    afterEach(function() {
-        element.remove();
-    });
+        afterEach(function() {
+            element.remove();
+        });
+    }
+
+    function getCesiumInstance(element){
+        var isoScope = element.scope().$$childHead;
+        return isoScope.cesiumCtrl.cesiumDirective.cesiumInstance;
+    }
 
     describe('ngCesium directive', function() {
+        setCesiumInDom();
 
         it('should instantiate a cesium viewer', function() {
             expect(angular.element(element.children()).hasClass('cesium-viewer')).toEqual(true);
         });
 
         it('should create a cesium service instance', function() {
-            var isoScope = element.scope().$$childHead;
-            expect(isoScope.cesiumCtrl.cesiumDirective.cesiumInstance).toBeDefined();
+            expect(getCesiumInstance(element)).toBeDefined();
         });
     });
 
@@ -201,6 +209,22 @@ describe('ngCesium module', function() {
 
 
                 expect(cesiumInstance.areInsidePolygon('', polygon).length).toEqual(2);
+            });
+        })
+    });
+
+    describe('ngCesium service', function(){
+        var cesiumService;
+        beforeEach(inject(function(_cesiumService_) {
+            cesiumService = _cesiumService_;
+        }));
+        describe('meters2Pixels', function(){
+
+            setCesiumInDom();
+
+            it('when sent 2 points, should return the ', function(){
+                var cesiumInstance = getCesiumInstance(element);
+
             });
         })
     });
