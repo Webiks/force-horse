@@ -112,7 +112,7 @@ angular.module('ngCesiumPolygonDrawer', ['ngCesium'])
                 // resolve the promise
                 that.deferred.resolve(this.polygonEntity.polygon);
             }
-        }
+        };
 
         return cesiumPolygonDrawerFactory;
     });

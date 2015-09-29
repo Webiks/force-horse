@@ -2,38 +2,58 @@
 
 describe('ngCesium PolygonDrawer module tests', function() {
 
-    var $compile, $rootScope, element;
-    beforeEach(module('ngCesiumPolygonDrawer'));
+    var options = {
+        extensionName: 'ngCesiumPolygonDrawer'
+    };
 
-    beforeEach(inject(function(_$compile_, _$rootScope_) {
-        $compile = _$compile_;
-        $rootScope = _$rootScope_;
-        $rootScope.cesiumConfig = {
-            config: {
-                baseLayerPicker: false,
-                fullscreenButton: false,
-                homeButton: false,
-                sceneModePicker: false,
-                selectionIndicator: false,
-                timeline: false,
-                animation: false,
-                geocoder: false
-            }
-        };
-        element = $compile('<div cesium-directive="cesiumConfig" cesium-polygon-drawer></div>')($rootScope);
-    }));
-
+    ngCesiumExtensionTest(options);
+    
     describe('ngCesiumPolygonDrawer directive tests', function() {
-
-
 
     });
 
     describe('ngCesiumPolygonDrawer factory tests', function() {
         it('ngCesiumPolygonDrawer should be in the cesium instance', function(){
-            var isoScope = element.scope().$$childHead;
-            expect(isoScope.cesiumCtrl.cesiumDirective.cesiumInstance.cesiumPolygonDrawer).toBeDefined();
+            expect(options.isoScope.cesiumCtrl.cesiumDirective.cesiumInstance.cesiumPolygonDrawer).toBeDefined();
         });
+
+        it('Should define eventsHandler, the polygon entity and the current state', function(){
+            expect(options.isoScope.cesiumCtrl.cesiumDirective.cesiumInstance.cesiumPolygonDrawer.eventsHandler).toBeDefined();
+            expect(options.isoScope.cesiumCtrl.cesiumDirective.cesiumInstance.cesiumPolygonDrawer.polygonEntity).toBeDefined();
+            expect(options.isoScope.cesiumCtrl.cesiumDirective.cesiumInstance.cesiumPolygonDrawer.currentlyDrawing).toBe(false);
+        });
+
+        describe('ngcesiumPolygonDrawer.startDrawing tests', function() {
+            var result;
+
+            beforeEach(function(){
+                result = options.extensionInstance.startDrawing();
+            });
+
+            it('Should set event handler for move', function(){
+                var callback = options.extensionInstance.eventsHandler.getInputAction(Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+                expect(callback.name).toBe('updatePolyline');
+            });
+
+            it('Should set event handler for click', function(){
+                var callback = options.extensionInstance.eventsHandler.getInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
+                expect(callback.name).toBe('addPolylinePoint');
+            });
+
+            it('Should set event handler for double click', function(){
+                var callback = options.extensionInstance.eventsHandler.getInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
+                expect(callback.name).toBe('closePolygon');
+            });
+
+            it('Should return a promise', function(){
+                expect(result.then).toBeDefined();
+            });
+        });
+
+        describe('ngoptions.extensionInstance..stopDrawing tests', function() {
+        });
+
+
 
     });
 });
