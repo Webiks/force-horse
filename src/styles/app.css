@@ -11,6 +11,14 @@ md-toolbar{
   list-style: none;
 }
 
+ul.menu{
+  padding: 0;
+}
+
+ul.menu .md-button{
+  margin: 6px 0;
+}
+
 .menu > li {
   display: inline;
 }

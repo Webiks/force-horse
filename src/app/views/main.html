@@ -1,23 +1,39 @@
-<!-- Top Menu -->
+<!-- Header -->
 <md-toolbar layout-padding
             layout="row"
             layout-align="space-between center">
-    <ul class="menu"
-        layout="row"
-        layout-align="start center">
-        <li layout-margin
-                ng-repeat="menuItem in mainCtrl.menuItems|filter:{url: '!' + '^'}">
-            <md-button ui-sref="{{menuItem.name}}"
-                class="md-raised"
-                       ng-class="{'md-warn': mainCtrl.viewName === menuItem.data.title}">
-                {{menuItem.data.title}}
-            </md-button>
-        </li>
-    </ul>
     <h2>{{mainCtrl.viewName}}</h2>
 </md-toolbar>
 
-<!-- Content -->
-<div ui-view
-     layout="column"
-     flex></div>
+<div layout="row"
+     flex>
+    <!-- Menu -->
+    <md-sidenav md-component-id="right" md-is-locked-open="true" class="md-sidenav-left md-whiteframe-z2">
+        <md-content flex=""
+                    role="navigation"
+                    class="flex md-default-theme"
+                    layout-margin
+                    layout-padding>
+            <ul class="menu"
+                layout="column"
+                layout-align="start center">
+                <li layout="column"
+                    layout-margin
+                    layout-fill
+                    ng-repeat="menuItem in mainCtrl.menuItems|filter:{url: '!' + '^'}">
+                    <md-button ui-sref="{{menuItem.name}}"
+                               class="md-raised"
+                               layout-fill
+                               ng-class="{'md-warn': mainCtrl.viewName === menuItem.data.title}">
+                        {{menuItem.data.title}}
+                    </md-button>
+                </li>
+            </ul>
+        </md-content>
+    </md-sidenav>
+
+    <!-- Content -->
+    <div ui-view
+         layout="column"
+         flex></div>
+</div>

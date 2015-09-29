@@ -1,16 +1,13 @@
-<div layout="row"
-     class="cesiumButtons">
+<div layout="column">
     <md-button
             class="md-raised"
             ng-if="!viewCtrl.drawing"
             ng-click="viewCtrl.draw()">Start Drawing
     </md-button>
+
     <md-button
             class="md-raised"
             ng-if="viewCtrl.drawing"
             ng-click="viewCtrl.stopDrawing()">Stop Drawing
     </md-button>
 </div>
-<div
-        cesium-directive="viewCtrl.cesiumConfig"
-        cesium-polygon-drawer></div>
