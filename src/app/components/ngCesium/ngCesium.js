@@ -242,4 +242,10 @@ angular.module('ngCesium', [])
         };
 
         return cesiumFactory;
+    }])
+
+.service('cesiumService', [function(){
+        return {
+
+        }
     }]);
