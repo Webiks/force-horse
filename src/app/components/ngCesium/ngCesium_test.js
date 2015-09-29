@@ -23,6 +23,10 @@ describe('ngCesium module', function() {
         element = $compile(angular.element('<div cesium-directive="cesiumConfig"></div>'))($rootScope);
     }));
 
+    afterEach(function() {
+        element.remove();
+    });
+
     describe('ngCesium directive', function() {
 
         it('should instantiate a cesium viewer', function() {
