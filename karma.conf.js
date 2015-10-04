@@ -4,13 +4,12 @@ module.exports = function (config) {
         basePath: './',
 
         files: [
-            'app/bower_components/jquery//dist/jquery.min.js',
-            'app/bower_components/angular/angular.js',
-            'app/bower_components/angular-route/angular-route.js',
-            'app/bower_components/angular-mocks/angular-mocks.js',
-            'app/bower_components/cesiumjs/Cesium/Cesium.js',
-            'app/components/**/*.js',
-            'app/view*/**/*.js'
+            'src/bower_components/jquery/dist/jquery.min.js',
+            'src/bower_components/angular/angular.js',
+            'src/bower_components/angular-ui-router/release/angular-ui-router.min.js',
+            'src/bower_components/angular-mocks/angular-mocks.js',
+            'src/bower_components/cesiumjs/CesiumUnminified/Cesium.js',
+            'src/app/**/*.js'
         ],
 
         autoWatch: true,

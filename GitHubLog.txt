@@ -1,0 +1,617 @@
+﻿2015-09-08 06:33:18.4943|WARN|thread: 1|StandardUserErrors|Showing user error Failed to create a new commit.
+GitHub.IO.ProcessException: fatal: Could not switch to '/components/': No such file or directory
+2015-09-08 06:30:09.3839|INFO|thread: 1|CommandLineHandler|Parsing command line arguments:C:\Users\kra\AppData\Local\Apps\2.0\D661NGN3.APZ\CB3EZG16.PRY\gith..tion_317444273a93ac29_0003.0000_3d9282105f72a5d4\GitHub.exe
+2015-09-08 06:30:09.3995|INFO|thread: 1|AppInstanceCommunicator|Starting up as master instance of GitHub Desktop
+2015-09-08 06:30:09.7263|INFO|thread: 1|HardwareRenderingHelper|Your video card appears to support hardware rendering. If this isn't the case and you see glitches
+2015-09-08 06:30:09.7263|INFO|thread: 1|HardwareRenderingHelper|set the GH_FORCE_SW_RENDERING environment variable to 1
+2015-09-08 06:30:10.2658|INFO|thread: 5|StartupLogging| #########################################
+2015-09-08 06:30:10.2658|INFO|thread: 5|StartupLogging| GitHub Desktop started. VERSION: 3.0.4.0
+2015-09-08 06:30:10.2658|INFO|thread: 5|StartupLogging| Build version: 116bf8fa8f569474f121d560a5de704b96312a36
+2015-09-08 06:30:10.2658|INFO|thread: 5|StartupLogging| ***************************************
+2015-09-08 06:30:10.2658|INFO|thread: 5|StartupLogging| ***                                 ***
+2015-09-08 06:30:10.2658|INFO|thread: 5|StartupLogging| ***                                 ***
+2015-09-08 06:30:10.2658|INFO|thread: 5|StartupLogging| ***        Have a problem?          ***
+2015-09-08 06:30:10.2658|INFO|thread: 5|StartupLogging| ***    Email support@github.com     ***
+2015-09-08 06:30:10.2658|INFO|thread: 5|StartupLogging| ***      and include this file      ***
+2015-09-08 06:30:10.2658|INFO|thread: 5|StartupLogging| ***                                 ***
+2015-09-08 06:30:10.2658|INFO|thread: 5|StartupLogging| ***                                 ***
+2015-09-08 06:30:10.2658|INFO|thread: 5|StartupLogging| ***************************************
+2015-09-08 06:30:10.2658|INFO|thread: 5|StartupLogging| OS Version: Windows NT 6.3.9600.0 amd64
+2015-09-08 06:30:10.2658|INFO|thread: 5|StartupLogging| CLR Version: 4.0.30319.42000
+2015-09-08 06:30:10.2658|INFO|thread: 5|StartupLogging| Current culture: en-US
+2015-09-08 06:30:10.2658|INFO|thread: 5|StartupLogging| Terminal Services session: no
+2015-09-08 06:30:10.2658|INFO|thread: 5|StartupLogging| Location: C:\Users\kra\AppData\Local\Apps\2.0\D661NGN3.APZ\CB3EZG16.PRY\gith..tion_317444273a93ac29_0003.0000_3d9282105f72a5d4\GitHub.exe
+2015-09-08 06:30:10.2825|INFO|thread: 5|StartupLogging| ActivationUri: https://github-windows.s3.amazonaws.com/GitHub.application
+2015-09-08 06:30:10.3651|INFO|thread: 5|GitEnvironment|Process set up with this SSH Agent info: (null):(null)
+2015-09-08 06:30:10.3651|INFO|thread: 5|GitEnvironment|PATH is C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\cmd;C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\bin;C:\Users\kra\AppData\Local\Apps\2.0\D661NGN3.APZ\CB3EZG16.PRY\gith..tion_317444273a93ac29_0003.0000_3d9282105f72a5d4;C:\Users\kra\AppData\Local\GitHub\lfs-amd64_0.5.4;C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319;C:\ProgramData\Oracle\Java\javapath;c:\Program Files (x86)\AMD APP\bin\x86_64;c:\Program Files (x86)\AMD APP\bin\x86;c:\Program Files (x86)\Intel\iCLS Client\;c:\Program Files\Intel\iCLS Client\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;c:\Program Files (x86)\ATI Technologies\ATI.ACE\Core-Static;C:\Program Files\Intel\WiFi\bin\;C:\Program Files\Common Files\Intel\WirelessCommon\;C:\Program Files\MATLAB\R2014b\runtime\win64;C:\Program Files\MATLAB\R2014b\bin;C:\Program Files (x86)\QuickTime\QTSystem\;C:\Program Files (x86)\Windows Live\Shared;C:\Program Files\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files (x86)\Skype\Phone\;C:\Program Files (x86)\Brackets\command;C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\bin;C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\cmd;C:\Program Files (x86)\ATI Technologies\ATI.ACE\Core-Static;C:\Users\kra\AppData\Roaming\npm;C:\Program Files\nodejs\;C:\Ruby22-x64\bin;C:\Users\kra\AppData\Roaming\Dashlane\3.0.7.74559\bin\Firefox_Extension\{442718d9-475e-452a-b3e1-fb1ee16b8e9f}\components;C:\Users\kra\AppData\Roaming\Dashlane\3.2.0.75427\bin\Firefox_Extension\{442718d9-475e-452a-b3e1-fb1ee16b8e9f}\components;C:\Users\kra\AppData\Roaming\Dashlane\3.2.0.75631\bin\Firefox_Extension\{442718d9-475e-452a-b3e1-fb1ee16b8e9f}\components;C:\Users\kra\AppData\Roaming\Dashlane\3.2.2.76978\bin\Firefox_Extension\{442718d9-475e-452a-b3e1-fb1ee16b8e9f}\components;C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\bin\git.exe;C:\Users\kra\AppData\Roaming\Dashlane\3.2.6.89099\bin\Firefox_Extension\{442718d9-475e-452a-b3e1-fb1ee16b8e9f}\components;C:\Users\kra\AppData\Roaming\Dashlane\3.5.0.89717\bin\Firefox_Extension\{442718d9-475e-452a-b3e1-fb1ee16b8e9f}\components;C:\Users\kra\AppData\Roaming\Dashlane\3.5.2.91147\bin\Firefox_Extension\{442718d9-475e-452a-b3e1-fb1ee16b8e9f}\components;C:\Users\kra\AppData\Roaming\npm\;C:\Users\kra\AppData\Roaming\npm
+2015-09-08 06:30:10.3853|INFO|thread: 5|StartupLogging| =====================================================
+2015-09-08 06:30:10.3853|INFO|thread: 5|StartupLogging|  DIAGNOSTICS                                        |
+2015-09-08 06:30:10.3853|INFO|thread: 5|StartupLogging| =====================================================
+2015-09-08 06:30:10.3853|INFO|thread: 5|StartupLogging| Git Extracted: 'True:
+2015-09-08 06:30:10.3853|INFO|thread: 5|StartupLogging| PortableGit Dir Exists: 'C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad'
+2015-09-08 06:30:10.3853|INFO|thread: 5|StartupLogging| Git Executable Exists: 'C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\bin\git.exe'
+2015-09-08 06:30:10.3853|ERROR|thread: 5|StartupLogging| MISSING PATH!!: 'c:\Program Files (x86)\AMD APP\bin\x86'
+2015-09-08 06:30:10.4009|ERROR|thread: 5|StartupLogging| MISSING PATH!!: 'C:\Program Files\Intel\WiFi\bin\'
+2015-09-08 06:30:10.4009|ERROR|thread: 5|StartupLogging| MISSING PATH!!: 'C:\Program Files\Common Files\Intel\WirelessCommon\'
+2015-09-08 06:30:10.4009|ERROR|thread: 5|StartupLogging| MISSING PATH!!: 'C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\bin\git.exe'
+2015-09-08 06:30:10.4009|INFO|thread: 5|StartupLogging| ----------------------------------------------------
+2015-09-08 06:30:10.4009|INFO|thread: 5|StartupLogging| PATH: C:\ProgramData\Oracle\Java\javapath;c:\Program Files (x86)\AMD APP\bin\x86_64;c:\Program Files (x86)\AMD APP\bin\x86;c:\Program Files (x86)\Intel\iCLS Client\;c:\Program Files\Intel\iCLS Client\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;c:\Program Files (x86)\ATI Technologies\ATI.ACE\Core-Static;C:\Program Files\Intel\WiFi\bin\;C:\Program Files\Common Files\Intel\WirelessCommon\;C:\Program Files\MATLAB\R2014b\runtime\win64;C:\Program Files\MATLAB\R2014b\bin;C:\Program Files (x86)\QuickTime\QTSystem\;C:\Program Files (x86)\Windows Live\Shared;C:\Program Files\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files (x86)\Skype\Phone\;C:\Program Files (x86)\Brackets\command;C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\bin;C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\cmd;C:\Program Files (x86)\ATI Technologies\ATI.ACE\Core-Static;C:\Users\kra\AppData\Roaming\npm;C:\Program Files\nodejs\;C:\Ruby22-x64\bin;C:\Users\kra\AppData\Roaming\Dashlane\3.0.7.74559\bin\Firefox_Extension\{442718d9-475e-452a-b3e1-fb1ee16b8e9f}\components;C:\Users\kra\AppData\Roaming\Dashlane\3.2.0.75427\bin\Firefox_Extension\{442718d9-475e-452a-b3e1-fb1ee16b8e9f}\components;C:\Users\kra\AppData\Roaming\Dashlane\3.2.0.75631\bin\Firefox_Extension\{442718d9-475e-452a-b3e1-fb1ee16b8e9f}\components;C:\Users\kra\AppData\Roaming\Dashlane\3.2.2.76978\bin\Firefox_Extension\{442718d9-475e-452a-b3e1-fb1ee16b8e9f}\components;C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\bin\git.exe;C:\Users\kra\AppData\Roaming\Dashlane\3.2.6.89099\bin\Firefox_Extension\{442718d9-475e-452a-b3e1-fb1ee16b8e9f}\components;C:\Users\kra\AppData\Roaming\Dashlane\3.5.0.89717\bin\Firefox_Extension\{442718d9-475e-452a-b3e1-fb1ee16b8e9f}\components;C:\Users\kra\AppData\Roaming\Dashlane\3.5.2.91147\bin\Firefox_Extension\{442718d9-475e-452a-b3e1-fb1ee16b8e9f}\components;C:\Users\kra\AppData\Roaming\npm\;C:\Users\kra\AppData\Roaming\npm
+2015-09-08 06:30:10.4779|INFO|thread: 5|StartupLogger|Proxy information: (None)
+2015-09-08 06:30:10.4779|INFO|thread: 5|StartupLogger|Couldn't fetch creds for proxy
+2015-09-08 06:30:10.7482|INFO|thread: 1|App|Checking whether application is network deployed.
+2015-09-08 06:30:11.4080|INFO|thread: 5|PortablePackageManager|Already extracted PortableGit.7z, returning 100%
+2015-09-08 06:30:11.4625|INFO|thread: 4|ProcessWrapper|Starting: Process - FileName: 'C:\Users\kra\AppData\Local\Apps\2.0\D661NGN3.APZ\CB3EZG16.PRY\gith..tion_317444273a93ac29_0003.0000_3d9282105f72a5d4\7za.exe', Args: 'x -y "-oC:\Users\kra\AppData\Local\GitHub\lcvb4h3g.j1v.deleteme" "C:\Users\kra\AppData\Local\Apps\2.0\D661NGN3.APZ\CB3EZG16.PRY\gith..tion_317444273a93ac29_0003.0000_3d9282105f72a5d4\tutorial.7z"', Working Directory: 
+2015-09-08 06:30:11.9959|INFO|thread: 1|ClickOnceAppIconHelper|Updating registry with our application icon 'C:\Users\kra\AppData\Local\Apps\2.0\D661NGN3.APZ\CB3EZG16.PRY\gith..tion_317444273a93ac29_0003.0000_3d9282105f72a5d4\Images\App.ico'
+2015-09-08 06:30:12.2549|INFO|thread: 4|PortablePackageManager|Extracting tutorial.7z is (so far) successful
+2015-09-08 06:30:12.3303|INFO|thread:14|PortablePackageManager|Extracted package successfully: tutorial.7z
+2015-09-08 06:30:12.3810|INFO|thread: 5|MsysGitCertificateInstaller|Found certificate cache, loaded 162 certificates
+2015-09-08 06:30:12.4474|INFO|thread: 5|MsysGitCertificateInstaller|Created certificate bundle with 224 entries
+2015-09-08 06:30:12.9858|INFO|thread: 5|StartupSequence|Took 1637ms to Update certificate bundle from system store
+2015-09-08 06:30:17.8662|INFO|thread: 9|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 1:RepositoryModel.cs:1499
+2015-09-08 06:30:17.9131|INFO|thread:12|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 1:RepositoryModel.cs:1499 after waiting 0.049716s
+2015-09-08 06:30:17.9287|INFO|thread: 9|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 2:RepositoryModel.cs:1499
+2015-09-08 06:30:17.9287|INFO|thread:17|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 2:RepositoryModel.cs:1499 after waiting 7.51E-05s
+2015-09-08 06:30:17.9444|INFO|thread: 9|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 3:RepositoryModel.cs:1499
+2015-09-08 06:30:17.9444|INFO|thread:16|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 3:RepositoryModel.cs:1499 after waiting 6.48E-05s
+2015-09-08 06:30:17.9444|INFO|thread: 9|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 4:RepositoryModel.cs:1499
+2015-09-08 06:30:17.9444|INFO|thread: 5|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 4:RepositoryModel.cs:1499 after waiting 4.75E-05s
+2015-09-08 06:30:18.2424|INFO|thread:16|AsyncReaderWriterLock|Released concurrent scheduler for operation: 3:RepositoryModel.cs:1499 after blocking 0.2971157s
+2015-09-08 06:30:18.2424|INFO|thread:14|AsyncReaderWriterLock|Released concurrent scheduler for operation: 2:RepositoryModel.cs:1499 after blocking 0.3220036s
+2015-09-08 06:30:18.3097|INFO|thread: 5|AsyncReaderWriterLock|Released concurrent scheduler for operation: 4:RepositoryModel.cs:1499 after blocking 0.3614578s
+2015-09-08 06:30:18.3280|INFO|thread:15|AsyncReaderWriterLock|Released concurrent scheduler for operation: 1:RepositoryModel.cs:1499 after blocking 0.4000536s
+2015-09-08 06:30:19.1099|INFO|thread: 1|CommandLineToolsExtractor|Portable Git and Git LFS are already extracted
+2015-09-08 06:30:19.1255|INFO|thread: 1|GitClient|Installing git lfs filters
+2015-09-08 06:30:19.1411|INFO|thread: 1|GitEnvironment|Process set up with this SSH Agent info: (null):(null)
+2015-09-08 06:30:19.1411|INFO|thread: 1|GitEnvironment|PATH is C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\cmd;C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\bin;C:\Users\kra\AppData\Local\Apps\2.0\D661NGN3.APZ\CB3EZG16.PRY\gith..tion_317444273a93ac29_0003.0000_3d9282105f72a5d4;C:\Users\kra\AppData\Local\GitHub\lfs-amd64_0.5.4;C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319;C:\WINDOWS\System32
+2015-09-08 06:30:19.1411|INFO|thread: 1|ProcessWrapper|Starting: Process - FileName: 'C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\bin\git.exe', Args: 'lfs init --force ', Working Directory: C:\Users\kra\AppData\Local\Temp\
+2015-09-08 06:30:19.1776|INFO|thread: 1|ReactiveScreen|Activating GitHub.ViewModels.ShellViewModel.
+2015-09-08 06:30:19.1776|INFO|thread: 1|ReactiveScreen|Activating GitHub.ViewModels.DashboardViewModel.
+2015-09-08 06:30:22.2695|INFO|thread: 5|SoftwareUpdateViewModel|Checking for new version
+2015-09-08 06:30:30.4869|INFO|thread: 1|PortablePackageManager|Already extracted gitignore.7z, returning 100%
+2015-09-08 06:30:31.7675|WARN|thread:12|LoginCache|Could not get login for host 'GitHub.HostAddress'
+System.Collections.Generic.KeyNotFoundException: The given key 'login:null' was not present in the cache.
+2015-09-08 06:30:31.9151|INFO|thread:21|DashboardViewModel|Selected repository '/Tutorial'
+2015-09-08 06:30:31.9451|INFO|thread:21|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 5:GitClient.cs:653
+2015-09-08 06:30:31.9451|INFO|thread:21|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 6:GitClient.cs:631
+2015-09-08 06:30:31.9451|INFO|thread:15|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 6:GitClient.cs:631 after waiting 5.36E-05s
+2015-09-08 06:30:31.9451|INFO|thread:12|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 5:GitClient.cs:653 after waiting 0.0027995s
+2015-09-08 06:30:31.9611|INFO|thread: 5|AsyncReaderWriterLock|Released concurrent scheduler for operation: 5:GitClient.cs:653 after blocking 0.0134434s
+2015-09-08 06:30:32.6761|INFO|thread: 1|RepositoryHost|Log in from cache for login 'yccteam' to host 'https://api.github.com/' SUCCEEDED
+2015-09-08 06:30:32.7139|INFO|thread:28|ApplicationShellInitializer|Running post login tasks. ~/.gitconfig is set up with user.name = 'yccteam' and user.email = 'kra.yonatan@gmail.com'
+2015-09-08 06:30:32.7339|INFO|thread:14|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 7:GitClient.cs:648
+2015-09-08 06:30:32.7339|INFO|thread:16|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 7:GitClient.cs:648 after waiting 6.48E-05s
+2015-09-08 06:30:32.7600|INFO|thread: 9|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 8:RepositoryViewModel.cs:321
+2015-09-08 06:30:32.7600|INFO|thread: 5|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 8:RepositoryViewModel.cs:321 after waiting 0.0014279s
+2015-09-08 06:30:32.7600|INFO|thread: 9|AsyncReaderWriterLock|Released concurrent scheduler for operation: 7:GitClient.cs:648 after blocking 0.0283097s
+2015-09-08 06:30:32.7600|INFO|thread:17|SSHProcessManager|Starting ssh-agent.exe
+2015-09-08 06:30:32.7600|INFO|thread:17|PortablePackageManager|Already extracted lfs-amd64.7z, returning 100%
+2015-09-08 06:30:32.8258|INFO|thread:14|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 9:GitClient.cs:221
+2015-09-08 06:30:32.8258|INFO|thread: 4|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 9:GitClient.cs:221 after waiting 6.11E-05s
+2015-09-08 06:30:32.8258|INFO|thread:14|DashboardViewModel|Took 888ms to Create RepositoryViewModel for location C:\Users\kra\AppData\Local\GitHub\TutorialRepository_fdbf2020839cde135ff9dbed7d503f8e03fa3ab4\new-repo
+2015-09-08 06:30:32.8258|INFO|thread:14|AsyncReaderWriterLock|Released concurrent scheduler for operation: 6:GitClient.cs:631 after blocking 0.8794569s
+2015-09-08 06:30:32.8258|INFO|thread: 9|GitClient|Loading commits for repo: C:\Users\kra\AppData\Local\GitHub\TutorialRepository_fdbf2020839cde135ff9dbed7d503f8e03fa3ab4\new-repo
+2015-09-08 06:30:32.9162|INFO|thread: 9|ConcurrentRepositoryConnection|Loaded '1' commits for repo: C:\Users\kra\AppData\Local\GitHub\TutorialRepository_fdbf2020839cde135ff9dbed7d503f8e03fa3ab4\new-repo\.
+2015-09-08 06:30:32.9908|INFO|thread: 9|AsyncReaderWriterLock|Released concurrent scheduler for operation: 9:GitClient.cs:221 after blocking 0.1647933s
+2015-09-08 06:30:33.0069|INFO|thread:12|AsyncReaderWriterLock|Released concurrent scheduler for operation: 8:RepositoryViewModel.cs:321 after blocking 0.2454105s
+2015-09-08 06:30:33.5604|INFO|thread:30|GitEnvironment|Process set up with this SSH Agent info: 8832:/tmp/ssh-iekrCJ7A1mK8/agent.4968
+2015-09-08 06:30:33.5604|INFO|thread:30|GitEnvironment|PATH is C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\cmd;C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\bin;C:\Users\kra\AppData\Local\Apps\2.0\D661NGN3.APZ\CB3EZG16.PRY\gith..tion_317444273a93ac29_0003.0000_3d9282105f72a5d4;C:\Users\kra\AppData\Local\GitHub\lfs-amd64_0.5.4;C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319;C:\WINDOWS\System32
+2015-09-08 06:30:33.6064|INFO|thread:30|ProcessWrapper|Starting: Process - FileName: 'C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\bin\ssh-add.exe', Args: '"C:\Users\kra\.ssh\github_rsa"', Working Directory: C:\Users\kra\AppData\Local\Temp\
+2015-09-08 06:30:34.2641|INFO|thread:17|SSHKeyHelper|Found existing SSH key pair
+2015-09-08 06:30:34.6239|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 10:GitClient.cs:198
+2015-09-08 06:30:34.6239|INFO|thread:17|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 10:GitClient.cs:198 after waiting 7.04E-05s
+2015-09-08 06:30:34.6239|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 11:RepositoryModel.cs:596
+2015-09-08 06:30:34.6239|INFO|thread:15|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 11:RepositoryModel.cs:596 after waiting 9.19E-05s
+2015-09-08 06:30:34.6395|INFO|thread:14|AsyncReaderWriterLock|Released concurrent scheduler for operation: 10:GitClient.cs:198 after blocking 0.0180553s
+2015-09-08 06:30:34.6806|INFO|thread: 4|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 12:GitClient.cs:287
+2015-09-08 06:30:34.6806|INFO|thread:29|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 12:GitClient.cs:287 after waiting 7.41E-05s
+2015-09-08 06:30:34.6806|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 13:BranchesViewModel.cs:543
+2015-09-08 06:30:34.6806|INFO|thread: 5|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 13:BranchesViewModel.cs:543 after waiting 5.27E-05s
+2015-09-08 06:30:34.6806|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 14:RepositoryViewModel.cs:321
+2015-09-08 06:30:34.6806|INFO|thread:14|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 14:RepositoryViewModel.cs:321 after waiting 2E-05s
+2015-09-08 06:30:34.6806|INFO|thread:16|GitEnvironment|Process set up with this SSH Agent info: 8832:/tmp/ssh-iekrCJ7A1mK8/agent.4968
+2015-09-08 06:30:34.6806|INFO|thread:16|GitEnvironment|PATH is C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\cmd;C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\bin;C:\Users\kra\AppData\Local\Apps\2.0\D661NGN3.APZ\CB3EZG16.PRY\gith..tion_317444273a93ac29_0003.0000_3d9282105f72a5d4;C:\Users\kra\AppData\Local\GitHub\lfs-amd64_0.5.4;C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319;C:\WINDOWS\System32
+2015-09-08 06:30:34.6806|INFO|thread:16|ProcessWrapper|Starting: Process - FileName: 'C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\bin\git.exe', Args: 'status --untracked-files=all --porcelain -z ', Working Directory: C:\Users\kra\AppData\Local\GitHub\TutorialRepository_fdbf2020839cde135ff9dbed7d503f8e03fa3ab4\new-repo\
+2015-09-08 06:30:34.6806|INFO|thread: 4|AsyncReaderWriterLock|Released concurrent scheduler for operation: 11:RepositoryModel.cs:596 after blocking 0.0644306s
+2015-09-08 06:30:34.6806|INFO|thread: 9|AsyncReaderWriterLock|Released concurrent scheduler for operation: 13:BranchesViewModel.cs:543 after blocking 0.0086761s
+2015-09-08 06:30:34.7086|INFO|thread: 9|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 15:GitClient.cs:198
+2015-09-08 06:30:34.7086|INFO|thread:16|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 15:GitClient.cs:198 after waiting 4.01E-05s
+2015-09-08 06:30:34.7086|INFO|thread: 9|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 16:RepositoryModel.cs:596
+2015-09-08 06:30:34.7106|INFO|thread: 4|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 16:RepositoryModel.cs:596 after waiting 0.0018254s
+2015-09-08 06:30:34.7106|INFO|thread: 5|ConcurrentRepositoryConnection|Took 19ms to git status
+2015-09-08 06:30:34.7106|INFO|thread: 5|ConcurrentRepositoryConnection|Took 20ms to git status and parse output
+2015-09-08 06:30:34.7106|INFO|thread:15|AsyncReaderWriterLock|Released concurrent scheduler for operation: 16:RepositoryModel.cs:596 after blocking 0.0051801s
+2015-09-08 06:30:34.7106|INFO|thread:12|AsyncReaderWriterLock|Released concurrent scheduler for operation: 15:GitClient.cs:198 after blocking 0.0079302s
+2015-09-08 06:30:34.7705|INFO|thread:17|AsyncReaderWriterLock|Released concurrent scheduler for operation: 14:RepositoryViewModel.cs:321 after blocking 0.0851857s
+2015-09-08 06:30:35.0524|INFO|thread: 5|NewCommitViewModel|Took 372ms to load files for C:\Users\kra\AppData\Local\GitHub\TutorialRepository_fdbf2020839cde135ff9dbed7d503f8e03fa3ab4\new-repo
+2015-09-08 06:30:35.0524|INFO|thread: 5|AsyncReaderWriterLock|Released concurrent scheduler for operation: 12:GitClient.cs:287 after blocking 0.3726167s
+2015-09-08 06:30:39.8180|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 17:BranchSynchronizer.cs:126
+2015-09-08 06:30:39.8180|INFO|thread:12|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 17:BranchSynchronizer.cs:126 after waiting 0.0010207s
+2015-09-08 06:30:39.8180|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 18:GitClient.cs:636
+2015-09-08 06:30:39.8180|INFO|thread: 9|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 18:GitClient.cs:636 after waiting 4.19E-05s
+2015-09-08 06:30:39.8180|INFO|thread:15|AsyncReaderWriterLock|Released concurrent scheduler for operation: 18:GitClient.cs:636 after blocking 0.0021608s
+2015-09-08 06:30:39.8337|INFO|thread: 5|ConcurrentRepositoryConnection|branch stats: remote not found for master
+2015-09-08 06:30:39.8337|INFO|thread: 5|AsyncReaderWriterLock|Released concurrent scheduler for operation: 17:BranchSynchronizer.cs:126 after blocking 0.0179205s
+2015-09-08 06:30:40.6704|INFO|thread: 1|NewCommitViewModel|Took 5618ms to render file list for C:\Users\kra\AppData\Local\GitHub\TutorialRepository_fdbf2020839cde135ff9dbed7d503f8e03fa3ab4\new-repo
+2015-09-08 06:30:40.8196|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 19:GitClient.cs:393
+2015-09-08 06:30:40.8206|INFO|thread:12|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 19:GitClient.cs:393 after waiting 0.0001077s
+2015-09-08 06:30:40.8206|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 20:RepositoryViewModel.cs:321
+2015-09-08 06:30:40.8206|INFO|thread: 4|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 20:RepositoryViewModel.cs:321 after waiting 2.75E-05s
+2015-09-08 06:30:40.8206|INFO|thread: 1|AsyncReaderWriterLock|Released concurrent scheduler for operation: 20:RepositoryViewModel.cs:321 after blocking 1.39E-05s
+2015-09-08 06:30:40.8206|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 21:RepositoryViewModel.cs:321
+2015-09-08 06:30:40.8206|INFO|thread: 5|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 21:RepositoryViewModel.cs:321 after waiting 4.61E-05s
+2015-09-08 06:30:40.8206|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 22:GitClient.cs:393
+2015-09-08 06:30:40.8206|INFO|thread: 9|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 22:GitClient.cs:393 after waiting 1.63E-05s
+2015-09-08 06:30:40.8206|INFO|thread:29|GitEnvironment|Process set up with this SSH Agent info: 8832:/tmp/ssh-iekrCJ7A1mK8/agent.4968
+2015-09-08 06:30:40.8206|INFO|thread:29|GitEnvironment|PATH is C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\cmd;C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\bin;C:\Users\kra\AppData\Local\Apps\2.0\D661NGN3.APZ\CB3EZG16.PRY\gith..tion_317444273a93ac29_0003.0000_3d9282105f72a5d4;C:\Users\kra\AppData\Local\GitHub\lfs-amd64_0.5.4;C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319;C:\WINDOWS\System32
+2015-09-08 06:30:40.8206|INFO|thread:29|ProcessWrapper|Starting: Process - FileName: 'C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\bin\git.exe', Args: 'diff-tree --root -m -r -z --name-status 01ad9157cf120fc61d472c0fd66a58ce36b4df94 ', Working Directory: C:\Users\kra\AppData\Local\GitHub\TutorialRepository_fdbf2020839cde135ff9dbed7d503f8e03fa3ab4\new-repo\
+2015-09-08 06:30:40.8206|INFO|thread:16|GitEnvironment|Process set up with this SSH Agent info: 8832:/tmp/ssh-iekrCJ7A1mK8/agent.4968
+2015-09-08 06:30:40.8206|INFO|thread:16|GitEnvironment|PATH is C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\cmd;C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\bin;C:\Users\kra\AppData\Local\Apps\2.0\D661NGN3.APZ\CB3EZG16.PRY\gith..tion_317444273a93ac29_0003.0000_3d9282105f72a5d4;C:\Users\kra\AppData\Local\GitHub\lfs-amd64_0.5.4;C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319;C:\WINDOWS\System32
+2015-09-08 06:30:40.8206|INFO|thread:16|ProcessWrapper|Starting: Process - FileName: 'C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\bin\git.exe', Args: 'diff-tree --root -m -r -z --name-status 01ad9157cf120fc61d472c0fd66a58ce36b4df94 ', Working Directory: C:\Users\kra\AppData\Local\GitHub\TutorialRepository_fdbf2020839cde135ff9dbed7d503f8e03fa3ab4\new-repo\
+2015-09-08 06:30:40.8206|INFO|thread:15|AsyncReaderWriterLock|Released concurrent scheduler for operation: 21:RepositoryViewModel.cs:321 after blocking 0.0072649s
+2015-09-08 06:30:40.8206|INFO|thread:29|GitEnvironment|Process set up with this SSH Agent info: 8832:/tmp/ssh-iekrCJ7A1mK8/agent.4968
+2015-09-08 06:30:40.8206|INFO|thread:29|GitEnvironment|PATH is C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\cmd;C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\bin;C:\Users\kra\AppData\Local\Apps\2.0\D661NGN3.APZ\CB3EZG16.PRY\gith..tion_317444273a93ac29_0003.0000_3d9282105f72a5d4;C:\Users\kra\AppData\Local\GitHub\lfs-amd64_0.5.4;C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319;C:\WINDOWS\System32
+2015-09-08 06:30:40.8206|INFO|thread:29|ProcessWrapper|Starting: Process - FileName: 'C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\bin\git.exe', Args: 'diff-tree --root -m -r -z --numstat 01ad9157cf120fc61d472c0fd66a58ce36b4df94 ', Working Directory: C:\Users\kra\AppData\Local\GitHub\TutorialRepository_fdbf2020839cde135ff9dbed7d503f8e03fa3ab4\new-repo\
+2015-09-08 06:30:40.8386|INFO|thread:16|GitEnvironment|Process set up with this SSH Agent info: 8832:/tmp/ssh-iekrCJ7A1mK8/agent.4968
+2015-09-08 06:30:40.8386|INFO|thread:16|GitEnvironment|PATH is C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\cmd;C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\bin;C:\Users\kra\AppData\Local\Apps\2.0\D661NGN3.APZ\CB3EZG16.PRY\gith..tion_317444273a93ac29_0003.0000_3d9282105f72a5d4;C:\Users\kra\AppData\Local\GitHub\lfs-amd64_0.5.4;C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319;C:\WINDOWS\System32
+2015-09-08 06:30:40.8386|INFO|thread:16|ProcessWrapper|Starting: Process - FileName: 'C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\bin\git.exe', Args: 'diff-tree --root -m -r -z --numstat 01ad9157cf120fc61d472c0fd66a58ce36b4df94 ', Working Directory: C:\Users\kra\AppData\Local\GitHub\TutorialRepository_fdbf2020839cde135ff9dbed7d503f8e03fa3ab4\new-repo\
+2015-09-08 06:30:40.9645|INFO|thread: 5|AsyncReaderWriterLock|Released concurrent scheduler for operation: 19:GitClient.cs:393 after blocking 0.1447586s
+2015-09-08 06:30:40.9645|INFO|thread:17|AsyncReaderWriterLock|Released concurrent scheduler for operation: 22:GitClient.cs:393 after blocking 0.1400095s
+2015-09-08 06:30:42.3512|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 23:ICommittedFileForklift.cs:57
+2015-09-08 06:30:42.3512|INFO|thread:17|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 23:ICommittedFileForklift.cs:57 after waiting 0.0025816s
+2015-09-08 06:30:42.3913|INFO|thread:29|AsyncReaderWriterLock|Released concurrent scheduler for operation: 23:ICommittedFileForklift.cs:57 after blocking 0.0372181s
+2015-09-08 06:30:46.4421|INFO|thread: 1|SelectedCommitViewModel|Took 5680ms to load files for commit 01ad915 in repo C:\Users\kra\AppData\Local\GitHub\TutorialRepository_fdbf2020839cde135ff9dbed7d503f8e03fa3ab4\new-repo
+2015-09-08 06:30:46.4421|INFO|thread: 1|SelectedCommitViewModel|Took 5618ms to load files for commit 01ad915 in repo C:\Users\kra\AppData\Local\GitHub\TutorialRepository_fdbf2020839cde135ff9dbed7d503f8e03fa3ab4\new-repo
+2015-09-08 06:30:52.6752|INFO|thread:21|DashboardViewModel|Selected repository 'yccteam/ngCesium'
+2015-09-08 06:30:52.6752|INFO|thread:21|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 24:GitClient.cs:653
+2015-09-08 06:30:52.6752|INFO|thread:17|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 24:GitClient.cs:653 after waiting 3.03E-05s
+2015-09-08 06:30:52.6752|INFO|thread:21|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 25:GitClient.cs:631
+2015-09-08 06:30:52.6752|INFO|thread: 4|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 25:GitClient.cs:631 after waiting 9.3E-06s
+2015-09-08 06:30:52.6752|INFO|thread: 5|AsyncReaderWriterLock|Released concurrent scheduler for operation: 24:GitClient.cs:653 after blocking 0.0047789s
+2015-09-08 06:30:52.7893|INFO|thread:12|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 26:GitClient.cs:648
+2015-09-08 06:30:52.7893|INFO|thread:17|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 26:GitClient.cs:648 after waiting 3.31E-05s
+2015-09-08 06:30:52.7893|INFO|thread: 5|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 27:RepositoryViewModel.cs:321
+2015-09-08 06:30:52.7893|INFO|thread:16|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 27:RepositoryViewModel.cs:321 after waiting 2.56E-05s
+2015-09-08 06:30:52.7893|INFO|thread: 5|AsyncReaderWriterLock|Released concurrent scheduler for operation: 26:GitClient.cs:648 after blocking 0.0029264s
+2015-09-08 06:30:52.8206|INFO|thread: 9|AsyncReaderWriterLock|Released concurrent scheduler for operation: 27:RepositoryViewModel.cs:321 after blocking 0.0208581s
+2015-09-08 06:30:52.8206|INFO|thread:12|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 28:GitClient.cs:221
+2015-09-08 06:30:52.8206|INFO|thread:16|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 28:GitClient.cs:221 after waiting 3.96E-05s
+2015-09-08 06:30:52.8206|INFO|thread:12|DashboardViewModel|Took 142ms to Create RepositoryViewModel for location C:\Users\kra\Documents\GitHub\ngCesium
+2015-09-08 06:30:52.8206|INFO|thread:12|AsyncReaderWriterLock|Released concurrent scheduler for operation: 25:GitClient.cs:631 after blocking 0.1417589s
+2015-09-08 06:30:52.8206|INFO|thread: 9|GitClient|Loading commits for repo: C:\Users\kra\Documents\GitHub\ngCesium
+2015-09-08 06:30:52.8389|INFO|thread: 9|ConcurrentRepositoryConnection|Loaded '5' commits for repo: C:\Users\kra\Documents\GitHub\ngCesium\.
+2015-09-08 06:30:52.8389|INFO|thread: 9|AsyncReaderWriterLock|Released concurrent scheduler for operation: 28:GitClient.cs:221 after blocking 0.0129069s
+2015-09-08 06:30:52.8779|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 29:GitClient.cs:198
+2015-09-08 06:30:52.8779|INFO|thread:29|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 29:GitClient.cs:198 after waiting 2.51E-05s
+2015-09-08 06:30:52.8779|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 30:RepositoryModel.cs:596
+2015-09-08 06:30:52.8779|INFO|thread: 4|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 30:RepositoryModel.cs:596 after waiting 1.95E-05s
+2015-09-08 06:30:52.8829|INFO|thread: 9|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 31:GitClient.cs:287
+2015-09-08 06:30:52.8829|INFO|thread:14|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 31:GitClient.cs:287 after waiting 2.93E-05s
+2015-09-08 06:30:52.8829|INFO|thread: 9|AsyncReaderWriterLock|Released concurrent scheduler for operation: 30:RepositoryModel.cs:596 after blocking 0.0049869s
+2015-09-08 06:30:52.8829|INFO|thread: 5|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 32:RepositoryModel.cs:596
+2015-09-08 06:30:52.8829|INFO|thread:16|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 32:RepositoryModel.cs:596 after waiting 2.98E-05s
+2015-09-08 06:30:52.8829|INFO|thread:17|AsyncReaderWriterLock|Released concurrent scheduler for operation: 29:GitClient.cs:198 after blocking 0.0113511s
+2015-09-08 06:30:52.8829|INFO|thread:12|GitEnvironment|Process set up with this SSH Agent info: 8832:/tmp/ssh-iekrCJ7A1mK8/agent.4968
+2015-09-08 06:30:52.8829|INFO|thread:12|GitEnvironment|PATH is C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\cmd;C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\bin;C:\Users\kra\AppData\Local\Apps\2.0\D661NGN3.APZ\CB3EZG16.PRY\gith..tion_317444273a93ac29_0003.0000_3d9282105f72a5d4;C:\Users\kra\AppData\Local\GitHub\lfs-amd64_0.5.4;C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319;C:\WINDOWS\System32
+2015-09-08 06:30:52.8829|INFO|thread:12|ProcessWrapper|Starting: Process - FileName: 'C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\bin\git.exe', Args: 'status --untracked-files=all --porcelain -z ', Working Directory: C:\Users\kra\Documents\GitHub\ngCesium\
+2015-09-08 06:30:52.8829|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 33:BranchesViewModel.cs:543
+2015-09-08 06:30:52.8829|INFO|thread: 5|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 33:BranchesViewModel.cs:543 after waiting 2.28E-05s
+2015-09-08 06:30:52.8829|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 34:RepositoryViewModel.cs:321
+2015-09-08 06:30:52.8829|INFO|thread:29|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 34:RepositoryViewModel.cs:321 after waiting 0.0001301s
+2015-09-08 06:30:52.8829|INFO|thread: 9|AsyncReaderWriterLock|Released concurrent scheduler for operation: 32:RepositoryModel.cs:596 after blocking 0.005871s
+2015-09-08 06:30:52.9203|INFO|thread:17|AsyncReaderWriterLock|Released concurrent scheduler for operation: 33:BranchesViewModel.cs:543 after blocking 0.0301752s
+2015-09-08 06:30:52.9334|INFO|thread:12|ConcurrentRepositoryConnection|Took 41ms to git status
+2015-09-08 06:30:52.9334|INFO|thread:12|ConcurrentRepositoryConnection|Took 41ms to git status and parse output
+2015-09-08 06:30:52.9334|INFO|thread:15|AsyncReaderWriterLock|Released concurrent scheduler for operation: 34:RepositoryViewModel.cs:321 after blocking 0.0446189s
+2015-09-08 06:30:52.9826|INFO|thread:12|NewCommitViewModel|Took 99ms to load files for C:\Users\kra\Documents\GitHub\ngCesium
+2015-09-08 06:30:52.9826|INFO|thread:12|AsyncReaderWriterLock|Released concurrent scheduler for operation: 31:GitClient.cs:287 after blocking 0.0992384s
+2015-09-08 06:30:53.0126|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 35:BranchSynchronizer.cs:126
+2015-09-08 06:30:53.0126|INFO|thread: 5|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 35:BranchSynchronizer.cs:126 after waiting 2.7E-05s
+2015-09-08 06:30:53.0126|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 36:GitClient.cs:636
+2015-09-08 06:30:53.0126|INFO|thread: 4|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 36:GitClient.cs:636 after waiting 1.53E-05s
+2015-09-08 06:30:53.0126|INFO|thread:17|AsyncReaderWriterLock|Released concurrent scheduler for operation: 36:GitClient.cs:636 after blocking 0.0020358s
+2015-09-08 06:30:53.0426|INFO|thread:16|ConcurrentRepositoryConnection|branch stats: ahead 0, behind 0 on master
+2015-09-08 06:30:53.0426|INFO|thread:16|AsyncReaderWriterLock|Released concurrent scheduler for operation: 35:BranchSynchronizer.cs:126 after blocking 0.0304174s
+2015-09-08 06:30:53.1742|INFO|thread: 1|NewCommitViewModel|Took 191ms to render file list for C:\Users\kra\Documents\GitHub\ngCesium
+2015-09-08 06:30:53.1742|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 37:GitClient.cs:393
+2015-09-08 06:30:53.1742|INFO|thread:29|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 37:GitClient.cs:393 after waiting 3.03E-05s
+2015-09-08 06:30:53.1742|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 38:GitClient.cs:393
+2015-09-08 06:30:53.1742|INFO|thread: 4|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 38:GitClient.cs:393 after waiting 2.47E-05s
+2015-09-08 06:30:53.1802|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 39:RepositoryViewModel.cs:321
+2015-09-08 06:30:53.1802|INFO|thread: 9|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 39:RepositoryViewModel.cs:321 after waiting 2.56E-05s
+2015-09-08 06:30:53.1802|INFO|thread:15|GitEnvironment|Process set up with this SSH Agent info: 8832:/tmp/ssh-iekrCJ7A1mK8/agent.4968
+2015-09-08 06:30:53.1802|INFO|thread:15|GitEnvironment|PATH is C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\cmd;C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\bin;C:\Users\kra\AppData\Local\Apps\2.0\D661NGN3.APZ\CB3EZG16.PRY\gith..tion_317444273a93ac29_0003.0000_3d9282105f72a5d4;C:\Users\kra\AppData\Local\GitHub\lfs-amd64_0.5.4;C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319;C:\WINDOWS\System32
+2015-09-08 06:30:53.1802|INFO|thread:15|ProcessWrapper|Starting: Process - FileName: 'C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\bin\git.exe', Args: 'diff-tree --root -m -r -z --name-status b05913ea625b5093e4028e9ce7f39039779edc60 ', Working Directory: C:\Users\kra\Documents\GitHub\ngCesium\
+2015-09-08 06:30:53.1802|INFO|thread:16|GitEnvironment|Process set up with this SSH Agent info: 8832:/tmp/ssh-iekrCJ7A1mK8/agent.4968
+2015-09-08 06:30:53.2044|INFO|thread:16|GitEnvironment|PATH is C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\cmd;C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\bin;C:\Users\kra\AppData\Local\Apps\2.0\D661NGN3.APZ\CB3EZG16.PRY\gith..tion_317444273a93ac29_0003.0000_3d9282105f72a5d4;C:\Users\kra\AppData\Local\GitHub\lfs-amd64_0.5.4;C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319;C:\WINDOWS\System32
+2015-09-08 06:30:53.2044|INFO|thread:16|ProcessWrapper|Starting: Process - FileName: 'C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\bin\git.exe', Args: 'diff-tree --root -m -r -z --name-status b05913ea625b5093e4028e9ce7f39039779edc60 ', Working Directory: C:\Users\kra\Documents\GitHub\ngCesium\
+2015-09-08 06:30:53.2044|INFO|thread:15|GitEnvironment|Process set up with this SSH Agent info: 8832:/tmp/ssh-iekrCJ7A1mK8/agent.4968
+2015-09-08 06:30:53.2044|INFO|thread:15|GitEnvironment|PATH is C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\cmd;C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\bin;C:\Users\kra\AppData\Local\Apps\2.0\D661NGN3.APZ\CB3EZG16.PRY\gith..tion_317444273a93ac29_0003.0000_3d9282105f72a5d4;C:\Users\kra\AppData\Local\GitHub\lfs-amd64_0.5.4;C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319;C:\WINDOWS\System32
+2015-09-08 06:30:53.2044|INFO|thread:15|ProcessWrapper|Starting: Process - FileName: 'C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\bin\git.exe', Args: 'diff-tree --root -m -r -z --numstat b05913ea625b5093e4028e9ce7f39039779edc60 ', Working Directory: C:\Users\kra\Documents\GitHub\ngCesium\
+2015-09-08 06:30:53.2114|INFO|thread:16|GitEnvironment|Process set up with this SSH Agent info: 8832:/tmp/ssh-iekrCJ7A1mK8/agent.4968
+2015-09-08 06:30:53.2114|INFO|thread:16|GitEnvironment|PATH is C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\cmd;C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\bin;C:\Users\kra\AppData\Local\Apps\2.0\D661NGN3.APZ\CB3EZG16.PRY\gith..tion_317444273a93ac29_0003.0000_3d9282105f72a5d4;C:\Users\kra\AppData\Local\GitHub\lfs-amd64_0.5.4;C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319;C:\WINDOWS\System32
+2015-09-08 06:30:53.2114|INFO|thread:16|ProcessWrapper|Starting: Process - FileName: 'C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\bin\git.exe', Args: 'diff-tree --root -m -r -z --numstat b05913ea625b5093e4028e9ce7f39039779edc60 ', Working Directory: C:\Users\kra\Documents\GitHub\ngCesium\
+2015-09-08 06:30:53.2114|INFO|thread:12|AsyncReaderWriterLock|Released concurrent scheduler for operation: 39:RepositoryViewModel.cs:321 after blocking 0.0367474s
+2015-09-08 06:30:53.3124|INFO|thread:15|AsyncReaderWriterLock|Released concurrent scheduler for operation: 37:GitClient.cs:393 after blocking 0.134382s
+2015-09-08 06:30:53.3124|INFO|thread:16|AsyncReaderWriterLock|Released concurrent scheduler for operation: 38:GitClient.cs:393 after blocking 0.1334998s
+2015-09-08 06:30:53.3609|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 40:ICommittedFileForklift.cs:57
+2015-09-08 06:30:53.3609|INFO|thread:12|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 40:ICommittedFileForklift.cs:57 after waiting 3.03E-05s
+2015-09-08 06:30:53.4144|INFO|thread: 5|AsyncReaderWriterLock|Released concurrent scheduler for operation: 40:ICommittedFileForklift.cs:57 after blocking 0.0546605s
+2015-09-08 06:30:53.4144|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 41:ICommittedFileForklift.cs:57
+2015-09-08 06:30:53.4144|INFO|thread:14|BackgroundFetcher|Got a refresh period for C:\Users\kra\Documents\GitHub\ngCesium\.git of 300 seconds
+2015-09-08 06:30:53.4144|INFO|thread:12|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 41:ICommittedFileForklift.cs:57 after waiting 2.84E-05s
+2015-09-08 06:30:53.4144|INFO|thread:14|BackgroundFetcher|Added a delay for C:\Users\kra\Documents\GitHub\ngCesium\.git of 1238 milliseconds
+2015-09-08 06:30:53.4301|INFO|thread: 4|AsyncReaderWriterLock|Released concurrent scheduler for operation: 41:ICommittedFileForklift.cs:57 after blocking 0.0078429s
+2015-09-08 06:30:53.4301|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 42:ICommittedFileForklift.cs:57
+2015-09-08 06:30:53.4301|INFO|thread:14|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 42:ICommittedFileForklift.cs:57 after waiting 1.91E-05s
+2015-09-08 06:30:53.4457|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 43:ICommittedFileForklift.cs:57
+2015-09-08 06:30:53.4457|INFO|thread:29|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 43:ICommittedFileForklift.cs:57 after waiting 2.23E-05s
+2015-09-08 06:30:53.4457|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 44:ICommittedFileForklift.cs:57
+2015-09-08 06:30:53.4457|INFO|thread:17|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 44:ICommittedFileForklift.cs:57 after waiting 1.91E-05s
+2015-09-08 06:30:53.4658|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 45:ICommittedFileForklift.cs:57
+2015-09-08 06:30:53.4658|INFO|thread: 4|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 45:ICommittedFileForklift.cs:57 after waiting 2.05E-05s
+2015-09-08 06:30:53.4828|INFO|thread:12|AsyncReaderWriterLock|Released concurrent scheduler for operation: 42:ICommittedFileForklift.cs:57 after blocking 0.0463515s
+2015-09-08 06:30:53.4918|INFO|thread:16|AsyncReaderWriterLock|Released concurrent scheduler for operation: 43:ICommittedFileForklift.cs:57 after blocking 0.0444024s
+2015-09-08 06:30:53.4918|INFO|thread: 5|AsyncReaderWriterLock|Released concurrent scheduler for operation: 45:ICommittedFileForklift.cs:57 after blocking 0.0296527s
+2015-09-08 06:30:53.4918|INFO|thread:15|AsyncReaderWriterLock|Released concurrent scheduler for operation: 44:ICommittedFileForklift.cs:57 after blocking 0.0390949s
+2015-09-08 06:30:53.5098|INFO|thread:12|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 46:GitClient.cs:442
+2015-09-08 06:30:53.5098|INFO|thread:15|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 47:GitClient.cs:442
+2015-09-08 06:30:53.5098|INFO|thread:14|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 46:GitClient.cs:442 after waiting 9.19E-05s
+2015-09-08 06:30:53.5098|INFO|thread:16|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 47:GitClient.cs:442 after waiting 0.0001254s
+2015-09-08 06:30:53.5098|INFO|thread:17|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 48:GitClient.cs:442
+2015-09-08 06:30:53.5098|INFO|thread:29|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 48:GitClient.cs:442 after waiting 2.33E-05s
+2015-09-08 06:30:53.5098|INFO|thread:15|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 49:GitClient.cs:442
+2015-09-08 06:30:53.5098|INFO|thread: 5|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 49:GitClient.cs:442 after waiting 1.91E-05s
+2015-09-08 06:30:53.5378|WARN|thread:17|RepositoryModel|Failed creating concurrent connection for c:\Users\Josh Vera\GitHub\Windows\GitHub\Helpers\GitClient.cs:442
+System.ArgumentException: Unable to process file 'C:\components\ngCesium\ngCesiumAddRemoveButtons\ngCesiumAddRemoveButtons.js'. This file is not located under the working directory of the repository ('C:\Users\kra\Documents\GitHub\ngCesium\').
+   at LibGit2Sharp.RepositoryExtensions.BuildRelativePathFrom(Repository repo, String path)
+   at LibGit2Sharp.Repository.ToFilePaths(IEnumerable`1 paths)
+   at LibGit2Sharp.Diff.BuildDiffList(ObjectId oldTreeId, ObjectId newTreeId, TreeComparisonHandleRetriever comparisonHandleRetriever, DiffModifiers diffOptions, IEnumerable`1 paths, ExplicitPathsOptions explicitPathsOptions, CompareOptions compareOptions)
+   at LibGit2Sharp.Diff.Compare[T](Tree oldTree, DiffTargets diffTargets, IEnumerable`1 paths, ExplicitPathsOptions explicitPathsOptions, CompareOptions compareOptions)
+   at GitHub.ConcurrentRepositoryConnection.<>c__DisplayClass76.<GenerateDiffForFile>b__75()
+   at System.Reactive.Linq.ObservableImpl.Defer`1.Eval()
+   at System.Reactive.Linq.ObservableImpl.Defer`1._.Run()
+2015-09-08 06:30:53.5378|WARN|thread:15|RepositoryModel|Failed creating concurrent connection for c:\Users\Josh Vera\GitHub\Windows\GitHub\Helpers\GitClient.cs:442
+System.ArgumentException: Unable to process file 'C:\components\ngCesium\ngCesium_test.js'. This file is not located under the working directory of the repository ('C:\Users\kra\Documents\GitHub\ngCesium\').
+   at LibGit2Sharp.RepositoryExtensions.BuildRelativePathFrom(Repository repo, String path)
+   at LibGit2Sharp.Repository.ToFilePaths(IEnumerable`1 paths)
+   at LibGit2Sharp.Diff.BuildDiffList(ObjectId oldTreeId, ObjectId newTreeId, TreeComparisonHandleRetriever comparisonHandleRetriever, DiffModifiers diffOptions, IEnumerable`1 paths, ExplicitPathsOptions explicitPathsOptions, CompareOptions compareOptions)
+   at LibGit2Sharp.Diff.Compare[T](Tree oldTree, DiffTargets diffTargets, IEnumerable`1 paths, ExplicitPathsOptions explicitPathsOptions, CompareOptions compareOptions)
+   at GitHub.ConcurrentRepositoryConnection.<>c__DisplayClass76.<GenerateDiffForFile>b__75()
+   at System.Reactive.Linq.ObservableImpl.Defer`1.Eval()
+   at System.Reactive.Linq.ObservableImpl.Defer`1._.Run()
+2015-09-08 06:30:53.5378|WARN|thread: 4|RepositoryModel|Failed creating concurrent connection for c:\Users\Josh Vera\GitHub\Windows\GitHub\Helpers\GitClient.cs:442
+System.ArgumentException: Unable to process file 'C:\components\ngCesium\ngCesium.js'. This file is not located under the working directory of the repository ('C:\Users\kra\Documents\GitHub\ngCesium\').
+   at LibGit2Sharp.RepositoryExtensions.BuildRelativePathFrom(Repository repo, String path)
+   at LibGit2Sharp.Repository.ToFilePaths(IEnumerable`1 paths)
+   at LibGit2Sharp.Diff.BuildDiffList(ObjectId oldTreeId, ObjectId newTreeId, TreeComparisonHandleRetriever comparisonHandleRetriever, DiffModifiers diffOptions, IEnumerable`1 paths, ExplicitPathsOptions explicitPathsOptions, CompareOptions compareOptions)
+   at LibGit2Sharp.Diff.Compare[T](Tree oldTree, DiffTargets diffTargets, IEnumerable`1 paths, ExplicitPathsOptions explicitPathsOptions, CompareOptions compareOptions)
+   at GitHub.ConcurrentRepositoryConnection.<>c__DisplayClass76.<GenerateDiffForFile>b__75()
+   at System.Reactive.Linq.ObservableImpl.Defer`1.Eval()
+   at System.Reactive.Linq.ObservableImpl.Defer`1._.Run()
+2015-09-08 06:30:53.6233|ERROR|thread:17|DiffModelFactory|Failed generating diff
+System.ArgumentException: Unable to process file 'C:\components\ngCesium\ngCesiumAddRemoveButtons\ngCesiumAddRemoveButtons.js'. This file is not located under the working directory of the repository ('C:\Users\kra\Documents\GitHub\ngCesium\').
+   at LibGit2Sharp.RepositoryExtensions.BuildRelativePathFrom(Repository repo, String path)
+   at LibGit2Sharp.Repository.ToFilePaths(IEnumerable`1 paths)
+   at LibGit2Sharp.Diff.BuildDiffList(ObjectId oldTreeId, ObjectId newTreeId, TreeComparisonHandleRetriever comparisonHandleRetriever, DiffModifiers diffOptions, IEnumerable`1 paths, ExplicitPathsOptions explicitPathsOptions, CompareOptions compareOptions)
+   at LibGit2Sharp.Diff.Compare[T](Tree oldTree, DiffTargets diffTargets, IEnumerable`1 paths, ExplicitPathsOptions explicitPathsOptions, CompareOptions compareOptions)
+   at GitHub.ConcurrentRepositoryConnection.<>c__DisplayClass76.<GenerateDiffForFile>b__75()
+   at System.Reactive.Linq.ObservableImpl.Defer`1.Eval()
+   at System.Reactive.Linq.ObservableImpl.Defer`1._.Run()
+2015-09-08 06:30:53.6233|ERROR|thread:15|DiffModelFactory|Failed generating diff
+System.ArgumentException: Unable to process file 'C:\components\ngCesium\ngCesium_test.js'. This file is not located under the working directory of the repository ('C:\Users\kra\Documents\GitHub\ngCesium\').
+   at LibGit2Sharp.RepositoryExtensions.BuildRelativePathFrom(Repository repo, String path)
+   at LibGit2Sharp.Repository.ToFilePaths(IEnumerable`1 paths)
+   at LibGit2Sharp.Diff.BuildDiffList(ObjectId oldTreeId, ObjectId newTreeId, TreeComparisonHandleRetriever comparisonHandleRetriever, DiffModifiers diffOptions, IEnumerable`1 paths, ExplicitPathsOptions explicitPathsOptions, CompareOptions compareOptions)
+   at LibGit2Sharp.Diff.Compare[T](Tree oldTree, DiffTargets diffTargets, IEnumerable`1 paths, ExplicitPathsOptions explicitPathsOptions, CompareOptions compareOptions)
+   at GitHub.ConcurrentRepositoryConnection.<>c__DisplayClass76.<GenerateDiffForFile>b__75()
+   at System.Reactive.Linq.ObservableImpl.Defer`1.Eval()
+   at System.Reactive.Linq.ObservableImpl.Defer`1._.Run()
+2015-09-08 06:30:53.6233|ERROR|thread: 4|DiffModelFactory|Failed generating diff
+System.ArgumentException: Unable to process file 'C:\components\ngCesium\ngCesium.js'. This file is not located under the working directory of the repository ('C:\Users\kra\Documents\GitHub\ngCesium\').
+   at LibGit2Sharp.RepositoryExtensions.BuildRelativePathFrom(Repository repo, String path)
+   at LibGit2Sharp.Repository.ToFilePaths(IEnumerable`1 paths)
+   at LibGit2Sharp.Diff.BuildDiffList(ObjectId oldTreeId, ObjectId newTreeId, TreeComparisonHandleRetriever comparisonHandleRetriever, DiffModifiers diffOptions, IEnumerable`1 paths, ExplicitPathsOptions explicitPathsOptions, CompareOptions compareOptions)
+   at LibGit2Sharp.Diff.Compare[T](Tree oldTree, DiffTargets diffTargets, IEnumerable`1 paths, ExplicitPathsOptions explicitPathsOptions, CompareOptions compareOptions)
+   at GitHub.ConcurrentRepositoryConnection.<>c__DisplayClass76.<GenerateDiffForFile>b__75()
+   at System.Reactive.Linq.ObservableImpl.Defer`1.Eval()
+   at System.Reactive.Linq.ObservableImpl.Defer`1._.Run()
+2015-09-08 06:30:53.6233|INFO|thread: 4|AsyncReaderWriterLock|Released concurrent scheduler for operation: 47:GitClient.cs:442 after blocking 0.1155681s
+2015-09-08 06:30:53.6233|INFO|thread:15|AsyncReaderWriterLock|Released concurrent scheduler for operation: 49:GitClient.cs:442 after blocking 0.107135s
+2015-09-08 06:30:53.6233|INFO|thread:17|AsyncReaderWriterLock|Released concurrent scheduler for operation: 48:GitClient.cs:442 after blocking 0.1116424s
+2015-09-08 06:30:53.6233|INFO|thread:15|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 50:GitClient.cs:442
+2015-09-08 06:30:53.6233|INFO|thread: 5|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 54:GitClient.cs:442
+2015-09-08 06:30:53.6233|INFO|thread:17|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 55:GitClient.cs:442
+2015-09-08 06:30:53.6233|INFO|thread: 4|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 51:GitClient.cs:442
+2015-09-08 06:30:53.6233|INFO|thread:15|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 50:GitClient.cs:442 after waiting 5.27E-05s
+2015-09-08 06:30:53.6233|INFO|thread:29|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 53:GitClient.cs:442
+2015-09-08 06:30:53.6233|INFO|thread:17|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 55:GitClient.cs:442 after waiting 7.04E-05s
+2015-09-08 06:30:53.6233|INFO|thread: 4|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 51:GitClient.cs:442 after waiting 6.9E-05s
+2015-09-08 06:30:53.6233|INFO|thread: 5|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 54:GitClient.cs:442 after waiting 8.49E-05s
+2015-09-08 06:30:53.6233|INFO|thread:16|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 52:GitClient.cs:442
+2015-09-08 06:30:53.6233|INFO|thread:29|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 56:GitClient.cs:442
+2015-09-08 06:30:53.6233|WARN|thread:15|RepositoryModel|Failed creating concurrent connection for c:\Users\Josh Vera\GitHub\Windows\GitHub\Helpers\GitClient.cs:442
+System.ArgumentException: Unable to process file 'C:\components\version\version.js'. This file is not located under the working directory of the repository ('C:\Users\kra\Documents\GitHub\ngCesium\').
+   at LibGit2Sharp.RepositoryExtensions.BuildRelativePathFrom(Repository repo, String path)
+   at LibGit2Sharp.Repository.ToFilePaths(IEnumerable`1 paths)
+   at LibGit2Sharp.Diff.BuildDiffList(ObjectId oldTreeId, ObjectId newTreeId, TreeComparisonHandleRetriever comparisonHandleRetriever, DiffModifiers diffOptions, IEnumerable`1 paths, ExplicitPathsOptions explicitPathsOptions, CompareOptions compareOptions)
+   at LibGit2Sharp.Diff.Compare[T](Tree oldTree, DiffTargets diffTargets, IEnumerable`1 paths, ExplicitPathsOptions explicitPathsOptions, CompareOptions compareOptions)
+   at GitHub.ConcurrentRepositoryConnection.<>c__DisplayClass76.<GenerateDiffForFile>b__75()
+   at System.Reactive.Linq.ObservableImpl.Defer`1.Eval()
+   at System.Reactive.Linq.ObservableImpl.Defer`1._.Run()
+2015-09-08 06:30:53.6233|WARN|thread:17|RepositoryModel|Failed creating concurrent connection for c:\Users\Josh Vera\GitHub\Windows\GitHub\Helpers\GitClient.cs:442
+System.ArgumentException: Unable to process file 'C:\components\version\version_test.js'. This file is not located under the working directory of the repository ('C:\Users\kra\Documents\GitHub\ngCesium\').
+   at LibGit2Sharp.RepositoryExtensions.BuildRelativePathFrom(Repository repo, String path)
+   at LibGit2Sharp.Repository.ToFilePaths(IEnumerable`1 paths)
+   at LibGit2Sharp.Diff.BuildDiffList(ObjectId oldTreeId, ObjectId newTreeId, TreeComparisonHandleRetriever comparisonHandleRetriever, DiffModifiers diffOptions, IEnumerable`1 paths, ExplicitPathsOptions explicitPathsOptions, CompareOptions compareOptions)
+   at LibGit2Sharp.Diff.Compare[T](Tree oldTree, DiffTargets diffTargets, IEnumerable`1 paths, ExplicitPathsOptions explicitPathsOptions, CompareOptions compareOptions)
+   at GitHub.ConcurrentRepositoryConnection.<>c__DisplayClass76.<GenerateDiffForFile>b__75()
+   at System.Reactive.Linq.ObservableImpl.Defer`1.Eval()
+   at System.Reactive.Linq.ObservableImpl.Defer`1._.Run()
+2015-09-08 06:30:53.6233|ERROR|thread:15|DiffModelFactory|Failed generating diff
+System.ArgumentException: Unable to process file 'C:\components\version\version.js'. This file is not located under the working directory of the repository ('C:\Users\kra\Documents\GitHub\ngCesium\').
+   at LibGit2Sharp.RepositoryExtensions.BuildRelativePathFrom(Repository repo, String path)
+   at LibGit2Sharp.Repository.ToFilePaths(IEnumerable`1 paths)
+   at LibGit2Sharp.Diff.BuildDiffList(ObjectId oldTreeId, ObjectId newTreeId, TreeComparisonHandleRetriever comparisonHandleRetriever, DiffModifiers diffOptions, IEnumerable`1 paths, ExplicitPathsOptions explicitPathsOptions, CompareOptions compareOptions)
+   at LibGit2Sharp.Diff.Compare[T](Tree oldTree, DiffTargets diffTargets, IEnumerable`1 paths, ExplicitPathsOptions explicitPathsOptions, CompareOptions compareOptions)
+   at GitHub.ConcurrentRepositoryConnection.<>c__DisplayClass76.<GenerateDiffForFile>b__75()
+   at System.Reactive.Linq.ObservableImpl.Defer`1.Eval()
+   at System.Reactive.Linq.ObservableImpl.Defer`1._.Run()
+2015-09-08 06:30:53.6233|WARN|thread: 5|RepositoryModel|Failed creating concurrent connection for c:\Users\Josh Vera\GitHub\Windows\GitHub\Helpers\GitClient.cs:442
+System.ArgumentException: Unable to process file 'C:\components\version\version-directive.js'. This file is not located under the working directory of the repository ('C:\Users\kra\Documents\GitHub\ngCesium\').
+   at LibGit2Sharp.RepositoryExtensions.BuildRelativePathFrom(Repository repo, String path)
+   at LibGit2Sharp.Repository.ToFilePaths(IEnumerable`1 paths)
+   at LibGit2Sharp.Diff.BuildDiffList(ObjectId oldTreeId, ObjectId newTreeId, TreeComparisonHandleRetriever comparisonHandleRetriever, DiffModifiers diffOptions, IEnumerable`1 paths, ExplicitPathsOptions explicitPathsOptions, CompareOptions compareOptions)
+   at LibGit2Sharp.Diff.Compare[T](Tree oldTree, DiffTargets diffTargets, IEnumerable`1 paths, ExplicitPathsOptions explicitPathsOptions, CompareOptions compareOptions)
+   at GitHub.ConcurrentRepositoryConnection.<>c__DisplayClass76.<GenerateDiffForFile>b__75()
+   at System.Reactive.Linq.ObservableImpl.Defer`1.Eval()
+   at System.Reactive.Linq.ObservableImpl.Defer`1._.Run()
+2015-09-08 06:30:53.6233|INFO|thread:15|AsyncReaderWriterLock|Released concurrent scheduler for operation: 50:GitClient.cs:442 after blocking 0.0044523s
+2015-09-08 06:30:53.6233|WARN|thread: 4|RepositoryModel|Failed creating concurrent connection for c:\Users\Josh Vera\GitHub\Windows\GitHub\Helpers\GitClient.cs:442
+System.ArgumentException: Unable to process file 'C:\components\version\version-directive_test.js'. This file is not located under the working directory of the repository ('C:\Users\kra\Documents\GitHub\ngCesium\').
+   at LibGit2Sharp.RepositoryExtensions.BuildRelativePathFrom(Repository repo, String path)
+   at LibGit2Sharp.Repository.ToFilePaths(IEnumerable`1 paths)
+   at LibGit2Sharp.Diff.BuildDiffList(ObjectId oldTreeId, ObjectId newTreeId, TreeComparisonHandleRetriever comparisonHandleRetriever, DiffModifiers diffOptions, IEnumerable`1 paths, ExplicitPathsOptions explicitPathsOptions, CompareOptions compareOptions)
+   at LibGit2Sharp.Diff.Compare[T](Tree oldTree, DiffTargets diffTargets, IEnumerable`1 paths, ExplicitPathsOptions explicitPathsOptions, CompareOptions compareOptions)
+   at GitHub.ConcurrentRepositoryConnection.<>c__DisplayClass76.<GenerateDiffForFile>b__75()
+   at System.Reactive.Linq.ObservableImpl.Defer`1.Eval()
+   at System.Reactive.Linq.ObservableImpl.Defer`1._.Run()
+2015-09-08 06:30:53.6233|INFO|thread:15|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 53:GitClient.cs:442 after waiting 0.0045862s
+2015-09-08 06:30:53.6233|ERROR|thread:17|DiffModelFactory|Failed generating diff
+System.ArgumentException: Unable to process file 'C:\components\version\version_test.js'. This file is not located under the working directory of the repository ('C:\Users\kra\Documents\GitHub\ngCesium\').
+   at LibGit2Sharp.RepositoryExtensions.BuildRelativePathFrom(Repository repo, String path)
+   at LibGit2Sharp.Repository.ToFilePaths(IEnumerable`1 paths)
+   at LibGit2Sharp.Diff.BuildDiffList(ObjectId oldTreeId, ObjectId newTreeId, TreeComparisonHandleRetriever comparisonHandleRetriever, DiffModifiers diffOptions, IEnumerable`1 paths, ExplicitPathsOptions explicitPathsOptions, CompareOptions compareOptions)
+   at LibGit2Sharp.Diff.Compare[T](Tree oldTree, DiffTargets diffTargets, IEnumerable`1 paths, ExplicitPathsOptions explicitPathsOptions, CompareOptions compareOptions)
+   at GitHub.ConcurrentRepositoryConnection.<>c__DisplayClass76.<GenerateDiffForFile>b__75()
+   at System.Reactive.Linq.ObservableImpl.Defer`1.Eval()
+   at System.Reactive.Linq.ObservableImpl.Defer`1._.Run()
+2015-09-08 06:30:53.6233|INFO|thread:17|AsyncReaderWriterLock|Released concurrent scheduler for operation: 55:GitClient.cs:442 after blocking 0.0047495s
+2015-09-08 06:30:53.6233|INFO|thread:17|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 52:GitClient.cs:442 after waiting 0.0045969s
+2015-09-08 06:30:53.6233|ERROR|thread: 5|DiffModelFactory|Failed generating diff
+System.ArgumentException: Unable to process file 'C:\components\version\version-directive.js'. This file is not located under the working directory of the repository ('C:\Users\kra\Documents\GitHub\ngCesium\').
+   at LibGit2Sharp.RepositoryExtensions.BuildRelativePathFrom(Repository repo, String path)
+   at LibGit2Sharp.Repository.ToFilePaths(IEnumerable`1 paths)
+   at LibGit2Sharp.Diff.BuildDiffList(ObjectId oldTreeId, ObjectId newTreeId, TreeComparisonHandleRetriever comparisonHandleRetriever, DiffModifiers diffOptions, IEnumerable`1 paths, ExplicitPathsOptions explicitPathsOptions, CompareOptions compareOptions)
+   at LibGit2Sharp.Diff.Compare[T](Tree oldTree, DiffTargets diffTargets, IEnumerable`1 paths, ExplicitPathsOptions explicitPathsOptions, CompareOptions compareOptions)
+   at GitHub.ConcurrentRepositoryConnection.<>c__DisplayClass76.<GenerateDiffForFile>b__75()
+   at System.Reactive.Linq.ObservableImpl.Defer`1.Eval()
+   at System.Reactive.Linq.ObservableImpl.Defer`1._.Run()
+2015-09-08 06:30:53.6233|INFO|thread: 5|AsyncReaderWriterLock|Released concurrent scheduler for operation: 54:GitClient.cs:442 after blocking 0.0049496s
+2015-09-08 06:30:53.6233|INFO|thread: 5|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 56:GitClient.cs:442 after waiting 0.0047626s
+2015-09-08 06:30:53.6233|ERROR|thread: 4|DiffModelFactory|Failed generating diff
+System.ArgumentException: Unable to process file 'C:\components\version\version-directive_test.js'. This file is not located under the working directory of the repository ('C:\Users\kra\Documents\GitHub\ngCesium\').
+   at LibGit2Sharp.RepositoryExtensions.BuildRelativePathFrom(Repository repo, String path)
+   at LibGit2Sharp.Repository.ToFilePaths(IEnumerable`1 paths)
+   at LibGit2Sharp.Diff.BuildDiffList(ObjectId oldTreeId, ObjectId newTreeId, TreeComparisonHandleRetriever comparisonHandleRetriever, DiffModifiers diffOptions, IEnumerable`1 paths, ExplicitPathsOptions explicitPathsOptions, CompareOptions compareOptions)
+   at LibGit2Sharp.Diff.Compare[T](Tree oldTree, DiffTargets diffTargets, IEnumerable`1 paths, ExplicitPathsOptions explicitPathsOptions, CompareOptions compareOptions)
+   at GitHub.ConcurrentRepositoryConnection.<>c__DisplayClass76.<GenerateDiffForFile>b__75()
+   at System.Reactive.Linq.ObservableImpl.Defer`1.Eval()
+   at System.Reactive.Linq.ObservableImpl.Defer`1._.Run()
+2015-09-08 06:30:53.6233|INFO|thread: 4|AsyncReaderWriterLock|Released concurrent scheduler for operation: 51:GitClient.cs:442 after blocking 0.0053667s
+2015-09-08 06:30:53.6334|WARN|thread:15|RepositoryModel|Failed creating concurrent connection for c:\Users\Josh Vera\GitHub\Windows\GitHub\Helpers\GitClient.cs:442
+System.ArgumentException: Unable to process file 'C:\components\version\interpolate-filter_test.js'. This file is not located under the working directory of the repository ('C:\Users\kra\Documents\GitHub\ngCesium\').
+   at LibGit2Sharp.RepositoryExtensions.BuildRelativePathFrom(Repository repo, String path)
+   at LibGit2Sharp.Repository.ToFilePaths(IEnumerable`1 paths)
+   at LibGit2Sharp.Diff.BuildDiffList(ObjectId oldTreeId, ObjectId newTreeId, TreeComparisonHandleRetriever comparisonHandleRetriever, DiffModifiers diffOptions, IEnumerable`1 paths, ExplicitPathsOptions explicitPathsOptions, CompareOptions compareOptions)
+   at LibGit2Sharp.Diff.Compare[T](Tree oldTree, DiffTargets diffTargets, IEnumerable`1 paths, ExplicitPathsOptions explicitPathsOptions, CompareOptions compareOptions)
+   at GitHub.ConcurrentRepositoryConnection.<>c__DisplayClass76.<GenerateDiffForFile>b__75()
+   at System.Reactive.Linq.ObservableImpl.Defer`1.Eval()
+   at System.Reactive.Linq.ObservableImpl.Defer`1._.Run()
+2015-09-08 06:30:53.6334|ERROR|thread:15|DiffModelFactory|Failed generating diff
+System.ArgumentException: Unable to process file 'C:\components\version\interpolate-filter_test.js'. This file is not located under the working directory of the repository ('C:\Users\kra\Documents\GitHub\ngCesium\').
+   at LibGit2Sharp.RepositoryExtensions.BuildRelativePathFrom(Repository repo, String path)
+   at LibGit2Sharp.Repository.ToFilePaths(IEnumerable`1 paths)
+   at LibGit2Sharp.Diff.BuildDiffList(ObjectId oldTreeId, ObjectId newTreeId, TreeComparisonHandleRetriever comparisonHandleRetriever, DiffModifiers diffOptions, IEnumerable`1 paths, ExplicitPathsOptions explicitPathsOptions, CompareOptions compareOptions)
+   at LibGit2Sharp.Diff.Compare[T](Tree oldTree, DiffTargets diffTargets, IEnumerable`1 paths, ExplicitPathsOptions explicitPathsOptions, CompareOptions compareOptions)
+   at GitHub.ConcurrentRepositoryConnection.<>c__DisplayClass76.<GenerateDiffForFile>b__75()
+   at System.Reactive.Linq.ObservableImpl.Defer`1.Eval()
+   at System.Reactive.Linq.ObservableImpl.Defer`1._.Run()
+2015-09-08 06:30:53.6334|INFO|thread:15|AsyncReaderWriterLock|Released concurrent scheduler for operation: 53:GitClient.cs:442 after blocking 0.0039368s
+2015-09-08 06:30:53.6334|WARN|thread:17|RepositoryModel|Failed creating concurrent connection for c:\Users\Josh Vera\GitHub\Windows\GitHub\Helpers\GitClient.cs:442
+System.ArgumentException: Unable to process file 'C:\components\version\interpolate-filter.js'. This file is not located under the working directory of the repository ('C:\Users\kra\Documents\GitHub\ngCesium\').
+   at LibGit2Sharp.RepositoryExtensions.BuildRelativePathFrom(Repository repo, String path)
+   at LibGit2Sharp.Repository.ToFilePaths(IEnumerable`1 paths)
+   at LibGit2Sharp.Diff.BuildDiffList(ObjectId oldTreeId, ObjectId newTreeId, TreeComparisonHandleRetriever comparisonHandleRetriever, DiffModifiers diffOptions, IEnumerable`1 paths, ExplicitPathsOptions explicitPathsOptions, CompareOptions compareOptions)
+   at LibGit2Sharp.Diff.Compare[T](Tree oldTree, DiffTargets diffTargets, IEnumerable`1 paths, ExplicitPathsOptions explicitPathsOptions, CompareOptions compareOptions)
+   at GitHub.ConcurrentRepositoryConnection.<>c__DisplayClass76.<GenerateDiffForFile>b__75()
+   at System.Reactive.Linq.ObservableImpl.Defer`1.Eval()
+   at System.Reactive.Linq.ObservableImpl.Defer`1._.Run()
+2015-09-08 06:30:53.6334|ERROR|thread:17|DiffModelFactory|Failed generating diff
+System.ArgumentException: Unable to process file 'C:\components\version\interpolate-filter.js'. This file is not located under the working directory of the repository ('C:\Users\kra\Documents\GitHub\ngCesium\').
+   at LibGit2Sharp.RepositoryExtensions.BuildRelativePathFrom(Repository repo, String path)
+   at LibGit2Sharp.Repository.ToFilePaths(IEnumerable`1 paths)
+   at LibGit2Sharp.Diff.BuildDiffList(ObjectId oldTreeId, ObjectId newTreeId, TreeComparisonHandleRetriever comparisonHandleRetriever, DiffModifiers diffOptions, IEnumerable`1 paths, ExplicitPathsOptions explicitPathsOptions, CompareOptions compareOptions)
+   at LibGit2Sharp.Diff.Compare[T](Tree oldTree, DiffTargets diffTargets, IEnumerable`1 paths, ExplicitPathsOptions explicitPathsOptions, CompareOptions compareOptions)
+   at GitHub.ConcurrentRepositoryConnection.<>c__DisplayClass76.<GenerateDiffForFile>b__75()
+   at System.Reactive.Linq.ObservableImpl.Defer`1.Eval()
+   at System.Reactive.Linq.ObservableImpl.Defer`1._.Run()
+2015-09-08 06:30:53.6334|INFO|thread:17|AsyncReaderWriterLock|Released concurrent scheduler for operation: 52:GitClient.cs:442 after blocking 0.0043735s
+2015-09-08 06:30:53.6504|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 57:GitClient.cs:648
+2015-09-08 06:30:53.6704|INFO|thread:12|AsyncReaderWriterLock|Released concurrent scheduler for operation: 46:GitClient.cs:442 after blocking 0.1608919s
+2015-09-08 06:30:53.6704|INFO|thread:14|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 57:GitClient.cs:648 after waiting 0.0205367s
+2015-09-08 06:30:53.6704|INFO|thread: 1|NewPullRequestViewModel|No matching pull request found, clearing selection...
+2015-09-08 06:30:53.6924|INFO|thread: 5|AsyncReaderWriterLock|Released concurrent scheduler for operation: 56:GitClient.cs:442 after blocking 0.0616614s
+2015-09-08 06:30:53.7508|INFO|thread:16|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 58:GitClient.cs:442
+2015-09-08 06:30:53.7508|INFO|thread:17|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 58:GitClient.cs:442 after waiting 2.33E-05s
+2015-09-08 06:30:53.7508|INFO|thread: 4|AsyncReaderWriterLock|Released concurrent scheduler for operation: 57:GitClient.cs:648 after blocking 0.0842424s
+2015-09-08 06:30:53.7508|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 59:RepositoryViewModel.cs:321
+2015-09-08 06:30:53.7508|INFO|thread:15|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 59:RepositoryViewModel.cs:321 after waiting 4.05E-05s
+2015-09-08 06:30:53.7508|INFO|thread:12|AsyncReaderWriterLock|Released concurrent scheduler for operation: 58:GitClient.cs:442 after blocking 0.0062195s
+2015-09-08 06:30:53.7688|INFO|thread:29|AsyncReaderWriterLock|Released concurrent scheduler for operation: 59:RepositoryViewModel.cs:321 after blocking 0.0138007s
+2015-09-08 06:30:53.7688|INFO|thread: 1|SelectedCommitViewModel|Took 595ms to load files for commit b05913e in repo C:\Users\kra\Documents\GitHub\ngCesium
+2015-09-08 06:30:53.7688|INFO|thread: 1|SelectedCommitViewModel|Took 594ms to load files for commit b05913e in repo C:\Users\kra\Documents\GitHub\ngCesium
+2015-09-08 06:30:53.7758|INFO|thread:17|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 60:GitClient.cs:522
+2015-09-08 06:30:53.7758|INFO|thread: 5|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 60:GitClient.cs:522 after waiting 2.98E-05s
+2015-09-08 06:30:53.7758|INFO|thread:12|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 61:GitClient.cs:522
+2015-09-08 06:30:53.7758|INFO|thread:29|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 61:GitClient.cs:522 after waiting 2.23E-05s
+2015-09-08 06:30:53.7758|INFO|thread:17|AsyncReaderWriterLock|Released concurrent scheduler for operation: 60:GitClient.cs:522 after blocking 0.0075089s
+2015-09-08 06:30:53.7758|INFO|thread:12|AsyncReaderWriterLock|Released concurrent scheduler for operation: 61:GitClient.cs:522 after blocking 0.0072999s
+2015-09-08 06:31:22.3357|INFO|thread:14|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 62:GitClient.cs:442
+2015-09-08 06:31:22.3357|INFO|thread:29|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 62:GitClient.cs:442 after waiting 6.95E-05s
+2015-09-08 06:31:22.3357|INFO|thread: 5|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 63:GitClient.cs:442
+2015-09-08 06:31:22.3357|INFO|thread:12|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 63:GitClient.cs:442 after waiting 4.99E-05s
+2015-09-08 06:31:22.3357|INFO|thread:15|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 64:GitClient.cs:442
+2015-09-08 06:31:22.3357|INFO|thread:17|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 64:GitClient.cs:442 after waiting 0.0002225s
+2015-09-08 06:31:22.3357|INFO|thread:14|AsyncReaderWriterLock|Released concurrent scheduler for operation: 62:GitClient.cs:442 after blocking 0.0125402s
+2015-09-08 06:31:22.3547|INFO|thread: 5|AsyncReaderWriterLock|Released concurrent scheduler for operation: 63:GitClient.cs:442 after blocking 0.0096852s
+2015-09-08 06:31:22.3547|INFO|thread:17|AsyncReaderWriterLock|Released concurrent scheduler for operation: 64:GitClient.cs:442 after blocking 0.0082334s
+2015-09-08 06:31:22.3547|INFO|thread:40|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 65:GitClient.cs:442
+2015-09-08 06:31:22.3547|INFO|thread:12|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 65:GitClient.cs:442 after waiting 3.03E-05s
+2015-09-08 06:31:22.3707|INFO|thread:40|AsyncReaderWriterLock|Released concurrent scheduler for operation: 65:GitClient.cs:442 after blocking 0.0052141s
+2015-09-08 06:31:22.3707|INFO|thread: 5|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 66:GitClient.cs:442
+2015-09-08 06:31:22.3707|INFO|thread:12|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 66:GitClient.cs:442 after waiting 4.05E-05s
+2015-09-08 06:31:22.3707|INFO|thread:12|AsyncReaderWriterLock|Released concurrent scheduler for operation: 66:GitClient.cs:442 after blocking 0.0050042s
+2015-09-08 06:31:22.3837|INFO|thread: 5|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 67:GitClient.cs:442
+2015-09-08 06:31:22.3837|INFO|thread: 4|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 67:GitClient.cs:442 after waiting 2.33E-05s
+2015-09-08 06:31:22.3837|INFO|thread: 5|AsyncReaderWriterLock|Released concurrent scheduler for operation: 67:GitClient.cs:442 after blocking 0.0052529s
+2015-09-08 06:31:22.4051|INFO|thread:16|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 68:GitClient.cs:442
+2015-09-08 06:31:22.4051|INFO|thread: 4|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 68:GitClient.cs:442 after waiting 2.98E-05s
+2015-09-08 06:31:22.4315|INFO|thread:16|AsyncReaderWriterLock|Released concurrent scheduler for operation: 68:GitClient.cs:442 after blocking 0.026571s
+2015-09-08 06:31:22.4635|INFO|thread:29|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 69:GitClient.cs:442
+2015-09-08 06:31:22.4635|INFO|thread:16|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 69:GitClient.cs:442 after waiting 2.33E-05s
+2015-09-08 06:31:22.4635|INFO|thread:17|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 70:GitClient.cs:442
+2015-09-08 06:31:22.4635|INFO|thread:12|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 70:GitClient.cs:442 after waiting 2.47E-05s
+2015-09-08 06:31:22.4785|INFO|thread: 5|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 71:GitClient.cs:442
+2015-09-08 06:31:22.4785|INFO|thread: 4|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 71:GitClient.cs:442 after waiting 4.15E-05s
+2015-09-08 06:31:22.4977|INFO|thread:29|AsyncReaderWriterLock|Released concurrent scheduler for operation: 69:GitClient.cs:442 after blocking 0.0340935s
+2015-09-08 06:31:22.4977|INFO|thread: 4|AsyncReaderWriterLock|Released concurrent scheduler for operation: 71:GitClient.cs:442 after blocking 0.0193312s
+2015-09-08 06:31:22.4977|INFO|thread:17|AsyncReaderWriterLock|Released concurrent scheduler for operation: 70:GitClient.cs:442 after blocking 0.0322312s
+2015-09-08 06:31:24.9043|INFO|thread:15|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 72:GitClient.cs:442
+2015-09-08 06:31:24.9043|INFO|thread:16|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 72:GitClient.cs:442 after waiting 5.83E-05s
+2015-09-08 06:31:24.9273|INFO|thread:15|AsyncReaderWriterLock|Released concurrent scheduler for operation: 72:GitClient.cs:442 after blocking 0.0232574s
+2015-09-08 06:31:24.9373|INFO|thread:17|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 73:GitClient.cs:442
+2015-09-08 06:31:24.9373|INFO|thread:41|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 73:GitClient.cs:442 after waiting 2.84E-05s
+2015-09-08 06:31:25.0145|INFO|thread:17|AsyncReaderWriterLock|Released concurrent scheduler for operation: 73:GitClient.cs:442 after blocking 0.077631s
+2015-09-08 06:31:25.0145|ERROR|thread: 4|DiffModelFactory|Failed generating diff
+System.IO.IOException: The process cannot access the file 'C:\Users\kra\Documents\GitHub\ngCesium\src\app\TILDOCS-#40699695-v1-ùàâ æëåëàì.docx' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, String msgPath, Boolean bFromProxy)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, Boolean useAsync)
+   at System.IO.FileInfo.OpenRead()
+   at GitHub.IO.GitHubFile.OpenRead()
+   at GitHub.Helpers.GitClient.<>c__DisplayClass68.<LoadDiffLinesForFile>b__65()
+   at System.Reactive.Linq.ObservableImpl.Defer`1.Eval()
+   at System.Reactive.Linq.ObservableImpl.Defer`1._.Run()
+2015-09-08 06:31:25.0668|INFO|thread:14|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 74:GitClient.cs:442
+2015-09-08 06:31:25.0798|INFO|thread:41|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 75:GitClient.cs:442
+2015-09-08 06:31:25.0798|INFO|thread:29|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 77:GitClient.cs:442
+2015-09-08 06:31:25.0798|INFO|thread:42|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 76:GitClient.cs:442
+2015-09-08 06:31:25.0868|INFO|thread:43|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 78:GitClient.cs:442
+2015-09-08 06:31:25.0868|INFO|thread:44|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 79:GitClient.cs:442
+2015-09-08 06:31:25.0868|INFO|thread:45|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 80:GitClient.cs:442
+2015-09-08 06:31:25.1028|INFO|thread:46|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 81:GitClient.cs:442
+2015-09-08 06:31:25.1028|INFO|thread:47|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 82:GitClient.cs:442
+2015-09-08 06:31:25.1028|INFO|thread:48|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 83:GitClient.cs:442
+2015-09-08 06:31:25.1278|INFO|thread:49|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 84:GitClient.cs:442
+2015-09-08 06:31:25.1338|INFO|thread:51|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 85:GitClient.cs:442
+2015-09-08 06:31:25.1338|INFO|thread:52|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 86:GitClient.cs:442
+2015-09-08 06:31:25.1338|INFO|thread:40|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 87:GitClient.cs:442
+2015-09-08 06:31:25.1608|INFO|thread:16|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 88:GitClient.cs:442
+2015-09-08 06:31:25.2105|INFO|thread:17|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 89:GitClient.cs:442
+2015-09-08 06:31:25.2105|INFO|thread:55|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 90:GitClient.cs:442
+2015-09-08 06:31:25.2575|INFO|thread:56|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 81:GitClient.cs:442 after waiting 2.47E-05s
+2015-09-08 06:31:25.2575|INFO|thread:14|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 78:GitClient.cs:442 after waiting 1.02E-05s
+2015-09-08 06:31:25.2575|INFO|thread:14|AsyncReaderWriterLock|Released concurrent scheduler for operation: 78:GitClient.cs:442 after blocking 5.1E-06s
+2015-09-08 06:31:25.2575|INFO|thread:14|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 82:GitClient.cs:442 after waiting 0.0003858s
+2015-09-08 06:31:25.2575|INFO|thread:29|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 79:GitClient.cs:442 after waiting 2.28E-05s
+2015-09-08 06:31:25.2575|INFO|thread:43|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 77:GitClient.cs:442 after waiting 0.0001254s
+2015-09-08 06:31:25.2575|INFO|thread:12|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 76:GitClient.cs:442 after waiting 0.000131s
+2015-09-08 06:31:25.2575|INFO|thread:43|AsyncReaderWriterLock|Released concurrent scheduler for operation: 77:GitClient.cs:442 after blocking 9E-07s
+2015-09-08 06:31:25.2575|INFO|thread:12|AsyncReaderWriterLock|Released concurrent scheduler for operation: 76:GitClient.cs:442 after blocking 1.3E-06s
+2015-09-08 06:31:25.2575|INFO|thread:43|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 83:GitClient.cs:442 after waiting 0.0004786s
+2015-09-08 06:31:25.2575|INFO|thread:12|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 84:GitClient.cs:442 after waiting 0.0004791s
+2015-09-08 06:31:25.2575|INFO|thread:54|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 75:GitClient.cs:442 after waiting 1.35E-05s
+2015-09-08 06:31:25.2575|INFO|thread:54|AsyncReaderWriterLock|Released concurrent scheduler for operation: 75:GitClient.cs:442 after blocking 9E-07s
+2015-09-08 06:31:25.2575|INFO|thread:54|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 85:GitClient.cs:442 after waiting 0.0008023s
+2015-09-08 06:31:25.2575|INFO|thread:50|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 74:GitClient.cs:442 after waiting 3.82E-05s
+2015-09-08 06:31:25.2575|INFO|thread:50|AsyncReaderWriterLock|Released concurrent scheduler for operation: 74:GitClient.cs:442 after blocking 1.3E-06s
+2015-09-08 06:31:25.2575|INFO|thread:50|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 86:GitClient.cs:442 after waiting 0.0009218s
+2015-09-08 06:31:25.2575|INFO|thread:42|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 80:GitClient.cs:442 after waiting 2E-05s
+2015-09-08 06:31:25.2575|INFO|thread:12|AsyncReaderWriterLock|Released concurrent scheduler for operation: 84:GitClient.cs:442 after blocking 0.0078047s
+2015-09-08 06:31:25.2575|INFO|thread:12|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 87:GitClient.cs:442 after waiting 0.0082595s
+2015-09-08 06:31:25.2575|INFO|thread:54|AsyncReaderWriterLock|Released concurrent scheduler for operation: 85:GitClient.cs:442 after blocking 0.0081434s
+2015-09-08 06:31:25.2575|INFO|thread:54|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 88:GitClient.cs:442 after waiting 0.008901s
+2015-09-08 06:31:25.2575|INFO|thread:50|AsyncReaderWriterLock|Released concurrent scheduler for operation: 86:GitClient.cs:442 after blocking 0.0085604s
+2015-09-08 06:31:25.2575|INFO|thread:50|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 89:GitClient.cs:442 after waiting 0.0095042s
+2015-09-08 06:31:25.2575|INFO|thread:29|AsyncReaderWriterLock|Released concurrent scheduler for operation: 79:GitClient.cs:442 after blocking 0.0130319s
+2015-09-08 06:31:25.2575|INFO|thread:29|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 90:GitClient.cs:442 after waiting 0.0132708s
+2015-09-08 06:31:25.2575|INFO|thread:43|AsyncReaderWriterLock|Released concurrent scheduler for operation: 83:GitClient.cs:442 after blocking 0.0133407s
+2015-09-08 06:31:25.2575|INFO|thread:14|AsyncReaderWriterLock|Released concurrent scheduler for operation: 82:GitClient.cs:442 after blocking 0.0136622s
+2015-09-08 06:31:25.2747|INFO|thread:54|AsyncReaderWriterLock|Released concurrent scheduler for operation: 88:GitClient.cs:442 after blocking 0.0072463s
+2015-09-08 06:31:25.2747|INFO|thread:50|AsyncReaderWriterLock|Released concurrent scheduler for operation: 89:GitClient.cs:442 after blocking 0.0068679s
+2015-09-08 06:31:25.2747|INFO|thread:12|AsyncReaderWriterLock|Released concurrent scheduler for operation: 87:GitClient.cs:442 after blocking 0.0086075s
+2015-09-08 06:31:25.2747|INFO|thread:29|AsyncReaderWriterLock|Released concurrent scheduler for operation: 90:GitClient.cs:442 after blocking 0.0050224s
+2015-09-08 06:31:25.2928|INFO|thread:56|AsyncReaderWriterLock|Released concurrent scheduler for operation: 81:GitClient.cs:442 after blocking 0.0342693s
+2015-09-08 06:31:25.2928|INFO|thread:42|AsyncReaderWriterLock|Released concurrent scheduler for operation: 80:GitClient.cs:442 after blocking 0.0385584s
+2015-09-08 06:31:25.5249|INFO|thread:58|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 91:GitClient.cs:442
+2015-09-08 06:31:25.5249|INFO|thread:59|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 91:GitClient.cs:442 after waiting 1.91E-05s
+2015-09-08 06:31:25.5249|INFO|thread:58|AsyncReaderWriterLock|Released concurrent scheduler for operation: 91:GitClient.cs:442 after blocking 0.0040838s
+2015-09-08 06:31:25.5429|INFO|thread:29|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 92:GitClient.cs:442
+2015-09-08 06:31:25.5429|INFO|thread: 4|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 92:GitClient.cs:442 after waiting 2.84E-05s
+2015-09-08 06:31:25.5429|INFO|thread:29|AsyncReaderWriterLock|Released concurrent scheduler for operation: 92:GitClient.cs:442 after blocking 0.0039989s
+2015-09-08 06:31:25.5429|INFO|thread:40|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 93:GitClient.cs:442
+2015-09-08 06:31:25.5429|INFO|thread:42|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 93:GitClient.cs:442 after waiting 2.37E-05s
+2015-09-08 06:31:25.5429|INFO|thread:40|AsyncReaderWriterLock|Released concurrent scheduler for operation: 93:GitClient.cs:442 after blocking 0.0041925s
+2015-09-08 06:31:25.5889|INFO|thread:42|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 94:GitClient.cs:442
+2015-09-08 06:31:25.5889|INFO|thread:45|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 94:GitClient.cs:442 after waiting 2.51E-05s
+2015-09-08 06:31:25.5889|INFO|thread:42|AsyncReaderWriterLock|Released concurrent scheduler for operation: 94:GitClient.cs:442 after blocking 0.0040185s
+2015-09-08 06:31:25.5889|INFO|thread:57|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 95:GitClient.cs:442
+2015-09-08 06:31:25.5889|INFO|thread:51|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 95:GitClient.cs:442 after waiting 1.58E-05s
+2015-09-08 06:31:25.5889|INFO|thread:57|AsyncReaderWriterLock|Released concurrent scheduler for operation: 95:GitClient.cs:442 after blocking 0.0043077s
+2015-09-08 06:31:25.6049|INFO|thread:44|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 96:GitClient.cs:442
+2015-09-08 06:31:25.6049|INFO|thread:12|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 96:GitClient.cs:442 after waiting 2.42E-05s
+2015-09-08 06:31:25.6049|INFO|thread:44|AsyncReaderWriterLock|Released concurrent scheduler for operation: 96:GitClient.cs:442 after blocking 0.0041659s
+2015-09-08 06:31:25.6402|INFO|thread:40|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 97:GitClient.cs:442
+2015-09-08 06:31:25.6402|INFO|thread: 5|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 97:GitClient.cs:442 after waiting 1.91E-05s
+2015-09-08 06:31:25.6402|INFO|thread:40|AsyncReaderWriterLock|Released concurrent scheduler for operation: 97:GitClient.cs:442 after blocking 0.0061369s
+2015-09-08 06:31:25.6732|INFO|thread:12|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 98:GitClient.cs:442
+2015-09-08 06:31:25.6732|INFO|thread:44|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 98:GitClient.cs:442 after waiting 2.47E-05s
+2015-09-08 06:31:25.6992|INFO|thread:42|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 99:GitClient.cs:442
+2015-09-08 06:31:25.6992|INFO|thread:51|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 99:GitClient.cs:442 after waiting 2.47E-05s
+2015-09-08 06:31:25.6992|INFO|thread:42|AsyncReaderWriterLock|Released concurrent scheduler for operation: 99:GitClient.cs:442 after blocking 0.0049422s
+2015-09-08 06:31:25.6992|INFO|thread:12|AsyncReaderWriterLock|Released concurrent scheduler for operation: 98:GitClient.cs:442 after blocking 0.0361886s
+2015-09-08 06:33:18.3356|INFO|thread: 1|AsyncReaderWriterLock|Acquiring exclusive scheduler for operation: 100:ICommitCreator.cs:89
+2015-09-08 06:33:18.3356|INFO|thread:57|AsyncReaderWriterLock|Acquired exclusive scheduler for operation: 100:ICommitCreator.cs:89 after waiting 8.63E-05s
+2015-09-08 06:33:18.3356|INFO|thread:51|ExclusiveRepositoryConnection|Creating Commit
+2015-09-08 06:33:18.3577|INFO|thread:51|ExclusiveRepositoryConnection|Creating new commit with 70 file(s). Reordered the app
+
+Reordered the app structure. 
+Added a few functions to the ngCesium factory:
+1) areInsidePolygon
+2) isInsidePolygon
+3) cartesian3ToCartographics
+Added:
+ngCesiumFilter (not complete)
+ngCesiumClustering (inactive yet)
+view3 for filtering with a polygon
+
+2015-09-08 06:33:18.3577|INFO|thread:51|GitEnvironment|Process set up with this SSH Agent info: 8832:/tmp/ssh-iekrCJ7A1mK8/agent.4968
+2015-09-08 06:33:18.3577|INFO|thread:51|GitEnvironment|PATH is C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\cmd;C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\bin;C:\Users\kra\AppData\Local\Apps\2.0\D661NGN3.APZ\CB3EZG16.PRY\gith..tion_317444273a93ac29_0003.0000_3d9282105f72a5d4;C:\Users\kra\AppData\Local\GitHub\lfs-amd64_0.5.4;C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319;C:\WINDOWS\System32
+2015-09-08 06:33:18.3577|INFO|thread:51|ProcessWrapper|Starting: Process - FileName: 'C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\bin\git.exe', Args: 'add --all ".bowerrc" ', Working Directory: C:\Users\kra\Documents\GitHub\ngCesium\
+2015-09-08 06:33:18.3924|INFO|thread:12|GitEnvironment|Process set up with this SSH Agent info: 8832:/tmp/ssh-iekrCJ7A1mK8/agent.4968
+2015-09-08 06:33:18.3924|INFO|thread:12|GitEnvironment|PATH is C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\cmd;C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\bin;C:\Users\kra\AppData\Local\Apps\2.0\D661NGN3.APZ\CB3EZG16.PRY\gith..tion_317444273a93ac29_0003.0000_3d9282105f72a5d4;C:\Users\kra\AppData\Local\GitHub\lfs-amd64_0.5.4;C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319;C:\WINDOWS\System32
+2015-09-08 06:33:18.3924|INFO|thread:12|ProcessWrapper|Starting: Process - FileName: 'C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\bin\git.exe', Args: 'add --all "/components/ngCesium/ngCesium.js" ', Working Directory: C:\Users\kra\Documents\GitHub\ngCesium\
+2015-09-08 06:33:18.4174|WARN|thread:45|RepositoryModel|Failed creating exclusive connection for c:\Users\Josh Vera\GitHub\Windows\GitHub\Helpers\ICommitCreator.cs:89
+GitHub.IO.ProcessException: fatal: Could not switch to '/components/': No such file or directory
+2015-09-08 06:33:18.4174|INFO|thread:45|AsyncReaderWriterLock|Released exclusive scheduler for operation: 100:ICommitCreator.cs:89 after blocking 0.0820395s
