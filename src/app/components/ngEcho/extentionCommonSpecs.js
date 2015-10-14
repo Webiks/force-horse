@@ -1,4 +1,4 @@
-function ngCesiumExtensionTest(options){
+function ngEchoExtensionTest(options){
     beforeEach(module(options.extensionName));
 
     beforeEach(inject(function(_$compile_, _$rootScope_, _$injector_) {
@@ -11,7 +11,7 @@ function ngCesiumExtensionTest(options){
         var instanceName = directiveName.join('');
         // get the factory
         options.factory = _$injector_.get(instanceName + 'Factory'); // set the factory
-        options.$rootScope.cesiumConfig = {
+        options.$rootScope.echoConfig = {
             config: {
                 baseLayerPicker: false,
                 fullscreenButton: false,
@@ -22,18 +22,18 @@ function ngCesiumExtensionTest(options){
                 animation: false,
                 geocoder: false
             }
-        }; // set the cesium configuration
+        }; // set the echo configuration
         // turn all the words to lowercase
         angular.forEach(directiveName, function(part){
             part = part.toLowerCase();
         });
         // get the directive name to inject to the DOM
         directiveName = directiveName.join('-');
-        // compile the element with cesium and the extension
-        options.element = options.$compile('<div cesium-directive="cesiumConfig" ' + directiveName + '></div>')(options.$rootScope);
-        options.isoScope = options.element.scope().$$childHead; // get the cesium scope
+        // compile the element with echo and the extension
+        options.element = options.$compile('<div echo-directive="echoConfig" ' + directiveName + '></div>')(options.$rootScope);
+        options.isoScope = options.element.scope().$$childHead; // get the echo scope
         // get the created extension instnace
-        options.extensionInstance = options.isoScope.cesiumCtrl.cesiumDirective.cesiumInstance[instanceName];
+        options.extensionInstance = options.isoScope.echoCtrl.echoDirective.echoInstance[instanceName];
 
         return options;
     }));

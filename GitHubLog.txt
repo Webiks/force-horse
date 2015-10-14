@@ -262,7 +262,7 @@ System.Collections.Generic.KeyNotFoundException: The given key 'login:null' was 
 2015-09-08 06:30:53.5098|INFO|thread:15|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 49:GitClient.cs:442
 2015-09-08 06:30:53.5098|INFO|thread: 5|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 49:GitClient.cs:442 after waiting 1.91E-05s
 2015-09-08 06:30:53.5378|WARN|thread:17|RepositoryModel|Failed creating concurrent connection for c:\Users\Josh Vera\GitHub\Windows\GitHub\Helpers\GitClient.cs:442
-System.ArgumentException: Unable to process file 'C:\components\ngCesium\ngCesiumAddRemoveButtons\ngCesiumAddRemoveButtons.js'. This file is not located under the working directory of the repository ('C:\Users\kra\Documents\GitHub\ngCesium\').
+System.ArgumentException: Unable to process file 'C:\components\ngCesium\ngCesiumAddRemoveButtons\ngEchoButtons.js'. This file is not located under the working directory of the repository ('C:\Users\kra\Documents\GitHub\ngCesium\').
    at LibGit2Sharp.RepositoryExtensions.BuildRelativePathFrom(Repository repo, String path)
    at LibGit2Sharp.Repository.ToFilePaths(IEnumerable`1 paths)
    at LibGit2Sharp.Diff.BuildDiffList(ObjectId oldTreeId, ObjectId newTreeId, TreeComparisonHandleRetriever comparisonHandleRetriever, DiffModifiers diffOptions, IEnumerable`1 paths, ExplicitPathsOptions explicitPathsOptions, CompareOptions compareOptions)
@@ -271,7 +271,7 @@ System.ArgumentException: Unable to process file 'C:\components\ngCesium\ngCesiu
    at System.Reactive.Linq.ObservableImpl.Defer`1.Eval()
    at System.Reactive.Linq.ObservableImpl.Defer`1._.Run()
 2015-09-08 06:30:53.5378|WARN|thread:15|RepositoryModel|Failed creating concurrent connection for c:\Users\Josh Vera\GitHub\Windows\GitHub\Helpers\GitClient.cs:442
-System.ArgumentException: Unable to process file 'C:\components\ngCesium\ngCesium_test.js'. This file is not located under the working directory of the repository ('C:\Users\kra\Documents\GitHub\ngCesium\').
+System.ArgumentException: Unable to process file 'C:\components\ngCesium\ngEcho_test.js'. This file is not located under the working directory of the repository ('C:\Users\kra\Documents\GitHub\ngCesium\').
    at LibGit2Sharp.RepositoryExtensions.BuildRelativePathFrom(Repository repo, String path)
    at LibGit2Sharp.Repository.ToFilePaths(IEnumerable`1 paths)
    at LibGit2Sharp.Diff.BuildDiffList(ObjectId oldTreeId, ObjectId newTreeId, TreeComparisonHandleRetriever comparisonHandleRetriever, DiffModifiers diffOptions, IEnumerable`1 paths, ExplicitPathsOptions explicitPathsOptions, CompareOptions compareOptions)
@@ -280,7 +280,7 @@ System.ArgumentException: Unable to process file 'C:\components\ngCesium\ngCesiu
    at System.Reactive.Linq.ObservableImpl.Defer`1.Eval()
    at System.Reactive.Linq.ObservableImpl.Defer`1._.Run()
 2015-09-08 06:30:53.5378|WARN|thread: 4|RepositoryModel|Failed creating concurrent connection for c:\Users\Josh Vera\GitHub\Windows\GitHub\Helpers\GitClient.cs:442
-System.ArgumentException: Unable to process file 'C:\components\ngCesium\ngCesium.js'. This file is not located under the working directory of the repository ('C:\Users\kra\Documents\GitHub\ngCesium\').
+System.ArgumentException: Unable to process file 'C:\components\ngCesium\ngEcho2.js'. This file is not located under the working directory of the repository ('C:\Users\kra\Documents\GitHub\ngCesium\').
    at LibGit2Sharp.RepositoryExtensions.BuildRelativePathFrom(Repository repo, String path)
    at LibGit2Sharp.Repository.ToFilePaths(IEnumerable`1 paths)
    at LibGit2Sharp.Diff.BuildDiffList(ObjectId oldTreeId, ObjectId newTreeId, TreeComparisonHandleRetriever comparisonHandleRetriever, DiffModifiers diffOptions, IEnumerable`1 paths, ExplicitPathsOptions explicitPathsOptions, CompareOptions compareOptions)
@@ -289,7 +289,7 @@ System.ArgumentException: Unable to process file 'C:\components\ngCesium\ngCesiu
    at System.Reactive.Linq.ObservableImpl.Defer`1.Eval()
    at System.Reactive.Linq.ObservableImpl.Defer`1._.Run()
 2015-09-08 06:30:53.6233|ERROR|thread:17|DiffModelFactory|Failed generating diff
-System.ArgumentException: Unable to process file 'C:\components\ngCesium\ngCesiumAddRemoveButtons\ngCesiumAddRemoveButtons.js'. This file is not located under the working directory of the repository ('C:\Users\kra\Documents\GitHub\ngCesium\').
+System.ArgumentException: Unable to process file 'C:\components\ngCesium\ngCesiumAddRemoveButtons\ngEchoButtons.js'. This file is not located under the working directory of the repository ('C:\Users\kra\Documents\GitHub\ngCesium\').
    at LibGit2Sharp.RepositoryExtensions.BuildRelativePathFrom(Repository repo, String path)
    at LibGit2Sharp.Repository.ToFilePaths(IEnumerable`1 paths)
    at LibGit2Sharp.Diff.BuildDiffList(ObjectId oldTreeId, ObjectId newTreeId, TreeComparisonHandleRetriever comparisonHandleRetriever, DiffModifiers diffOptions, IEnumerable`1 paths, ExplicitPathsOptions explicitPathsOptions, CompareOptions compareOptions)
@@ -298,7 +298,7 @@ System.ArgumentException: Unable to process file 'C:\components\ngCesium\ngCesiu
    at System.Reactive.Linq.ObservableImpl.Defer`1.Eval()
    at System.Reactive.Linq.ObservableImpl.Defer`1._.Run()
 2015-09-08 06:30:53.6233|ERROR|thread:15|DiffModelFactory|Failed generating diff
-System.ArgumentException: Unable to process file 'C:\components\ngCesium\ngCesium_test.js'. This file is not located under the working directory of the repository ('C:\Users\kra\Documents\GitHub\ngCesium\').
+System.ArgumentException: Unable to process file 'C:\components\ngCesium\ngEcho_test.js'. This file is not located under the working directory of the repository ('C:\Users\kra\Documents\GitHub\ngCesium\').
    at LibGit2Sharp.RepositoryExtensions.BuildRelativePathFrom(Repository repo, String path)
    at LibGit2Sharp.Repository.ToFilePaths(IEnumerable`1 paths)
    at LibGit2Sharp.Diff.BuildDiffList(ObjectId oldTreeId, ObjectId newTreeId, TreeComparisonHandleRetriever comparisonHandleRetriever, DiffModifiers diffOptions, IEnumerable`1 paths, ExplicitPathsOptions explicitPathsOptions, CompareOptions compareOptions)
@@ -307,7 +307,7 @@ System.ArgumentException: Unable to process file 'C:\components\ngCesium\ngCesiu
    at System.Reactive.Linq.ObservableImpl.Defer`1.Eval()
    at System.Reactive.Linq.ObservableImpl.Defer`1._.Run()
 2015-09-08 06:30:53.6233|ERROR|thread: 4|DiffModelFactory|Failed generating diff
-System.ArgumentException: Unable to process file 'C:\components\ngCesium\ngCesium.js'. This file is not located under the working directory of the repository ('C:\Users\kra\Documents\GitHub\ngCesium\').
+System.ArgumentException: Unable to process file 'C:\components\ngCesium\ngEcho2.js'. This file is not located under the working directory of the repository ('C:\Users\kra\Documents\GitHub\ngCesium\').
    at LibGit2Sharp.RepositoryExtensions.BuildRelativePathFrom(Repository repo, String path)
    at LibGit2Sharp.Repository.ToFilePaths(IEnumerable`1 paths)
    at LibGit2Sharp.Diff.BuildDiffList(ObjectId oldTreeId, ObjectId newTreeId, TreeComparisonHandleRetriever comparisonHandleRetriever, DiffModifiers diffOptions, IEnumerable`1 paths, ExplicitPathsOptions explicitPathsOptions, CompareOptions compareOptions)
@@ -611,7 +611,7 @@ view3 for filtering with a polygon
 2015-09-08 06:33:18.3577|INFO|thread:51|ProcessWrapper|Starting: Process - FileName: 'C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\bin\git.exe', Args: 'add --all ".bowerrc" ', Working Directory: C:\Users\kra\Documents\GitHub\ngCesium\
 2015-09-08 06:33:18.3924|INFO|thread:12|GitEnvironment|Process set up with this SSH Agent info: 8832:/tmp/ssh-iekrCJ7A1mK8/agent.4968
 2015-09-08 06:33:18.3924|INFO|thread:12|GitEnvironment|PATH is C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\cmd;C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\bin;C:\Users\kra\AppData\Local\Apps\2.0\D661NGN3.APZ\CB3EZG16.PRY\gith..tion_317444273a93ac29_0003.0000_3d9282105f72a5d4;C:\Users\kra\AppData\Local\GitHub\lfs-amd64_0.5.4;C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319;C:\WINDOWS\System32
-2015-09-08 06:33:18.3924|INFO|thread:12|ProcessWrapper|Starting: Process - FileName: 'C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\bin\git.exe', Args: 'add --all "/components/ngCesium/ngCesium.js" ', Working Directory: C:\Users\kra\Documents\GitHub\ngCesium\
+2015-09-08 06:33:18.3924|INFO|thread:12|ProcessWrapper|Starting: Process - FileName: 'C:\Users\kra\AppData\Local\GitHub\PortableGit_c2ba306e536fdf878271f7fe636a147ff37326ad\bin\git.exe', Args: 'add --all "/components/ngCesium/ngEcho2.js" ', Working Directory: C:\Users\kra\Documents\GitHub\ngCesium\
 2015-09-08 06:33:18.4174|WARN|thread:45|RepositoryModel|Failed creating exclusive connection for c:\Users\Josh Vera\GitHub\Windows\GitHub\Helpers\ICommitCreator.cs:89
 GitHub.IO.ProcessException: fatal: Could not switch to '/components/': No such file or directory
 2015-09-08 06:33:18.4174|INFO|thread:45|AsyncReaderWriterLock|Released exclusive scheduler for operation: 100:ICommitCreator.cs:89 after blocking 0.0820395s

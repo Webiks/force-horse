@@ -1,0 +1,30 @@
+svg {
+    margin-top: 5px;
+    border: 1px solid #f0f0f0;
+    stroke-width: 1;
+    fill: none;
+    stroke: black;
+    font-family: Arial;
+    font-size: 3vh;
+    font-weight: normal;
+}
+
+circle.port {
+    r: 2;
+    stroke: #f0f0f0;
+}
+
+ellipse {
+    stroke: blue;
+}
+
+/*
+line.simple, path.link {
+   stroke: black;
+}
+*/
+
+.foreignCheckbox input {
+    padding: 0;
+    margin:  0;
+}

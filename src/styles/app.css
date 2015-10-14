@@ -23,7 +23,7 @@ ul.menu .md-button{
   display: inline;
 }
 
-.cesiumButtons{
+.echoButtons{
   position: absolute;
   z-index: 9;
 }

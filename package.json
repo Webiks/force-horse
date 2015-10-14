@@ -1,7 +1,7 @@
 {
-  "name": "ngCesium",
+  "name": "ngEcho",
   "version": "1.0.0",
-  "description": "Angular wrapper for cesiumjs - with lots of built in features to get the average angularist up and running with cesiumJS",
+  "description": "Angular wrapper for Echo configuration",
   "main": "src/index.js",
   "scripts": {
     "postinstall": "bower install",
@@ -18,18 +18,18 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/yccteam/ngCesium.git"
+    "url": "https://github.com/ramtob/ngEcho.git"
   },
   "keywords": [
     "angularjs",
-    "cesiumjs"
+    "d3js"
   ],
-  "author": "Yonatan Kra <kra.yonatan@gmail.com> (http://yonatankra.com)",
+  "author": "Ram Tobolski <ramtob@gmail.com> (http://yonatankra.com)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/yccteam/ngCesium/issues"
+    "url": "https://github.com/ramtob/ngEcho/issues"
   },
-  "homepage": "https://github.com/yccteam/ngCesium",
+  "homepage": "https://github.com/ramtob/ngEcho",
   "dependencies": {
     "lodash": "3.10.1",
     "bower": "^1.3.1",

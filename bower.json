@@ -14,8 +14,8 @@
     "angular-mocks": "~1.4.0",
     "angular-route": "~1.4.0",
     "angular-ui-router": "~0.2.15",
-    "cesium": "cesiumjs#~1.12.0",
-    "html5-boilerplate": "~5.2.0"
+    "html5-boilerplate": "~5.2.0",
+    "d3": "~3.4.4"
   },
   "resolutions": {
     "angular": "1.4.5"
