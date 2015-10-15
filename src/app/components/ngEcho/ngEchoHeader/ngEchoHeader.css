@@ -1,0 +1,13 @@
+.echoHeaderWrapper {
+    margin: 2vh 2vw;
+    padding-bottom: 2vh;
+    border-bottom: solid 1px #d0d0d0;
+}
+
+.echoHeaderWrapper .margin-left {
+    margin-left: 2vw;
+}
+
+.echoHeaderWrapper input[type='number'] {
+    text-align: center;
+}

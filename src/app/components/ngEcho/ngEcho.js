@@ -96,7 +96,7 @@ angular.module('ngEcho', [])
 
 
         //---------------------------------------------------
-        // layout - main d3 method - compute screen locations
+        // layout - compute screen locations
         //---------------------------------------------------
         EchoFactory.prototype.layout = function() {
             var data = {
@@ -114,7 +114,7 @@ angular.module('ngEcho', [])
                 lvlCBottomPorts: []
             };
 
-            var i, j, _x, _y, _x1, _x2, _y1, _y2, node, nodeId, xCheckbox, yCheckbox, _path, portScale, link, aPort, bPort, cPort;
+            var i, j, _x, _y, _x1, _x2, _y1, _y2, node, _nodeId, xCheckbox, yCheckbox, _path, portScale, link, aPort, bPort, cPort;
 
             // ----------------------------
             // compute horizontal locations
@@ -131,8 +131,8 @@ angular.module('ngEcho', [])
                 .rangePoints([0, this.h - 1], 1);
 
             //    for (i = 0; i < this.noOfLvlANodes; i++) {
-            for (nodeId in this.nodes.lvlA) {
-                node = this.nodes.lvlA[nodeId];
+            for (_nodeId in this.nodes.lvlA) {
+                node = this.nodes.lvlA[_nodeId];
                 i = node.index;
                 _x = overallHorizontalScale(0);
                 _y = lvlANodesScale(i);
@@ -184,8 +184,8 @@ angular.module('ngEcho', [])
                 .rangePoints([0, this.h - 1], 1);
 
             //    for (i = 0; i < this.noOfLvlBNodes; i++) {
-            for (nodeId in this.nodes.lvlB) {
-                node = this.nodes.lvlB[nodeId];
+            for (_nodeId in this.nodes.lvlB) {
+                node = this.nodes.lvlB[_nodeId];
                 i = node.index;
                 _x = overallHorizontalScale(1);
                 _y = lvlBNodesScale(i);
@@ -203,6 +203,7 @@ angular.module('ngEcho', [])
                     align: 'middle'
                 });
                 data.lvlBCheckboxes.push({
+                    nodeId: _nodeId,
                     x: xCheckbox,
                     y: yCheckbox
                 });
@@ -243,8 +244,8 @@ angular.module('ngEcho', [])
             // compute level C nodes, ports, checkboxes
 
 //    for (i = 2; i <= this.noOfLvlCNodes + 1; i++) {
-            for (nodeId in this.nodes.lvlC) {
-                node = this.nodes.lvlC[nodeId];
+            for (_nodeId in this.nodes.lvlC) {
+                node = this.nodes.lvlC[_nodeId];
                 i = node.index;
                 _x = overallHorizontalScale(i+2);
                 _y = this.h / 2;

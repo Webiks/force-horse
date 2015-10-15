@@ -9,6 +9,7 @@ angular.module('ngEchoButtons', ['ngEcho'])
         $templateCache.put('ngEcho/echoButtons',
             '<div class="echoButtonsWrapper">\
               <button ng-click="echoButtonsCtrl.echoButtonsInstance.ngEchoInstance.generateNewEcho()">Select All</button>\
+              <button ng-click="echoButtonsCtrl.echoButtonsInstance.ngEchoInstance.generateNewEcho()">Select Current Configuration</button>\
             </div>')
     })
     .directive('echoButtons', function(echoButtonsFactory, $compile){

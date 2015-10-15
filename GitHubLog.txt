@@ -262,7 +262,7 @@ System.Collections.Generic.KeyNotFoundException: The given key 'login:null' was 
 2015-09-08 06:30:53.5098|INFO|thread:15|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation: 49:GitClient.cs:442
 2015-09-08 06:30:53.5098|INFO|thread: 5|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 49:GitClient.cs:442 after waiting 1.91E-05s
 2015-09-08 06:30:53.5378|WARN|thread:17|RepositoryModel|Failed creating concurrent connection for c:\Users\Josh Vera\GitHub\Windows\GitHub\Helpers\GitClient.cs:442
-System.ArgumentException: Unable to process file 'C:\components\ngCesium\ngCesiumAddRemoveButtons\ngEchoButtons.js'. This file is not located under the working directory of the repository ('C:\Users\kra\Documents\GitHub\ngCesium\').
+System.ArgumentException: Unable to process file 'C:\components\ngCesium\ngCesiumAddRemoveButtons\ngEchoHeader.js'. This file is not located under the working directory of the repository ('C:\Users\kra\Documents\GitHub\ngCesium\').
    at LibGit2Sharp.RepositoryExtensions.BuildRelativePathFrom(Repository repo, String path)
    at LibGit2Sharp.Repository.ToFilePaths(IEnumerable`1 paths)
    at LibGit2Sharp.Diff.BuildDiffList(ObjectId oldTreeId, ObjectId newTreeId, TreeComparisonHandleRetriever comparisonHandleRetriever, DiffModifiers diffOptions, IEnumerable`1 paths, ExplicitPathsOptions explicitPathsOptions, CompareOptions compareOptions)
@@ -289,7 +289,7 @@ System.ArgumentException: Unable to process file 'C:\components\ngCesium\ngEcho2
    at System.Reactive.Linq.ObservableImpl.Defer`1.Eval()
    at System.Reactive.Linq.ObservableImpl.Defer`1._.Run()
 2015-09-08 06:30:53.6233|ERROR|thread:17|DiffModelFactory|Failed generating diff
-System.ArgumentException: Unable to process file 'C:\components\ngCesium\ngCesiumAddRemoveButtons\ngEchoButtons.js'. This file is not located under the working directory of the repository ('C:\Users\kra\Documents\GitHub\ngCesium\').
+System.ArgumentException: Unable to process file 'C:\components\ngCesium\ngCesiumAddRemoveButtons\ngEchoHeader.js'. This file is not located under the working directory of the repository ('C:\Users\kra\Documents\GitHub\ngCesium\').
    at LibGit2Sharp.RepositoryExtensions.BuildRelativePathFrom(Repository repo, String path)
    at LibGit2Sharp.Repository.ToFilePaths(IEnumerable`1 paths)
    at LibGit2Sharp.Diff.BuildDiffList(ObjectId oldTreeId, ObjectId newTreeId, TreeComparisonHandleRetriever comparisonHandleRetriever, DiffModifiers diffOptions, IEnumerable`1 paths, ExplicitPathsOptions explicitPathsOptions, CompareOptions compareOptions)

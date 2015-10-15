@@ -1,3 +1,7 @@
 .echoButtonsWrapper {
-    margin-top: 5px;
+    margin-top: 1vh;
+}
+
+.echoButtonsWrapper button {
+    margin-left: 2vw;
 }

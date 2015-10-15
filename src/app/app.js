@@ -6,6 +6,7 @@ angular.module('myApp', [
     'myApp.view3',
     'ngEcho',
     'ngEchoButtons',
+    'ngEchoHeader',
     'ngMaterial'
 ]).
     config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
