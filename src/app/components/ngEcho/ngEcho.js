@@ -104,17 +104,18 @@ angular.module('ngEcho', [])
                 //lvlBNodes: [],
                 //lvlCNodes: [],
                 nodeLabels: [],
-                lvlAPorts: [],
                 lvlACheckboxes: [],
                 lvlBCheckboxes: [],
                 lvlCCheckboxes: [],
+                lvlAPorts: [],
                 lvlBLeftPorts: [],
                 lvlBRightPorts: [],
                 lvlCTopPorts: [],
                 lvlCBottomPorts: []
             };
 
-            var i, j, _x, _y, _x1, _x2, _y1, _y2, node, _nodeId, xCheckbox, yCheckbox, _path, portScale, link, aPort, bPort, cPort;
+            var i, j, _x, _y, _x1, _x2, _y1, _y2, node, _nodeId, xCheckbox, yCheckbox, _path,
+                portScale, link, aPort, bPort, cPort, key;
 
             // ----------------------------
             // compute horizontal locations
@@ -149,10 +150,12 @@ angular.module('ngEcho', [])
                     y: _y - this.lvlANodeH / 2 - this.portMargin,
                     align: 'middle'
                 });
-                data.lvlACheckboxes.push({
-                    x: xCheckbox,
-                    y: yCheckbox
-                });
+                data.lvlACheckboxes[_nodeId] = {
+                        level: 0,
+                        nodeId: _nodeId,
+                        x: xCheckbox,
+                        y: yCheckbox
+                    };
 
                 portScale = d3.scale.ordinal()
                     .domain(getNumberArray(this.noOfLvlBNodes))
@@ -202,11 +205,12 @@ angular.module('ngEcho', [])
                     y: _y - this.lvlBNodeH / 2 - this.portMargin,
                     align: 'middle'
                 });
-                data.lvlBCheckboxes.push({
+                data.lvlBCheckboxes[_nodeId] = {
+                    level: 1,
                     nodeId: _nodeId,
                     x: xCheckbox,
                     y: yCheckbox
-                });
+                };
 
                 portScale = d3.scale.ordinal()
                     .domain(getNumberArray(this.noOfLvlANodes))
@@ -272,18 +276,27 @@ angular.module('ngEcho', [])
                         x: _x1,
                         y: _y1
                     });
-                    data.lvlCCheckboxes.push({
+                    key = _nodeId+0+j;
+                    data.lvlCCheckboxes[key] = {
+                        level: 2,
+                        nodeId: _nodeId,
+                        topOrBottom: 0,
+                        leftOrRight: j,
                         x: _x1 - this.checkboxWidth / 2,
                         y: _y1 + this.portMargin
-                    });
+                    };
                     data.lvlCBottomPorts.push({
                         x: _x2,
                         y: _y2
                     });
-                    data.lvlCCheckboxes.push({
+                    data.lvlCCheckboxes[_nodeId+1+j] = {
+                        level: 2,
+                        nodeId: _nodeId,
+                        topOrBottom: 1,
+                        leftOrRight: j,
                         x: _x2 - this.checkboxWidth / 2,
                         y: _y2 - this.portMargin - this.checkboxWidth
-                    });
+                    };
                 }
             }
 
@@ -294,18 +307,25 @@ angular.module('ngEcho', [])
                 link = this.nodeLinks[i];
 
                 if (!(link[1] instanceof Array)) { // lvlA-lvlB link, e.g [3,2]
-                    link.aNode = this.nodes.lvlA[link[0]].index;
-                    link.bNode = this.nodes.lvlB[link[1]].index;
+                    link.aNodeId = link[0];
+                    link.bNodeId = link[1]
+                    link.aNode = this.nodes.lvlA[link.aNodeId].index;
+                    link.bNode = this.nodes.lvlB[link.bNodeId].index;
                     aPort = link.aNode * 2 + link.bNode;
                     bPort = link.bNode * this.noOfLvlANodes + link.aNode;
                     link.x1 = data.lvlAPorts[aPort].x;
                     link.y1 = data.lvlAPorts[aPort].y;
                     link.x2 = data.lvlBLeftPorts[bPort].x;
                     link.y2 = data.lvlBLeftPorts[bPort].y;
+                    // mark the related checboxes
+                    data.lvlACheckboxes[link.aNodeId].checked = true;
+                    data.lvlBCheckboxes[link.bNodeId].checked = true;
                 } else { // lvlB-lvlC links, e.g. [6,[1,1]]
-                    link.bNode = this.nodes.lvlB[link[0]].index; // lvl B node (0 or 1)
-                    link.cNode = this.nodes.lvlC[link[1][0]].index;
+                    link.bNodeId = link[0];
+                    link.cNodeId = link[1][0];
                     link.cConn = link[1][1]; // lvl C "port" (0 or 1)
+                    link.bNode = this.nodes.lvlB[link.bNodeId].index; // lvl B node (0 or 1)
+                    link.cNode = this.nodes.lvlC[link.cNodeId].index;
                     cPort = link.cNode * 2 + link.cConn;
                     if (link.bNode === 0) { // top links
                         bPort = cPort;
@@ -325,42 +345,12 @@ angular.module('ngEcho', [])
                     link.x2 = _x2;
                     link.y2 = _y2;
                     link.path = 'M ' + _x1 + ' ' + _y1 + ' H ' + _x2 + ' V ' + _y2;
+                    // mark the related checboxes
+                    key = ""+link.cNodeId+link.bNode+link.cConn;
+                    data.lvlCCheckboxes[key].checked = true;
                 }
             }
-            /*
-             // -------------------------------
-             // compute level B - level C links
 
-             for (i = 0; i < this.noOfLvlCNodes * 2; i++) {
-             _x1 = data.lvlBRightPorts[i].x;
-             _y1 = data.lvlBRightPorts[i].y;
-             _x2 = data.lvlCTopPorts[i].x;
-             _y2 = data.lvlCTopPorts[i].y;
-             _path = `M ${_x1} ${_y1} H ${_x2} V ${_y2}`;
-             data.lvlBlvlCLinks.push({
-             x1: _x1,
-             y1: _y1,
-             x2: _x2,
-             y2: _y2,
-             path: _path
-             });
-             }
-
-             for (i = 0; i < this.noOfLvlCNodes * 2; i++) {
-             _x1 = data.lvlBRightPorts[i + this.noOfLvlCNodes * 2].x;
-             _y1 = data.lvlBRightPorts[i + this.noOfLvlCNodes * 2].y;
-             _x2 = data.lvlCBottomPorts[i].x;
-             _y2 = data.lvlCBottomPorts[i].y;
-             _path = `M ${_x1} ${_y1} H ${_x2} V ${_y2}`;
-             data.lvlBlvlCLinks.push({
-             x1: _x1,
-             y1: _y1,
-             x2: _x2,
-             y2: _y2,
-             path: _path
-             });
-             }
-             */
             return data;
 
             //---------------------------------------------------
@@ -400,8 +390,8 @@ angular.module('ngEcho', [])
 
             var nodeLabels = drawnodeLabels(dataset.nodeLabels);
 
-            var checkboxes = drawCheckboxes(dataset.lvlACheckboxes.concat(
-                dataset.lvlBCheckboxes, dataset.lvlCCheckboxes), this.checkboxWidth);
+            var checkboxes = drawCheckboxes(d3.values(dataset.lvlACheckboxes).concat(
+                d3.values(dataset.lvlBCheckboxes), d3.values(dataset.lvlCCheckboxes)), this.checkboxWidth);
 
             var portIcons = drawNodePorts(dataset.lvlAPorts.concat(
                 dataset.lvlBLeftPorts, dataset.lvlBRightPorts, dataset.lvlCTopPorts, dataset.lvlCBottomPorts));
@@ -507,8 +497,9 @@ angular.module('ngEcho', [])
                     })
                     .append("xhtml:input")
                     .attr("type", "checkbox")
-                    .attr("style", 'width: ' + width + 'px')
-            .attr("ng-model", "echoCtrl.test");
+                    .property("checked", function(d) {return d.checked;})
+                    .attr("style", 'width: ' + width + 'px');
+                    //.attr("ng-model", "echoCtrl.test");
             }
             //---------------------------------------------------
         };
