@@ -280,8 +280,8 @@ angular.module('ngEcho', [])
                     data.lvlCCheckboxes[key] = {
                         level: 2,
                         nodeId: _nodeId,
-                        topOrBottom: 0,
-                        leftOrRight: j,
+                        lvlBIdx: 0,
+                        connIdx: j,
                         x: _x1 - this.checkboxWidth / 2,
                         y: _y1 + this.portMargin
                     };
@@ -292,8 +292,8 @@ angular.module('ngEcho', [])
                     data.lvlCCheckboxes[_nodeId+1+j] = {
                         level: 2,
                         nodeId: _nodeId,
-                        topOrBottom: 1,
-                        leftOrRight: j,
+                        lvlBIdx: 1,
+                        connIdx: j,
                         x: _x2 - this.checkboxWidth / 2,
                         y: _y2 - this.portMargin - this.checkboxWidth
                     };
@@ -372,7 +372,10 @@ angular.module('ngEcho', [])
         // draw - Draw the graph
         //---------------------------------------------------
         EchoFactory.prototype.draw = function(dataset) {
-            var svg = d3.select(this.selector)
+            var svg = d3.select(this.selector).selectAll("svg")
+                .data([1])
+                .enter()
+//            var svg = d3.select(this.selector)
                 .append("svg")
                 .attr("width", this.w + this.margin.left + this.margin.right)
                 .attr("height", this.h + this.margin.top + this.margin.bottom)
@@ -390,17 +393,17 @@ angular.module('ngEcho', [])
 
             var nodeLabels = drawnodeLabels(dataset.nodeLabels);
 
-            var checkboxes = drawCheckboxes(d3.values(dataset.lvlACheckboxes).concat(
+            var checkboxes = drawCheckboxes(this, dataset, d3.values(dataset.lvlACheckboxes).concat(
                 d3.values(dataset.lvlBCheckboxes), d3.values(dataset.lvlCCheckboxes)), this.checkboxWidth);
 
             var portIcons = drawNodePorts(dataset.lvlAPorts.concat(
                 dataset.lvlBLeftPorts, dataset.lvlBRightPorts, dataset.lvlCTopPorts, dataset.lvlCBottomPorts));
 
+            var tempData = this.nodeLinks.filter(function(val) {
+                return !(val[1] instanceof Array);
+            });
             var lvlAlvlBLines = svg.selectAll("line.simple")
-                //      .data(dataset.lvlAlvlBLinks)
-                .data(this.nodeLinks.filter(function(val) {
-                    return !(val[1] instanceof Array);
-                }))
+                .data(tempData)
                 .enter()
                 .append("line")
                 .attr("class", "simple")
@@ -483,7 +486,7 @@ angular.module('ngEcho', [])
             }
 
             //---------------------------------------------------
-            function drawCheckboxes(_dataset, width) {
+            function drawCheckboxes(that, allData, _dataset, width) {
                 return svg.selectAll("foreignObject.checkbox")
                     .data(_dataset)
                     .enter()
@@ -498,8 +501,48 @@ angular.module('ngEcho', [])
                     .append("xhtml:input")
                     .attr("type", "checkbox")
                     .property("checked", function(d) {return d.checked;})
-                    .attr("style", 'width: ' + width + 'px');
+                    //.attr("data-level", function(d){return d.level;})
+                    //.attr("data-nodeId", function(d){return d.nodeId;})
+                    //.attr("data-lvlBIdx", function(d){return d.lvlBIdx;})
+                    //.attr("data-connIdx", function(d){return d.connIdx;})
+                    .attr("style", 'width: ' + width + 'px')
+                    .on('change', function(d) {
+                        onCheckboxClick(this, that, allData, Number(d.level), Number(d.nodeId), Number(d.lvlBIdx), Number(d.connIdx));
+                    });
+                    //.on("change", function(){alert('hi level ' + this.getAttribute("data-level"));});
                     //.attr("ng-model", "echoCtrl.test");
+            }
+
+            //---------------------------------------------------
+            function onCheckboxClick(checkbox, that, data, level, nodeId, lvlBIdx, connIdx) {
+                //alert(level + ' hi!');
+                var i,
+                    nodes = that.nodes,
+                    links = that.nodeLinks;
+                if (level === 0) { // a level A checkbox
+                    var checkboxes = data.lvlBCheckboxes;
+                    var targetNodes = d3.values(nodes.lvlB).
+                        filter(function(node){
+                            return checkboxes[node.id].checked;
+                        });
+                   if (checkbox.checked) {
+                       // add links to all active level B nodes
+                       targetNodes.forEach(function(node){
+                           if (links.indexOf([nodeId, node.id]) === -1) {
+                               links.push([nodeId, node.id]);
+                           }
+                       });
+                   } else { // if !checkbox.checked
+                       // remove links from all active level B nodes
+                       targetNodes.forEach(function(node){
+                           if ((i = links.indexOf([nodeId, node.id])) !== -1) {
+                               links.splice(i,1);
+                           }
+                       });
+                   } // if checkbox.checked
+                } // if (level == 0)
+
+                that.draw(that.layout()); // recompute layout & redraw
             }
             //---------------------------------------------------
         };
