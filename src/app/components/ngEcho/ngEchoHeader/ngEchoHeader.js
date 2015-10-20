@@ -9,12 +9,14 @@ angular.module('ngEchoHeader', ['ngEcho'])
         $templateCache.put('ngEcho/echoHeader',
             '<div class="echoHeaderWrapper">\
             <label for="noOfAsdMsgs" class="margin-left">Number of asd messages</label>\
-            <input type="number" id="noOfAsdMsgs" min="0" max="30" ng-value="echoHeaderCtrl.echoHeaderInstance.ngEchoInstance.options.form.defaults.selectedValue">\
-            <input type="checkbox" id="displayStatistics" class="margin-left" ng-checked="echoHeaderCtrl.echoHeaderInstance.ngEchoInstance.options.form.defaults.checkBox1">\
+            <input type="number" id="noOfAsdMsgs" min="0" max="30" ng-model="echoHeaderCtrl.echoHeaderInstance.ngEchoInstance.formValues.selectedValue">\
+            <input type="checkbox" id="displayStatistics" class="margin-left" ng-model="echoHeaderCtrl.echoHeaderInstance.ngEchoInstance.formValues.checkBox1"\
+            ng-true-value="1" ng-false-value="0">\
             <label for="displayStatistics">Display statistics</label>\
-            <input type="checkbox" id="displayWorstCase" class="margin-left" ng-checked="echoHeaderCtrl.echoHeaderInstance.ngEchoInstance.options.form.defaults.checkBox2">\
+            <input type="checkbox" id="displayWorstCase" class="margin-left" ng-model="echoHeaderCtrl.echoHeaderInstance.ngEchoInstance.formValues.checkBox2"\
+            ng-true-value="1" ng-false-value="0">\
             <label for="displayWorstCase">Display worst case</label>\
-            <button ng-click="echoHeaderCtrl.echoHeaderInstance.ngEchoInstance.generateNewEcho()" class="margin-left">Test asd</button>\
+            <button ng-click="echoHeaderCtrl.echoHeaderInstance.ngEchoInstance.send()" class="margin-left">Test asd</button>\
             </div>')
     })
     .directive('echoHeader', function(echoHeaderFactory, $compile){

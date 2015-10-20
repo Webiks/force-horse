@@ -29,7 +29,9 @@ angular.module('myApp.view3', ['ui.router', 'ngEcho'])
                     label: '',
                     value: 15
                 }],
-                submitCallback: function(formValues, paths) {}
+                submitCallback: function(formValues, paths) {
+                    console.log("submitCallback has been called, with params " + d3.values(formValues) + " " + paths);
+                }
             },
             // TODO::save the first configuration as the current configuration
             // TODO::expose "setCurrentConfiguration" to replace currectConfiguration

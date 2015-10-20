@@ -42,6 +42,7 @@ angular.module('ngEcho', [])
         function EchoFactory(selector, options) {
             this.selector = selector;
             this.options = options;
+            this.formValues = options.form.defaults;
 
             this.setConfiguration(options.configuration);
             this.nodeLinks = options.generalConfig.defaultPaths;
@@ -589,6 +590,14 @@ angular.module('ngEcho', [])
                     imgUrl: config.lvlC[i].imgUrl
                 };
             }
+        };
+
+        //---------------------------------------------------
+        // log
+        //---------------------------------------------------
+        EchoFactory.prototype.send = function() {
+            console.log('In send() method');
+            this.options.form.submitCallback(this.formValues, this.nodeLinks);
         };
 
         // ---
