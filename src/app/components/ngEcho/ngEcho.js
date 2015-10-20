@@ -92,6 +92,13 @@ angular.module('ngEcho', [])
             this.lvlCNodeW = 30;
             this.lvlCNodeH = 30;
 
+            this.svg = d3.select(this.selector)
+                .append("svg")
+                .attr("width", this.w + this.margin.left + this.margin.right)
+                .attr("height", this.h + this.margin.top + this.margin.bottom)
+                .append("g")
+                .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
+
             this.draw(this.layout());
         }
 
@@ -373,15 +380,7 @@ angular.module('ngEcho', [])
         // draw - Draw the graph
         //---------------------------------------------------
         EchoFactory.prototype.draw = function(dataset) {
-            var svg = d3.select(this.selector).selectAll("svg")
-                .data([1])
-                .enter()
-//            var svg = d3.select(this.selector)
-                .append("svg")
-                .attr("width", this.w + this.margin.left + this.margin.right)
-                .attr("height", this.h + this.margin.top + this.margin.bottom)
-                .append("g")
-                .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
+            var that = this;
 
             var lvlANodeIcons = drawNodeIcons("lvlANode", d3.values(this.nodes.lvlA),
                 this.lvlANodeW, this.lvlANodeH);
@@ -403,9 +402,9 @@ angular.module('ngEcho', [])
             var tempData = this.nodeLinks.filter(function(val) {
                 return !(val[1] instanceof Array);
             });
-            var lvlAlvlBLines = svg.selectAll("line.simple")
-                .data(tempData)
-                .enter()
+            var lvlAlvlBLines = this.svg.selectAll("line.simple")
+                .data(tempData);
+            lvlAlvlBLines.enter()
                 .append("line")
                 .attr("class", "simple")
                 .attr("x1", function(d) {
@@ -420,8 +419,9 @@ angular.module('ngEcho', [])
                 .attr("y2", function(d) {
                     return d.y2;
                 });
+            lvlAlvlBLines.exit().remove();
 
-            var lvlBlvlCLines = svg.selectAll("path.link")
+            var lvlBlvlCLines = this.svg.selectAll("path.link")
                 //    .data(dataset.lvlBlvlCLinks)
                 .data(this.nodeLinks.filter(function(val) {
                     return val[1] instanceof Array;
@@ -435,7 +435,7 @@ angular.module('ngEcho', [])
 
             //---------------------------------------------------
             function drawNodeIcons(className, _dataset, iconW, iconH) {
-                return svg.selectAll("ellipse." + className)
+                return that.svg.selectAll("ellipse." + className)
                     .data(_dataset)
                     .enter()
                     .append("ellipse")
@@ -452,7 +452,7 @@ angular.module('ngEcho', [])
 
             //---------------------------------------------------
             function drawnodeLabels(_dataset) {
-                return svg.selectAll("text.nodeLabel")
+                return that.svg.selectAll("text.nodeLabel")
                     .data(_dataset)
                     .enter()
                     .append("text")
@@ -473,7 +473,7 @@ angular.module('ngEcho', [])
 
             //---------------------------------------------------
             function drawNodePorts(_dataset) {
-                return svg.selectAll("circle.port")
+                return that.svg.selectAll("circle.port")
                     .data(_dataset)
                     .enter()
                     .append("circle")
@@ -488,7 +488,7 @@ angular.module('ngEcho', [])
 
             //---------------------------------------------------
             function drawCheckboxes(that, allData, _dataset, width) {
-                return svg.selectAll("foreignObject.checkbox")
+                return that.svg.selectAll("foreignObject.checkbox")
                     .data(_dataset)
                     .enter()
                     .append("foreignObject")
@@ -502,16 +502,10 @@ angular.module('ngEcho', [])
                     .append("xhtml:input")
                     .attr("type", "checkbox")
                     .property("checked", function(d) {return d.checked;})
-                    //.attr("data-level", function(d){return d.level;})
-                    //.attr("data-nodeId", function(d){return d.nodeId;})
-                    //.attr("data-lvlBIdx", function(d){return d.lvlBIdx;})
-                    //.attr("data-connIdx", function(d){return d.connIdx;})
                     .attr("style", 'width: ' + width + 'px')
                     .on('change', function(d) {
                         onCheckboxClick(this, that, allData, Number(d.level), Number(d.nodeId), Number(d.lvlBIdx), Number(d.connIdx));
                     });
-                    //.on("change", function(){alert('hi level ' + this.getAttribute("data-level"));});
-                    //.attr("ng-model", "echoCtrl.test");
             }
 
             //---------------------------------------------------
