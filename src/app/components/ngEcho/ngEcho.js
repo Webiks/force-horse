@@ -434,14 +434,19 @@ angular.module('ngEcho', [])
             var lvlBlvlCLines = this.svg.selectAll("path.link")
                 //    .data(dataset.lvlBlvlCLinks)
                 .data(this.nodeLinks.filter(function (val) {
-                    return val[1] instanceof Array && val.active;
+                    return val[1] instanceof Array;
                 }))
-                .enter()
+            lvlBlvlCLines.enter()
                 .append("path")
                 .attr("class", "link")
                 .attr("d", function (d) {
                     return d.path;
                 });
+            // show only active lines
+            lvlBlvlCLines.style("display", function(d) {
+                return d.active ? null : "none";
+            });
+            lvlBlvlCLines.exit().remove();
 
             //---------------------------------------------------
             function drawNodeIcons(className, _dataset, iconW, iconH) {
@@ -536,7 +541,6 @@ angular.module('ngEcho', [])
                     if (checkbox.checked) {
                         // add links to all active level B nodes
                         targetNodes.forEach(function (node) {
-//                           if (links.indexOf([nodeId, node.id]) === -1) {
                             i = that.abLinkIndexOf(links, nodeId, node.id);
                             if (!links[i].active) {
                                 links[i].active = true;
@@ -546,7 +550,6 @@ angular.module('ngEcho', [])
                     } else { // if !checkbox.checked
                         // remove links from all active level B nodes
                         targetNodes.forEach(function (node) {
-//                           if ((i = links.indexOf([nodeId, node.id])) !== -1) {
                             i = that.abLinkIndexOf(links, nodeId, node.id);
                             if (links[i].active) {
                                 links[i].active = false;
@@ -554,6 +557,33 @@ angular.module('ngEcho', [])
                             }
                         });
                     } // if checkbox.checked
+
+                } else if (level === 1) { // a level B checkbox
+                    var checkboxes = data.lvlACheckboxes;
+                    var targetNodes = d3.values(nodes.lvlA).
+                        filter(function (node) {
+                            return checkboxes[node.id].checked;
+                        });
+                    if (checkbox.checked) {
+                        // add links to all active level A nodes
+                        targetNodes.forEach(function (node) {
+                            i = that.abLinkIndexOf(links, node.id, nodeId);
+                            if (!links[i].active) {
+                                links[i].active = true;
+                                changed = true;
+                            }
+                        });
+                    } else { // if !checkbox.checked
+                        // remove links from all active level A nodes
+                        targetNodes.forEach(function (node) {
+                            i = that.abLinkIndexOf(links, node.id, nodeId);
+                            if (links[i].active) {
+                                links[i].active = false;
+                                changed = true;
+                            }
+                        });
+                    } // if checkbox.checked
+
                 } // if (level == 0)
 
                 if (changed) {
