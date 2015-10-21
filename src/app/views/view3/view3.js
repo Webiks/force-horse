@@ -35,7 +35,7 @@ angular.module('myApp.view3', ['ui.router', 'ngEcho'])
             },
             // TODO::save the first configuration as the current configuration
             // TODO::expose "setCurrentConfiguration" to replace currectConfiguration
-            // TODO::expose "setConfiguration" to replace presentation
+            // TODO::expose "setNodes" to replace presentation
             generalConfig: {
                 lvlAImage: '',
                 lvlBImage: '',
