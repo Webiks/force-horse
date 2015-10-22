@@ -405,48 +405,7 @@ angular.module('ngEcho', [])
             var portIcons = drawNodePorts(dataset.lvlAPorts.concat(
                 dataset.lvlBLeftPorts, dataset.lvlBRightPorts, dataset.lvlCTopPorts, dataset.lvlCBottomPorts));
 
-            var tempData = this.nodeLinks.filter(function (val) {
-                return !(val[1] instanceof Array);
-            });
-            var lvlAlvlBLines = this.svg.selectAll("line.simple")
-                .data(tempData);
-            lvlAlvlBLines.enter()
-                .append("line")
-                .attr("class", "simple")
-                .attr("x1", function (d) {
-                    return d.x1;
-                })
-                .attr("y1", function (d) {
-                    return d.y1;
-                })
-                .attr("x2", function (d) {
-                    return d.x2;
-                })
-                .attr("y2", function (d) {
-                    return d.y2;
-                });
-            // show only active lines
-            lvlAlvlBLines.style("display", function(d) {
-                return d.active ? null : "none";
-            });
-            lvlAlvlBLines.exit().remove();
-
-            var lvlBlvlCLines = this.svg.selectAll("path.link")
-                //    .data(dataset.lvlBlvlCLinks)
-                .data(this.nodeLinks.filter(function (val) {
-                    return val[1] instanceof Array;
-                }))
-            lvlBlvlCLines.enter()
-                .append("path")
-                .attr("class", "link")
-                .attr("d", function (d) {
-                    return d.path;
-                });
-            // show only active lines
-            lvlBlvlCLines.style("display", function(d) {
-                return d.active ? null : "none";
-            });
-            lvlBlvlCLines.exit().remove();
+            this.drawLinks(dataset);
 
             //---------------------------------------------------
             function drawNodeIcons(className, _dataset, iconW, iconH) {
@@ -526,15 +485,17 @@ angular.module('ngEcho', [])
             }
 
             //---------------------------------------------------
-            function onCheckboxClick(checkbox, that, data, level, nodeId, lvlBIdx, connIdx) {
+            function onCheckboxClick(checkbox, that, data, level, nodeId, bNode, cConn) {
                 //alert(level + ' hi!');
-                var i,
+                var i, checkboxes, targetNodes, targetNodeId, key, targetCheckbox,
                     changed = false,
                     nodes = that.nodes,
                     links = that.nodeLinks;
+
                 if (level === 0) { // a level A checkbox
-                    var checkboxes = data.lvlBCheckboxes;
-                    var targetNodes = d3.values(nodes.lvlB).
+                    data.lvlACheckboxes[nodeId].checked = checkbox.checked;
+                    checkboxes = data.lvlBCheckboxes;
+                    targetNodes = d3.values(nodes.lvlB).
                         filter(function (node) {
                             return checkboxes[node.id].checked;
                         });
@@ -559,8 +520,11 @@ angular.module('ngEcho', [])
                     } // if checkbox.checked
 
                 } else if (level === 1) { // a level B checkbox
-                    var checkboxes = data.lvlACheckboxes;
-                    var targetNodes = d3.values(nodes.lvlA).
+                    data.lvlBCheckboxes[nodeId].checked = checkbox.checked;
+
+                    // update A-B links
+                    checkboxes = data.lvlACheckboxes;
+                    targetNodes = d3.values(nodes.lvlA).
                         filter(function (node) {
                             return checkboxes[node.id].checked;
                         });
@@ -584,10 +548,58 @@ angular.module('ngEcho', [])
                         });
                     } // if checkbox.checked
 
-                } // if (level == 0)
+                    // update B-C links
+                    for (targetNodeId in nodes.lvlC) {
+                        for (conn = 0; conn < 2; conn++) {
+                            key = "" + targetNodeId + nodes.lvlB[nodeId].index + conn;
+                            if (data.lvlCCheckboxes[key].checked) {
+                                i = that.bcLinkIndexOf(links, nodeId, targetNodeId, conn);
+                                if (checkbox.checked) {
+                                    // add links to all active level C nodes
+                                    if (!links[i].active) {
+                                        links[i].active = true;
+                                        changed = true;
+                                    }
+                                } else { // if !checkbox.checked
+                                    // remove links from all active level C nodes
+                                    if (links[i].active) {
+                                        links[i].active = false;
+                                        changed = true;
+                                    }
+                                } // if checkbox.checked
+                            }
+                        }
+                    }
+
+                } else if (level === 2) { // a level C checkbox
+                    key = "" + nodeId + bNode + cConn;
+                    data.lvlCCheckboxes[key].checked = checkbox.checked;
+
+                    targetNodeId = that.nodesArray.lvlB[bNode].id;
+                    targetCheckbox = data.lvlBCheckboxes[targetNodeId];
+                    if (targetCheckbox.checked) {
+                        if (checkbox.checked) {
+                            // add the link to relevant level B node, if it's active
+                            i = that.bcLinkIndexOf(links, targetNodeId, nodeId, cConn);
+                            if (!links[i].active) {
+                                links[i].active = true;
+                                changed = true;
+                            }
+                        } else { // if !checkbox.checked
+                            // remove the link to the relevant level B node
+                            i = that.bcLinkIndexOf(links, targetNodeId, nodeId, cConn);
+                            if (links[i].active) {
+                                links[i].active = false;
+                                changed = true;
+                            }
+                        } // if checkbox.checked
+                    } // if (targetCheckbox.checked) {
+
+                } // if (level == )
 
                 if (changed) {
-                    that.draw(that.layout()); // recompute layout & redraw
+                    that.drawLinks(data);
+                    //that.draw(that.layout()); // recompute layout & redraw
                 }
 
                 //---------------------------------------------------
@@ -595,17 +607,65 @@ angular.module('ngEcho', [])
         }
 
         //---------------------------------------------------
+        // drawLinks
+        //---------------------------------------------------
+        EchoFactory.prototype.drawLinks = function (data) {
+            var tempData = this.nodeLinks.filter(function (val) {
+                return !(val[1] instanceof Array);
+            });
+            var lvlAlvlBLines = this.svg.selectAll("line.simple")
+                .data(tempData);
+            lvlAlvlBLines.enter()
+                .append("line")
+                .attr("class", "simple")
+                .attr("x1", function (d) {
+                    return d.x1;
+                })
+                .attr("y1", function (d) {
+                    return d.y1;
+                })
+                .attr("x2", function (d) {
+                    return d.x2;
+                })
+                .attr("y2", function (d) {
+                    return d.y2;
+                });
+            // show only active lines
+            lvlAlvlBLines.style("display", function (d) {
+                return d.active ? null : "none";
+            });
+            lvlAlvlBLines.exit().remove();
+
+            var lvlBlvlCLines = this.svg.selectAll("path.link")
+                //    .data(dataset.lvlBlvlCLinks)
+                .data(this.nodeLinks.filter(function (val) {
+                    return val[1] instanceof Array;
+                }))
+            lvlBlvlCLines.enter()
+                .append("path")
+                .attr("class", "link")
+                .attr("d", function (d) {
+                    return d.path;
+                });
+            // show only active lines
+            lvlBlvlCLines.style("display", function (d) {
+                return d.active ? null : "none";
+            });
+            lvlBlvlCLines.exit().remove();
+        }
+
+        //---------------------------------------------------
         // Array search functions for array items
         // (because Array.indexOf does not work for items which are arrays, or objects)
         //---------------------------------------------------
-        EchoFactory.prototype.abLinkIndexOf = function(arrayToSearch, id0, id1) {
+        EchoFactory.prototype.abLinkIndexOf = function (arrayToSearch, id0, id1) {
             for (var i = 0, len = arrayToSearch.length; i < len; i++) {
                 if (arrayToSearch[i][0] == id0 && arrayToSearch[i][1] == id1) return i;
             }
             return -1;
         }
 
-        EchoFactory.prototype.bcLinkIndexOf = function(arrayToSearch, id0, id1, id2) {
+        EchoFactory.prototype.bcLinkIndexOf = function (arrayToSearch, id0, id1, id2) {
             for (var i = 0, len = arrayToSearch.length; i < len; i++) {
                 if (arrayToSearch[i][0] == id0 && arrayToSearch[i][1][0] == id1 && arrayToSearch[i][1][1] == id2) return i;
             }
