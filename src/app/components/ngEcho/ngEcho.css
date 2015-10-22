@@ -5,7 +5,7 @@ svg {
     fill: none;
     stroke: black;
     font-family: Arial;
-    font-size: 10;
+    font-size: 10px;
     font-weight: normal;
 }
 
@@ -19,7 +19,7 @@ ellipse {
 }
 
 /*
-line.simple, path.link {
+path.link {
    stroke: black;
 }
 */

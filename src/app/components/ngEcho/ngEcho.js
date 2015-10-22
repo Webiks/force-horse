@@ -326,6 +326,7 @@ angular.module('ngEcho', [])
                     link.y1 = data.lvlAPorts[aPort].y;
                     link.x2 = data.lvlBLeftPorts[bPort].x;
                     link.y2 = data.lvlBLeftPorts[bPort].y;
+                    link.path = 'M ' + link.x1 + ' ' + link.y1 + ' L ' + link.x2 + ' ' + link.y2;
                     if (link.active) {
                         // mark the related checboxes
                         data.lvlACheckboxes[link.aNodeId].checked = true;
@@ -610,6 +611,7 @@ angular.module('ngEcho', [])
         // drawLinks
         //---------------------------------------------------
         EchoFactory.prototype.drawLinks = function (data) {
+/*
             var tempData = this.nodeLinks.filter(function (val) {
                 return !(val[1] instanceof Array);
             });
@@ -635,23 +637,22 @@ angular.module('ngEcho', [])
                 return d.active ? null : "none";
             });
             lvlAlvlBLines.exit().remove();
+*/
 
-            var lvlBlvlCLines = this.svg.selectAll("path.link")
-                //    .data(dataset.lvlBlvlCLinks)
-                .data(this.nodeLinks.filter(function (val) {
-                    return val[1] instanceof Array;
-                }))
-            lvlBlvlCLines.enter()
+            var paths = this.svg.selectAll("path.link")
+                .data(this.nodeLinks)
+                    //.filter(function (val) { return val[1] instanceof Array;}))
+            paths.enter()
                 .append("path")
                 .attr("class", "link")
                 .attr("d", function (d) {
                     return d.path;
                 });
             // show only active lines
-            lvlBlvlCLines.style("display", function (d) {
+            paths.style("display", function (d) {
                 return d.active ? null : "none";
             });
-            lvlBlvlCLines.exit().remove();
+            paths.exit().remove();
         }
 
         //---------------------------------------------------
