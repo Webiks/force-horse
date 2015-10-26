@@ -24,7 +24,7 @@ angular.module('ngEcho', [])
             controller: function ($scope, $element) {
                 console.log('In echoDirective controller');
                 // this makes sure our parent app gets its echoInstance back
-                this.echoDirective.echoInstance = new EchoFactory($element[0], this.echoDirective);
+                this.echoDirective.echoInstance = new EchoFactory($element, this.echoDirective);
                 this.test = true;
             },
             // define the "link" function
@@ -39,8 +39,8 @@ angular.module('ngEcho', [])
 // define the echo factory
     .factory('EchoFactory', function () {
         // constructor
-        function EchoFactory(selector, options) {
-            this.selector = selector;
+        function EchoFactory(element, options) {
+            this.element = element;
             this.options = options;
             this.formValues = options.form.defaults;
 
@@ -49,43 +49,42 @@ angular.module('ngEcho', [])
             //this.nodeLinks = options.generalConfig.defaultPaths;
 
             // set work area width & height
-            this.width = this.options.width || 600;
-            this.height = this.options.height || 400;
+            var minWidth = 600;
+            var minHeight = 400;
+            //this.width = options.width || minWidth;
+            //this.height = options.height || minHeight;
+            //if (angular.isUndefined(options.width)) {
+            //    options.width = element[0].offsetWidth;
+            //    //options.width = window.getComputedStyle(element[0]).width;
+            //    //options.width = element.width();
+            //    if (options.width < minWidth) {
+            //        options.width = minWidth;
+            //    }
+            //}
+            //if (angular.isUndefined(options.height)) {
+            //    options.height = element[0].offsetHeight;
+            //    //options.width = window.getComputedStyle(element[0]).width;
+            //    //options.height = element.height();
+            //    if (options.height < minHeight) {
+            //        options.height = minHeight;
+            //    }
+            //}
+            //this.width = options.width;
+            //this.height = options.height;
+            this.width = minWidth;
+            this.height = minHeight;
+
             this.margin = {
                 top: 20,
                 right: 20,
                 bottom: 20,
                 left: 20
             };
-            this.w = this.width - this.margin.left - this.margin.right;
-            this.h = this.height - this.margin.top - this.margin.bottom;
+            this.netWidth = this.width - this.margin.left - this.margin.right;
+            this.netHeight = this.height - this.margin.top - this.margin.bottom;
             this.checkboxWidth = 12;
             this.portMargin = 5; // margin between an icon and its connection port
 
-            // temporary config
-
-            /*
-             this.noOfLvlANodes = 4;
-             this.noOfLvlBNodes = 2;
-             this.noOfLvlCNodes = 3;
-
-             this.lvlAlvlBLinks = [{
-             aNode: 0,
-             bNode: 0
-             }, {
-             aNode: 1,
-             bNode: 0
-             }, {
-             aNode: 1,
-             bNode: 1
-             }, {
-             aNode: 2,
-             bNode: 0
-             }, {
-             aNode: 3,
-             bNode: 1
-             }];
-             */
             this.lvlANodeW = 30;
             this.lvlANodeH = 50;
             this.lvlBNodeW = 30;
@@ -93,10 +92,15 @@ angular.module('ngEcho', [])
             this.lvlCNodeW = 30;
             this.lvlCNodeH = 30;
 
-            this.svg = d3.select(this.selector)
+            this.innerSvgWidth = 600;
+            this.innerSvgHeight = 400;
+
+            this.svg = d3.select(element[0])
                 .append("svg")
-                .attr("width", this.w + this.margin.left + this.margin.right)
-                .attr("height", this.h + this.margin.top + this.margin.bottom)
+                //.attr("width", this.netWidth + this.margin.left + this.margin.right)
+                //.attr("height", this.netHeight + this.margin.top + this.margin.bottom)
+                .attr("viewBox", "0 0 " + this.innerSvgWidth + " " + this.innerSvgHeight)
+                .attr("preserveAspectRatio", "none")
                 .append("g")
                 .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
 
@@ -109,9 +113,6 @@ angular.module('ngEcho', [])
         //---------------------------------------------------
         EchoFactory.prototype.layout = function () {
             var data = {
-                //lvlANodes: [],
-                //lvlBNodes: [],
-                //lvlCNodes: [],
                 nodeLabels: [],
                 lvlACheckboxes: [],
                 lvlBCheckboxes: [],
@@ -131,14 +132,15 @@ angular.module('ngEcho', [])
 
             var overallHorizontalScale = d3.scale.ordinal()
                 .domain(getNumberArray(2 + this.noOfLvlCNodes))
-                .rangePoints([0, this.w - 1], 0.5);
+                .rangePoints([0, this.netWidth - 1], 0.5);
+                //.rangePoints([0, this.innerSvgWidth - 1], 0.5);
 
             // -------------------------------
             // compute level A nodes, labels, ports, checkboxes
 
             var lvlANodesScale = d3.scale.ordinal()
                 .domain(getNumberArray(this.noOfLvlANodes))
-                .rangePoints([0, this.h - 1], 1);
+                .rangePoints([0, this.netHeight - 1], 1);
 
             //    for (i = 0; i < this.noOfLvlANodes; i++) {
             for (_nodeId in this.nodes.lvlA) {
@@ -193,7 +195,7 @@ angular.module('ngEcho', [])
 
             var lvlBNodesScale = d3.scale.ordinal()
                 .domain(getNumberArray(this.noOfLvlBNodes))
-                .rangePoints([0, this.h - 1], 1);
+                .rangePoints([0, this.netHeight - 1], 1);
 
             //    for (i = 0; i < this.noOfLvlBNodes; i++) {
             for (_nodeId in this.nodes.lvlB) {
@@ -261,7 +263,7 @@ angular.module('ngEcho', [])
                 node = this.nodes.lvlC[_nodeId];
                 i = node.index;
                 _x = overallHorizontalScale(i + 2);
-                _y = this.h / 2;
+                _y = this.netHeight / 2;
 //      data.lvlCNodes.push({
                 node.x = _x;
                 node.y = _y;
@@ -479,7 +481,7 @@ angular.module('ngEcho', [])
                     .property("checked", function (d) {
                         return d.checked;
                     })
-                    .attr("style", 'width: ' + width + 'px')
+                    //.attr("style", 'width: ' + width + 'px; height: ' + width + 'px')
                     .on('change', function (d) {
                         onCheckboxClick(this, that, allData, Number(d.level), Number(d.nodeId), Number(d.lvlBIdx), Number(d.connIdx));
                     });
@@ -672,6 +674,24 @@ angular.module('ngEcho', [])
             }
             return -1;
         }
+
+/*
+        //---------------------------------------------------
+        // helper: loadImage
+        //---------------------------------------------------
+        EchoFactory.prototype.loadImage = function(imgUrl) {
+            var img = $("<img />").attr('src', imgUrl)
+                .on('load', function() {
+                    if (!this.complete || typeof this.naturalWidth == "undefined" || this.naturalWidth == 0) {
+                        console.error('broken image: ' + imgUrl);
+                    } else {
+                        $("#w").html(this.naturalWidth);
+                        $("#h").html(this.naturalHeight);
+                        $("#foreign").append(img);
+                    }
+                });
+        }
+*/
 
         //---------------------------------------------------
         // setNodes

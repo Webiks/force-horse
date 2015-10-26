@@ -1,3 +1,15 @@
+/*
+html, body {
+    width: 100%;
+    height: 100%;
+}
+
+div.echoContainer {
+    width: 600px;
+    height: 400px;
+}
+*/
+
 svg {
     margin-top: 5px;
     border: 1px solid #f8f8f8;
@@ -5,8 +17,11 @@ svg {
     fill: none;
     stroke: black;
     font-family: Arial;
-    font-size: 10px;
+    font-size: 12px;
     font-weight: normal;
+    overflow: auto;
+    width: 100%;
+    height: 100%;
 }
 
 circle.port {
@@ -18,13 +33,9 @@ ellipse {
     stroke: blue;
 }
 
-/*
-path.link {
-   stroke: black;
-}
-*/
-
 .foreignCheckbox input {
     padding: 0;
     margin:  0;
+    width: 13px;
+    height: 12px;
 }
