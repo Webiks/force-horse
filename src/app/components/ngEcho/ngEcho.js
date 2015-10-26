@@ -46,7 +46,6 @@ angular.module('ngEcho', [])
 
             this.setNodes(options.configuration);
             this.setNodeLinks(options.generalConfig.defaultPaths);
-            //this.nodeLinks = options.generalConfig.defaultPaths;
 
             // set work area width & height
             var minWidth = 600;
@@ -392,13 +391,13 @@ angular.module('ngEcho', [])
             var that = this;
 
             var lvlANodeIcons = drawNodeIcons("lvlANode", d3.values(this.nodes.lvlA),
-                this.lvlANodeW, this.lvlANodeH);
+                this.lvlANodeW, this.lvlANodeH, this.options.generalConfig.lvlAImage);
 
             var lvlBNodeIcons = drawNodeIcons("lvlBNode", d3.values(this.nodes.lvlB),
-                this.lvlBNodeW, this.lvlBNodeH);
+                this.lvlBNodeW, this.lvlBNodeH, this.options.generalConfig.lvlBImage);
 
             var lvlCNodeIcons = drawNodeIcons("lvlCNode", d3.values(this.nodes.lvlC),
-                this.lvlCNodeW, this.lvlCNodeH);
+                this.lvlCNodeW, this.lvlCNodeH, this.options.generalConfig.lvlCImage);
 
             var nodeLabels = drawnodeLabels(dataset.nodeLabels);
 
@@ -411,20 +410,32 @@ angular.module('ngEcho', [])
             this.drawLinks(dataset);
 
             //---------------------------------------------------
-            function drawNodeIcons(className, _dataset, iconW, iconH) {
+            function drawNodeIcons(className, _dataset, iconW, iconH, imageUrl) {
                 return that.svg.selectAll("ellipse." + className)
                     .data(_dataset)
                     .enter()
-                    .append("ellipse")
-                    .attr("class", className)
-                    .attr("cx", function (d) {
-                        return d.x;
+                    .append("image")
+                    .attr("xlink:href", function(d) {
+                        return !!d.imgUrl ? d.imgUrl : imageUrl;
                     })
-                    .attr("cy", function (d) {
-                        return d.y;
+                    .attr("width", iconW)
+                    .attr("height", iconH)
+                    .attr("x", function (d) {
+                        return d.x - iconW / 2;
                     })
-                    .attr("rx", iconW / 2)
-                    .attr("ry", iconH / 2);
+                    .attr("y", function (d) {
+                        return d.y - iconH / 2;
+                    });
+                    //.append("ellipse")
+                    //.attr("class", className)
+                    //.attr("cx", function (d) {
+                    //    return d.x;
+                    //})
+                    //.attr("cy", function (d) {
+                    //    return d.y;
+                    //})
+                    //.attr("rx", iconW / 2)
+                    //.attr("ry", iconH / 2);
             }
 
             //---------------------------------------------------

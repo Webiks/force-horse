@@ -37,9 +37,9 @@ angular.module('myApp.view3', ['ui.router', 'ngEcho'])
             // TODO::expose "setCurrentConfiguration" to replace currectConfiguration
             // TODO::expose "setNodes" to replace presentation
             generalConfig: {
-                lvlAImage: '',
-                lvlBImage: '',
-                lvlCImage: '',
+                lvlAImage: 'http://placeskull.com/30/50/c0c0e0/7',
+                lvlBImage: 'http://placeskull.com/30/50/c0c0e0/21',
+                lvlCImage: 'http://placeskull.com/30/30/c0c0e0/10',
                 defaultPaths: [
                     [1,2], [3,2], [6,1], [1,[4,0]], [2,[1,1]], [2,[2,1]]
                 ],
@@ -60,7 +60,7 @@ angular.module('myApp.view3', ['ui.router', 'ngEcho'])
                     {
                         id: 5,
                         label: 'z5',
-                        imgUrl: ''
+                        imgUrl: 'http://placeskull.com/30/50/c0e0c0/7'
                     },
                     {
                         id: 6,
@@ -91,7 +91,7 @@ angular.module('myApp.view3', ['ui.router', 'ngEcho'])
                     {
                         id: 2,
                         label: 's2',
-                        imgUrl: ''
+                        imgUrl: 'http://placeskull.com/30/30/c0e0c0/10'
                     },
                     {
                         id: 4,
