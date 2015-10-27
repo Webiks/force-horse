@@ -410,13 +410,13 @@ angular.module('ngEcho', [])
             this.drawLinks(dataset);
 
             //---------------------------------------------------
-            function drawNodeIcons(className, _dataset, iconW, iconH, imageUrl) {
+            function drawNodeIcons(className, _dataset, iconW, iconH, defaultImageUrl) {
                 return that.svg.selectAll("ellipse." + className)
                     .data(_dataset)
                     .enter()
                     .append("image")
                     .attr("xlink:href", function(d) {
-                        return !!d.imgUrl ? d.imgUrl : imageUrl;
+                        return !!d.imgUrl ? d.imgUrl : defaultImageUrl;
                     })
                     .attr("width", iconW)
                     .attr("height", iconH)

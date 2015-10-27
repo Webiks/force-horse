@@ -60,7 +60,7 @@ angular.module('myApp.view3', ['ui.router', 'ngEcho'])
                     {
                         id: 5,
                         label: 'z5',
-                        imgUrl: 'http://placeskull.com/30/50/c0e0c0/7'
+                        imgUrl: 'http://placeskull.com/30/50/e0e080/7'
                     },
                     {
                         id: 6,
@@ -91,7 +91,7 @@ angular.module('myApp.view3', ['ui.router', 'ngEcho'])
                     {
                         id: 2,
                         label: 's2',
-                        imgUrl: 'http://placeskull.com/30/30/c0e0c0/10'
+                        imgUrl: 'http://placeskull.com/30/30/e0e080/10'
                     },
                     {
                         id: 4,
