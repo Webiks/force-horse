@@ -316,9 +316,11 @@ angular.module('ngEcho', [])
             for (i = 0; i < this.nodeLinks.length; i++) {
                 link = this.nodeLinks[i];
 
-                if (!(link[1] instanceof Array)) { // lvlA-lvlB link, e.g [3,2]
-                    link.aNodeId = link[0];
-                    link.bNodeId = link[1]
+                if (!(link.segment[1] instanceof Array)) { // lvlA-lvlB link, e.g [3,2]
+                    link.aNodeId = link.segment[0];
+                    link.bNodeId = link.segment[1]
+                    //link.aNodeId = link[0];
+                    //link.bNodeId = link[1]
                     link.aNode = this.nodes.lvlA[link.aNodeId].index;
                     link.bNode = this.nodes.lvlB[link.bNodeId].index;
                     aPort = link.aNode * 2 + link.bNode;
@@ -334,9 +336,12 @@ angular.module('ngEcho', [])
                         data.lvlBCheckboxes[link.bNodeId].checked = true;
                     }
                 } else { // lvlB-lvlC links, e.g. [6,[1,1]]
-                    link.bNodeId = link[0];
-                    link.cNodeId = link[1][0];
-                    link.cConn = link[1][1]; // lvl C "port" (0 or 1)
+                    link.bNodeId = link.segment[0];
+                    link.cNodeId = link.segment[1][0];
+                    link.cConn = link.segment[1][1]; // lvl C "port" (0 or 1)
+                    //link.bNodeId = link[0];
+                    //link.cNodeId = link[1][0];
+                    //link.cConn = link[1][1]; // lvl C "port" (0 or 1)
                     link.bNode = this.nodes.lvlB[link.bNodeId].index; // lvl B node (0 or 1)
                     link.cNode = this.nodes.lvlC[link.cNodeId].index;
                     cPort = link.cNode * 2 + link.cConn;
@@ -674,14 +679,20 @@ angular.module('ngEcho', [])
         //---------------------------------------------------
         EchoFactory.prototype.abLinkIndexOf = function (arrayToSearch, id0, id1) {
             for (var i = 0, len = arrayToSearch.length; i < len; i++) {
-                if (arrayToSearch[i][0] == id0 && arrayToSearch[i][1] == id1) return i;
+                var link = arrayToSearch[i];
+                if (!(link instanceof Array)) {link = link.segment;}
+                if (link[0] == id0 && link[1] == id1) return i;
+                //if (arrayToSearch[i][0] == id0 && arrayToSearch[i][1] == id1) return i;
             }
             return -1;
         }
 
         EchoFactory.prototype.bcLinkIndexOf = function (arrayToSearch, id0, id1, id2) {
             for (var i = 0, len = arrayToSearch.length; i < len; i++) {
-                if (arrayToSearch[i][0] == id0 && arrayToSearch[i][1][0] == id1 && arrayToSearch[i][1][1] == id2) return i;
+                var link = arrayToSearch[i];
+                if (!(link instanceof Array)) {link = link.segment;}
+                if (link[0] == id0 && link[1][0] == id1 && link[1][1] == id2) return i;
+                //if (arrayToSearch[i][0] == id0 && arrayToSearch[i][1][0] == id1 && arrayToSearch[i][1][1] == id2) return i;
             }
             return -1;
         }
@@ -756,7 +767,8 @@ angular.module('ngEcho', [])
             this.nodeLinks = [];
             for (idA in this.nodes.lvlA) {
                 for (idB in this.nodes.lvlB) {
-                    link = [idA, idB];
+                    link = {segment: [idA, idB]};
+                    //link = [idA, idB];
                     link.active = this.abLinkIndexOf(initialLinks, idA, idB) !== -1;
                     this.nodeLinks.push(link);
                 }
@@ -764,7 +776,8 @@ angular.module('ngEcho', [])
             for (idB in this.nodes.lvlB) {
                 for (idC in this.nodes.lvlC) {
                     for (conn = 0; conn < 2; conn++) {
-                        link = [idB, [idC, conn]];
+                        link = {segment: [idB, [idC, conn]]};
+                        //link = [idB, [idC, conn]];
                         link.active = this.bcLinkIndexOf(initialLinks, idB, idC, conn) !== -1;
                         this.nodeLinks.push(link);
                     }
