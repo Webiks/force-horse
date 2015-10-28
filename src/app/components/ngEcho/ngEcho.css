@@ -1,16 +1,5 @@
-/*
-html, body {
-    width: 100%;
-    height: 100%;
-}
 
-div.echoContainer {
-    width: 600px;
-    height: 400px;
-}
-*/
-
-svg {
+.echo-graph svg {
     margin-top: 5px;
     border: 1px solid #f8f8f8;
     stroke-width: 1;
@@ -24,30 +13,30 @@ svg {
     height: 100%;
 }
 
-circle.port {
+.echo-graph circle.port {
     r: 2;
     stroke: #f0f0f0;
 }
 
-ellipse {
+.echo-graph ellipse {
     stroke: blue;
 }
 
-.foreignCheckbox input {
+.echo-graph .foreignCheckbox input {
     padding: 0;
     margin:  0;
     width: 13px;
     height: 12px;
 }
 
-.hide_me {
+.echo-graph .hide_me {
     display: none;
 }
 
-.color_ok {
+.echo-graph .color_ok {
     stroke: green;
 }
 
-.color_nok {
+.echo-graph .color_nok {
     stroke: red;
 }

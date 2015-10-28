@@ -30,7 +30,8 @@ angular.module('ngEcho', [])
             // define the "link" function
             link: function (scope, element, attr, ctrl) {
                 console.log('In echoDirective link');
-
+                // Add CSS class to set a CSS "namespace"
+                element.addClass("echo-graph");
             }
         };
     }])
