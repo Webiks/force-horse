@@ -39,3 +39,15 @@ ellipse {
     width: 13px;
     height: 12px;
 }
+
+.hide_me {
+    display: none;
+}
+
+.color_ok {
+    stroke: green;
+}
+
+.color_nok {
+    stroke: red;
+}

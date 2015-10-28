@@ -13,9 +13,39 @@ angular.module('myApp.view3', ['ui.router', 'ngEcho'])
         });
     }])
 
-    .controller('view3Ctrl', ['$scope', function($scope) {
+    .controller('view3Ctrl', ['$scope', function ($scope) {
         console.log('In mainAppCtrl');
         var vm = this;
+
+        vm.randomVal = function() {
+            return Math.round(Math.random() * vm.echoOptions.generalConfig.treshold * 2);
+        }
+
+        vm.myCallback = function (formValues, paths) {
+            console.log("myCallBack has been called, with params "
+                + JSON.stringify(formValues) + " " + JSON.stringify(paths));
+            // update paths with information
+            var newPath, newPaths = [];
+            paths.forEach(function (path) {
+                newPath = {
+                    segment: path,
+                    average: {
+                        roundTripTime: vm.randomVal(),
+                        bitRate: vm.randomVal(),
+                        count: vm.randomVal()
+                    },
+                    worst: {
+                        roundTripTime: vm.randomVal(),
+                        bitRate: vm.randomVal(),
+                        count: vm.randomVal()
+                    }
+                };
+                newPaths.push(newPath);
+            });
+// call directive API
+            vm.echoOptions.echoInstance.setPaths(newPaths);
+        }
+
 
         // config variable in the main controller context
         vm.echoOptions = {
@@ -29,22 +59,23 @@ angular.module('myApp.view3', ['ui.router', 'ngEcho'])
                     label: '',
                     value: 15
                 }],
-                submitCallback: function(formValues, paths) {
-                    console.log("submitCallback has been called, with params " + d3.values(formValues) + " " + paths);
+                submitCallback: function (formValues, paths) {
+                    vm.myCallback(formValues, paths);
                 }
             },
-            // TODO::save the first configuration as the current configuration
-            // TODO::expose "setCurrentConfiguration" to replace currectConfiguration
-            // TODO::expose "setNodes" to replace presentation
+// TODO::save the first configuration as the current configuration
+// TODO::expose "setCurrentConfiguration" to replace currectConfiguration
+// TODO::expose "setNodes" to replace presentation
             generalConfig: {
                 lvlAImage: 'http://placeskull.com/30/50/c0c0e0/7',
                 lvlBImage: 'http://placeskull.com/30/50/c0c0e0/21',
                 lvlCImage: 'http://placeskull.com/30/30/c0c0e0/10',
                 defaultPaths: [
-                    [1,2], [3,2], [6,1], [1,[4,0]], [2,[1,1]], [2,[2,1]]
+                    [1, 2], [3, 2], [6, 1], [1, [4, 0]], [2, [1, 1]], [2, [2, 1]]
                 ],
                 treshold: 10
-            },
+            }
+            ,
             configuration: {
                 lvlA: [
                     {
@@ -100,6 +131,8 @@ angular.module('myApp.view3', ['ui.router', 'ngEcho'])
                     }
                 ]
             }
-        };
+        }
+        ;
 
-    }]);
+    }])
+;

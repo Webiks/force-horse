@@ -45,7 +45,7 @@ angular.module('ngEcho', [])
             this.formValues = options.form.defaults;
 
             this.setNodes(options.configuration);
-            this.setNodeLinks(options.generalConfig.defaultPaths);
+            this.initNodeLinks(options.generalConfig.defaultPaths);
 
             // set work area width & height
             var minWidth = 600;
@@ -412,7 +412,7 @@ angular.module('ngEcho', [])
             var portIcons = drawNodePorts(dataset.lvlAPorts.concat(
                 dataset.lvlBLeftPorts, dataset.lvlBRightPorts, dataset.lvlCTopPorts, dataset.lvlCBottomPorts));
 
-            this.drawLinks(dataset);
+            this.drawLinks();
 
             //---------------------------------------------------
             function drawNodeIcons(className, _dataset, iconW, iconH, defaultImageUrl) {
@@ -617,85 +617,85 @@ angular.module('ngEcho', [])
                 } // if (level == )
 
                 if (changed) {
-                    that.drawLinks(data);
+                    that.drawLinks();
                     //that.draw(that.layout()); // recompute layout & redraw
                 }
 
                 //---------------------------------------------------
             };
-        }
+        };
 
         //---------------------------------------------------
         // drawLinks
         //---------------------------------------------------
-        EchoFactory.prototype.drawLinks = function (data) {
-/*
-            var tempData = this.nodeLinks.filter(function (val) {
-                return !(val[1] instanceof Array);
-            });
-            var lvlAlvlBLines = this.svg.selectAll("line.simple")
-                .data(tempData);
-            lvlAlvlBLines.enter()
-                .append("line")
-                .attr("class", "simple")
-                .attr("x1", function (d) {
-                    return d.x1;
-                })
-                .attr("y1", function (d) {
-                    return d.y1;
-                })
-                .attr("x2", function (d) {
-                    return d.x2;
-                })
-                .attr("y2", function (d) {
-                    return d.y2;
-                });
-            // show only active lines
-            lvlAlvlBLines.style("display", function (d) {
-                return d.active ? null : "none";
-            });
-            lvlAlvlBLines.exit().remove();
-*/
-
+        EchoFactory.prototype.drawLinks = function () {
+            var that = this;
             var paths = this.svg.selectAll("path.link")
                 .data(this.nodeLinks)
-                    //.filter(function (val) { return val[1] instanceof Array;}))
             paths.enter()
                 .append("path")
-                .attr("class", "link")
                 .attr("d", function (d) {
                     return d.path;
-                });
-            // show only active lines
-            paths.style("display", function (d) {
-                return d.active ? null : "none";
+                })
+                .append("title"); // attach a title element for a tooltip
+            // set CSS classes for the path
+            var classes;
+            paths.attr("class", function (d) {
+                classes = "link";
+                // show only active lines
+                classes += d.active ? "" : " hide_me";
+                // set colors according to attached information
+                if (d.average) {
+                    classes += (d.average.bitRate < that.options.generalConfig.treshold ? " color_nok" : " color_ok");
+                }
+                return classes;
             });
-            paths.exit().remove();
-        }
+            // set the tooltip for the path
+            paths.select("title")
+                .text(function(d) {
+                    if (!d.average) {
+                        return "no data";
+                    } else {
+                        return "Average"
+                            + "\nRound Trip Time: " + d.average.roundTripTime
+                            + "\nBit Rate: " + d.average.bitRate
+                            + "\nCount: " + d.average.count
+                            + "\n\nWorst"
+                            + "\nRound Trip Time: " + d.worst.roundTripTime
+                            + "\nBit Rate: " + d.worst.bitRate
+                            + "\nCount: " + d.worst.count;
+                    }
+                });
+            //paths.exit().remove();
+        };
 
         //---------------------------------------------------
-        // Array search functions for array items
-        // (because Array.indexOf does not work for items which are arrays, or objects)
+        // abLinkIndexOf
+        // Find index of an A-B link in a links array
         //---------------------------------------------------
-        EchoFactory.prototype.abLinkIndexOf = function (arrayToSearch, id0, id1) {
-            for (var i = 0, len = arrayToSearch.length; i < len; i++) {
-                var link = arrayToSearch[i];
+        EchoFactory.prototype.abLinkIndexOf = function (links, id0, id1) {
+            for (var i = 0, len = links.length; i < len; i++) {
+                var link = links[i];
                 if (!(link instanceof Array)) {link = link.segment;}
                 if (link[0] == id0 && link[1] == id1) return i;
                 //if (arrayToSearch[i][0] == id0 && arrayToSearch[i][1] == id1) return i;
             }
             return -1;
-        }
+        };
 
-        EchoFactory.prototype.bcLinkIndexOf = function (arrayToSearch, id0, id1, id2) {
-            for (var i = 0, len = arrayToSearch.length; i < len; i++) {
-                var link = arrayToSearch[i];
+        //---------------------------------------------------
+        // bcLinkIndexOf
+        // Find index of a B-C link in a links array
+        //---------------------------------------------------
+        EchoFactory.prototype.bcLinkIndexOf = function (links, id0, id1, id2) {
+            for (var i = 0, len = links.length; i < len; i++) {
+                var link = links[i];
                 if (!(link instanceof Array)) {link = link.segment;}
                 if (link[0] == id0 && link[1][0] == id1 && link[1][1] == id2) return i;
                 //if (arrayToSearch[i][0] == id0 && arrayToSearch[i][1][0] == id1 && arrayToSearch[i][1][1] == id2) return i;
             }
             return -1;
-        }
+        };
 
 /*
         //---------------------------------------------------
@@ -760,14 +760,14 @@ angular.module('ngEcho', [])
         };
 
         //---------------------------------------------------
-        // setNodeLinks
+        // initNodeLinks
         //---------------------------------------------------
-        EchoFactory.prototype.setNodeLinks = function (initialLinks) {
+        EchoFactory.prototype.initNodeLinks = function (initialLinks) {
             var idA, idB, idC, conn, link;
             this.nodeLinks = [];
             for (idA in this.nodes.lvlA) {
                 for (idB in this.nodes.lvlB) {
-                    link = {segment: [idA, idB]};
+                    link = {segment: [this.nodes.lvlA[idA].id, this.nodes.lvlB[idB].id]};
                     //link = [idA, idB];
                     link.active = this.abLinkIndexOf(initialLinks, idA, idB) !== -1;
                     this.nodeLinks.push(link);
@@ -776,14 +776,44 @@ angular.module('ngEcho', [])
             for (idB in this.nodes.lvlB) {
                 for (idC in this.nodes.lvlC) {
                     for (conn = 0; conn < 2; conn++) {
-                        link = {segment: [idB, [idC, conn]]};
+                        link = {segment: [this.nodes.lvlB[idB].id, [this.nodes.lvlC[idC].id, conn]]};
                         //link = [idB, [idC, conn]];
                         link.active = this.bcLinkIndexOf(initialLinks, idB, idC, conn) !== -1;
                         this.nodeLinks.push(link);
                     }
                 }
             }
-        }
+        };
+
+        //---------------------------------------------------
+        // helloAPI (test method)
+        //---------------------------------------------------
+        EchoFactory.prototype.helloAPI = function(name) {
+            console.log("Hello, " + name + "!");
+        };
+
+        //---------------------------------------------------
+        // setPaths (exposed API method)
+        // Let the caller update the paths with information
+        //---------------------------------------------------
+        EchoFactory.prototype.setPaths = function (paths) {
+            var that = this;
+            var index;
+            paths.forEach(function(link) {
+                // Find the link in the internal links array
+                if (!(link.segment[1] instanceof Array)) {
+                    index = that.abLinkIndexOf(that.nodeLinks, link.segment[0], link.segment[1]);
+                } else {
+                    index = that.bcLinkIndexOf(that.nodeLinks, link.segment[0], link.segment[1][0], link.segment[1][1]);
+                }
+                // Add the given information to the link
+                if (index !== -1) {
+                    that.nodeLinks[index].average = link.average;
+                    that.nodeLinks[index].worst = link.worst;
+                }
+            });
+            that.drawLinks();
+        };
 
         //---------------------------------------------------
         // send (to caller app)
@@ -792,8 +822,10 @@ angular.module('ngEcho', [])
             console.log('In send() method');
             this.options.form.submitCallback(
                 this.formValues,
-                this.nodeLinks.filter(function (link) {
+                this.nodeLinks.filter(function(link) {
                     return link.active;
+                }).map(function(link) {
+                    return link.segment;
                 })
             );
         };
