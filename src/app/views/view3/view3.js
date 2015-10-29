@@ -42,7 +42,7 @@ angular.module('myApp.view3', ['ui.router', 'ngEcho'])
                 };
                 newPaths.push(newPath);
             });
-// call directive API
+            // call directive API
             vm.echoOptions.echoInstance.setPaths(newPaths);
         }
 

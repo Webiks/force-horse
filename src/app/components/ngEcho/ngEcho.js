@@ -5,10 +5,10 @@
 angular.module('ngEcho', [])
 
 /** define the directive
- *  @name
- *  @description
- *  @scope
- *  @api
+ *  @name echoDirective
+ *  @description echo graph as directive
+ *  @scope scope
+ *  @api api
  **/
 
     .directive('echoDirective', ['$compile', 'EchoFactory', function ($compile, EchoFactory) {
@@ -28,7 +28,7 @@ angular.module('ngEcho', [])
                 this.test = true;
             },
             // define the "link" function
-            link: function (scope, element, attr, ctrl) {
+            link: function (scope, element) { //, attr, ctrl) {
                 console.log('In echoDirective link');
                 // Add CSS class to set a CSS "namespace"
                 element.addClass("echo-graph");
@@ -46,6 +46,8 @@ angular.module('ngEcho', [])
             this.formValues = options.form.defaults;
 
             this.setNodes(options.configuration);
+            // save default paths, so that they can be restored
+            this.defaultPaths = angular.copy(options.generalConfig.defaultPaths);
             this.initNodeLinks(options.generalConfig.defaultPaths);
 
             // set work area width & height
@@ -124,7 +126,7 @@ angular.module('ngEcho', [])
                 lvlCBottomPorts: []
             };
 
-            var i, j, _x, _y, _x1, _x2, _y1, _y2, node, _nodeId, xCheckbox, yCheckbox, _path,
+            var i, j, _x, _y, _x1, _x2, _y1, _y2, node, _nodeId, xCheckbox, yCheckbox,
                 portScale, link, aPort, bPort, cPort, key;
 
             // ----------------------------
@@ -144,50 +146,52 @@ angular.module('ngEcho', [])
 
             //    for (i = 0; i < this.noOfLvlANodes; i++) {
             for (_nodeId in this.nodes.lvlA) {
-                node = this.nodes.lvlA[_nodeId];
-                i = node.index;
-                _x = overallHorizontalScale(0);
-                _y = lvlANodesScale(i);
-                xCheckbox = _x + this.lvlANodeW / 2 + this.portMargin;
-                yCheckbox = _y - this.checkboxWidth / 2;
+                if (this.nodes.lvlA.hasOwnProperty(_nodeId)) {
+                    node = this.nodes.lvlA[_nodeId];
+                    i = node.index;
+                    _x = overallHorizontalScale(0);
+                    _y = lvlANodesScale(i);
+                    xCheckbox = _x + this.lvlANodeW / 2 + this.portMargin;
+                    yCheckbox = _y - this.checkboxWidth / 2;
 
-                //data.lvlANodes.push({
-                node.x = _x;
-                node.y = _y;
+                    //data.lvlANodes.push({
+                    node.x = _x;
+                    node.y = _y;
 
-                data.nodeLabels.push({
-                    text: node.label,
-                    x: _x,
-                    y: _y - this.lvlANodeH / 2 - this.portMargin,
-                    align: 'middle'
-                });
-                data.lvlACheckboxes[_nodeId] = {
-                    level: 0,
-                    nodeId: _nodeId,
-                    x: xCheckbox,
-                    y: yCheckbox
-                };
-
-                portScale = d3.scale.ordinal()
-                    .domain(getNumberArray(this.noOfLvlBNodes))
-                    .rangePoints([0, this.checkboxWidth - 1], 1);
-
-                for (j = 0; j < this.noOfLvlBNodes; j++) {
-                    data.lvlAPorts.push({
-                        x: xCheckbox + this.checkboxWidth + this.portMargin,
-                        y: yCheckbox + portScale(j)
+                    data.nodeLabels.push({
+                        text: node.label,
+                        x: _x,
+                        y: _y - this.lvlANodeH / 2 - this.portMargin,
+                        align: 'middle'
                     });
+                    data.lvlACheckboxes[_nodeId] = {
+                        level: 0,
+                        nodeId: _nodeId,
+                        x: xCheckbox,
+                        y: yCheckbox
+                    };
+
+                    portScale = d3.scale.ordinal()
+                        .domain(getNumberArray(this.noOfLvlBNodes))
+                        .rangePoints([0, this.checkboxWidth - 1], 1);
+
+                    for (j = 0; j < this.noOfLvlBNodes; j++) {
+                        data.lvlAPorts.push({
+                            x: xCheckbox + this.checkboxWidth + this.portMargin,
+                            y: yCheckbox + portScale(j)
+                        });
+                    }
+
+                    /*
+                     portScale = d3.scale.ordinal()
+                     .domain(getNumberArray(this.noOfLvlBNodes))
+                     .rangePoints([0, this.lvlANodeH-1], 1);
+
+                     for (j = 0; j < this.noOfLvlBNodes; j++) {
+                     data.lvlAPorts.push({x: _x + this.lvlANodeW /2 + 2*this.portMargin + this.checkboxWidth, y: _y - this.lvlANodeH/2 + portScale(j)});
+                     }
+                     */
                 }
-
-                /*
-                 portScale = d3.scale.ordinal()
-                 .domain(getNumberArray(this.noOfLvlBNodes))
-                 .rangePoints([0, this.lvlANodeH-1], 1);
-
-                 for (j = 0; j < this.noOfLvlBNodes; j++) {
-                 data.lvlAPorts.push({x: _x + this.lvlANodeW /2 + 2*this.portMargin + this.checkboxWidth, y: _y - this.lvlANodeH/2 + portScale(j)});
-                 }
-                 */
             }
 
             // -------------------------------
@@ -199,59 +203,61 @@ angular.module('ngEcho', [])
 
             //    for (i = 0; i < this.noOfLvlBNodes; i++) {
             for (_nodeId in this.nodes.lvlB) {
-                node = this.nodes.lvlB[_nodeId];
-                i = node.index;
-                _x = overallHorizontalScale(1);
-                _y = lvlBNodesScale(i);
-                xCheckbox = _x - this.lvlBNodeW / 2 - this.portMargin - this.checkboxWidth;
-                yCheckbox = _y - this.checkboxWidth / 2;
+                if (this.nodes.lvlB.hasOwnProperty(_nodeId)) {
+                    node = this.nodes.lvlB[_nodeId];
+                    i = node.index;
+                    _x = overallHorizontalScale(1);
+                    _y = lvlBNodesScale(i);
+                    xCheckbox = _x - this.lvlBNodeW / 2 - this.portMargin - this.checkboxWidth;
+                    yCheckbox = _y - this.checkboxWidth / 2;
 
-                //      data.lvlBNodes.push({
-                node.x = _x;
-                node.y = _y;
+                    //      data.lvlBNodes.push({
+                    node.x = _x;
+                    node.y = _y;
 
-                data.nodeLabels.push({
-                    text: node.label,
-                    x: _x,
-                    y: _y - this.lvlBNodeH / 2 - this.portMargin,
-                    align: 'middle'
-                });
-                data.lvlBCheckboxes[_nodeId] = {
-                    level: 1,
-                    nodeId: _nodeId,
-                    x: xCheckbox,
-                    y: yCheckbox
-                };
-
-                portScale = d3.scale.ordinal()
-                    .domain(getNumberArray(this.noOfLvlANodes))
-                    .rangePoints([0, this.checkboxWidth - 1], 0.5);
-
-                for (j = 0; j < this.noOfLvlANodes; j++) {
-                    data.lvlBLeftPorts.push({
-                        x: xCheckbox - this.portMargin,
-                        y: yCheckbox + portScale(j)
+                    data.nodeLabels.push({
+                        text: node.label,
+                        x: _x,
+                        y: _y - this.lvlBNodeH / 2 - this.portMargin,
+                        align: 'middle'
                     });
-                }
-                /*
-                 portScale = d3.scale.ordinal()
-                 .domain(getNumberArray(this.noOfLvlANodes))
-                 .rangePoints([0, this.lvlBNodeH-1], 1);
+                    data.lvlBCheckboxes[_nodeId] = {
+                        level: 1,
+                        nodeId: _nodeId,
+                        x: xCheckbox,
+                        y: yCheckbox
+                    };
 
-                 for (j = 0; j < this.noOfLvlANodes; j++) {
-                 data.lvlBLeftPorts.push({x: _x - this.lvlBNodeW /2 - this.portMargin, y: _y - this.lvlBNodeH/2 + portScale(j)});
-                 }
-                 */
-                portScale = d3.scale.ordinal()
-                    .domain(getNumberArray(this.noOfLvlCNodes * 2))
-                    .rangePoints([0, this.lvlBNodeH - 1], 1);
+                    portScale = d3.scale.ordinal()
+                        .domain(getNumberArray(this.noOfLvlANodes))
+                        .rangePoints([0, this.checkboxWidth - 1], 0.5);
 
-                for (j = 0; j < this.noOfLvlCNodes * 2; j++) {
-                    data.lvlBRightPorts.push({
-                        x: _x + this.lvlBNodeW / 2 + this.portMargin,
-                        y: i === 0 ?
-                        _y + this.lvlBNodeH / 2 - portScale(j) : _y - this.lvlBNodeH / 2 + portScale(j)
-                    });
+                    for (j = 0; j < this.noOfLvlANodes; j++) {
+                        data.lvlBLeftPorts.push({
+                            x: xCheckbox - this.portMargin,
+                            y: yCheckbox + portScale(j)
+                        });
+                    }
+                    /*
+                     portScale = d3.scale.ordinal()
+                     .domain(getNumberArray(this.noOfLvlANodes))
+                     .rangePoints([0, this.lvlBNodeH-1], 1);
+
+                     for (j = 0; j < this.noOfLvlANodes; j++) {
+                     data.lvlBLeftPorts.push({x: _x - this.lvlBNodeW /2 - this.portMargin, y: _y - this.lvlBNodeH/2 + portScale(j)});
+                     }
+                     */
+                    portScale = d3.scale.ordinal()
+                        .domain(getNumberArray(this.noOfLvlCNodes * 2))
+                        .rangePoints([0, this.lvlBNodeH - 1], 1);
+
+                    for (j = 0; j < this.noOfLvlCNodes * 2; j++) {
+                        data.lvlBRightPorts.push({
+                            x: _x + this.lvlBNodeW / 2 + this.portMargin,
+                            y: i === 0 ?
+                            _y + this.lvlBNodeH / 2 - portScale(j) : _y - this.lvlBNodeH / 2 + portScale(j)
+                        });
+                    }
                 }
             }
 
@@ -522,7 +528,7 @@ angular.module('ngEcho', [])
                     if (checkbox.checked) {
                         // add links to all active level B nodes
                         targetNodes.forEach(function (node) {
-                            i = that.abLinkIndexOf(links, nodeId, node.id);
+                            i = that.linkIndexOf(links, nodeId, node.id);
                             if (!links[i].active) {
                                 links[i].active = true;
                                 changed = true;
@@ -531,7 +537,7 @@ angular.module('ngEcho', [])
                     } else { // if !checkbox.checked
                         // remove links from all active level B nodes
                         targetNodes.forEach(function (node) {
-                            i = that.abLinkIndexOf(links, nodeId, node.id);
+                            i = that.linkIndexOf(links, nodeId, node.id);
                             if (links[i].active) {
                                 links[i].active = false;
                                 changed = true;
@@ -551,7 +557,7 @@ angular.module('ngEcho', [])
                     if (checkbox.checked) {
                         // add links to all active level A nodes
                         targetNodes.forEach(function (node) {
-                            i = that.abLinkIndexOf(links, node.id, nodeId);
+                            i = that.linkIndexOf(links, node.id, nodeId);
                             if (!links[i].active) {
                                 links[i].active = true;
                                 changed = true;
@@ -560,7 +566,7 @@ angular.module('ngEcho', [])
                     } else { // if !checkbox.checked
                         // remove links from all active level A nodes
                         targetNodes.forEach(function (node) {
-                            i = that.abLinkIndexOf(links, node.id, nodeId);
+                            i = that.linkIndexOf(links, node.id, nodeId);
                             if (links[i].active) {
                                 links[i].active = false;
                                 changed = true;
@@ -573,7 +579,7 @@ angular.module('ngEcho', [])
                         for (conn = 0; conn < 2; conn++) {
                             key = "" + targetNodeId + nodes.lvlB[nodeId].index + conn;
                             if (data.lvlCCheckboxes[key].checked) {
-                                i = that.bcLinkIndexOf(links, nodeId, targetNodeId, conn);
+                                i = that.linkIndexOf(links, nodeId, targetNodeId, conn);
                                 if (checkbox.checked) {
                                     // add links to all active level C nodes
                                     if (!links[i].active) {
@@ -600,14 +606,14 @@ angular.module('ngEcho', [])
                     if (targetCheckbox.checked) {
                         if (checkbox.checked) {
                             // add the link to relevant level B node, if it's active
-                            i = that.bcLinkIndexOf(links, targetNodeId, nodeId, cConn);
+                            i = that.linkIndexOf(links, targetNodeId, nodeId, cConn);
                             if (!links[i].active) {
                                 links[i].active = true;
                                 changed = true;
                             }
                         } else { // if !checkbox.checked
                             // remove the link to the relevant level B node
-                            i = that.bcLinkIndexOf(links, targetNodeId, nodeId, cConn);
+                            i = that.linkIndexOf(links, targetNodeId, nodeId, cConn);
                             if (links[i].active) {
                                 links[i].active = false;
                                 changed = true;
@@ -671,6 +677,36 @@ angular.module('ngEcho', [])
         };
 
         //---------------------------------------------------
+        // linkIndexOf
+        // Find index of a link in a links array
+        //---------------------------------------------------
+        EchoFactory.prototype.linkIndexOf = function (links, id0, id1, conn) {
+            // allow searching for a link in array form too
+            if (id0 instanceof Array) {
+                if (id0[1] instanceof Array) {
+                    id1 = id0[1][0];
+                    conn = id0[1][1];
+                } else {
+                    id1 = id0[1];
+                }
+                id0 = id0[0];
+            }
+            // now find link
+            var isAB = (typeof conn === "undefined");
+            for (var i = 0, len = links.length; i < len; i++) {
+                var link = links[i];
+                if (!(link instanceof Array)) {link = link.segment;}
+                if (isAB) {
+                    if (link[0] == id0 && link[1] == id1) return i;
+                } else {
+                    if (link[0] == id0 && link[1][0] == id1 && link[1][1] == conn) return i;
+                }
+            }
+            return -1;
+        };
+
+/*
+        //---------------------------------------------------
         // abLinkIndexOf
         // Find index of an A-B link in a links array
         //---------------------------------------------------
@@ -697,23 +733,6 @@ angular.module('ngEcho', [])
             }
             return -1;
         };
-
-/*
-        //---------------------------------------------------
-        // helper: loadImage
-        //---------------------------------------------------
-        EchoFactory.prototype.loadImage = function(imgUrl) {
-            var img = $("<img />").attr('src', imgUrl)
-                .on('load', function() {
-                    if (!this.complete || typeof this.naturalWidth == "undefined" || this.naturalWidth == 0) {
-                        console.error('broken image: ' + imgUrl);
-                    } else {
-                        $("#w").html(this.naturalWidth);
-                        $("#h").html(this.naturalHeight);
-                        $("#foreign").append(img);
-                    }
-                });
-        }
 */
 
         //---------------------------------------------------
@@ -770,7 +789,7 @@ angular.module('ngEcho', [])
                 for (idB in this.nodes.lvlB) {
                     link = {segment: [this.nodes.lvlA[idA].id, this.nodes.lvlB[idB].id]};
                     //link = [idA, idB];
-                    link.active = this.abLinkIndexOf(initialLinks, idA, idB) !== -1;
+                    link.active = this.linkIndexOf(initialLinks, idA, idB) !== -1;
                     this.nodeLinks.push(link);
                 }
             }
@@ -779,7 +798,7 @@ angular.module('ngEcho', [])
                     for (conn = 0; conn < 2; conn++) {
                         link = {segment: [this.nodes.lvlB[idB].id, [this.nodes.lvlC[idC].id, conn]]};
                         //link = [idB, [idC, conn]];
-                        link.active = this.bcLinkIndexOf(initialLinks, idB, idC, conn) !== -1;
+                        link.active = this.linkIndexOf(initialLinks, idB, idC, conn) !== -1;
                         this.nodeLinks.push(link);
                     }
                 }
@@ -789,7 +808,7 @@ angular.module('ngEcho', [])
         //---------------------------------------------------
         // helloAPI (test method)
         //---------------------------------------------------
-        EchoFactory.prototype.helloAPI = function(name) {
+        EchoFactory.prototype.hello = function(name) {
             console.log("Hello, " + name + "!");
         };
 
@@ -801,12 +820,16 @@ angular.module('ngEcho', [])
             var that = this;
             var index;
             paths.forEach(function(link) {
+                // Accept also a link as an array, not just a link as an object
+                if (link instanceof Array) {link = {segment: link}}
                 // Find the link in the internal links array
-                if (!(link.segment[1] instanceof Array)) {
-                    index = that.abLinkIndexOf(that.nodeLinks, link.segment[0], link.segment[1]);
-                } else {
-                    index = that.bcLinkIndexOf(that.nodeLinks, link.segment[0], link.segment[1][0], link.segment[1][1]);
-                }
+                index = that.linkIndexOf(that.nodeLinks, link.segment);
+                //if (!(link.segment[1] instanceof Array)) {
+                //    index = that.linkIndexOf(that.nodeLinks, link.segment[0], link.segment[1]);
+                //} else {
+                //    index = that.linkIndexOf(that.nodeLinks, link.segment[0], link.segment[1][0], link.segment[1][1]);
+                //}
+
                 // Add the given information to the link
                 if (index !== -1) {
                     that.nodeLinks[index].average = link.average;
@@ -814,6 +837,20 @@ angular.module('ngEcho', [])
                 }
             });
             that.drawLinks();
+        };
+
+        //---------------------------------------------------
+        // restoreDefaultPaths
+        //---------------------------------------------------
+        EchoFactory.prototype.restoreDefaultPaths = function () {
+            var that = this;
+            this.nodeLinks.forEach(function (link) {
+                link.active = (that.linkIndexOf(that.defaultPaths, link.segment) !== -1);
+                delete link.average;
+                delete link.worst;
+            });
+
+            this.drawLinks();
         };
 
         //---------------------------------------------------

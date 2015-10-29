@@ -8,8 +8,8 @@ angular.module('ngEchoButtons', ['ngEcho'])
         // cache our buttons template
         $templateCache.put('ngEcho/echoButtons',
             '<div class="echoButtonsWrapper">\
-              <button ng-click="echoButtonsCtrl.echoButtonsInstance.ngEchoInstance.generateNewEcho()">Select All</button>\
-              <button ng-click="echoButtonsCtrl.echoButtonsInstance.ngEchoInstance.generateNewEcho()">Select Current Configuration</button>\
+              <button ng-click="echoButtonsCtrl.echoButtonsInstance.ngEchoInstance.hello(\'Echo\')">Select All</button>\
+              <button ng-click="echoButtonsCtrl.echoButtonsInstance.ngEchoInstance.restoreDefaultPaths()">Select Current Configuration</button>\
             </div>')
     })
     .directive('echoButtons', function(echoButtonsFactory, $compile){
