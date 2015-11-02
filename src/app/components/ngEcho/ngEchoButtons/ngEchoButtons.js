@@ -3,15 +3,22 @@
 //===============================================================//
 // define the ngEchoButtons module (dependant on ngEcho)
 angular.module('ngEchoButtons', ['ngEcho'])
+
     // add templates into cache
     .run(function($templateCache){
         // cache our buttons template
         $templateCache.put('ngEcho/echoButtons',
             '<div class="echoButtonsWrapper">\
-              <button ng-click="echoButtonsCtrl.echoButtonsInstance.ngEchoInstance.hello(\'Echo\')">Select All</button>\
-              <button ng-click="echoButtonsCtrl.echoButtonsInstance.ngEchoInstance.restoreDefaultPaths()">Select Current Configuration</button>\
-            </div>')
+              <md-button class="md-raised" ng-click="echoButtonsCtrl.echoButtonsInstance.ngEchoInstance.hello(\'Echo\')">Select All</md-button>\
+              <md-button class="md-raised" ng-click="echoButtonsCtrl.echoButtonsInstance.ngEchoInstance.restoreDefaultPaths()">Select Current Configuration</md-button>\
+            </div>');
+        //$templateCache.put('ngEcho/echoButtons',
+        //    '<div class="echoButtonsWrapper">\
+        //      <button ng-click="echoButtonsCtrl.echoButtonsInstance.ngEchoInstance.hello(\'Echo\')">Select All</button>\
+        //      <button ng-click="echoButtonsCtrl.echoButtonsInstance.ngEchoInstance.restoreDefaultPaths()">Select Current Configuration</button>\
+        //    </div>');
     })
+
     .directive('echoButtons', function(echoButtonsFactory, $compile){
         return {
             restrict: 'A',

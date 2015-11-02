@@ -16,7 +16,7 @@ angular.module('ngEchoHeader', ['ngEcho'])
             <input type="checkbox" id="displayWorstCase" class="margin-left" ng-model="echoHeaderCtrl.echoHeaderInstance.ngEchoInstance.formValues.checkBox2"\
             ng-true-value="1" ng-false-value="0">\
             <label for="displayWorstCase">Display worst case</label>\
-            <button ng-click="echoHeaderCtrl.echoHeaderInstance.ngEchoInstance.send()" class="margin-left">Test asd</button>\
+            <md-button class="md-raised" ng-click="echoHeaderCtrl.echoHeaderInstance.ngEchoInstance.send()" class="margin-left">Test asd</button>\
             </div>')
     })
     .directive('echoHeader', function(echoHeaderFactory, $compile){
