@@ -22,7 +22,7 @@ angular.module('ngEchoHeader', ['ngEcho'])
     .directive('echoHeader', function(echoHeaderFactory, $compile){
         return {
             restrict: 'A',
-            priority: -500,
+            priority: -100,
             require: 'echoDirective',
             link: function(scope, element, attr, ctrl){
                 // create an isolate scope for this directive
@@ -43,8 +43,9 @@ angular.module('ngEchoHeader', ['ngEcho'])
                 // compile the template
                 template = $compile(template)(isoScope);
 
-                // inject into the DOM just below the echo viewer
-                element.parent().prepend(template);
+                // inject into the DOM above the echo viewer
+                element.prepend(template);
+                //element.parent().prepend(template);
             }
         };
     })

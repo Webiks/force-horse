@@ -1,9 +1,12 @@
 
 .echo-graph {
-    position: relative;
     flex: 1;
 }
 
+.echo-graph .echoSvgWrapper {
+    position: relative;
+    flex: 1;
+}
 
 .echo-graph svg {
     position: absolute;

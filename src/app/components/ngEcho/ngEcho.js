@@ -16,7 +16,7 @@ angular.module('ngEcho', [])
         return {
             restrict: "EA",
             controllerAs: "echoCtrl",
-            priority: 500,
+            priority: 100,
             scope: {
                 echoDirective: "="
             },
@@ -32,6 +32,8 @@ angular.module('ngEcho', [])
                 console.log('In echoDirective link');
                 // Add CSS class to set a CSS "namespace"
                 element.addClass("echo-graph");
+                //element.prop("flex", true);
+                element.attr("layout", "column");
             }
         };
     }])
@@ -53,26 +55,6 @@ angular.module('ngEcho', [])
             // set work area width & height
             var minWidth = 600;
             var minHeight = 400;
-            //this.width = options.width || minWidth;
-            //this.height = options.height || minHeight;
-            //if (angular.isUndefined(options.width)) {
-            //    options.width = element[0].offsetWidth;
-            //    //options.width = window.getComputedStyle(element[0]).width;
-            //    //options.width = element.width();
-            //    if (options.width < minWidth) {
-            //        options.width = minWidth;
-            //    }
-            //}
-            //if (angular.isUndefined(options.height)) {
-            //    options.height = element[0].offsetHeight;
-            //    //options.width = window.getComputedStyle(element[0]).width;
-            //    //options.height = element.height();
-            //    if (options.height < minHeight) {
-            //        options.height = minHeight;
-            //    }
-            //}
-            //this.width = options.width;
-            //this.height = options.height;
             this.width = minWidth;
             this.height = minHeight;
 
@@ -98,9 +80,10 @@ angular.module('ngEcho', [])
             this.innerSvgHeight = 400;
 
             this.svg = d3.select(element[0])
+                .append("div")
+                //.property("flex", true)
+                .attr("class", "echoSvgWrapper")
                 .append("svg")
-                //.attr("width", this.netWidth + this.margin.left + this.margin.right)
-                //.attr("height", this.netHeight + this.margin.top + this.margin.bottom)
                 .attr("viewBox", "0 0 " + this.innerSvgWidth + " " + this.innerSvgHeight)
                 .attr("preserveAspectRatio", "none")
                 .append("g")

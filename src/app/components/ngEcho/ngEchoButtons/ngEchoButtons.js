@@ -15,7 +15,7 @@ angular.module('ngEchoButtons', ['ngEcho'])
     .directive('echoButtons', function(echoButtonsFactory, $compile){
         return {
             restrict: 'A',
-            priority: -500,
+            priority: -200,
             require: 'echoDirective',
             link: function(scope, element, attr, ctrl){
                 // create an isolate scope for this directive
@@ -36,7 +36,7 @@ angular.module('ngEchoButtons', ['ngEcho'])
                 // compile the template
                 template = $compile(template)(isoScope);
 
-                // inject into the DOM just below the echo viewer
+                // inject into the DOM above the echo viewer
                 element.prepend(template);
             }
         };
