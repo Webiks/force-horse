@@ -47,7 +47,7 @@ angular.module('ngEcho', [])
             this.options = options;
             this.formValues = options.form.defaults;
 
-            this.setNodes(options.configuration);
+            this.initNodes(options.configuration);
             // save default paths, so that they can be restored
             this.defaultPaths = angular.copy(options.generalConfig.defaultPaths);
             this.initNodeLinks(options.generalConfig.defaultPaths);
@@ -99,9 +99,9 @@ angular.module('ngEcho', [])
         EchoFactory.prototype.layout = function () {
             var data = {
                 nodeLabels: [],
-                lvlACheckboxes: [],
-                lvlBCheckboxes: [],
-                lvlCCheckboxes: [],
+                //lvlACheckboxes: [],
+                //lvlBCheckboxes: [],
+                //lvlCCheckboxes: [],
                 lvlAPorts: [],
                 lvlBLeftPorts: [],
                 lvlBRightPorts: [],
@@ -118,7 +118,7 @@ angular.module('ngEcho', [])
             var overallHorizontalScale = d3.scale.ordinal()
                 .domain(getNumberArray(2 + this.noOfLvlCNodes))
                 .rangePoints([0, this.netWidth - 1], 0.5);
-                //.rangePoints([0, this.innerSvgWidth - 1], 0.5);
+            //.rangePoints([0, this.innerSvgWidth - 1], 0.5);
 
             // -------------------------------
             // compute level A nodes, labels, ports, checkboxes
@@ -147,12 +147,9 @@ angular.module('ngEcho', [])
                         y: _y - this.lvlANodeH / 2 - this.portMargin,
                         align: 'middle'
                     });
-                    data.lvlACheckboxes[_nodeId] = {
-                        level: 0,
-                        nodeId: _nodeId,
-                        x: xCheckbox,
-                        y: yCheckbox
-                    };
+                    temp = this.checkboxes.lvlA[_nodeId];
+                    temp.x = xCheckbox;
+                    temp.y = yCheckbox;
 
                     portScale = d3.scale.ordinal()
                         .domain(getNumberArray(this.noOfLvlBNodes))
@@ -204,12 +201,9 @@ angular.module('ngEcho', [])
                         y: _y - this.lvlBNodeH / 2 - this.portMargin,
                         align: 'middle'
                     });
-                    data.lvlBCheckboxes[_nodeId] = {
-                        level: 1,
-                        nodeId: _nodeId,
-                        x: xCheckbox,
-                        y: yCheckbox
-                    };
+                    temp = this.checkboxes.lvlB[_nodeId];
+                    temp.x = xCheckbox;
+                    temp.y = yCheckbox;
 
                     portScale = d3.scale.ordinal()
                         .domain(getNumberArray(this.noOfLvlANodes))
@@ -221,15 +215,7 @@ angular.module('ngEcho', [])
                             y: yCheckbox + portScale(j)
                         });
                     }
-                    /*
-                     portScale = d3.scale.ordinal()
-                     .domain(getNumberArray(this.noOfLvlANodes))
-                     .rangePoints([0, this.lvlBNodeH-1], 1);
 
-                     for (j = 0; j < this.noOfLvlANodes; j++) {
-                     data.lvlBLeftPorts.push({x: _x - this.lvlBNodeW /2 - this.portMargin, y: _y - this.lvlBNodeH/2 + portScale(j)});
-                     }
-                     */
                     portScale = d3.scale.ordinal()
                         .domain(getNumberArray(this.noOfLvlCNodes * 2))
                         .rangePoints([0, this.lvlBNodeH - 1], 1);
@@ -276,27 +262,21 @@ angular.module('ngEcho', [])
                         x: _x1,
                         y: _y1
                     });
-                    key = _nodeId + 0 + j;
-                    data.lvlCCheckboxes[key] = {
-                        level: 2,
-                        nodeId: _nodeId,
-                        lvlBIdx: 0,
-                        connIdx: j,
-                        x: _x1 - this.checkboxWidth / 2,
-                        y: _y1 + this.portMargin
-                    };
+
+                    key = "" + _nodeId + 0 + j;
+                    temp = this.checkboxes.lvlC[key];
+                    temp.x = _x1 - this.checkboxWidth / 2;
+                    temp.y = _y1 + this.portMargin;
+
                     data.lvlCBottomPorts.push({
                         x: _x2,
                         y: _y2
                     });
-                    data.lvlCCheckboxes[_nodeId + 1 + j] = {
-                        level: 2,
-                        nodeId: _nodeId,
-                        lvlBIdx: 1,
-                        connIdx: j,
-                        x: _x2 - this.checkboxWidth / 2,
-                        y: _y2 - this.portMargin - this.checkboxWidth
-                    };
+
+                    key = "" + _nodeId + 1 + j;
+                    temp = this.checkboxes.lvlC[key];
+                    temp.x = _x2 - this.checkboxWidth / 2;
+                    temp.y = _y2 - this.portMargin - this.checkboxWidth;
                 }
             }
 
@@ -320,11 +300,11 @@ angular.module('ngEcho', [])
                     link.x2 = data.lvlBLeftPorts[bPort].x;
                     link.y2 = data.lvlBLeftPorts[bPort].y;
                     link.path = 'M ' + link.x1 + ' ' + link.y1 + ' L ' + link.x2 + ' ' + link.y2;
-                    if (link.active) {
-                        // mark the related checboxes
-                        data.lvlACheckboxes[link.aNodeId].checked = true;
-                        data.lvlBCheckboxes[link.bNodeId].checked = true;
-                    }
+                    //if (link.active) {
+                    //    // mark the related checboxes
+                    //    this.checkboxes.lvlA[link.aNodeId].checked = true;
+                    //    this.checkboxes.lvlB[link.bNodeId].checked = true;
+                    //}
                 } else { // lvlB-lvlC links, e.g. [6,[1,1]]
                     link.bNodeId = link.segment[0];
                     link.cNodeId = link.segment[1][0];
@@ -353,11 +333,11 @@ angular.module('ngEcho', [])
                     link.x2 = _x2;
                     link.y2 = _y2;
                     link.path = 'M ' + _x1 + ' ' + _y1 + ' H ' + _x2 + ' V ' + _y2;
-                    if (link.active) {
-                        // mark the related checboxes
-                        key = "" + link.cNodeId + link.bNode + link.cConn;
-                        data.lvlCCheckboxes[key].checked = true;
-                    }
+                    //if (link.active) {
+                    //    // mark the related checboxes
+                    //    key = "" + link.cNodeId + link.bNode + link.cConn;
+                    //    this.checkboxes.lvlC[key].checked = true;
+                    //}
                 }
             }
 
@@ -396,8 +376,8 @@ angular.module('ngEcho', [])
 
             var nodeLabels = drawnodeLabels(dataset.nodeLabels);
 
-            var checkboxes = drawCheckboxes(this, dataset, d3.values(dataset.lvlACheckboxes).concat(
-                d3.values(dataset.lvlBCheckboxes), d3.values(dataset.lvlCCheckboxes)), this.checkboxWidth);
+            var checkboxes = drawCheckboxes(this, dataset, d3.values(this.checkboxes.lvlA).concat(
+                d3.values(this.checkboxes.lvlB), d3.values(this.checkboxes.lvlC)), this.checkboxWidth);
 
             var portIcons = drawNodePorts(dataset.lvlAPorts.concat(
                 dataset.lvlBLeftPorts, dataset.lvlBRightPorts, dataset.lvlCTopPorts, dataset.lvlCBottomPorts));
@@ -410,7 +390,7 @@ angular.module('ngEcho', [])
                     .data(_dataset)
                     .enter()
                     .append("image")
-                    .attr("xlink:href", function(d) {
+                    .attr("xlink:href", function (d) {
                         return !!d.imgUrl ? d.imgUrl : defaultImageUrl;
                     })
                     .attr("width", iconW)
@@ -421,16 +401,16 @@ angular.module('ngEcho', [])
                     .attr("y", function (d) {
                         return d.y - iconH / 2;
                     });
-                    //.append("ellipse")
-                    //.attr("class", className)
-                    //.attr("cx", function (d) {
-                    //    return d.x;
-                    //})
-                    //.attr("cy", function (d) {
-                    //    return d.y;
-                    //})
-                    //.attr("rx", iconW / 2)
-                    //.attr("ry", iconH / 2);
+                //.append("ellipse")
+                //.attr("class", className)
+                //.attr("cx", function (d) {
+                //    return d.x;
+                //})
+                //.attr("cy", function (d) {
+                //    return d.y;
+                //})
+                //.attr("rx", iconW / 2)
+                //.attr("ry", iconH / 2);
             }
 
             //---------------------------------------------------
@@ -502,8 +482,8 @@ angular.module('ngEcho', [])
                     links = that.nodeLinks;
 
                 if (level === 0) { // a level A checkbox
-                    data.lvlACheckboxes[nodeId].checked = checkbox.checked;
-                    checkboxes = data.lvlBCheckboxes;
+                    that.checkboxes.lvlA[nodeId].checked = checkbox.checked;
+                    checkboxes = that.checkboxes.lvlB;
                     targetNodes = d3.values(nodes.lvlB).
                         filter(function (node) {
                             return checkboxes[node.id].checked;
@@ -529,10 +509,10 @@ angular.module('ngEcho', [])
                     } // if checkbox.checked
 
                 } else if (level === 1) { // a level B checkbox
-                    data.lvlBCheckboxes[nodeId].checked = checkbox.checked;
+                    that.checkboxes.lvlB[nodeId].checked = checkbox.checked;
 
                     // update A-B links
-                    checkboxes = data.lvlACheckboxes;
+                    checkboxes = that.checkboxes.lvlA;
                     targetNodes = d3.values(nodes.lvlA).
                         filter(function (node) {
                             return checkboxes[node.id].checked;
@@ -561,7 +541,7 @@ angular.module('ngEcho', [])
                     for (targetNodeId in nodes.lvlC) {
                         for (conn = 0; conn < 2; conn++) {
                             key = "" + targetNodeId + nodes.lvlB[nodeId].index + conn;
-                            if (data.lvlCCheckboxes[key].checked) {
+                            if (that.checkboxes.lvlC[key].checked) {
                                 i = that.linkIndexOf(links, nodeId, targetNodeId, conn);
                                 if (checkbox.checked) {
                                     // add links to all active level C nodes
@@ -582,10 +562,10 @@ angular.module('ngEcho', [])
 
                 } else if (level === 2) { // a level C checkbox
                     key = "" + nodeId + bNode + cConn;
-                    data.lvlCCheckboxes[key].checked = checkbox.checked;
+                    that.checkboxes.lvlC[key].checked = checkbox.checked;
 
                     targetNodeId = that.nodesArray.lvlB[bNode].id;
-                    targetCheckbox = data.lvlBCheckboxes[targetNodeId];
+                    targetCheckbox = that.checkboxes.lvlB[targetNodeId];
                     if (targetCheckbox.checked) {
                         if (checkbox.checked) {
                             // add the link to relevant level B node, if it's active
@@ -642,7 +622,7 @@ angular.module('ngEcho', [])
             });
             // set the tooltip for the path
             paths.select("title")
-                .text(function(d) {
+                .text(function (d) {
                     if (!d.average) {
                         return "no data";
                     } else {
@@ -678,7 +658,9 @@ angular.module('ngEcho', [])
             var isAB = (typeof conn === "undefined");
             for (var i = 0, len = links.length; i < len; i++) {
                 var link = links[i];
-                if (!(link instanceof Array)) {link = link.segment;}
+                if (!(link instanceof Array)) {
+                    link = link.segment;
+                }
                 if (isAB) {
                     if (link[0] == id0 && link[1] == id1) return i;
                 } else {
@@ -688,40 +670,40 @@ angular.module('ngEcho', [])
             return -1;
         };
 
-/*
-        //---------------------------------------------------
-        // abLinkIndexOf
-        // Find index of an A-B link in a links array
-        //---------------------------------------------------
-        EchoFactory.prototype.abLinkIndexOf = function (links, id0, id1) {
-            for (var i = 0, len = links.length; i < len; i++) {
-                var link = links[i];
-                if (!(link instanceof Array)) {link = link.segment;}
-                if (link[0] == id0 && link[1] == id1) return i;
-                //if (arrayToSearch[i][0] == id0 && arrayToSearch[i][1] == id1) return i;
-            }
-            return -1;
-        };
+        /*
+         //---------------------------------------------------
+         // abLinkIndexOf
+         // Find index of an A-B link in a links array
+         //---------------------------------------------------
+         EchoFactory.prototype.abLinkIndexOf = function (links, id0, id1) {
+         for (var i = 0, len = links.length; i < len; i++) {
+         var link = links[i];
+         if (!(link instanceof Array)) {link = link.segment;}
+         if (link[0] == id0 && link[1] == id1) return i;
+         //if (arrayToSearch[i][0] == id0 && arrayToSearch[i][1] == id1) return i;
+         }
+         return -1;
+         };
+
+         //---------------------------------------------------
+         // bcLinkIndexOf
+         // Find index of a B-C link in a links array
+         //---------------------------------------------------
+         EchoFactory.prototype.bcLinkIndexOf = function (links, id0, id1, id2) {
+         for (var i = 0, len = links.length; i < len; i++) {
+         var link = links[i];
+         if (!(link instanceof Array)) {link = link.segment;}
+         if (link[0] == id0 && link[1][0] == id1 && link[1][1] == id2) return i;
+         //if (arrayToSearch[i][0] == id0 && arrayToSearch[i][1][0] == id1 && arrayToSearch[i][1][1] == id2) return i;
+         }
+         return -1;
+         };
+         */
 
         //---------------------------------------------------
-        // bcLinkIndexOf
-        // Find index of a B-C link in a links array
+        // initNodes
         //---------------------------------------------------
-        EchoFactory.prototype.bcLinkIndexOf = function (links, id0, id1, id2) {
-            for (var i = 0, len = links.length; i < len; i++) {
-                var link = links[i];
-                if (!(link instanceof Array)) {link = link.segment;}
-                if (link[0] == id0 && link[1][0] == id1 && link[1][1] == id2) return i;
-                //if (arrayToSearch[i][0] == id0 && arrayToSearch[i][1][0] == id1 && arrayToSearch[i][1][1] == id2) return i;
-            }
-            return -1;
-        };
-*/
-
-        //---------------------------------------------------
-        // setNodes
-        //---------------------------------------------------
-        EchoFactory.prototype.setNodes = function (nodesArray) {
+        EchoFactory.prototype.initNodes = function (nodesArray) {
             this.nodesArray = nodesArray;
             // build nodes data structure from config object
             this.noOfLvlANodes = nodesArray.lvlA.length;
@@ -766,23 +748,59 @@ angular.module('ngEcho', [])
         // initNodeLinks
         //---------------------------------------------------
         EchoFactory.prototype.initNodeLinks = function (initialLinks) {
-            var idA, idB, idC, conn, link;
+            var idA, idB, idC, conn, link, idx, key;
+            this.checkboxes = {lvlA: {}, lvlB: {}, lvlC: {}};
             this.nodeLinks = [];
+
+            // init level A checkboxes
+            for (idA in this.nodes.lvlA) {
+                this.checkboxes.lvlA[idA] = {
+                    level: 0,
+                    nodeId: idA
+                };
+            }
+
+            // init level A checkboxes
+            for (idB in this.nodes.lvlB) {
+                this.checkboxes.lvlB[idB] = {
+                    level: 1,
+                    nodeId: idB
+                };
+            }
+
+            // init level A - level B links & checkboxes
             for (idA in this.nodes.lvlA) {
                 for (idB in this.nodes.lvlB) {
                     link = {segment: [this.nodes.lvlA[idA].id, this.nodes.lvlB[idB].id]};
-                    //link = [idA, idB];
                     link.active = this.linkIndexOf(initialLinks, idA, idB) !== -1;
                     this.nodeLinks.push(link);
+                    if (link.active) {
+                        this.checkboxes.lvlA[idA].checked = true;
+                        this.checkboxes.lvlB[idB].checked = true;
+                    }
                 }
             }
+
+            // init level B - level C links & checkboxes
             for (idB in this.nodes.lvlB) {
                 for (idC in this.nodes.lvlC) {
                     for (conn = 0; conn < 2; conn++) {
                         link = {segment: [this.nodes.lvlB[idB].id, [this.nodes.lvlC[idC].id, conn]]};
-                        //link = [idB, [idC, conn]];
                         link.active = this.linkIndexOf(initialLinks, idB, idC, conn) !== -1;
                         this.nodeLinks.push(link);
+                        // init level C checkboxes
+                        idx = this.nodes.lvlB[idB].index;
+                        key = "" + idC + idx + conn;
+                        this.checkboxes.lvlC[key] = {
+                            level: 2,
+                            nodeId: idC,
+                            lvlBIdx: idx,
+                            connIdx: conn
+                        };
+                        if (link.active) {
+                            this.checkboxes.lvlB[idB].checked = true;
+                            this.checkboxes.lvlC[key].checked = true;
+                        }
                     }
                 }
             }
@@ -791,7 +809,7 @@ angular.module('ngEcho', [])
         //---------------------------------------------------
         // helloAPI (test method)
         //---------------------------------------------------
-        EchoFactory.prototype.hello = function(name) {
+        EchoFactory.prototype.hello = function (name) {
             console.log("Hello, " + name + "!");
         };
 
@@ -802,9 +820,11 @@ angular.module('ngEcho', [])
         EchoFactory.prototype.setPaths = function (paths) {
             var that = this;
             var index;
-            paths.forEach(function(link) {
+            paths.forEach(function (link) {
                 // Accept also a link as an array, not just a link as an object
-                if (link instanceof Array) {link = {segment: link}}
+                if (link instanceof Array) {
+                    link = {segment: link}
+                }
                 // Find the link in the internal links array
                 index = that.linkIndexOf(that.nodeLinks, link.segment);
                 //if (!(link.segment[1] instanceof Array)) {
@@ -827,12 +847,14 @@ angular.module('ngEcho', [])
         //---------------------------------------------------
         EchoFactory.prototype.restoreDefaultPaths = function () {
             var that = this;
+            // restore links
             this.nodeLinks.forEach(function (link) {
                 link.active = (that.linkIndexOf(that.defaultPaths, link.segment) !== -1);
                 delete link.average;
                 delete link.worst;
             });
-
+            // TODO: restore checkboxes
+            // redraw
             this.drawLinks();
         };
 
@@ -843,9 +865,9 @@ angular.module('ngEcho', [])
             console.log('In send() method');
             this.options.form.submitCallback(
                 this.formValues,
-                this.nodeLinks.filter(function(link) {
+                this.nodeLinks.filter(function (link) {
                     return link.active;
-                }).map(function(link) {
+                }).map(function (link) {
                     return link.segment;
                 })
             );
