@@ -5,7 +5,7 @@
 angular.module('ngEchoButtons', ['ngEcho'])
 
     // add templates into cache
-    .run(function($templateCache){
+    .run(function ($templateCache) {
         // cache our buttons template
         $templateCache.put('ngEcho/echoButtons',
             '<div class="echoButtonsWrapper">\
@@ -19,12 +19,12 @@ angular.module('ngEchoButtons', ['ngEcho'])
         //    </div>');
     })
 
-    .directive('echoButtons', function(echoButtonsFactory, $compile){
+    .directive('echoButtons', function (echoButtonsFactory, $compile) {
         return {
             restrict: 'A',
             priority: -200,
             require: 'echoDirective',
-            link: function(scope, element, attr, ctrl){
+            link: function (scope, element, attr, ctrl) {
                 // create an isolate scope for this directive
                 var isoScope = scope.$new(true);
 
@@ -48,17 +48,16 @@ angular.module('ngEchoButtons', ['ngEcho'])
             }
         };
     })
-    .factory('echoButtonsFactory', function($templateCache){
+    .factory('echoButtonsFactory', function ($templateCache) {
         // constructor
-        function echoButtonsFactory(ngEchoInstance){
-            this.ngEchoInstance = ngEchoInstance;
-            ngEchoInstance.echoButtons = this;
+        function echoButtonsFactory(_ngEchoInstance) {
+            this.ngEchoInstance = _ngEchoInstance;
+            _ngEchoInstance.echoButtons = this;
         }
 
-        echoButtonsFactory.prototype = {
-            getTemplate: function(){
-                return $templateCache.get('ngEcho/echoButtons');
-            }
+        echoButtonsFactory.prototype.getTemplate = function () {
+            return $templateCache.get('ngEcho/echoButtons');
+
         };
 
         return echoButtonsFactory;
