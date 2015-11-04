@@ -10,12 +10,12 @@ angular.module('ngEchoButtons', ['ngEcho'])
         $templateCache.put('ngEcho/echoButtons',
             '<div class="echoButtonsWrapper">\
               <md-button class="md-raised" ng-click="echoButtonsCtrl.echoButtonsInstance.ngEchoInstance.hello(\'Echo\')">Select All</md-button>\
-              <md-button class="md-raised" ng-click="echoButtonsCtrl.echoButtonsInstance.ngEchoInstance.restoreDefaultPaths()">Select Current Configuration</md-button>\
+              <md-button class="md-raised" ng-click="echoButtonsCtrl.echoButtonsInstance.ngEchoInstance.restoreInitialLinks()">Select Current Configuration</md-button>\
             </div>');
         //$templateCache.put('ngEcho/echoButtons',
         //    '<div class="echoButtonsWrapper">\
         //      <button ng-click="echoButtonsCtrl.echoButtonsInstance.ngEchoInstance.hello(\'Echo\')">Select All</button>\
-        //      <button ng-click="echoButtonsCtrl.echoButtonsInstance.ngEchoInstance.restoreDefaultPaths()">Select Current Configuration</button>\
+        //      <button ng-click="echoButtonsCtrl.echoButtonsInstance.ngEchoInstance.restoreInitialLinks()">Select Current Configuration</button>\
         //    </div>');
     })
 

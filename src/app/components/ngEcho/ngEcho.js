@@ -48,8 +48,6 @@ angular.module('ngEcho', [])
             this.formValues = options.form.defaults;
 
             this.initNodes(options.configuration);
-            // save default paths, so that they can be restored
-            this.defaultPaths = angular.copy(options.generalConfig.defaultPaths);
             this.initNodeLinks(options.generalConfig.defaultPaths);
 
             // set work area width & height
@@ -90,6 +88,11 @@ angular.module('ngEcho', [])
                 .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
 
             this.draw(this.layout());
+
+            // save initial states for links and checkboxes, so that they can be restored
+            // (doing this after calling layout(), so that the objects contain screen coordinates)
+            this.initialLinks = angular.copy(this.nodeLinks);
+            this.initialCheckboxes = angular.copy(this.checkboxes);
         }
 
 
@@ -376,8 +379,7 @@ angular.module('ngEcho', [])
 
             var nodeLabels = drawnodeLabels(dataset.nodeLabels);
 
-            var checkboxes = drawCheckboxes(this, dataset, d3.values(this.checkboxes.lvlA).concat(
-                d3.values(this.checkboxes.lvlB), d3.values(this.checkboxes.lvlC)), this.checkboxWidth);
+            var checkboxes = this.drawCheckboxes();
 
             var portIcons = drawNodePorts(dataset.lvlAPorts.concat(
                 dataset.lvlBLeftPorts, dataset.lvlBRightPorts, dataset.lvlCTopPorts, dataset.lvlCBottomPorts));
@@ -448,33 +450,80 @@ angular.module('ngEcho', [])
                         return d.y;
                     });
             }
+        };
+
+        //---------------------------------------------------
+        // drawLinks
+        //---------------------------------------------------
+        EchoFactory.prototype.drawLinks = function () {
+            var that = this;
+            var paths = this.svg.selectAll("path.link")
+                .data(this.nodeLinks)
+            paths.enter()
+                .append("path")
+                .attr("d", function (d) {
+                    return d.path;
+                })
+                .append("title"); // attach a title element for a tooltip
+            // set CSS classes for the path
+            var classes;
+            paths.attr("class", function (d) {
+                classes = "link";
+                // show only active lines
+                classes += d.active ? "" : " hide_me";
+                // set colors according to attached information
+                if (d.average) {
+                    classes += (d.average.bitRate < that.options.generalConfig.treshold ? " color_nok" : " color_ok");
+                }
+                return classes;
+            });
+            // set the tooltip for the path
+            paths.select("title")
+                .text(function (d) {
+                    if (!d.average) {
+                        return "no data";
+                    } else {
+                        return "Average"
+                            + "\nRound Trip Time: " + d.average.roundTripTime
+                            + "\nBit Rate: " + d.average.bitRate
+                            + "\nCount: " + d.average.count
+                            + "\n\nWorst"
+                            + "\nRound Trip Time: " + d.worst.roundTripTime
+                            + "\nBit Rate: " + d.worst.bitRate
+                            + "\nCount: " + d.worst.count;
+                    }
+                });
+            //paths.exit().remove();
+        };
+
+        //---------------------------------------------------
+        // drawCheckboxes
+        //---------------------------------------------------
+        EchoFactory.prototype.drawCheckboxes = function() {
+            var that = this;
+            return that.svg.selectAll("foreignObject.checkbox")
+                .data(d3.values(that.checkboxes.lvlA).concat(
+                    d3.values(that.checkboxes.lvlB), d3.values(that.checkboxes.lvlC)))
+                .enter()
+                .append("foreignObject")
+                .attr("class", "foreignCheckbox")
+                .attr("x", function (d) {
+                    return d.x;
+                })
+                .attr("y", function (d) {
+                    return d.y;
+                })
+                .append("xhtml:input")
+                .attr("type", "checkbox")
+                .property("checked", function (d) {
+                    return d.checked;
+                })
+                .on('change', function (d) {
+                    onCheckboxClick(this, Number(d.level), Number(d.nodeId), Number(d.lvlBIdx), Number(d.connIdx));
+                });
 
             //---------------------------------------------------
-            function drawCheckboxes(that, allData, _dataset, width) {
-                return that.svg.selectAll("foreignObject.checkbox")
-                    .data(_dataset)
-                    .enter()
-                    .append("foreignObject")
-                    .attr("class", "foreignCheckbox")
-                    .attr("x", function (d) {
-                        return d.x;
-                    })
-                    .attr("y", function (d) {
-                        return d.y;
-                    })
-                    .append("xhtml:input")
-                    .attr("type", "checkbox")
-                    .property("checked", function (d) {
-                        return d.checked;
-                    })
-                    //.attr("style", 'width: ' + width + 'px; height: ' + width + 'px')
-                    .on('change', function (d) {
-                        onCheckboxClick(this, that, allData, Number(d.level), Number(d.nodeId), Number(d.lvlBIdx), Number(d.connIdx));
-                    });
-            }
-
-            //---------------------------------------------------
-            function onCheckboxClick(checkbox, that, data, level, nodeId, bNode, cConn) {
+            function onCheckboxClick(checkbox, level, nodeId, bNode, cConn) {
                 //alert(level + ' hi!');
                 var i, checkboxes, targetNodes, targetNodeId, key, targetCheckbox,
                     changed = false,
@@ -593,50 +642,6 @@ angular.module('ngEcho', [])
 
                 //---------------------------------------------------
             };
-        };
-
-        //---------------------------------------------------
-        // drawLinks
-        //---------------------------------------------------
-        EchoFactory.prototype.drawLinks = function () {
-            var that = this;
-            var paths = this.svg.selectAll("path.link")
-                .data(this.nodeLinks)
-            paths.enter()
-                .append("path")
-                .attr("d", function (d) {
-                    return d.path;
-                })
-                .append("title"); // attach a title element for a tooltip
-            // set CSS classes for the path
-            var classes;
-            paths.attr("class", function (d) {
-                classes = "link";
-                // show only active lines
-                classes += d.active ? "" : " hide_me";
-                // set colors according to attached information
-                if (d.average) {
-                    classes += (d.average.bitRate < that.options.generalConfig.treshold ? " color_nok" : " color_ok");
-                }
-                return classes;
-            });
-            // set the tooltip for the path
-            paths.select("title")
-                .text(function (d) {
-                    if (!d.average) {
-                        return "no data";
-                    } else {
-                        return "Average"
-                            + "\nRound Trip Time: " + d.average.roundTripTime
-                            + "\nBit Rate: " + d.average.bitRate
-                            + "\nCount: " + d.average.count
-                            + "\n\nWorst"
-                            + "\nRound Trip Time: " + d.worst.roundTripTime
-                            + "\nBit Rate: " + d.worst.bitRate
-                            + "\nCount: " + d.worst.count;
-                    }
-                });
-            //paths.exit().remove();
         };
 
         //---------------------------------------------------
@@ -843,19 +848,21 @@ angular.module('ngEcho', [])
         };
 
         //---------------------------------------------------
-        // restoreDefaultPaths
+        // restoreInitialLinks
         //---------------------------------------------------
-        EchoFactory.prototype.restoreDefaultPaths = function () {
-            var that = this;
-            // restore links
-            this.nodeLinks.forEach(function (link) {
-                link.active = (that.linkIndexOf(that.defaultPaths, link.segment) !== -1);
-                delete link.average;
-                delete link.worst;
-            });
-            // TODO: restore checkboxes
+        EchoFactory.prototype.restoreInitialLinks = function () {
+            //var that = this;
+            //// restore links
+            //this.nodeLinks.forEach(function (link) {
+            //    link.active = (that.linkIndexOf(that.defaultPaths, link.segment) !== -1);
+            //    delete link.average;
+            //    delete link.worst;
+            //});
+            this.nodeLinks = angular.copy(this.initialLinks);
+            this.checkboxes = angular.copy(this.initialCheckboxes);
             // redraw
             this.drawLinks();
+            this.drawCheckboxes();
         };
 
         //---------------------------------------------------
