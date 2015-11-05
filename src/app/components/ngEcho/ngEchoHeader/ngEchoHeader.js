@@ -8,9 +8,13 @@ angular.module('ngEchoHeader', ['ngEcho'])
         // cache our buttons template
         $templateCache.put('ngEcho/echoHeader',
             '<md-toolbar layout="row" layout-align="center center" class="echoHeaderWrapper">\
-              <span class="exit">x</span>\
+              <svg viewBox="0 0 100 100">\
+                <circle r="33" cx="50" cy="50"/>\
+                <line x1="40" y1="40" x2="60" y2="60"/>\
+                <line x1="40" y1="60" x2="60" y2="40"/>\
+              </svg> \
               <span flex class="title">asd Test</span>\
-            </md-toolbar>')
+            </md-toolbar>');
         //$templateCache.put('ngEcho/echoHeader',
         //    '<div class="echoHeaderWrapper">\
         //      <span class="exit">x</span>\

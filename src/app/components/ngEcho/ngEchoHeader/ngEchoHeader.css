@@ -11,6 +11,19 @@
     */
 }
 
+.echoHeaderWrapper svg {
+    width: 6vh;
+    height: 6vh;
+    fill: none;
+    stroke: white;
+    stroke-width: 6px;
+    cursor: pointer;
+}
+
+.echoHeaderWrapper svg circle {
+
+}
+
 .echoHeaderWrapper span {
     text-align: center;
 }
