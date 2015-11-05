@@ -2,7 +2,7 @@
 
 //===============================================================//
 // define the ngEchoForm module (dependant on ngEcho)
-angular.module('ngEchoHeader', ['ngEcho'])
+angular.module('ngEchoForm', ['ngEcho'])
     // add templates into cache
     .run(function($templateCache){
         // cache our buttons template

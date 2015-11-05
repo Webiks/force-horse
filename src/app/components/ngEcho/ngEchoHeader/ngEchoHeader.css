@@ -1,0 +1,33 @@
+.echoHeaderWrapper {
+    /*width: 100%;*/
+    height: 6vh;
+    min-height: 6vh;
+    max-height: 6vh;
+    font-size: 3vh;
+     text-align: center;
+    /*
+    background-color: blue;
+    color: white;
+    */
+}
+
+.echoHeaderWrapper span {
+    text-align: center;
+}
+
+.echoHeaderWrapper span.title {
+    /*
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+    */
+}
+
+.echoHeaderWrapper span.exit {
+    /*color: white;*/
+    border: 1px solid white;
+    border-radius: 50%;
+    font-size: smaller;
+    width: 6vh;
+    height: 3vh;
+}

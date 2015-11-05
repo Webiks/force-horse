@@ -6,6 +6,7 @@ angular.module('myApp', [
     'myApp.view3',
     'ngEcho',
     'ngEchoButtons',
+    'ngEchoForm',
     'ngEchoHeader',
     'ngMaterial'
 ]).
