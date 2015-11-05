@@ -1,6 +1,7 @@
 
 .echo-graph {
     flex: 1;
+    border: 1px solid lightgray;
 }
 
 .echo-graph .echoSvgWrapper {

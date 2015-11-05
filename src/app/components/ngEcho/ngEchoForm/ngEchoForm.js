@@ -1,25 +1,25 @@
 "use strict";
 
 //===============================================================//
-// define the ngEchoHeader module (dependant on ngEcho)
+// define the ngEchoForm module (dependant on ngEcho)
 angular.module('ngEchoHeader', ['ngEcho'])
     // add templates into cache
     .run(function($templateCache){
         // cache our buttons template
-        $templateCache.put('ngEcho/echoHeader',
-            '<div class="echoHeaderWrapper">\
+        $templateCache.put('ngEcho/echoForm',
+            '<div class="echoFormWrapper">\
             <label for="noOfAsdMsgs" class="margin-left">Number of asd messages</label>\
-            <input type="number" id="noOfAsdMsgs" min="0" max="30" ng-model="echoHeaderCtrl.echoHeaderInstance.ngEchoInstance.formValues.selectedValue">\
-            <input type="checkbox" id="displayStatistics" class="margin-left" ng-model="echoHeaderCtrl.echoHeaderInstance.ngEchoInstance.formValues.checkBox1"\
+            <input type="number" id="noOfAsdMsgs" min="0" max="30" ng-model="echoFormCtrl.echoFormInstance.ngEchoInstance.formValues.selectedValue">\
+            <input type="checkbox" id="displayStatistics" class="margin-left" ng-model="echoFormCtrl.echoFormInstance.ngEchoInstance.formValues.checkBox1"\
             ng-true-value="1" ng-false-value="0">\
             <label for="displayStatistics">Display statistics</label>\
-            <input type="checkbox" id="displayWorstCase" class="margin-left" ng-model="echoHeaderCtrl.echoHeaderInstance.ngEchoInstance.formValues.checkBox2"\
+            <input type="checkbox" id="displayWorstCase" class="margin-left" ng-model="echoFormCtrl.echoFormInstance.ngEchoInstance.formValues.checkBox2"\
             ng-true-value="1" ng-false-value="0">\
             <label for="displayWorstCase">Display worst case</label>\
-            <md-button class="md-raised" ng-click="echoHeaderCtrl.echoHeaderInstance.ngEchoInstance.send()" class="margin-left">Test asd</button>\
+            <md-button class="md-raised" ng-click="echoFormCtrl.echoFormInstance.ngEchoInstance.send()" class="margin-left">Test asd</button>\
             </div>')
     })
-    .directive('echoHeader', function(echoHeaderFactory, $compile){
+    .directive('echoForm', function(echoFormFactory, $compile){
         return {
             restrict: 'A',
             priority: -100,
@@ -29,13 +29,13 @@ angular.module('ngEchoHeader', ['ngEcho'])
                 var isoScope = scope.$new(true);
 
                 // add parent's controller to the scope
-                isoScope.echoHeaderCtrl = ctrl;
+                isoScope.echoFormCtrl = ctrl;
 
-                // create a echoHeaderInstance and add it to our controller
-                isoScope.echoHeaderCtrl.echoHeaderInstance = new echoHeaderFactory(ctrl.echoDirective.echoInstance);
+                // create a echoFormInstance and add it to our controller
+                isoScope.echoFormCtrl.echoFormInstance = new echoFormFactory(ctrl.echoDirective.echoInstance);
 
                 // get the template using our API
-                var template = isoScope.echoHeaderCtrl.echoHeaderInstance.getTemplate();
+                var template = isoScope.echoFormCtrl.echoFormInstance.getTemplate();
 
                 // turn the template into an angular element
                 template = angular.element(template);
@@ -49,19 +49,19 @@ angular.module('ngEchoHeader', ['ngEcho'])
             }
         };
     })
-    .factory('echoHeaderFactory', function($templateCache){
+    .factory('echoFormFactory', function($templateCache){
         // constructor
-        function echoHeaderFactory(ngEchoInstance){
+        function echoFormFactory(ngEchoInstance){
             this.ngEchoInstance = ngEchoInstance;
-            ngEchoInstance.echoHeader = this;
+            ngEchoInstance.echoForm = this;
         }
 
-        echoHeaderFactory.prototype = {
+        echoFormFactory.prototype = {
             getTemplate: function(){
-                return $templateCache.get('ngEcho/echoHeader');
+                return $templateCache.get('ngEcho/echoForm');
             }
         };
 
-        return echoHeaderFactory;
+        return echoFormFactory;
     });
 //===============================================================//
