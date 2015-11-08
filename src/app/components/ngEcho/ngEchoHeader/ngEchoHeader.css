@@ -11,6 +11,7 @@
     */
 }
 
+/*
 .echoHeaderWrapper svg {
     width: 6vh;
     height: 6vh;
@@ -19,28 +20,22 @@
     stroke-width: 6px;
     cursor: pointer;
 }
-
-.echoHeaderWrapper svg circle {
-
-}
+*/
 
 .echoHeaderWrapper span {
     text-align: center;
 }
 
-.echoHeaderWrapper span.title {
+.echoHeaderWrapper span.close {
     /*
-    display: table-cell;
-    text-align: center;
-    vertical-align: middle;
-    */
-}
-
-.echoHeaderWrapper span.exit {
-    /*color: white;*/
     border: 1px solid white;
     border-radius: 50%;
     font-size: smaller;
-    width: 6vh;
     height: 3vh;
+    */
+    width: 6vh;
+}
+
+.echoHeaderWrapper span.close i {
+    cursor: pointer;
 }

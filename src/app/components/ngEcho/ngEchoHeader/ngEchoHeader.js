@@ -8,6 +8,17 @@ angular.module('ngEchoHeader', ['ngEcho'])
         // cache our buttons template
         $templateCache.put('ngEcho/echoHeader',
             '<md-toolbar layout="row" layout-align="center center" class="echoHeaderWrapper">\
+              <span class="close">\
+                <i class="mdi mdi-close-circle"></i>\
+              </span>\
+              <span flex class="title">asd Test</span>\
+            </md-toolbar>');
+    })
+/*
+    .run(function($templateCache){
+        // cache our buttons template
+        $templateCache.put('ngEcho/echoHeader',
+            '<md-toolbar layout="row" layout-align="center center" class="echoHeaderWrapper">\
               <svg viewBox="0 0 100 100">\
                 <circle r="33" cx="50" cy="50"/>\
                 <line x1="40" y1="40" x2="60" y2="60"/>\
@@ -15,12 +26,8 @@ angular.module('ngEchoHeader', ['ngEcho'])
               </svg> \
               <span flex class="title">asd Test</span>\
             </md-toolbar>');
-        //$templateCache.put('ngEcho/echoHeader',
-        //    '<div class="echoHeaderWrapper">\
-        //      <span class="exit">x</span>\
-        //      <span class="title">asd Test</span>\
-        //    </div>')
     })
+*/
     .directive('echoHeader', function(echoHeaderFactory, $compile){
         return {
             restrict: 'A',
