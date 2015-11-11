@@ -3,8 +3,8 @@
 // Declare app level module which depends on views, and components
 angular.module('myApp', [
     'ui.router',
-    'myApp.view3',
-    'ngEcho',
+    'myApp.viewAutoForceLayout',
+    'autoForceLayout',
     'ngEchoButtons',
     'ngEchoForm',
     'ngEchoHeader',

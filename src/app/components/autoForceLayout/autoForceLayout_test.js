@@ -1,10 +1,10 @@
 'use strict';
 
-describe('ngEcho module', function () {
+describe('autoForceLayout module', function () {
 
     var $compile, $rootScope, element;
 
-    beforeEach(module('ngEcho'));
+    beforeEach(module('autoForceLayout'));
 
     function setEchoInDom() {
         beforeEach(inject(function (_$compile_, _$rootScope_) {
@@ -26,7 +26,7 @@ describe('ngEcho module', function () {
         return isoScope.echoCtrl.echoDirective.echoInstance;
     }
 
-    describe('ngEcho directive', function () {
+    describe('autoForceLayout directive', function () {
         setEchoInDom();
 
         it('should create an echo factory instance', function () {
@@ -125,7 +125,7 @@ describe('ngEcho module', function () {
 
 //====================================================================//
 
-    describe('ngEcho service', function () {
+    describe('autoForceLayout service', function () {
         var echoService;
         beforeEach(inject(function (_echoService_) {
             echoService = _echoService_;

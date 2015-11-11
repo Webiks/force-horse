@@ -1,14 +1,14 @@
 'use strict';
 
-angular.module('myApp.view3', ['ui.router', 'ngEcho'])
+angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
 
     .config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
-        $stateProvider.state('index.view3', {
-            url: '/view3',
-            templateUrl: 'app/views/view3/view3.html',
+        $stateProvider.state('index.viewAutoForceLayout', {
+            url: '/viewAutoForceLayout',
+            templateUrl: 'app/views/viewAutoForceLayout/viewAutoForceLayout.html',
             controller: 'view3Ctrl as viewCtrl',
             data: {
-                title: 'View 3'
+                title: 'view AutoForceLayout'
             }
         });
     }])

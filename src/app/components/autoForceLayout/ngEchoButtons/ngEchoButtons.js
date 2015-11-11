@@ -1,18 +1,18 @@
 "use strict";
 
 //===============================================================//
-// define the ngEchoButtons module (dependant on ngEcho)
-angular.module('ngEchoButtons', ['ngEcho'])
+// define the ngEchoButtons module (dependant on autoForceLayout)
+angular.module('ngEchoButtons', ['autoForceLayout'])
 
     // add templates into cache
     .run(function ($templateCache) {
         // cache our buttons template
-        $templateCache.put('ngEcho/echoButtons',
+        $templateCache.put('autoForceLayout/echoButtons',
             '<div class="echoButtonsWrapper">\
               <md-button class="md-raised" ng-click="echoButtonsCtrl.echoButtonsInstance.ngEchoInstance.hello(\'Echo\')">Select All</md-button>\
               <md-button class="md-raised" ng-click="echoButtonsCtrl.echoButtonsInstance.ngEchoInstance.restoreInitialLinks()">Select Current Configuration</md-button>\
             </div>');
-        //$templateCache.put('ngEcho/echoButtons',
+        //$templateCache.put('autoForceLayout/echoButtons',
         //    '<div class="echoButtonsWrapper">\
         //      <button ng-click="echoButtonsCtrl.echoButtonsInstance.ngEchoInstance.hello(\'Echo\')">Select All</button>\
         //      <button ng-click="echoButtonsCtrl.echoButtonsInstance.ngEchoInstance.restoreInitialLinks()">Select Current Configuration</button>\
@@ -56,7 +56,7 @@ angular.module('ngEchoButtons', ['ngEcho'])
         }
 
         echoButtonsFactory.prototype.getTemplate = function () {
-            return $templateCache.get('ngEcho/echoButtons');
+            return $templateCache.get('autoForceLayout/echoButtons');
 
         };
 

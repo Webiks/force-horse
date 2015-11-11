@@ -1,6 +1,6 @@
 'use strict';
 
-xdescribe('ngEcho Add Remove Buttons module tests', function() {
+xdescribe('autoForceLayout Add Remove Buttons module tests', function() {
 
     var $compile, $rootScope;
     beforeEach(module('ngEchoButtons'));
