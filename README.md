@@ -1,2 +1,2 @@
-# ngEcho
-Angular wrapper for an Echo circuit graph
+# autoForceLayout
+Angular wrapper for a d3.js force layout
