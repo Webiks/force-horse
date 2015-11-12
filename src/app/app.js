@@ -3,11 +3,8 @@
 // Declare app level module which depends on views, and components
 angular.module('myApp', [
     'ui.router',
-    'myApp.viewAutoForceLayout',
+    'viewAutoForceLayout',
     'autoForceLayout',
-    'ngEchoButtons',
-    'ngEchoForm',
-    'ngEchoHeader',
     'ngMaterial'
 ]).
     config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {

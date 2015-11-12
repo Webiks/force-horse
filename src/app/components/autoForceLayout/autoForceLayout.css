@@ -1,20 +1,19 @@
 
-.echo-graph {
+.auto-force-layout {
     flex: 1;
-    border: 1px solid lightgray;
 }
 
-.echo-graph .echoSvgWrapper {
+.auto-force-layout .echoSvgWrapper {
     position: relative;
     flex: 1;
 }
 
-.echo-graph svg.graph-svg {
+.auto-force-layout svg.graph-svg {
     position: absolute;
     max-width: 100%;
     max-height: 100%;
     margin-top: 5px;
-    border: 1px solid #f8f8f8;
+    border: 1px solid #e8e8e8;
     stroke-width: 1;
     fill: none;
     stroke: black;
@@ -24,30 +23,18 @@
     overflow: auto;
 }
 
-.echo-graph circle.port {
-    r: 2;
-    stroke: #f0f0f0;
+.auto-force-layout svg.graph-svg .link {
+    stroke: #000;
+    stroke-width: 1.5px;
 }
 
-.echo-graph ellipse {
-    stroke: blue;
+.auto-force-layout svg.graph-svg .node {
+    cursor: move;
+    fill: #ccc;
+    stroke: #000;
+    stroke-width: 1.5px;
 }
 
-.echo-graph .foreignCheckbox input {
-    padding: 0;
-    margin:  0;
-    width: 13px;
-    height: 12px;
-}
-
-.echo-graph .hide_me {
-    display: none;
-}
-
-.echo-graph .color_ok {
-    stroke: green;
-}
-
-.echo-graph .color_nok {
-    stroke: red;
+.auto-force-layout svg.graph-svg .node.fixed {
+    fill: #f00;
 }
