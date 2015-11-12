@@ -8,7 +8,7 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
             templateUrl: 'app/views/viewAutoForceLayout/viewAutoForceLayout.html',
             controller: 'view3Ctrl as viewCtrl',
             data: {
-                title: 'view Auto Force Layout'
+                title: 'Auto Force Layout'
             }
         });
     }])
