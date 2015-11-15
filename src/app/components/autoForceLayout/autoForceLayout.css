@@ -1,11 +1,14 @@
 
 .auto-force-layout {
-    flex: 1;
+    height: 100%;
+    /* flex: 1; */
 }
 
-.auto-force-layout .echoSvgWrapper {
+.auto-force-layout .svgWrapper {
+    /* height: 90%; */
     position: relative;
-    flex: 1;
+    /* flex: 1; */
+    flex-grow: 1;
 }
 
 .auto-force-layout svg.graph-svg {
@@ -40,6 +43,15 @@
 }
 
 .auto-force-layout .buttonsWrapper {
-    height: 20px;
-    background-color: #00A000;
+    height: 10%;
+    /*background-color: #00A000;*/
+}
+
+.auto-force-layout .buttonsWrapper i {
+    font-size: 6vh;
+    cursor: pointer;
+}
+
+.auto-force-layout .buttonsWrapper i:hover {
+    background-color: yellow;
 }
