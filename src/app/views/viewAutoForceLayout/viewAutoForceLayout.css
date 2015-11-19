@@ -1,0 +1,10 @@
+#view3 {
+}
+
+#view3 .status {
+    color: white;
+    background-color: blue;
+    width: 100%;
+    /*height: 3vh;*/
+    font-size: 2vh;
+}
