@@ -23,7 +23,7 @@ angular.module('autoForceLayout', [])
     })
 
     //---------------------------------------------------------------//
-    .directive('autoForceLayout', ['$compile', 'AutoForceLayoutFactory', 'AutoForceLayoutInternal', function ($compile, AutoForceLayoutFactory, internal) {
+    .directive('autoForceLayout', ['$compile', 'AutoForceLayoutFactory', 'AutoForceLayoutServices', function ($compile, AutoForceLayoutFactory, internal) {
         return {
             restrict: "EA",
             controllerAs: "autoForceLayoutCtrl",
@@ -51,7 +51,7 @@ angular.module('autoForceLayout', [])
     }])
 
     //---------------------------------------------------------------//
-    .factory('AutoForceLayoutFactory', ['AutoForceLayoutConstants', 'AutoForceLayoutInternal', function (constants, internal) {
+    .factory('AutoForceLayoutFactory', ['AutoForceLayoutConstants', 'AutoForceLayoutServices', function (constants, services) {
         // constructor
         function AutoForceLayoutFactory() {
         }
@@ -63,7 +63,7 @@ angular.module('autoForceLayout', [])
         //---------------------------------------------------
         proto.initLayout = function (element, options) {
             console.log('in initLayout()');
-            var external = this;
+            var myInstance = this;
 
             this.options = options;
             this.data = options.data;
@@ -74,11 +74,11 @@ angular.module('autoForceLayout', [])
                 .charge(-400)
                 .linkDistance(40)
                 .on("tick", function () {
-                    internal.tick(external)
+                    services.tick(myInstance)
                 });
 
             this.drag = this.force.drag()
-                .on("dragstart", internal.dragstart);
+                .on("dragstart", services.dragstart);
 
             this.force.nodes(this.data.nodes)
                 .links(this.data.links)
@@ -104,18 +104,18 @@ angular.module('autoForceLayout', [])
             console.log('in redraw()');
 
             // draw links
-            this.link = this.svg.selectAll(".link")
+            this.links = this.svg.selectAll(".link")
                 .data(this.data.links)
                 .enter().append("line")
                 .attr("class", "link");
 
             // draw nodes
-            this.node = this.svg.selectAll(".node")
+            this.nodes = this.svg.selectAll(".node")
                 .data(this.data.nodes)
                 .enter().append("circle")
                 .attr("class", "node")
                 .attr("r", 12)
-                .on("dblclick", internal.dblclick)
+                .on("dblclick", services.dblclick)
                 .call(this.drag);
 
             return this;
@@ -132,13 +132,14 @@ angular.module('autoForceLayout', [])
 
 
     //---------------------------------------------------------------//
-    .service('AutoForceLayoutInternal', ['AutoForceLayoutConstants', '$templateCache', '$compile', function (constants, templates, $compile) {
+    .service('AutoForceLayoutServices', ['AutoForceLayoutConstants', '$templateCache', '$compile', function (constants, templates, $compile) {
         return {
             //---------------------------------------------------
             // tick
+            // Event handler
             //---------------------------------------------------
-            tick: function (external) {
-                external.link.attr("x1", function (d) {
+            tick: function (myInstance) {
+                myInstance.links.attr("x1", function (d) {
                         return d.source.x;
                     })
                     .attr("y1", function (d) {
@@ -151,7 +152,7 @@ angular.module('autoForceLayout', [])
                         return d.target.y;
                     });
 
-                external.node.attr("cx", function (d) {
+                myInstance.nodes.attr("cx", function (d) {
                         return d.x;
                     })
                     .attr("cy", function (d) {

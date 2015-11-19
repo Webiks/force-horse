@@ -20,20 +20,29 @@
     stroke-width: 1;
     fill: none;
     stroke: black;
-    font-family: Arial;
+    font-family: Arial, sans-serif;
     font-size: 12px;
     font-weight: normal;
     overflow: auto;
 }
 
 .auto-force-layout svg.graph-svg .link {
-    stroke: #000;
+    stroke: blue;
     stroke-width: 1.5px;
 }
 
+.auto-force-layout svg.graph-svg .link:hover {
+    /*stroke: black;*/
+    stroke-dasharray: 1,1;
+}
+
 .auto-force-layout svg.graph-svg .node {
-    cursor: move;
+    /*cursor: move;*/
     fill: #ccc;
+    stroke: none;
+}
+
+.auto-force-layout svg.graph-svg .node:hover {
     stroke: #000;
     stroke-width: 1.5px;
 }
@@ -53,5 +62,9 @@
 }
 
 .auto-force-layout .buttonsWrapper i:hover {
-    background-color: yellow;
+    color: blue;
+}
+
+.auto-force-layout .buttonsWrapper i:active {
+    color: red;
 }
