@@ -31,11 +31,15 @@ angular.module('autoForceLayout', [])
             scope: {
                 options: "=",
                 onLinkHovered: '&',
-                onNodeHovered: '&'
+                onLinkUnhovered: '&',
+                onNodeHovered: '&',
+                onNodeUnhovered: '&'
             },
             bindToController: true,
             controller: function ($scope, $element) {
                 console.log('In autoForceLayout controller');
+
+                var eventHandlers = services.applyScopeToEventHandlers(scope);
                 // this makes sure our parent app gets its echoInstance back
                 this.options.autoForceLayoutInstance = new AutoForceLayoutFactory()
                     .initLayout($element, this.options)
@@ -43,18 +47,6 @@ angular.module('autoForceLayout', [])
             },
             link: function (scope, element) { //, attr, ctrl) {
                 console.log('In autoForceLayout link');
-
-                // Apply Angular's scope.$apply to event handlers
-                var onLinkHovered = function (d) {
-                    scope.$apply(function () {
-                        scope.onLinkHovered({item: d});
-                    });
-                };
-                var onNodeHovered = function (d) {
-                    scope.$apply(function () {
-                        scope.onNodeHovered({item: d});
-                    });
-                };
 
                 // Add CSS class to set a CSS "namespace"
                 element.addClass("auto-force-layout");
@@ -128,7 +120,8 @@ angular.module('autoForceLayout', [])
                 .data(this.data.links)
                 .enter().append("line")
                 .attr("class", "link")
-                .on("mouseover", this.onLinkHovered);
+                .on("mouseover", this.onLinkHovered)
+                .on("mouseout", this.onLinkUnhovered);
 
             // draw nodes
             this.nodes = this.svg.selectAll(".node")
@@ -137,6 +130,7 @@ angular.module('autoForceLayout', [])
                 .attr("class", "node")
                 .attr("r", 12)
                 .on("mouseover", this.onNodeHovered)
+                .on("mouseout", this.onNodeUnhovered)
                 .on("dblclick", services.dblclick)
                 .call(this.drag);
 
@@ -215,7 +209,7 @@ angular.module('autoForceLayout', [])
             //---------------------------------------------------
             compileNodes: function (nodesArray) {
                 var nodesById = {};
-                nodesArray.forEach(function(val, idx) {
+                nodesArray.forEach(function (val, idx) {
                     if (typeof val.id === "undefined") {
                         console.error("Undefined [id] in nodes array");
                     } else {
@@ -231,7 +225,7 @@ angular.module('autoForceLayout', [])
             //---------------------------------------------------
             compileLinks: function (linksArray, nodesById) {
                 var linksById = {};
-                linksArray.forEach(function(val, idx) {
+                linksArray.forEach(function (val, idx) {
                     if (typeof val.id === "undefined") {
                         console.error("Undefined <id> in links array");
                     } else {
@@ -249,6 +243,40 @@ angular.module('autoForceLayout', [])
                     }
                 });
                 return linksById;
+            },
+
+            //---------------------------------------------------
+            // applyScopeToEventHandlers
+            // apply Angular's scope.$apply (set $watch) to user's event handlers
+            //---------------------------------------------------
+            applyScopeToEventHandlers: function (scope) {
+                return {
+
+                    onLinkHovered: function (d) {
+                        scope.$apply(function () {
+                            scope.onLinkHovered({item: d});
+                        });
+                    },
+
+                    onLinkUnovered: function (d) {
+                        scope.$apply(function () {
+                            scope.onLinkUnhovered({item: d});
+                        });
+                    },
+
+                    onNodeHovered: function (d) {
+                        scope.$apply(function () {
+                            scope.onNodeHovered({item: d});
+                        });
+                    },
+
+                    onNodeUnhovered: function (d) {
+                        scope.$apply(function () {
+                            scope.onNodeUnhovered({item: d});
+                        });
+                    }
+
+                }; // return {
             }
 
         }; // return {
