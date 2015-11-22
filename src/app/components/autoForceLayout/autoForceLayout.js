@@ -23,13 +23,15 @@ angular.module('autoForceLayout', [])
     })
 
     //---------------------------------------------------------------//
-    .directive('autoForceLayout', ['$compile', 'AutoForceLayoutFactory', 'AutoForceLayoutServices', function ($compile, AutoForceLayoutFactory, internal) {
+    .directive('autoForceLayout', ['$compile', 'AutoForceLayoutFactory', 'AutoForceLayoutServices', function ($compile, AutoForceLayoutFactory, services) {
         return {
             restrict: "EA",
             controllerAs: "autoForceLayoutCtrl",
             priority: 100,
             scope: {
-                options: "="
+                options: "=",
+                onLinkHovered: '&',
+                onNodeHovered: '&'
             },
             bindToController: true,
             controller: function ($scope, $element) {
@@ -41,11 +43,26 @@ angular.module('autoForceLayout', [])
             },
             link: function (scope, element) { //, attr, ctrl) {
                 console.log('In autoForceLayout link');
+
+                // Apply Angular's scope.$apply to event handlers
+                var onLinkHovered = function (d) {
+                    scope.$apply(function () {
+                        scope.onLinkHovered({item: d});
+                    });
+                };
+                var onNodeHovered = function (d) {
+                    scope.$apply(function () {
+                        scope.onNodeHovered({item: d});
+                    });
+                };
+
                 // Add CSS class to set a CSS "namespace"
                 element.addClass("auto-force-layout");
+                // Add flex-box properties
                 element.attr("layout", "column");
                 element.attr("flex", "");
-                internal.addButtons(scope, element);
+                // Add button bar
+                services.addButtons(scope, element);
             }
         };
     }])
@@ -67,6 +84,9 @@ angular.module('autoForceLayout', [])
 
             this.options = options;
             this.data = options.data;
+
+            this.nodesById = services.compileNodes(this.data.nodes);
+            this.linksById = services.compileLinks(this.data.links, this.nodesById);
 
             // create a forceLayout instance
             this.force = d3.layout.force()
@@ -107,7 +127,8 @@ angular.module('autoForceLayout', [])
             this.links = this.svg.selectAll(".link")
                 .data(this.data.links)
                 .enter().append("line")
-                .attr("class", "link");
+                .attr("class", "link")
+                .on("mouseover", this.onLinkHovered);
 
             // draw nodes
             this.nodes = this.svg.selectAll(".node")
@@ -115,6 +136,7 @@ angular.module('autoForceLayout', [])
                 .enter().append("circle")
                 .attr("class", "node")
                 .attr("r", 12)
+                .on("mouseover", this.onNodeHovered)
                 .on("dblclick", services.dblclick)
                 .call(this.drag);
 
@@ -180,11 +202,53 @@ angular.module('autoForceLayout', [])
             // addButtons
             // Add a buttons bar, at the top of thw container
             //---------------------------------------------------
-            addButtons: function(scope, container) {
+            addButtons: function (scope, container) {
                 var template = templates.get('autoForceLayout/buttons');
                 var element = angular.element(template);
                 var compiledElement = $compile(element)(scope);
                 container.prepend(compiledElement);
+            },
+
+            //---------------------------------------------------
+            // compileNodes
+            // Add references to the given nodes array
+            //---------------------------------------------------
+            compileNodes: function (nodesArray) {
+                var nodesById = {};
+                nodesArray.forEach(function(val, idx) {
+                    if (typeof val.id === "undefined") {
+                        console.error("Undefined [id] in nodes array");
+                    } else {
+                        nodesById[val.id] = idx;
+                    }
+                });
+                return nodesById;
+            },
+
+            //---------------------------------------------------
+            // compileLinks
+            // Add references to the given links array
+            //---------------------------------------------------
+            compileLinks: function (linksArray, nodesById) {
+                var linksById = {};
+                linksArray.forEach(function(val, idx) {
+                    if (typeof val.id === "undefined") {
+                        console.error("Undefined <id> in links array");
+                    } else {
+                        linksById[val.id] = idx;
+                    }
+                    if (typeof val.sourceID === "undefined") {
+                        console.error("Undefined [sourceID] in links array");
+                    } else {
+                        val.source = nodesById[val.sourceID];
+                    }
+                    if (typeof val.targetID === "undefined") {
+                        console.error("Undefined [targetID] in links array");
+                    } else {
+                        val.target = nodesById[val.targetID];
+                    }
+                });
+                return linksById;
             }
 
         }; // return {

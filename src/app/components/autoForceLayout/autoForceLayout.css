@@ -28,12 +28,12 @@
 }
 
 .auto-force-layout svg.graph-svg .link {
-    stroke: blue;
+    stroke: lightgray;
     stroke-width: 1.5px;
 }
 
 .auto-force-layout svg.graph-svg .link:hover {
-    /*stroke: black;*/
+    stroke: black;
     stroke-dasharray: 1,1;
 }
 
