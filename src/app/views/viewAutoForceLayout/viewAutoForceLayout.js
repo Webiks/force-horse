@@ -8,7 +8,7 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
         $stateProvider.state('index.viewAutoForceLayout', {
             url: '/viewAutoForceLayout',
             templateUrl: 'app/views/viewAutoForceLayout/viewAutoForceLayout.html',
-            controller: 'autoCtrl as viewCtrl',
+            controller: 'view3Ctrl as viewCtrl',
             data: {
                 title: 'Auto Force Layout'
             }
@@ -16,10 +16,29 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
     }])
 
     //---------------------------------------------------------------//
-    .controller('autoCtrl', ['$scope', 'graphData', function ($scope, data) {
-        console.log('In mainAppCtrl');
+    .controller('view3Ctrl', ['$scope', 'graphData', function ($scope, data) {
+        console.log('In view3Ctrl');
+
         $scope.options = {};
         $scope.options.data = data.get();
+
+        // Example event handlers
+
+        $scope.setNodeHovered = function(item, on) {
+            if (on) {
+                $scope.lastHoveredNode = item;
+            } else {
+                $scope.lastUnhoveredNode = item;
+            }
+        };
+
+        $scope.setLinkHovered = function(item, on) {
+            if (on) {
+                $scope.lastHoveredLink = item;
+            } else {
+                $scope.lastUnhoveredLink = item;
+            }
+        };
     }])
 
     //---------------------------------------------------------------//

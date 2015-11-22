@@ -31,18 +31,16 @@ angular.module('autoForceLayout', [])
             scope: {
                 options: "=",
                 onLinkHovered: '&',
-                onLinkUnhovered: '&',
-                onNodeHovered: '&',
-                onNodeUnhovered: '&'
+                onNodeHovered: '&'
             },
             bindToController: true,
             controller: function ($scope, $element) {
                 console.log('In autoForceLayout controller');
 
-                var eventHandlers = services.applyScopeToEventHandlers(scope);
+                this.eventHandlers = services.applyScopeToEventHandlers(this);
                 // this makes sure our parent app gets its echoInstance back
                 this.options.autoForceLayoutInstance = new AutoForceLayoutFactory()
-                    .initLayout($element, this.options)
+                    .initLayout($element, this.options, this.eventHandlers)
                     .redraw();
             },
             link: function (scope, element) { //, attr, ctrl) {
@@ -70,17 +68,20 @@ angular.module('autoForceLayout', [])
         //---------------------------------------------------
         // initLayout
         //---------------------------------------------------
-        proto.initLayout = function (element, options) {
+        proto.initLayout = function (element, options, eventHandlers) {
             console.log('in initLayout()');
             var myInstance = this;
 
+            // Save parameters
             this.options = options;
             this.data = options.data;
+            this.eventHandlers = eventHandlers;
 
+            // Enrich input
             this.nodesById = services.compileNodes(this.data.nodes);
             this.linksById = services.compileLinks(this.data.links, this.nodesById);
 
-            // create a forceLayout instance
+            // Create a forceLayout instance
             this.force = d3.layout.force()
                 .size([constants.INNER_SVG_WIDTH, constants.INNER_SVG_HEIGHT])
                 .charge(-400)
@@ -120,17 +121,26 @@ angular.module('autoForceLayout', [])
                 .data(this.data.links)
                 .enter().append("line")
                 .attr("class", "link")
-                .on("mouseover", this.onLinkHovered)
-                .on("mouseout", this.onLinkUnhovered);
+                .on("mouseover", function(d) {
+                    this.eventHandlers.onLinkHovered(d, true);
+                })
+                .on("mouseout", function(d) {
+                    this.eventHandlers.onLinkHovered(d, false);
+                });
 
             // draw nodes
             this.nodes = this.svg.selectAll(".node")
                 .data(this.data.nodes)
-                .enter().append("circle")
+                .enter()
+                .append("circle")
                 .attr("class", "node")
                 .attr("r", 12)
-                .on("mouseover", this.onNodeHovered)
-                .on("mouseout", this.onNodeUnhovered)
+                .on("mouseover", function(d) {
+                    this.eventHandlers.onNodeHovered(d, true);
+                })
+                .on("mouseout", function(d) {
+                    this.eventHandlers.onNodeHovered(d, false);
+                })
                 .on("dblclick", services.dblclick)
                 .call(this.drag);
 
@@ -252,27 +262,15 @@ angular.module('autoForceLayout', [])
             applyScopeToEventHandlers: function (scope) {
                 return {
 
-                    onLinkHovered: function (d) {
+                    onLinkHovered: function (d, on) {
                         scope.$apply(function () {
-                            scope.onLinkHovered({item: d});
+                            scope.onLinkHovered({item: d, on: on});
                         });
                     },
 
-                    onLinkUnovered: function (d) {
+                    onNodeHovered: function (d, on) {
                         scope.$apply(function () {
-                            scope.onLinkUnhovered({item: d});
-                        });
-                    },
-
-                    onNodeHovered: function (d) {
-                        scope.$apply(function () {
-                            scope.onNodeHovered({item: d});
-                        });
-                    },
-
-                    onNodeUnhovered: function (d) {
-                        scope.$apply(function () {
-                            scope.onNodeUnhovered({item: d});
+                            scope.onNodeHovered({item: d, on: on});
                         });
                     }
 
