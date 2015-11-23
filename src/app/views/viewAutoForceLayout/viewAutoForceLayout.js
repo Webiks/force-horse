@@ -47,19 +47,19 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
             get: function() {
                 return {
                     "nodes": [
-                        {id:0},
-                        {id:1},
-                        {id:2},
-                        {id:3},
-                        {id:4},
-                        {id:5},
-                        {id:6},
-                        {id:7},
-                        {id:8},
-                        {id:9},
-                        {id:10},
-                        {id:11},
-                        {id:12}
+                        {id:0, label:'aaa'},
+                        {id:1, label:'bbb'},
+                        {id:2, label:'ccc'},
+                        {id:3, label:'ddd'},
+                        {id:4, label:'eee'},
+                        {id:5, label:'fff'},
+                        {id:6, label:'ggg'},
+                        {id:7, label:'hhh'},
+                        {id:8, label:'iii'},
+                        {id:9, label:'jjj'},
+                        {id:10, label:'kkk'},
+                        {id:11, label:'lll'},
+                        {id:12, label:'mmm'}
                     ],
                     "links": [
                         {id:0, "sourceID":  0, "targetID":  1},

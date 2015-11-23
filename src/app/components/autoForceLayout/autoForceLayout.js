@@ -86,8 +86,8 @@ angular.module('autoForceLayout', [])
                 .size([constants.INNER_SVG_WIDTH, constants.INNER_SVG_HEIGHT])
                 .charge(-400)
                 .linkDistance(40)
-                .on("tick", function () {
-                    services.tick(myInstance)
+                .on("tick", function() {
+                    services.onTick(myInstance);
                 });
 
             this.drag = this.force.drag()
@@ -109,7 +109,6 @@ angular.module('autoForceLayout', [])
             return this;
         }; // end of Layout()
 
-
         //---------------------------------------------------
         // redraw the graph
         //---------------------------------------------------
@@ -120,12 +119,13 @@ angular.module('autoForceLayout', [])
             // draw links
             this.links = this.svg.selectAll(".link")
                 .data(this.data.links)
-                .enter().append("line")
+                .enter()
+                .append("line")
                 .attr("class", "link")
-                .on("mouseover", function(d) {
+                .on("mouseover", function (d) {
                     myInstance.eventHandlers.onLinkHovered(d, true);
                 })
-                .on("mouseout", function(d) {
+                .on("mouseout", function (d) {
                     myInstance.eventHandlers.onLinkHovered(d, false);
                 });
 
@@ -135,15 +135,26 @@ angular.module('autoForceLayout', [])
                 .enter()
                 .append("circle")
                 .attr("class", "node")
-                .attr("r", 12)
-                .on("mouseover", function(d) {
+                .attr("r", 12) // TODO
+                .on("mouseover", function (d) {
                     myInstance.eventHandlers.onNodeHovered(d, true);
                 })
-                .on("mouseout", function(d) {
+                .on("mouseout", function (d) {
                     myInstance.eventHandlers.onNodeHovered(d, false);
                 })
                 .on("dblclick", services.dblclick)
                 .call(this.drag);
+
+            // draw node labels
+            this.labels = this.svg.selectAll("text.label")
+                .data(this.data.nodes)
+                .enter()
+                .append("text")
+                .attr("class", "label")
+                .attr("dx", "15") // TODO
+                .text(function (d) {
+                    return d.label;
+                });
 
             return this;
         };
@@ -161,31 +172,42 @@ angular.module('autoForceLayout', [])
     //---------------------------------------------------------------//
     .service('AutoForceLayoutServices', ['AutoForceLayoutConstants', '$templateCache', '$compile', function (constants, templates, $compile) {
         return {
-            //---------------------------------------------------
-            // tick
-            // Event handler
-            //---------------------------------------------------
-            tick: function (myInstance) {
-                myInstance.links.attr("x1", function (d) {
-                        return d.source.x;
-                    })
-                    .attr("y1", function (d) {
-                        return d.source.y;
-                    })
-                    .attr("x2", function (d) {
-                        return d.target.x;
-                    })
-                    .attr("y2", function (d) {
-                        return d.target.y;
-                    });
 
+            //---------------------------------------------------
+            // onTick
+            // Update the graph
+            //---------------------------------------------------
+            onTick: function (myInstance) {
+            // Update links
+                myInstance.links.attr("x1", function (d) {
+                    return d.source.x;
+                })
+                .attr("y1", function (d) {
+                    return d.source.y;
+                })
+                .attr("x2", function (d) {
+                    return d.target.x;
+                })
+                .attr("y2", function (d) {
+                    return d.target.y;
+                });
+
+            // Update nodes
                 myInstance.nodes.attr("cx", function (d) {
-                        return d.x;
-                    })
-                    .attr("cy", function (d) {
-                        return d.y;
-                    });
-            },
+                    return d.x;
+                })
+                .attr("cy", function (d) {
+                    return d.y;
+                });
+
+            // Update labels
+                myInstance.labels.attr("x", function (d) {
+                    return d.x;
+                })
+                .attr("y", function (d) {
+                    return d.y;
+                });
+        },
 
             //---------------------------------------------------
             // dblclick
