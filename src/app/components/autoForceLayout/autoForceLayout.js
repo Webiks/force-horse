@@ -37,7 +37,7 @@ angular.module('autoForceLayout', [])
             controller: function ($scope, $element) {
                 console.log('In autoForceLayout controller');
 
-                this.eventHandlers = services.applyScopeToEventHandlers(this);
+                this.eventHandlers = services.applyScopeToEventHandlers(this, $scope);
                 // this makes sure our parent app gets its echoInstance back
                 this.options.autoForceLayoutInstance = new AutoForceLayoutFactory()
                     .initLayout($element, this.options, this.eventHandlers)
@@ -115,6 +115,7 @@ angular.module('autoForceLayout', [])
         //---------------------------------------------------
         proto.redraw = function () {
             console.log('in redraw()');
+            var myInstance = this;
 
             // draw links
             this.links = this.svg.selectAll(".link")
@@ -122,10 +123,10 @@ angular.module('autoForceLayout', [])
                 .enter().append("line")
                 .attr("class", "link")
                 .on("mouseover", function(d) {
-                    this.eventHandlers.onLinkHovered(d, true);
+                    myInstance.eventHandlers.onLinkHovered(d, true);
                 })
                 .on("mouseout", function(d) {
-                    this.eventHandlers.onLinkHovered(d, false);
+                    myInstance.eventHandlers.onLinkHovered(d, false);
                 });
 
             // draw nodes
@@ -136,10 +137,10 @@ angular.module('autoForceLayout', [])
                 .attr("class", "node")
                 .attr("r", 12)
                 .on("mouseover", function(d) {
-                    this.eventHandlers.onNodeHovered(d, true);
+                    myInstance.eventHandlers.onNodeHovered(d, true);
                 })
                 .on("mouseout", function(d) {
-                    this.eventHandlers.onNodeHovered(d, false);
+                    myInstance.eventHandlers.onNodeHovered(d, false);
                 })
                 .on("dblclick", services.dblclick)
                 .call(this.drag);
@@ -259,18 +260,18 @@ angular.module('autoForceLayout', [])
             // applyScopeToEventHandlers
             // apply Angular's scope.$apply (set $watch) to user's event handlers
             //---------------------------------------------------
-            applyScopeToEventHandlers: function (scope) {
+            applyScopeToEventHandlers: function (ctrl, scope) {
                 return {
 
                     onLinkHovered: function (d, on) {
                         scope.$apply(function () {
-                            scope.onLinkHovered({item: d, on: on});
+                            ctrl.onLinkHovered({item: d, on: on});
                         });
                     },
 
                     onNodeHovered: function (d, on) {
                         scope.$apply(function () {
-                            scope.onNodeHovered({item: d, on: on});
+                            ctrl.onNodeHovered({item: d, on: on});
                         });
                     }
 
