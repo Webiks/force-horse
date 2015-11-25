@@ -86,7 +86,8 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
                 // Add some random attributes
 
                 var maxColor = parseInt("0xffffff");
-                var shapes = ['circle', 'cross', 'diamond', 'square', 'triangle-down', 'triangle-up'];
+                var shapes = d3.svg.symbolTypes;
+                //var shapes = ['circle', 'cross', 'diamond', 'square', 'triangle-down', 'triangle-up'];
                 graph.nodes.forEach(function (node) {
                     node.color = '#'+Math.floor(Math.random()*maxColor).toString(16);
                     node.shape = shapes[Math.floor(Math.random()*shapes.length)];

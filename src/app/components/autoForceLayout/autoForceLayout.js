@@ -81,7 +81,8 @@ angular.module('autoForceLayout', [])
             this.nodesById = services.compileNodes(this.data.nodes);
             this.linksById = services.compileLinks(this.data.links, this.nodesById);
 
-            // Init node-selection state
+            this.numOfNodes = this.data.nodes.length;
+            this.nodeDefaultSize = constants.INNER_SVG_WIDTH / 64 * constants.INNER_SVG_HEIGHT / 48 * 2;
             this.numOfSelectedNodes = 0;
 
             // Create a forceLayout instance
@@ -137,10 +138,12 @@ angular.module('autoForceLayout', [])
                 .data(this.data.nodes)
                 .enter()
                 .append("path")
+                // Set node shape & size
                 .attr("d", d3.svg.symbol()
                     .type(function (d) {
                         return d.shape;
-                    }))
+                    })
+                    .size(myInstance.nodeDefaultSize))
                 .attr("class", "node")
                 .attr("style", function (d) {
                     return "fill:" + d.color;
