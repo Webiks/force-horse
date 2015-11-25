@@ -81,6 +81,9 @@ angular.module('autoForceLayout', [])
             this.nodesById = services.compileNodes(this.data.nodes);
             this.linksById = services.compileLinks(this.data.links, this.nodesById);
 
+            // Init node-selection state
+            this.numOfSelectedNodes = 0;
+
             // Create a forceLayout instance
             this.force = d3.layout.force()
                 .size([constants.INNER_SVG_WIDTH, constants.INNER_SVG_HEIGHT])
@@ -91,7 +94,7 @@ angular.module('autoForceLayout', [])
                 });
 
             this.drag = this.force.drag()
-                .on("dragstart", services.dragstart);
+                .on("dragstart", services.onDragStart);
 
             this.force.nodes(this.data.nodes)
                 .links(this.data.links)
@@ -142,7 +145,9 @@ angular.module('autoForceLayout', [])
                 .on("mouseout", function (d) {
                     myInstance.eventHandlers.onNodeHovered(d, false);
                 })
-                .on("dblclick", services.dblclick)
+                .on("click", function(d) {
+                    services.onClick(d, this, myInstance);
+                })
                 .call(this.drag);
 
             // draw node labels
@@ -210,19 +215,21 @@ angular.module('autoForceLayout', [])
         },
 
             //---------------------------------------------------
-            // dblclick
-            // Event handler
+            // onClick
+            // Event handler. Manage node selection
             //---------------------------------------------------
-            dblclick: function (d) {
-                d3.select(this).classed("fixed", d.fixed = false);
+            onClick: function (d, element, myInstance) {
+                d3.select(element).classed("selected", d.selected = !d.selected);
+                myInstance.svg.classed("selectionMode", myInstance.numOfSelectedNodes += (d.selected ? 1 : -1));
             },
 
             //---------------------------------------------------
-            // dragstart
+            // onDragStart
             // Event handler
             //---------------------------------------------------
-            dragstart: function (d) {
-                d3.select(this).classed("fixed", d.fixed = true);
+            onDragStart: function (d) {
+                d.fixed = true;
+                //d3.select(this).classed("fixed", d.fixed = true);
             },
 
             //---------------------------------------------------

@@ -48,6 +48,14 @@
     stroke-width: 1.5px;
 }
 
+.auto-force-layout svg.graph-svg.selectionMode .node {
+    opacity: 0.5;
+}
+
+.auto-force-layout svg.graph-svg.selectionMode .node.selected {
+    opacity: 1;
+}
+
 .auto-force-layout svg.graph-svg .node.fixed {
     fill: #f00;
 }
