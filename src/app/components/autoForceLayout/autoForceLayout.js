@@ -89,7 +89,7 @@ angular.module('autoForceLayout', [])
                 .size([constants.INNER_SVG_WIDTH, constants.INNER_SVG_HEIGHT])
                 .charge(-400)
                 .linkDistance(40)
-                .on("tick", function() {
+                .on("tick", function () {
                     services.onTick(myInstance);
                 });
 
@@ -136,16 +136,22 @@ angular.module('autoForceLayout', [])
             this.nodes = this.svg.selectAll(".node")
                 .data(this.data.nodes)
                 .enter()
-                .append("circle")
+                .append("path")
+                .attr("d", d3.svg.symbol()
+                    .type(function (d) {
+                        return d.shape;
+                    }))
                 .attr("class", "node")
-                .attr("r", 12) // TODO
+                .attr("style", function (d) {
+                    return "fill:" + d.color;
+                })
                 .on("mouseover", function (d) {
                     myInstance.eventHandlers.onNodeHovered(d, true);
                 })
                 .on("mouseout", function (d) {
                     myInstance.eventHandlers.onNodeHovered(d, false);
                 })
-                .on("click", function(d) {
+                .on("click", function (d) {
                     services.onClick(d, this, myInstance);
                 })
                 .call(this.drag);
@@ -183,36 +189,33 @@ angular.module('autoForceLayout', [])
             // Update the graph
             //---------------------------------------------------
             onTick: function (myInstance) {
-            // Update links
+                // Update links
                 myInstance.links.attr("x1", function (d) {
-                    return d.source.x;
-                })
-                .attr("y1", function (d) {
-                    return d.source.y;
-                })
-                .attr("x2", function (d) {
-                    return d.target.x;
-                })
-                .attr("y2", function (d) {
-                    return d.target.y;
+                        return d.source.x;
+                    })
+                    .attr("y1", function (d) {
+                        return d.source.y;
+                    })
+                    .attr("x2", function (d) {
+                        return d.target.x;
+                    })
+                    .attr("y2", function (d) {
+                        return d.target.y;
+                    });
+
+                // Update nodes
+                myInstance.nodes.attr('transform', function (d) {
+                    return "translate(" + d.x + "," + d.y + ")";
                 });
 
-            // Update nodes
-                myInstance.nodes.attr("cx", function (d) {
-                    return d.x;
-                })
-                .attr("cy", function (d) {
-                    return d.y;
-                });
-
-            // Update labels
+                // Update labels
                 myInstance.labels.attr("x", function (d) {
-                    return d.x;
-                })
-                .attr("y", function (d) {
-                    return d.y;
-                });
-        },
+                        return d.x;
+                    })
+                    .attr("y", function (d) {
+                        return d.y;
+                    });
+            },
 
             //---------------------------------------------------
             // onClick

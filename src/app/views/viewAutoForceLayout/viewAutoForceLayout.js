@@ -45,7 +45,7 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
     .service('graphData', function() {
         return {
             get: function() {
-                return {
+                var graph = {
                     "nodes": [
                         {id:0, label:'aaa'},
                         {id:1, label:'bbb'},
@@ -82,6 +82,17 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
                         {id:17, "sourceID": 12, "targetID": 10}
                     ]
                 };
+
+                // Add some random attributes
+
+                var maxColor = parseInt("0xffffff");
+                var shapes = ['circle', 'cross', 'diamond', 'square', 'triangle-down', 'triangle-up'];
+                graph.nodes.forEach(function (node) {
+                    node.color = '#'+Math.floor(Math.random()*maxColor).toString(16);
+                    node.shape = shapes[Math.floor(Math.random()*shapes.length)];
+                })
+                //-----//
+                return graph;
             }
         };
     })
