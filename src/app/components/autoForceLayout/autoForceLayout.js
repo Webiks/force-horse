@@ -77,13 +77,16 @@ angular.module('autoForceLayout', [])
             this.data = options.data;
             this.eventHandlers = eventHandlers;
 
-            // Enrich input
+            // Input initial processing
             this.nodesById = services.compileNodes(this.data.nodes);
             this.linksById = services.compileLinks(this.data.links, this.nodesById);
 
+            // Some nodes-related fields
             this.numOfNodes = this.data.nodes.length;
             this.nodeDefaultSize = constants.INNER_SVG_WIDTH / 64 * constants.INNER_SVG_HEIGHT / 48 * 2;
             this.numOfSelectedNodes = 0;
+            this.dragMode = false;
+            this.draggedNodeId = null;
 
             // Create a forceLayout instance
             this.force = d3.layout.force()
@@ -92,10 +95,17 @@ angular.module('autoForceLayout', [])
                 .linkDistance(40)
                 .on("tick", function () {
                     services.onTick(myInstance);
+                })
+                .on("end", function () {
+                    services.onForceEnd(myInstance);
                 });
 
             this.drag = this.force.drag()
-                .on("dragstart", services.onDragStart);
+                .on("dragstart", services.onDragStart)
+                .on("drag", function(d) {
+                    services.onDrag(d, myInstance);
+                })
+                .on("dragend", services.onDragEnd);
 
             this.force.nodes(this.data.nodes)
                 .links(this.data.links)
@@ -234,8 +244,51 @@ angular.module('autoForceLayout', [])
             // Event handler
             //---------------------------------------------------
             onDragStart: function (d) {
-                d.fixed = true;
-                //d3.select(this).classed("fixed", d.fixed = true);
+            },
+
+            //---------------------------------------------------
+            // onDrag
+            // Event handler
+            //---------------------------------------------------
+            onDrag: function (d, myInstance) {
+                // Flag drag mode, and make the dragged node fixed (not moved by the simulation).
+                // These settings will be removed on force end event (end of current simulation).
+                // I flag the dragging on drag event, and not on dragStart event,
+                // because dragStart is thrown even if you just click on the node, without really dragging.
+                if (!myInstance.dragMode || myInstance.draggedNodeId !== d.id) {
+                    // Mark drag mode (it will cancelled in the next force-end event)
+                    myInstance.dragMode = true;
+                    // Mark the presently dragged node as immovable by the simulation.
+                    d.fixed = true;
+                    // If we drag a node, before the simulation that started after we dragged another node,
+                    // had ended, mark the previously dragged node as movable by the simulation.
+                    if (myInstance.draggedNodeId !== d.id && Number.isInteger(myInstance.draggedNodeId)) {
+                        myInstance.data.nodes[myInstance.nodesById[myInstance.draggedNodeId]].fixed = false;
+                    }
+                    myInstance.draggedNodeId = d.id;
+                }
+            },
+
+            //---------------------------------------------------
+            // onDragEnd
+            // Event handler
+            //---------------------------------------------------
+            onDragEnd: function (d) {
+            },
+
+            //---------------------------------------------------
+            // onForceEnd
+            // Event handler
+            //---------------------------------------------------
+            onForceEnd: function (myInstance) {
+                console.log('onForceEnd called');
+                // If the ending simulation is one triggered by a node dragging,
+                // make the dragged node movable (it gets fixed during the dragging and
+                // the ensuing simulation.
+                if (myInstance.dragMode) {
+                    myInstance.dragMode = false;
+                    myInstance.data.nodes[myInstance.nodesById[myInstance.draggedNodeId]].fixed = false;
+                }
             },
 
             //---------------------------------------------------
