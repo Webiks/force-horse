@@ -35,7 +35,7 @@ angular.module('autoForceLayout', [])
             },
             bindToController: true,
             controller: function ($scope, $element) {
-                console.log('In autoForceLayout controller');
+                //console.log('In autoForceLayout controller');
 
                 this.eventHandlers = services.applyScopeToEventHandlers(this, $scope);
                 // this makes sure our parent app gets its echoInstance back
@@ -44,7 +44,7 @@ angular.module('autoForceLayout', [])
                     .redraw();
             },
             link: function (scope, element) { //, attr, ctrl) {
-                console.log('In autoForceLayout link');
+                //console.log('In autoForceLayout link');
 
                 // Add CSS class to set a CSS "namespace"
                 element.addClass("auto-force-layout");
@@ -69,7 +69,7 @@ angular.module('autoForceLayout', [])
         // initLayout
         //---------------------------------------------------
         proto.initLayout = function (element, options, eventHandlers) {
-            console.log('in initLayout()');
+            //console.log('in initLayout()');
             var myInstance = this;
 
             // Save parameters
@@ -127,7 +127,7 @@ angular.module('autoForceLayout', [])
         // redraw the graph
         //---------------------------------------------------
         proto.redraw = function () {
-            console.log('in redraw()');
+            //console.log('in redraw()');
             var myInstance = this;
 
             // draw links
@@ -235,6 +235,9 @@ angular.module('autoForceLayout', [])
             // Event handler. Manage node selection
             //---------------------------------------------------
             onClick: function (d, element, myInstance) {
+                //console.log("on Click, prevented =" + d3.event.defaultPrevented);
+                // Ignore the click event at the end of a drag
+                if (d3.event.defaultPrevented) return;
                 d3.select(element).classed("selected", d.selected = !d.selected);
                 myInstance.svg.classed("selectionMode", myInstance.numOfSelectedNodes += (d.selected ? 1 : -1));
             },
@@ -281,7 +284,7 @@ angular.module('autoForceLayout', [])
             // Event handler
             //---------------------------------------------------
             onForceEnd: function (myInstance) {
-                console.log('onForceEnd called');
+                //console.log('onForceEnd called');
                 // If the ending simulation is one triggered by a node dragging,
                 // make the dragged node movable (it gets fixed during the dragging and
                 // the ensuing simulation.
