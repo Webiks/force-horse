@@ -38,7 +38,8 @@ angular.module('autoForceLayout', [])
                 //console.log('In autoForceLayout controller');
 
                 this.eventHandlers = services.applyScopeToEventHandlers(this, $scope);
-                // this makes sure our parent app gets its echoInstance back
+                // Create my instance
+                // Also provide the caller with a reference to my instance, for API
                 this.options.autoForceLayoutInstance = new AutoForceLayoutFactory()
                     .initLayout($element, this.options, this.eventHandlers)
                     .redraw();
@@ -159,10 +160,10 @@ angular.module('autoForceLayout', [])
                     return "fill:" + d.color;
                 })
                 .on("mouseover", function (d) {
-                    myInstance.eventHandlers.onNodeHovered(d, true);
+                    myInstance.setNodeHovered(d, true, constants.SOURCE_IN);
                 })
                 .on("mouseout", function (d) {
-                    myInstance.eventHandlers.onNodeHovered(d, false);
+                    myInstance.setNodeHovered(d, false, constants.SOURCE_IN);
                 })
                 .on("click", function (d) {
                     services.onClick(d, this, myInstance);
@@ -183,13 +184,35 @@ angular.module('autoForceLayout', [])
             return this;
         };
 
+        //---------------------------------------------------
+        // setNodeHovered
+        // State handler
+        // Params: node: either node id or a node object
+        // on: boolean
+        // source: either SOURCE_IN or SOURCE_OUT
+        //---------------------------------------------------
+        proto.setNodeHovered = function (node, on, source) {
+            //if (typeof source === "undefined") {
+            //    source = constants.SOURCE_OUT;
+            //}
+
+            var myInstance = this;
+
+            if (source === constants.SOURCE_IN) {
+                myInstance.eventHandlers.onNodeHovered(node, on);
+            }
+        };
+
         return AutoForceLayoutFactory;
     }])
+
 
     //---------------------------------------------------------------//
     .constant('AutoForceLayoutConstants', {
         INNER_SVG_WIDTH: 640,
-        INNER_SVG_HEIGHT: 480
+        INNER_SVG_HEIGHT: 480,
+        SOURCE_IN: 0,
+        SOURCE_OUT: 1
     })
 
 
@@ -371,4 +394,16 @@ angular.module('autoForceLayout', [])
 
         }; // return {
     }]) // .service
+
+
+/*
+    //---------------------------------------------------------------//
+    .service('AutoForceLayoutNodeState', ['AutoForceLayoutConstants', function (constants) {
+        return {
+            setNodeHovered: function(node, source) {
+
+            }
+        };
+    }]) // .service
+*/
 ;
