@@ -192,15 +192,16 @@ angular.module('autoForceLayout', [])
         // source: either SOURCE_IN or SOURCE_OUT
         //---------------------------------------------------
         proto.setNodeHovered = function (node, on, source) {
-            //if (typeof source === "undefined") {
-            //    source = constants.SOURCE_OUT;
-            //}
-
             var myInstance = this;
-
+            if (typeof node !== "object") { // var node contains a node id
+                node = myInstance.data.nodes[myInstance.nodesById[node]];
+            }
+            // Update inner/outer state
             if (source === constants.SOURCE_IN) {
                 myInstance.eventHandlers.onNodeHovered(node, on);
             }
+            // Update presentation
+
         };
 
         return AutoForceLayoutFactory;
