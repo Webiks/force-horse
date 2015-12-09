@@ -1,11 +1,11 @@
 
 .auto-force-layout {
-    height: 100%;
+    /* height: 100%; */
     /* flex: 1; */
 }
 
 .auto-force-layout .svgWrapper {
-    /* height: 90%; */
+    height: 90%;
     position: relative;
     /* flex: 1; */
     flex-grow: 1;
@@ -43,7 +43,7 @@
     stroke: none;
 }
 
-.auto-force-layout svg.graph-svg .node:hover {
+.auto-force-layout svg.graph-svg .node.hovered {
     stroke: #000;
     stroke-width: 1.5px;
 }

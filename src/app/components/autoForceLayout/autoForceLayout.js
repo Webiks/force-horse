@@ -8,7 +8,7 @@ angular.module('autoForceLayout', [])
     .run(function ($templateCache) {
         // cache our buttons template
         $templateCache.put('autoForceLayout/buttons',
-            '<div class="buttonsWrapper" layout="row" layout-align="start center" layout-padding>\
+            '<div class="buttonsWrapper" layout="row" layout-align="start center">\
               <span flex="50">\
                 <i class="mdi mdi-filter"></i>\
                 <i class="mdi mdi-wrap"></i>\
@@ -160,10 +160,10 @@ angular.module('autoForceLayout', [])
                     return "fill:" + d.color;
                 })
                 .on("mouseover", function (d) {
-                    myInstance.setNodeHovered(d, true, constants.SOURCE_IN);
+                    myInstance.setNodeHovered(this, d, true, constants.SOURCE_IN);
                 })
                 .on("mouseout", function (d) {
-                    myInstance.setNodeHovered(d, false, constants.SOURCE_IN);
+                    myInstance.setNodeHovered(this, d, false, constants.SOURCE_IN);
                 })
                 .on("click", function (d) {
                     services.onClick(d, this, myInstance);
@@ -187,21 +187,22 @@ angular.module('autoForceLayout', [])
         //---------------------------------------------------
         // setNodeHovered
         // State handler
-        // Params: node: either node id or a node object
+        // Params: nodeData: either node id or a node object
+        // nodeElement: the corresponding DOM element
         // on: boolean
         // source: either SOURCE_IN or SOURCE_OUT
         //---------------------------------------------------
-        proto.setNodeHovered = function (node, on, source) {
+        proto.setNodeHovered = function (nodeElement, nodeData, on, source) {
             var myInstance = this;
-            if (typeof node !== "object") { // var node contains a node id
-                node = myInstance.data.nodes[myInstance.nodesById[node]];
+            if (typeof nodeData !== "object") { // var nodeData contains a node id
+                nodeData = myInstance.data.nodes[myInstance.nodesById[nodeData]];
             }
             // Update inner/outer state
             if (source === constants.SOURCE_IN) {
-                myInstance.eventHandlers.onNodeHovered(node, on);
+                myInstance.eventHandlers.onNodeHovered(nodeData, on);
             }
             // Update presentation
-
+            d3.select(nodeElement).classed("hovered", nodeData.selected = on);
         };
 
         return AutoForceLayoutFactory;
