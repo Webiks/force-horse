@@ -24,19 +24,32 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
 
         // Example event handlers
 
-        $scope.setNodeHovered = function(item, on) {
+        $scope.SOURCE_IN = 0;
+        $scope.SOURCE_OUT = 1;
+
+        $scope.setNodeHovered = function(item, on, source) {
+            if (angular.isUndefined(source)) {
+                source = $scope.SOURCE_OUT;
+            }
+            var node;
+            if (source === $scope.SOURCE_IN) {
+                node = item;
+            } else {
+                node = $scope.options.data.nodes.find(function (node) {
+                    return node.id === item.id;
+                });
+            }
+            if (!!node) {
+                node.hovered = on;
+            }
             if (on) {
                 $scope.lastHoveredNode = item;
-            } else {
-                $scope.lastUnhoveredNode = item;
             }
         };
 
         $scope.setLinkHovered = function(item, on) {
             if (on) {
                 $scope.lastHoveredLink = item;
-            } else {
-                $scope.lastUnhoveredLink = item;
             }
         };
     }])
@@ -91,7 +104,7 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
                 graph.nodes.forEach(function (node) {
                     node.color = '#'+Math.floor(Math.random()*maxColor).toString(16);
                     node.shape = shapes[Math.floor(Math.random()*shapes.length)];
-                })
+                });
                 //-----//
                 return graph;
             }

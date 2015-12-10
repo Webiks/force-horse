@@ -1,12 +1,52 @@
 <div id="view3" flex layout="row">
+
     <div flex auto-force-layout
          options="options"
          on-node-hovered="setNodeHovered(item, on)"
          on-link-hovered="setLinkHovered(item, on)"
     >
     </div>
-    <div class="status" flex="30">
-        <span>Last hovered node = {{lastHoveredNode.label}}</span>
+
+    <div class="external-console" flex="30" layout="column">
+        <div flex>Last hovered node = {{lastHoveredNode.label}}</div>
+        <div flex layout="row">
+            <div flex layout="column">
+                <h3>Nodes</h3>
+                    <md-virtual-repeat-container flex="">
+                        <table class="nodes-table" flex>
+                            <tr class="repeated-item">
+                                <th>id</th>
+                                <th>label</th>
+                            </tr>
+                        <tr md-virtual-repeat="node in options.data.nodes"
+                            ng-class='["repeated-item", {hovered: node.hovered}]'
+                            ng-mouseenter="setNodeHovered(node, true, SOURCE_IN)"
+                            ng-mouseleave="setNodeHovered(node, false, SOURCE_IN)"
+                            flex="">
+                            <td class="id">{{node.id}}</td>
+                            <td class="label">{{node.label}}</td>
+                        </tr>
+                        </table>
+                    </md-virtual-repeat-container>
+            </div>
+            <div flex layout="column">
+                <h3>Links</h3>
+                <md-virtual-repeat-container flex="">
+                    <table class="links-table" flex>
+                        <tr class="repeated-item">
+                            <th>id</th>
+                            <th>src nd id</th>
+                            <th>tgt nd id</th>
+                        </tr>
+                        <tr md-virtual-repeat="link in options.data.links" class="repeated-item" flex="">
+                            <td class="id">{{link.id}}</td>
+                            <td class="sourceID">{{link.sourceID}}</td>
+                            <td class="targetID">{{link.targetID}}</td>
+                        </tr>
+                    </table>
+                </md-virtual-repeat-container>
+            </div>
+        </div>
     </div>
 </div>
 

@@ -137,10 +137,10 @@ angular.module('autoForceLayout', [])
                 .enter()
                 .append("line")
                 .attr("class", "link")
-                .on("mouseover", function (d) {
+                .on("mouseenter", function (d) {
                     myInstance.eventHandlers.onLinkHovered(d, true);
                 })
-                .on("mouseout", function (d) {
+                .on("mouseleave", function (d) {
                     myInstance.eventHandlers.onLinkHovered(d, false);
                 });
 
@@ -159,10 +159,10 @@ angular.module('autoForceLayout', [])
                 .attr("style", function (d) {
                     return "fill:" + d.color;
                 })
-                .on("mouseover", function (d) {
+                .on("mouseenter", function (d) {
                     myInstance.setNodeHovered(this, d, true, constants.SOURCE_IN);
                 })
-                .on("mouseout", function (d) {
+                .on("mouseleave", function (d) {
                     myInstance.setNodeHovered(this, d, false, constants.SOURCE_IN);
                 })
                 .on("click", function (d) {
