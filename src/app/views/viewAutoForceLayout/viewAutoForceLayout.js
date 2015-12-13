@@ -22,32 +22,31 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
         $scope.options = {};
         $scope.options.data = data.get();
 
-        // Example event handlers
+        // Event handlers
 
-        $scope.SOURCE_IN = 0;
-        $scope.SOURCE_OUT = 1;
-
-        $scope.setNodeHovered = function(item, on, source) {
-            if (angular.isUndefined(source)) {
-                source = $scope.SOURCE_OUT;
-            }
-            var node;
-            if (source === $scope.SOURCE_IN) {
-                node = item;
-            } else {
-                node = $scope.options.data.nodes.find(function (node) {
-                    return node.id === item.id;
-                });
-            }
-            if (!!node) {
-                node.hovered = on;
-            }
+        // Node was hovered inside this view
+        $scope.inSetNodeHovered = function (nodeObj, on) {
+            nodeObj.hovered = on;
             if (on) {
-                $scope.lastHoveredNode = item;
+                $scope.lastHoveredNode = nodeObj;
+            }
+            if (angular.isDefined($scope.options.autoForceLayoutInstance)) {
+                $scope.options.autoForceLayoutInstance.apiSetNodeHovered(nodeObj, on);
             }
         };
 
-        $scope.setLinkHovered = function(item, on) {
+        // Node was hovered outside this view (in the graph component)
+        $scope.setNodeHovered = function (nodeObj, on) {
+            nodeObj = $scope.options.data.nodes.find(function (node) {
+                return node.id === nodeObj.id;
+            });
+            nodeObj.hovered = on;
+            if (on) {
+                $scope.lastHoveredNode = nodeObj;
+            }
+        };
+
+        $scope.setLinkHovered = function (item, on) {
             if (on) {
                 $scope.lastHoveredLink = item;
             }
@@ -55,44 +54,44 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
     }])
 
     //---------------------------------------------------------------//
-    .service('graphData', function() {
+    .service('graphData', function () {
         return {
-            get: function() {
+            get: function () {
                 var graph = {
                     "nodes": [
-                        {id:0, label:'aaa'},
-                        {id:1, label:'bbb'},
-                        {id:2, label:'ccc'},
-                        {id:3, label:'ddd'},
-                        {id:4, label:'eee'},
-                        {id:5, label:'fff'},
-                        {id:6, label:'ggg'},
-                        {id:7, label:'hhh'},
-                        {id:8, label:'iii'},
-                        {id:9, label:'jjj'},
-                        {id:10, label:'kkk'},
-                        {id:11, label:'lll'},
-                        {id:12, label:'mmm'}
+                        {id: 0, label: 'aaa'},
+                        {id: 1, label: 'bbb'},
+                        {id: 2, label: 'ccc'},
+                        {id: 3, label: 'ddd'},
+                        {id: 4, label: 'eee'},
+                        {id: 5, label: 'fff'},
+                        {id: 6, label: 'ggg'},
+                        {id: 7, label: 'hhh'},
+                        {id: 8, label: 'iii'},
+                        {id: 9, label: 'jjj'},
+                        {id: 10, label: 'kkk'},
+                        {id: 11, label: 'lll'},
+                        {id: 12, label: 'mmm'}
                     ],
                     "links": [
-                        {id:0, "sourceID":  0, "targetID":  1},
-                        {id:1, "sourceID":  1, "targetID":  2},
-                        {id:2, "sourceID":  2, "targetID":  0},
-                        {id:3, "sourceID":  1, "targetID":  3},
-                        {id:4, "sourceID":  3, "targetID":  2},
-                        {id:5, "sourceID":  3, "targetID":  4},
-                        {id:6, "sourceID":  4, "targetID":  5},
-                        {id:7, "sourceID":  5, "targetID":  6},
-                        {id:8, "sourceID":  5, "targetID":  7},
-                        {id:9, "sourceID":  6, "targetID":  7},
-                        {id:10, "sourceID":  6, "targetID":  8},
-                        {id:11, "sourceID":  7, "targetID":  8},
-                        {id:12, "sourceID":  9, "targetID":  4},
-                        {id:13, "sourceID":  9, "targetID": 11},
-                        {id:14, "sourceID":  9, "targetID": 10},
-                        {id:15, "sourceID": 10, "targetID": 11},
-                        {id:16, "sourceID": 11, "targetID": 12},
-                        {id:17, "sourceID": 12, "targetID": 10}
+                        {id: 0, "sourceID": 0, "targetID": 1},
+                        {id: 1, "sourceID": 1, "targetID": 2},
+                        {id: 2, "sourceID": 2, "targetID": 0},
+                        {id: 3, "sourceID": 1, "targetID": 3},
+                        {id: 4, "sourceID": 3, "targetID": 2},
+                        {id: 5, "sourceID": 3, "targetID": 4},
+                        {id: 6, "sourceID": 4, "targetID": 5},
+                        {id: 7, "sourceID": 5, "targetID": 6},
+                        {id: 8, "sourceID": 5, "targetID": 7},
+                        {id: 9, "sourceID": 6, "targetID": 7},
+                        {id: 10, "sourceID": 6, "targetID": 8},
+                        {id: 11, "sourceID": 7, "targetID": 8},
+                        {id: 12, "sourceID": 9, "targetID": 4},
+                        {id: 13, "sourceID": 9, "targetID": 11},
+                        {id: 14, "sourceID": 9, "targetID": 10},
+                        {id: 15, "sourceID": 10, "targetID": 11},
+                        {id: 16, "sourceID": 11, "targetID": 12},
+                        {id: 17, "sourceID": 12, "targetID": 10}
                     ]
                 };
 
@@ -102,8 +101,8 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
                 var shapes = d3.svg.symbolTypes;
                 //var shapes = ['circle', 'cross', 'diamond', 'square', 'triangle-down', 'triangle-up'];
                 graph.nodes.forEach(function (node) {
-                    node.color = '#'+Math.floor(Math.random()*maxColor).toString(16);
-                    node.shape = shapes[Math.floor(Math.random()*shapes.length)];
+                    node.color = '#' + Math.floor(Math.random() * maxColor).toString(16);
+                    node.shape = shapes[Math.floor(Math.random() * shapes.length)];
                 });
                 //-----//
                 return graph;

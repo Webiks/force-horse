@@ -20,8 +20,8 @@
                             </tr>
                         <tr md-virtual-repeat="node in options.data.nodes"
                             ng-class='["repeated-item", {hovered: node.hovered}]'
-                            ng-mouseenter="setNodeHovered(node, true, SOURCE_IN)"
-                            ng-mouseleave="setNodeHovered(node, false, SOURCE_IN)"
+                            ng-mouseenter="inSetNodeHovered(node, true)"
+                            ng-mouseleave="inSetNodeHovered(node, false)"
                             flex="">
                             <td class="id">{{node.id}}</td>
                             <td class="label">{{node.label}}</td>
@@ -35,8 +35,8 @@
                     <table class="links-table" flex>
                         <tr class="repeated-item">
                             <th>id</th>
-                            <th>src nd id</th>
-                            <th>tgt nd id</th>
+                            <th>source id</th>
+                            <th>target id</th>
                         </tr>
                         <tr md-virtual-repeat="link in options.data.links" class="repeated-item" flex="">
                             <td class="id">{{link.id}}</td>

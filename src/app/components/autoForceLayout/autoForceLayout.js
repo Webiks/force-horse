@@ -37,11 +37,11 @@ angular.module('autoForceLayout', [])
             controller: function ($scope, $element) {
                 //console.log('In autoForceLayout controller');
 
-                this.eventHandlers = services.applyScopeToEventHandlers(this, $scope);
+                this.externalEventHandlers = services.applyScopeToEventHandlers(this, $scope);
                 // Create my instance
                 // Also provide the caller with a reference to my instance, for API
                 this.options.autoForceLayoutInstance = new AutoForceLayoutFactory()
-                    .initLayout($element, this.options, this.eventHandlers)
+                    .initLayout($element, this.options, this.externalEventHandlers)
                     .redraw();
             },
             link: function (scope, element) { //, attr, ctrl) {
@@ -69,14 +69,14 @@ angular.module('autoForceLayout', [])
         //---------------------------------------------------
         // initLayout
         //---------------------------------------------------
-        proto.initLayout = function (element, options, eventHandlers) {
+        proto.initLayout = function (element, options, externalEventHandlers) {
             //console.log('in initLayout()');
             var myInstance = this;
 
             // Save parameters
             this.options = options;
             this.data = options.data;
-            this.eventHandlers = eventHandlers;
+            this.externalEventHandlers = externalEventHandlers;
 
             // Input initial processing
             this.nodesById = services.compileNodes(this.data.nodes);
@@ -103,7 +103,7 @@ angular.module('autoForceLayout', [])
 
             this.drag = this.force.drag()
                 .on("dragstart", services.onDragStart)
-                .on("drag", function(d) {
+                .on("drag", function (d) {
                     services.onDrag(d, myInstance);
                 })
                 .on("dragend", services.onDragEnd);
@@ -138,10 +138,10 @@ angular.module('autoForceLayout', [])
                 .append("line")
                 .attr("class", "link")
                 .on("mouseenter", function (d) {
-                    myInstance.eventHandlers.onLinkHovered(d, true);
+                    myInstance.externalEventHandlers.onLinkHovered(d, true);
                 })
                 .on("mouseleave", function (d) {
-                    myInstance.eventHandlers.onLinkHovered(d, false);
+                    myInstance.externalEventHandlers.onLinkHovered(d, false);
                 });
 
             // draw nodes
@@ -160,10 +160,10 @@ angular.module('autoForceLayout', [])
                     return "fill:" + d.color;
                 })
                 .on("mouseenter", function (d) {
-                    myInstance.setNodeHovered(this, d, true, constants.SOURCE_IN);
+                    myInstance.inSetNodeHovered(this, d, true);
                 })
                 .on("mouseleave", function (d) {
-                    myInstance.setNodeHovered(this, d, false, constants.SOURCE_IN);
+                    myInstance.inSetNodeHovered(this, d, false);
                 })
                 .on("click", function (d) {
                     services.onClick(d, this, myInstance);
@@ -185,24 +185,32 @@ angular.module('autoForceLayout', [])
         };
 
         //---------------------------------------------------
-        // setNodeHovered
-        // State handler
-        // Params: nodeData: either node id or a node object
+        // inSetNodeHovered
+        // When a node was hovered inside this component.
+        // Params: nodeData: a node object
         // nodeElement: the corresponding DOM element
         // on: boolean
-        // source: either SOURCE_IN or SOURCE_OUT
         //---------------------------------------------------
-        proto.setNodeHovered = function (nodeElement, nodeData, on, source) {
+        proto.inSetNodeHovered = function (nodeElement, nodeData, on) {
             var myInstance = this;
-            if (typeof nodeData !== "object") { // var nodeData contains a node id
-                nodeData = myInstance.data.nodes[myInstance.nodesById[nodeData]];
-            }
-            // Update inner/outer state
-            if (source === constants.SOURCE_IN) {
-                myInstance.eventHandlers.onNodeHovered(nodeData, on);
-            }
-            // Update presentation
-            d3.select(nodeElement).classed("hovered", nodeData.selected = on);
+            d3.select(nodeElement).classed("hovered", nodeData.hovered = on);
+            myInstance.externalEventHandlers.onNodeHovered(nodeData, on);
+        };
+
+        //---------------------------------------------------
+        // apiSetNodeHovered
+        // When a node was hovered outside this component.
+        // Params: nodeData: a node object
+        // on: boolean
+        //---------------------------------------------------
+        proto.apiSetNodeHovered = function (nodeData, on) {
+            var myInstance = this;
+            myInstance.nodes.filter(function (d) {
+                    return d.id === nodeData.id;
+                })
+                .classed("hovered", function (d) {
+                    return d.hovered = on;
+                });
         };
 
         return AutoForceLayoutFactory;
@@ -398,14 +406,14 @@ angular.module('autoForceLayout', [])
     }]) // .service
 
 
-/*
-    //---------------------------------------------------------------//
-    .service('AutoForceLayoutNodeState', ['AutoForceLayoutConstants', function (constants) {
-        return {
-            setNodeHovered: function(node, source) {
+    /*
+     //---------------------------------------------------------------//
+     .service('AutoForceLayoutNodeState', ['AutoForceLayoutConstants', function (constants) {
+     return {
+     setNodeHovered: function(node, source) {
 
-            }
-        };
-    }]) // .service
-*/
+     }
+     };
+     }]) // .service
+     */
 ;
