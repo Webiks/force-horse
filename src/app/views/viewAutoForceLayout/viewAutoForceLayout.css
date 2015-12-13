@@ -30,7 +30,7 @@
     width: 100%;
 }
 
-#view3 table.nodes-table tr.hovered {
+#view3 table tr.hovered {
     background-color: lightgray;
 }
 

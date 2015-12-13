@@ -38,7 +38,11 @@
                             <th>source id</th>
                             <th>target id</th>
                         </tr>
-                        <tr md-virtual-repeat="link in options.data.links" class="repeated-item" flex="">
+                        <tr md-virtual-repeat="link in options.data.links"
+                            ng-class='["repeated-item", {hovered: link.hovered}]'
+                            ng-mouseenter="inSetLinkHovered(link, true)"
+                            ng-mouseleave="inSetLinkHovered(link, false)"
+                            flex="">
                             <td class="id">{{link.id}}</td>
                             <td class="sourceID">{{link.sourceID}}</td>
                             <td class="targetID">{{link.targetID}}</td>

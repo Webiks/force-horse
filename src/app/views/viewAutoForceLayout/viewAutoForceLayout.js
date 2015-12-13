@@ -17,12 +17,12 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
 
     //---------------------------------------------------------------//
     .controller('view3Ctrl', ['$scope', 'graphData', function ($scope, data) {
-        console.log('In view3Ctrl');
+        //console.log('In view3Ctrl');
 
         $scope.options = {};
         $scope.options.data = data.get();
 
-        // Event handlers
+        //----- Event handlers -----//
 
         // Node was hovered inside this view
         $scope.inSetNodeHovered = function (nodeObj, on) {
@@ -46,11 +46,28 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
             }
         };
 
-        $scope.setLinkHovered = function (item, on) {
+        // Link was hovered inside this view
+        $scope.inSetLinkHovered = function (linkObj, on) {
+            linkObj.hovered = on;
             if (on) {
-                $scope.lastHoveredLink = item;
+                $scope.lastHoveredLink = linkObj;
+            }
+            if (angular.isDefined($scope.options.autoForceLayoutInstance)) {
+                $scope.options.autoForceLayoutInstance.apiSetLinkHovered(linkObj, on);
             }
         };
+
+        // Link was hovered outside this view (in the graph component)
+        $scope.setLinkHovered = function (linkObj, on) {
+            linkObj = $scope.options.data.links.find(function (link) {
+                return link.id === linkObj.id;
+            });
+            linkObj.hovered = on;
+            if (on) {
+                $scope.lastHoveredLink = linkObj;
+            }
+        };
+
     }])
 
     //---------------------------------------------------------------//

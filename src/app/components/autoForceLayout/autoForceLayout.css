@@ -32,7 +32,7 @@
     stroke-width: 1.5px;
 }
 
-.auto-force-layout svg.graph-svg .link:hover {
+.auto-force-layout svg.graph-svg .link.hovered {
     stroke: black;
     stroke-dasharray: 1,1;
 }

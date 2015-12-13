@@ -80,12 +80,12 @@ angular.module('autoForceLayout', [])
 
             // Input initial processing
             this.nodesById = services.compileNodes(this.data.nodes);
-            this.linksById = services.compileLinks(this.data.links, this.nodesById);
+            services.compileLinks(this.data.links, this.nodesById);
 
             // Some nodes-related fields
-            this.numOfNodes = this.data.nodes.length;
+            //this.numOfNodes = this.data.nodes.length;
             this.nodeDefaultSize = constants.INNER_SVG_WIDTH / 64 * constants.INNER_SVG_HEIGHT / 48 * 2;
-            this.numOfSelectedNodes = 0;
+            //this.numOfSelectedNodes = 0;
             this.dragMode = false;
             this.draggedNodeId = null;
 
@@ -138,10 +138,10 @@ angular.module('autoForceLayout', [])
                 .append("line")
                 .attr("class", "link")
                 .on("mouseenter", function (d) {
-                    myInstance.externalEventHandlers.onLinkHovered(d, true);
+                    myInstance.inSetLinkHovered(this, d, true);
                 })
                 .on("mouseleave", function (d) {
-                    myInstance.externalEventHandlers.onLinkHovered(d, false);
+                    myInstance.inSetLinkHovered(this, d, false);
                 });
 
             // draw nodes
@@ -207,6 +207,35 @@ angular.module('autoForceLayout', [])
             var myInstance = this;
             myInstance.nodes.filter(function (d) {
                     return d.id === nodeData.id;
+                })
+                .classed("hovered", function (d) {
+                    return d.hovered = on;
+                });
+        };
+
+        //---------------------------------------------------
+        // inSetLinkHovered
+        // When a link was hovered inside this component.
+        // Params: linkData: a link object
+        // linkElement: the corresponding DOM element
+        // on: boolean
+        //---------------------------------------------------
+        proto.inSetLinkHovered = function (linkElement, linkData, on) {
+            var myInstance = this;
+            d3.select(linkElement).classed("hovered", linkData.hovered = on);
+            myInstance.externalEventHandlers.onLinkHovered(linkData, on);
+        };
+
+        //---------------------------------------------------
+        // apiSetLinkHovered
+        // When a link was hovered outside this component.
+        // Params: linkData: a link object
+        // on: boolean
+        //---------------------------------------------------
+        proto.apiSetLinkHovered = function (linkData, on) {
+            var myInstance = this;
+            myInstance.links.filter(function (d) {
+                    return d.id === linkData.id;
                 })
                 .classed("hovered", function (d) {
                     return d.hovered = on;
