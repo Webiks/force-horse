@@ -18,10 +18,10 @@
                                 <th>id</th>
                                 <th>label</th>
                             </tr>
-                        <tr md-virtual-repeat="node in options.data.nodes"
-                            ng-class='["repeated-item", {hovered: node.hovered}]'
+                        <tr ng-class='["repeated-item", {hovered: node.hovered}]'
                             ng-mouseenter="inSetNodeHovered(node, true)"
                             ng-mouseleave="inSetNodeHovered(node, false)"
+                            md-virtual-repeat="node in options.data.nodes"
                             flex="">
                             <td class="id">{{node.id}}</td>
                             <td class="label">{{node.label}}</td>
