@@ -86,6 +86,7 @@ angular.module('autoForceLayout', [])
             //this.numOfNodes = this.data.nodes.length;
             this.nodeDefaultSize = constants.INNER_SVG_WIDTH / 64 * constants.INNER_SVG_HEIGHT / 48 * 2;
             //this.numOfSelectedNodes = 0;
+            this.selectedNodes = new Set();
             this.dragMode = false;
             this.draggedNodeId = null;
 
@@ -297,11 +298,32 @@ angular.module('autoForceLayout', [])
             // Event handler. Manage node selection
             //---------------------------------------------------
             onClick: function (d, element, myInstance) {
-                //console.log("on Click, prevented =" + d3.event.defaultPrevented);
                 // Ignore the click event at the end of a drag
                 if (d3.event.defaultPrevented) return;
-                d3.select(element).classed("selected", d.selected = !d.selected);
-                myInstance.svg.classed("selectionMode", myInstance.numOfSelectedNodes += (d.selected ? 1 : -1));
+                // If the Ctrl key was pressed during the click ..
+                // If the clicked element was marked as selected, unselect it, and vice versa
+                if (d3.event.ctrlKey) {
+                    d3.select(element).classed("selected", d.selected = !d.selected);
+                    if (d.selected) {
+                        myInstance.selectedNodes.add(d.id);
+                    } else {
+                        myInstance.selectedNodes.delete(d.id);
+                    }
+                } else {
+                    // If the Ctrl key was not pressed ..
+                    // If the clicked node is selected, ignore the click
+                    // Else, clear the current selection, and select the clicked node
+                    if (!d.selected) {
+                        myInstance.nodes.filter(function(d) {
+                            return myInstance.selectedNodes.has(d.id);
+                        }).classed("selected", d.selected = false);
+                        myInstance.selectedNodes.clear();
+                        d3.select(element).classed("selected", d.selected = true);
+                        myInstance.selectedNodes.add(d.id);
+                    }
+                }
+                // In "selectionMode" the unselected nodes are visually marked
+                myInstance.svg.classed("selectionMode", myInstance.selectedNodes.size);
             },
 
             //---------------------------------------------------
