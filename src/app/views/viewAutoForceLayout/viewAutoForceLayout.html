@@ -18,7 +18,8 @@
                                 <th>id</th>
                                 <th>label</th>
                             </tr>
-                        <tr ng-class='["repeated-item", {hovered: node.hovered}]'
+                        <tr ng-class='{hovered: node.hovered}'
+                            class="repeated-item"
                             ng-mouseenter="inSetNodeHovered(node, true)"
                             ng-mouseleave="inSetNodeHovered(node, false)"
                             md-virtual-repeat="node in options.data.nodes"
@@ -39,7 +40,8 @@
                             <th>target id</th>
                         </tr>
                         <tr md-virtual-repeat="link in options.data.links"
-                            ng-class='["repeated-item", {hovered: link.hovered}]'
+                            ng-class='{hovered: link.hovered}'
+                            class="repeated-item"
                             ng-mouseenter="inSetLinkHovered(link, true)"
                             ng-mouseleave="inSetLinkHovered(link, false)"
                             flex="">
