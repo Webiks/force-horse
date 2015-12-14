@@ -24,7 +24,7 @@
                             class="repeated-item"
                             ng-mouseenter="inSetNodeHovered(node, true)"
                             ng-mouseleave="inSetNodeHovered(node, false)"
-                            ng-click="onNodeClicked(node)"
+                            ng-click="onNodeClicked($event, node)"
                             flex="">
                             <td class="id">{{node.id}}</td>
                             <td class="label">{{node.label}}</td>

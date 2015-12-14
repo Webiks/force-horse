@@ -168,7 +168,7 @@ angular.module('autoForceLayout', [])
                     myInstance.inSetNodeHovered(this, d, false);
                 })
                 .on("click", function (d) {
-                    services.onClick(d, this, myInstance);
+                    services.onNodeClicked(d, this, myInstance);
                 })
                 .call(this.drag);
 
@@ -287,7 +287,7 @@ angular.module('autoForceLayout', [])
         // on: boolean
         // clearOldSelection: whether to clear first the current selection
         //---------------------------------------------------
-        proto.inSetNodeSelected = function (nodeData, on, clearOldSelection) {
+        proto.apiSetNodeSelected = function (nodeData, on, clearOldSelection) {
             var myInstance = this;
 
             if (clearOldSelection) {
@@ -370,10 +370,10 @@ angular.module('autoForceLayout', [])
             },
 
             //---------------------------------------------------
-            // onClick
-            // Event handler. Manage element selection
+            // onNodeClicked
+            // Event handler. Manage node selection
             //---------------------------------------------------
-            onClick: function (data, element, myInstance) {
+            onNodeClicked: function (data, element, myInstance) {
                 // Ignore the click event at the end of a drag
                 if (d3.event.defaultPrevented) return;
                 // If the Ctrl key was pressed during the click ..

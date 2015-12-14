@@ -22,6 +22,8 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
         $scope.options = {};
         $scope.options.data = data.get();
 
+        $scope.selectedNodes = new Set();
+
         //----- Event handlers -----//
 
         // Node was hovered inside this view
@@ -65,6 +67,45 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
             linkObj.hovered = on;
             if (on) {
                 $scope.lastHoveredLink = linkObj;
+            }
+        };
+
+        $scope.onNodeClicked = function(event, nodeData) {
+            var element = event.currentTarget;
+            // If the Ctrl key was pressed during the click ..
+            // If the clicked element was marked as selected, unselect it, and vice versa
+            if (event.ctrlKey) {
+                $scope.inSetNodeSelected(element, nodeData, !nodeData.selected);
+            } else {
+                // If the Ctrl key was not pressed ..
+                // If the clicked node is selected, ignore the click
+                // Else, clear the current selection, and select the clicked node
+                if (!nodeData.selected) {
+                    $scope.inSetNodeSelected(element, nodeData, true, true);
+                }
+            }
+        };
+
+        $scope.inSetNodeSelected = function (element, nodeData, on, clearOldSelection) {
+
+            if (clearOldSelection) {
+                $scope.options.data.nodes.filter(function (d) {
+                    return $scope.selectedNodes.has(d.id);
+                }).forEach(function (d) {
+                    d.selected = false;
+                });
+                $scope.selectedNodes.clear();
+            }
+
+            // Update the selectedNodes set
+            if (nodeData.selected = on) {
+                $scope.selectedNodes.add(nodeData.id);
+            } else {
+                $scope.selectedNodes.delete(nodeData.id);
+            }
+
+            if (angular.isDefined($scope.options.autoForceLayoutInstance)) {
+                $scope.options.autoForceLayoutInstance.apiSetNodeSelected(nodeData, on, clearOldSelection);
             }
         };
 
