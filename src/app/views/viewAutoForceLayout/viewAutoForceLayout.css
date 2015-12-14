@@ -34,6 +34,10 @@
     background-color: lightgray;
 }
 
+#view3 table tr.selected {
+    background-color: lightgray;
+}
+
 #view3 table td {
     text-align: center;
 }
