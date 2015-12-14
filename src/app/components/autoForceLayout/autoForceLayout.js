@@ -31,7 +31,8 @@ angular.module('autoForceLayout', [])
             scope: {
                 options: "=",
                 onLinkHovered: '&',
-                onNodeHovered: '&'
+                onNodeHovered: '&',
+                onNodeSelected: '&'
             },
             bindToController: true,
             controller: function ($scope, $element) {
@@ -243,6 +244,81 @@ angular.module('autoForceLayout', [])
                 });
         };
 
+        //---------------------------------------------------
+        // inSetNodeSelected
+        // When a node (or nodes) was selected inside this component.
+        // Params: nodeData: a node object
+        // element: the corresponding DOM element
+        // on: boolean
+        // clearOldSelection: whether to clear first the current selection
+        //---------------------------------------------------
+        proto.inSetNodeSelected = function (element, nodeData, on, clearOldSelection) {
+            var myInstance = this;
+
+            if (clearOldSelection) {
+                myInstance.nodes.filter(function (d) {
+                    return myInstance.selectedNodes.has(d.id);
+                }).classed("selected", function (d) {
+                    return d.selected = false;
+                });
+                myInstance.selectedNodes.clear();
+            }
+
+            // Update the DOM element
+            d3.select(element).classed("selected", nodeData.selected = on);
+
+            // Update the selectedNodes set
+            if (nodeData.selected) {
+                myInstance.selectedNodes.add(nodeData.id);
+            } else {
+                myInstance.selectedNodes.delete(nodeData.id);
+            }
+
+            // In "selectionMode" the unselected nodes are visually marked
+            myInstance.svg.classed("selectionMode", myInstance.selectedNodes.size);
+
+            myInstance.externalEventHandlers.onNodeSelected(nodeData, on, clearOldSelection);
+        };
+
+        //---------------------------------------------------
+        // apiSetNodeSelected
+        // When a node (or nodes) was selected outside this component.
+        // Params: nodeData: a node object
+        // on: boolean
+        // clearOldSelection: whether to clear first the current selection
+        //---------------------------------------------------
+        proto.inSetNodeSelected = function (nodeData, on, clearOldSelection) {
+            var myInstance = this;
+
+            if (clearOldSelection) {
+                myInstance.nodes.filter(function (d) {
+                    return myInstance.selectedNodes.has(d.id);
+                }).classed("selected", function (d) {
+                    return d.selected = false;
+                });
+                myInstance.selectedNodes.clear();
+            }
+
+            // Get the inner node object that corresponds the node object parameter
+            nodeData = myInstance.data.nodes[myInstance.nodesById[nodeData.id]];
+
+            // Get the corresponding element, and update it
+            d3.nodes.filter(function(d) {
+                return d.id === nodeData.id;
+            }).classed("selected", nodeData.selected = on);
+
+            // Update the selectedNodes set
+            if (nodeData.selected) {
+                myInstance.selectedNodes.add(nodeData.id);
+            } else {
+                myInstance.selectedNodes.delete(nodeData.id);
+            }
+
+            // In "selectionMode" the unselected nodes are visually marked
+            myInstance.svg.classed("selectionMode", myInstance.selectedNodes.size);
+        };
+
+        //---------------------------------------------------
         return AutoForceLayoutFactory;
     }])
 
@@ -295,35 +371,23 @@ angular.module('autoForceLayout', [])
 
             //---------------------------------------------------
             // onClick
-            // Event handler. Manage node selection
+            // Event handler. Manage element selection
             //---------------------------------------------------
-            onClick: function (d, element, myInstance) {
+            onClick: function (data, element, myInstance) {
                 // Ignore the click event at the end of a drag
                 if (d3.event.defaultPrevented) return;
                 // If the Ctrl key was pressed during the click ..
                 // If the clicked element was marked as selected, unselect it, and vice versa
                 if (d3.event.ctrlKey) {
-                    d3.select(element).classed("selected", d.selected = !d.selected);
-                    if (d.selected) {
-                        myInstance.selectedNodes.add(d.id);
-                    } else {
-                        myInstance.selectedNodes.delete(d.id);
-                    }
+                    myInstance.inSetNodeSelected(element, data, !data.selected);
                 } else {
                     // If the Ctrl key was not pressed ..
                     // If the clicked node is selected, ignore the click
                     // Else, clear the current selection, and select the clicked node
-                    if (!d.selected) {
-                        myInstance.nodes.filter(function(d) {
-                            return myInstance.selectedNodes.has(d.id);
-                        }).classed("selected", d.selected = false);
-                        myInstance.selectedNodes.clear();
-                        d3.select(element).classed("selected", d.selected = true);
-                        myInstance.selectedNodes.add(d.id);
+                    if (!data.selected) {
+                        myInstance.inSetNodeSelected(element, data, true, true);
                     }
                 }
-                // In "selectionMode" the unselected nodes are visually marked
-                myInstance.svg.classed("selectionMode", myInstance.selectedNodes.size);
             },
 
             //---------------------------------------------------
@@ -447,6 +511,12 @@ angular.module('autoForceLayout', [])
                     onNodeHovered: function (d, on) {
                         scope.$apply(function () {
                             ctrl.onNodeHovered({item: d, on: on});
+                        });
+                    },
+
+                    onNodeSelected: function (d, on, clearOldSelection) {
+                        scope.$apply(function () {
+                            ctrl.onNodeHovered({item: d, on: on, clearOldSelection: clearOldSelection});
                         });
                     }
 
