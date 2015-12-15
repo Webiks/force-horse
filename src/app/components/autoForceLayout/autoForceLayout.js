@@ -323,10 +323,14 @@ angular.module('autoForceLayout', [])
             myInstance.svg.classed("selectionMode", myInstance.selectedNodes.size);
         };
 
+        // TODO Add comments
         proto.onPlayPauseBtnClick = function() {
           if (this.fixedMode) {
+              this.nodes.classed('fixed', function(d) {return d.fixed = false;});
               this.fixedMode = false;
+              this.force.start();
           } else {
+              this.nodes.classed('fixed', function(d) {return d.fixed = true;});
               this.fixedMode = true;
           }
         };
@@ -421,12 +425,14 @@ angular.module('autoForceLayout', [])
                 // because dragStart is thrown even if you just click on the node, without really dragging.
                 if (!myInstance.dragMode || myInstance.draggedNodeId !== d.id) {
                     // Mark drag mode (it will cancelled in the next force-end event)
-                    myInstance.dragMode = true;
+                    myInstance.dragMode = true; // TODO remove drag mode
                     // Mark the presently dragged node as immovable by the simulation.
                     myInstance.nodes.filter(function(nodeData) {
                         return nodeData.id === d.id;
                     }).classed("fixed", d.fixed = true);
-                    //d.fixed = true;
+
+                    myInstance.fixedMode = true;
+
                     // If we drag a node, before the simulation that started after we dragged another node,
                     // had ended, mark the previously dragged node as movable by the simulation.
                     // (Update: the previous node will stay fixed)
