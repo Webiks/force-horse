@@ -13,7 +13,9 @@ angular.module('autoForceLayout', [])
               <span flex="40">\
                 <i class="mdi mdi-filter"></i>\
                 <i class="mdi mdi-wrap"></i>\
-                <i class="mdi mdi-play-circle-outline"></i>\
+                <i class="play-pause-btn mdi"\
+                   ng-class="autoForceLayoutCtrl.options.autoForceLayoutInstance.fixedMode ? \'mdi-play-circle-outline\' : \'mdi-pause-circle-outline\'" \
+                   ng-click="autoForceLayoutCtrl.options.autoForceLayoutInstance.onPlayPauseBtnClick($event)"></i>\
               </span>\
               <span flex>\
                 <i class="mdi mdi-label"></i>\
@@ -91,6 +93,7 @@ angular.module('autoForceLayout', [])
             this.selectedNodes = new Set();
             this.dragMode = false;
             this.draggedNodeId = null;
+            this.fixedMode = false;
 
             // Create a forceLayout instance
             this.force = d3.layout.force()
@@ -319,6 +322,10 @@ angular.module('autoForceLayout', [])
             myInstance.svg.classed("selectionMode", myInstance.selectedNodes.size);
         };
 
+        proto.onPlayPauseBtnClick = function(event) {
+          var element = event.currentTarget;
+        };
+
         //---------------------------------------------------
         return AutoForceLayoutFactory;
     }])
@@ -457,6 +464,8 @@ angular.module('autoForceLayout', [])
                 var element = angular.element(template);
                 var compiledElement = $compile(element)(scope);
                 container.prepend(compiledElement);
+                // Event handlers
+                //scope.onPlayPauseBtnClick =
             },
 
             //---------------------------------------------------
