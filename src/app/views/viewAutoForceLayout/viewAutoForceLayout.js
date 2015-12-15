@@ -109,6 +109,33 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
             }
         };
 
+        $scope.setNodeSelected = function (nodeData, on, clearOldSelection) {
+
+            if (clearOldSelection) {
+                $scope.options.data.nodes.filter(function (d) {
+                    return $scope.selectedNodes.has(d.id);
+                }).forEach(function (d) {
+                    d.selected = false;
+                });
+                $scope.selectedNodes.clear();
+            }
+
+            // Get the inner node object that corresponds the node object parameter
+            nodeData = $scope.options.data.nodes.find(function(node) {
+                return node.id === nodeData.id;
+            });
+
+            nodeData.selected = on;
+
+            // Update the selectedNodes set
+            if (nodeData.selected) {
+                $scope.selectedNodes.add(nodeData.id);
+            } else {
+                $scope.selectedNodes.delete(nodeData.id);
+            }
+        };
+
+
     }])
 
     //---------------------------------------------------------------//

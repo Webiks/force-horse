@@ -303,7 +303,7 @@ angular.module('autoForceLayout', [])
             nodeData = myInstance.data.nodes[myInstance.nodesById[nodeData.id]];
 
             // Get the corresponding element, and update it
-            d3.nodes.filter(function(d) {
+            myInstance.nodes.filter(function(d) {
                 return d.id === nodeData.id;
             }).classed("selected", nodeData.selected = on);
 
