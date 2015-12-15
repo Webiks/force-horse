@@ -14,8 +14,8 @@ angular.module('autoForceLayout', [])
                 <i class="mdi mdi-filter"></i>\
                 <i class="mdi mdi-wrap"></i>\
                 <i class="play-pause-btn mdi"\
-                   ng-class="autoForceLayoutCtrl.options.autoForceLayoutInstance.fixedMode ? \'mdi-play-circle-outline\' : \'mdi-pause-circle-outline\'" \
-                   ng-click="autoForceLayoutCtrl.options.autoForceLayoutInstance.onPlayPauseBtnClick($event)"></i>\
+                   ng-class="autoForceLayoutInstance.fixedMode ? \'mdi-play-circle-outline\' : \'mdi-pause-circle-outline\'" \
+                   ng-click="autoForceLayoutInstance.onPlayPauseBtnClick()"></i>\
               </span>\
               <span flex>\
                 <i class="mdi mdi-label"></i>\
@@ -44,7 +44,8 @@ angular.module('autoForceLayout', [])
                 this.externalEventHandlers = services.applyScopeToEventHandlers(this, $scope);
                 // Create my instance
                 // Also provide the caller with a reference to my instance, for API
-                this.options.autoForceLayoutInstance = new AutoForceLayoutFactory()
+                this.options.autoForceLayoutInstance =
+                    $scope.autoForceLayoutInstance = new AutoForceLayoutFactory()
                     .initLayout($element, this.options, this.externalEventHandlers)
                     .redraw();
             },
@@ -322,8 +323,12 @@ angular.module('autoForceLayout', [])
             myInstance.svg.classed("selectionMode", myInstance.selectedNodes.size);
         };
 
-        proto.onPlayPauseBtnClick = function(event) {
-          var element = event.currentTarget;
+        proto.onPlayPauseBtnClick = function() {
+          if (this.fixedMode) {
+              this.fixedMode = false;
+          } else {
+              this.fixedMode = true;
+          }
         };
 
         //---------------------------------------------------
