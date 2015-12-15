@@ -9,12 +9,13 @@ angular.module('autoForceLayout', [])
         // cache our buttons template
         $templateCache.put('autoForceLayout/buttons',
             '<div class="buttonsWrapper" layout="row" layout-align="start center">\
-              <span flex="50">\
+              <span flex="10"></span>\
+              <span flex="40">\
                 <i class="mdi mdi-filter"></i>\
                 <i class="mdi mdi-wrap"></i>\
                 <i class="mdi mdi-play-circle-outline"></i>\
               </span>\
-              <span flex="50">\
+              <span flex>\
                 <i class="mdi mdi-label"></i>\
                 <i class="mdi mdi-minus"></i>\
                 <i class="mdi mdi-regex"></i>\
@@ -410,12 +411,16 @@ angular.module('autoForceLayout', [])
                     // Mark drag mode (it will cancelled in the next force-end event)
                     myInstance.dragMode = true;
                     // Mark the presently dragged node as immovable by the simulation.
-                    d.fixed = true;
+                    myInstance.nodes.filter(function(nodeData) {
+                        return nodeData.id === d.id;
+                    }).classed("fixed", d.fixed = true);
+                    //d.fixed = true;
                     // If we drag a node, before the simulation that started after we dragged another node,
                     // had ended, mark the previously dragged node as movable by the simulation.
-                    if (myInstance.draggedNodeId !== d.id && Number.isInteger(myInstance.draggedNodeId)) {
-                        myInstance.data.nodes[myInstance.nodesById[myInstance.draggedNodeId]].fixed = false;
-                    }
+                    // (Update: the previous node will stay fixed)
+                    //if (myInstance.draggedNodeId !== d.id && Number.isInteger(myInstance.draggedNodeId)) {
+                    //    myInstance.data.nodes[myInstance.nodesById[myInstance.draggedNodeId]].fixed = false;
+                    //}
                     myInstance.draggedNodeId = d.id;
                 }
             },
@@ -435,10 +440,11 @@ angular.module('autoForceLayout', [])
                 //console.log('onForceEnd called');
                 // If the ending simulation is one triggered by a node dragging,
                 // make the dragged node movable (it gets fixed during the dragging and
-                // the ensuing simulation.
+                // the ensuing simulation)
+                // (Update: the node will stay fixed after the dragging)
                 if (myInstance.dragMode) {
                     myInstance.dragMode = false;
-                    myInstance.data.nodes[myInstance.nodesById[myInstance.draggedNodeId]].fixed = false;
+                    //myInstance.data.nodes[myInstance.nodesById[myInstance.draggedNodeId]].fixed = false;
                 }
             },
 

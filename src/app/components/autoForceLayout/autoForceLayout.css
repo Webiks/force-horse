@@ -57,7 +57,8 @@
 }
 
 .auto-force-layout svg.graph-svg .node.fixed {
-    fill: #f00;
+    stroke: black;
+    stroke-dasharray: 1,1;
 }
 
 .auto-force-layout svg.graph-svg text.label {
