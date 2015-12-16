@@ -120,18 +120,20 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
                 $scope.selectedNodes.clear();
             }
 
-            // Get the inner node object that corresponds the node object parameter
-            nodeData = $scope.options.data.nodes.find(function(node) {
-                return node.id === nodeData.id;
-            });
+            if (nodeData) {
+                // Get the inner node object that corresponds the node object parameter
+                nodeData = $scope.options.data.nodes.find(function (node) {
+                    return node.id === nodeData.id;
+                });
 
-            nodeData.selected = on;
+                nodeData.selected = on;
 
-            // Update the selectedNodes set
-            if (nodeData.selected) {
-                $scope.selectedNodes.add(nodeData.id);
-            } else {
-                $scope.selectedNodes.delete(nodeData.id);
+                // Update the selectedNodes set
+                if (nodeData.selected) {
+                    $scope.selectedNodes.add(nodeData.id);
+                } else {
+                    $scope.selectedNodes.delete(nodeData.id);
+                }
             }
         };
 

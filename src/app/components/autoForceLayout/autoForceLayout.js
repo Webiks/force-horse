@@ -126,7 +126,10 @@ angular.module('autoForceLayout', [])
                 .append("svg")
                 .attr("class", "graph-svg")
                 .attr("viewBox", "0 0 " + constants.INNER_SVG_WIDTH + " " + constants.INNER_SVG_HEIGHT)
-                .attr("preserveAspectRatio", "none");
+                .attr("preserveAspectRatio", "none")
+                .on("click", function() {
+                    console.log("svg click");
+                }) ;
 
             return this;
         }; // end of Layout()
@@ -270,13 +273,17 @@ angular.module('autoForceLayout', [])
             }
 
             // Update the DOM element
-            d3.select(element).classed("selected", nodeData.selected = on);
+            if (element) {
+                d3.select(element).classed("selected", nodeData.selected = on);
+            }
 
             // Update the selectedNodes set
-            if (nodeData.selected) {
-                myInstance.selectedNodes.add(nodeData.id);
-            } else {
-                myInstance.selectedNodes.delete(nodeData.id);
+            if (nodeData) {
+                if (nodeData.selected) {
+                    myInstance.selectedNodes.add(nodeData.id);
+                } else {
+                    myInstance.selectedNodes.delete(nodeData.id);
+                }
             }
 
             // In "selectionMode" the unselected nodes are visually marked
@@ -404,6 +411,19 @@ angular.module('autoForceLayout', [])
                     if (!data.selected) {
                         myInstance.inSetNodeSelected(element, data, true, true);
                     }
+                }
+                // Prevent bubbling, so that we can separately detect a click on the container
+                d3.event.stopPropagation();
+            },
+
+            //---------------------------------------------------
+            // onContainerClicked
+            // Event handler. on a click not on a node or link
+            // Cancels current selection
+            //---------------------------------------------------
+            onContainerClicked: function (myInstance) {
+                if (myInstance.selectedNodes.size > 0) {
+                    myInstance.inSetNodeSelected(null, null, null, true);
                 }
             },
 
