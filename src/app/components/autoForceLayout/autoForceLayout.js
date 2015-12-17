@@ -45,8 +45,7 @@ angular.module('autoForceLayout', [])
                 // Create my instance
                 // Also provide the caller with a reference to my instance, for API
                 this.options.autoForceLayoutInstance =
-                    $scope.autoForceLayoutInstance = new AutoForceLayoutFactory()
-                    .initLayout($element, this.options, this.externalEventHandlers)
+                    $scope.autoForceLayoutInstance = new AutoForceLayoutFactory($element, this.options, this.externalEventHandlers)
                     .redraw();
             },
             link: function (scope, element) { //, attr, ctrl) {
@@ -66,22 +65,34 @@ angular.module('autoForceLayout', [])
     //---------------------------------------------------------------//
     .factory('AutoForceLayoutFactory', ['AutoForceLayoutConstants', 'AutoForceLayoutServices', function (constants, services) {
         // constructor
-        function AutoForceLayoutFactory() {
+        function AutoForceLayoutFactory(element, options, externalEventHandlers) {
+            this.element = element[0];
+            this.options = options;
+            this.data = options.data;
+            this.externalEventHandlers = externalEventHandlers;
+
         }
 
         var proto = AutoForceLayoutFactory.prototype;
 
         //---------------------------------------------------
-        // initLayout
+        // redraw
+        // Recreate the graph
+        // To be called whenever elements are added or
+        // removed from the graph data
         //---------------------------------------------------
-        proto.initLayout = function (element, options, externalEventHandlers) {
+        proto.redraw = function () {
+            this.initLayout();
+            this.draw();
+        };
+
+        //---------------------------------------------------
+        // initLayout
+        // Init force layout & SVG
+        //---------------------------------------------------
+        proto.initLayout = function () {
             //console.log('in initLayout()');
             var myInstance = this;
-
-            // Save parameters
-            this.options = options;
-            this.data = options.data;
-            this.externalEventHandlers = externalEventHandlers;
 
             // Input initial processing
             this.nodesById = services.compileNodes(this.data.nodes);
@@ -99,7 +110,7 @@ angular.module('autoForceLayout', [])
             // Create a forceLayout instance
             this.force = d3.layout.force()
                 .size([constants.INNER_SVG_WIDTH, constants.INNER_SVG_HEIGHT])
-                .charge(-400)
+                .charge(-400)// TODO: constants
                 .linkDistance(40)
                 .on("tick", function () {
                     services.onTick(myInstance);
@@ -119,8 +130,13 @@ angular.module('autoForceLayout', [])
                 .links(this.data.links)
                 .start();
 
-            // create the main SVG canvas
-            this.svg = d3.select(element[0])
+            // Create the main SVG canvas.
+            // If that element exists, remove it first.
+            // TODO - is the element really removed from memory (and not just the DOM)?
+            d3.select(this.element)
+                .select("div.svgWrapper")
+                .remove();
+            this.svg = d3.select(this.element)
                 .append("div")
                 .attr("class", "svgWrapper")
                 .append("svg")
@@ -133,9 +149,10 @@ angular.module('autoForceLayout', [])
         }; // end of Layout()
 
         //---------------------------------------------------
-        // redraw the graph
+        // draw
+        // Draw the graph: nodes, links, labels
         //---------------------------------------------------
-        proto.redraw = function () {
+        proto.draw = function () {
             //console.log('in redraw()');
             var myInstance = this;
 
