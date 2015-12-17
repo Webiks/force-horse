@@ -127,9 +127,7 @@ angular.module('autoForceLayout', [])
                 .attr("class", "graph-svg")
                 .attr("viewBox", "0 0 " + constants.INNER_SVG_WIDTH + " " + constants.INNER_SVG_HEIGHT)
                 .attr("preserveAspectRatio", "none")
-                .on("click", function() {
-                    console.log("svg click");
-                }) ;
+                .on("click", function() {services.onContainerClicked(myInstance)}) ;
 
             return this;
         }; // end of Layout()
@@ -419,7 +417,7 @@ angular.module('autoForceLayout', [])
             //---------------------------------------------------
             // onContainerClicked
             // Event handler. on a click not on a node or link
-            // Cancels current selection
+            // Cancel current selection
             //---------------------------------------------------
             onContainerClicked: function (myInstance) {
                 if (myInstance.selectedNodes.size > 0) {
@@ -562,7 +560,7 @@ angular.module('autoForceLayout', [])
 
                     onNodeSelected: function (d, on, clearOldSelection) {
                         scope.$apply(function () {
-                            ctrl.onNodeHovered({item: d, on: on, clearOldSelection: clearOldSelection});
+                            ctrl.onNodeSelected({item: d, on: on, clearOldSelection: clearOldSelection});
                         });
                     }
 
