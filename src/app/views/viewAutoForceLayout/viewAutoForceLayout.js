@@ -145,6 +145,9 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
         return {
             get: function () {
                 var graph = {
+                    nodes: [], links: []
+                };
+/*
                     "nodes": [
                         {id: 0, label: 'aaa'},
                         {id: 1, label: 'bbb'},
@@ -181,6 +184,26 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
                         {id: 17, "sourceID": 12, "targetID": 10}
                     ]
                 };
+*/
+
+                // Generate a random graph ...
+
+                const numNodes = 30;
+                //const numNodes = 12;
+                var i, node, link;
+                for (i = 0; i < numNodes; i++) {
+                    node = graph.nodes[i] = {};
+                    node.id = i;
+                    node.label = Math.random().toString(36).slice(2).substr(0,5);
+                }
+
+                var numLinks = numNodes * 3 / 2;
+                for (i = 0; i < numLinks; i++) {
+                    link = graph.links[i] = {};
+                    link.id = i;
+                    link.sourceID = graph.nodes[Math.floor(Math.random()*numNodes)].id;
+                    link.targetID = graph.nodes[Math.floor(Math.random()*numNodes)].id;
+                }
 
                 // Add some random attributes
 
