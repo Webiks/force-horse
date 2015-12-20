@@ -421,11 +421,11 @@ angular.module('autoForceLayout', [])
                     myInstance.inSetNodeSelected(element, data, !data.selected);
                 } else {
                     // If the Ctrl key was not pressed ..
-                    // If the clicked node is selected, ignore the click
+                    // If the clicked node is selected, unselect the other nodes
                     // Else, clear the current selection, and select the clicked node
-                    if (!data.selected) {
+                    //if (!data.selected) {
                         myInstance.inSetNodeSelected(element, data, true, true);
-                    }
+                    //}
                 }
                 // Prevent bubbling, so that we can separately detect a click on the container
                 d3.event.stopPropagation();
