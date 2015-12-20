@@ -27,7 +27,7 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
             $scope.options.autoForceLayoutInstance.redraw();
         }
 
-        $scope.selectedNodes = new Set();
+        $scope.selectedEntities = new Set();
 
         //----- Event handlers -----//
 
@@ -95,18 +95,18 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
 
             if (clearOldSelection) {
                 $scope.options.data.nodes.filter(function (d) {
-                    return $scope.selectedNodes.has(d.id);
+                    return $scope.selectedEntities.has(d.id);
                 }).forEach(function (d) {
                     d.selected = false;
                 });
-                $scope.selectedNodes.clear();
+                $scope.selectedEntities.clear();
             }
 
-            // Update the selectedNodes set
+            // Update the selectedEntities set
             if (nodeData.selected = on) {
-                $scope.selectedNodes.add(nodeData.id);
+                $scope.selectedEntities.add(nodeData.id);
             } else {
-                $scope.selectedNodes.delete(nodeData.id);
+                $scope.selectedEntities.delete(nodeData.id);
             }
 
             if (angular.isDefined($scope.options.autoForceLayoutInstance)) {
@@ -118,11 +118,11 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
 
             if (clearOldSelection) {
                 $scope.options.data.nodes.filter(function (d) {
-                    return $scope.selectedNodes.has(d.id);
+                    return $scope.selectedEntities.has(d.id);
                 }).forEach(function (d) {
                     d.selected = false;
                 });
-                $scope.selectedNodes.clear();
+                $scope.selectedEntities.clear();
             }
 
             if (nodeData) {
@@ -133,11 +133,11 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
 
                 nodeData.selected = on;
 
-                // Update the selectedNodes set
+                // Update the selectedEntities set
                 if (nodeData.selected) {
-                    $scope.selectedNodes.add(nodeData.id);
+                    $scope.selectedEntities.add(nodeData.id);
                 } else {
-                    $scope.selectedNodes.delete(nodeData.id);
+                    $scope.selectedEntities.delete(nodeData.id);
                 }
             }
         };

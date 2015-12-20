@@ -102,7 +102,7 @@ angular.module('autoForceLayout', [])
             //this.numOfNodes = this.data.nodes.length;
             this.nodeDefaultSize = constants.INNER_SVG_WIDTH / 64 * constants.INNER_SVG_HEIGHT / 48 * 2;
             //this.numOfSelectedNodes = 0;
-            this.selectedNodes = new Set();
+            this.selectedEntities = new Set();
             this.dragMode = false;
             this.draggedNodeId = null;
             this.fixedMode = false;
@@ -280,11 +280,11 @@ angular.module('autoForceLayout', [])
 
             if (clearOldSelection) {
                 myInstance.nodes.filter(function (d) {
-                    return myInstance.selectedNodes.has(d.id);
+                    return myInstance.selectedEntities.has(d.id);
                 }).classed("selected", function (d) {
                     return d.selected = false;
                 });
-                myInstance.selectedNodes.clear();
+                myInstance.selectedEntities.clear();
             }
 
             // Update the DOM element
@@ -292,17 +292,17 @@ angular.module('autoForceLayout', [])
                 d3.select(element).classed("selected", nodeData.selected = on);
             }
 
-            // Update the selectedNodes set
+            // Update the selectedEntities set
             if (nodeData) {
                 if (nodeData.selected) {
-                    myInstance.selectedNodes.add(nodeData.id);
+                    myInstance.selectedEntities.add(nodeData.id);
                 } else {
-                    myInstance.selectedNodes.delete(nodeData.id);
+                    myInstance.selectedEntities.delete(nodeData.id);
                 }
             }
 
             // In "selectionMode" the unselected nodes are visually marked
-            myInstance.svg.classed("selectionMode", myInstance.selectedNodes.size);
+            myInstance.svg.classed("selectionMode", myInstance.selectedEntities.size);
 
             myInstance.externalEventHandlers.onNodeSelected(nodeData, on, clearOldSelection);
         };
@@ -319,11 +319,11 @@ angular.module('autoForceLayout', [])
 
             if (clearOldSelection) {
                 myInstance.nodes.filter(function (d) {
-                    return myInstance.selectedNodes.has(d.id);
+                    return myInstance.selectedEntities.has(d.id);
                 }).classed("selected", function (d) {
                     return d.selected = false;
                 });
-                myInstance.selectedNodes.clear();
+                myInstance.selectedEntities.clear();
             }
 
             // Get the inner node object that corresponds the node object parameter
@@ -334,15 +334,15 @@ angular.module('autoForceLayout', [])
                 return d.id === nodeData.id;
             }).classed("selected", nodeData.selected = on);
 
-            // Update the selectedNodes set
+            // Update the selectedEntities set
             if (nodeData.selected) {
-                myInstance.selectedNodes.add(nodeData.id);
+                myInstance.selectedEntities.add(nodeData.id);
             } else {
-                myInstance.selectedNodes.delete(nodeData.id);
+                myInstance.selectedEntities.delete(nodeData.id);
             }
 
             // In "selectionMode" the unselected nodes are visually marked
-            myInstance.svg.classed("selectionMode", myInstance.selectedNodes.size);
+            myInstance.svg.classed("selectionMode", myInstance.selectedEntities.size);
         };
 
         // TODO Add comments
@@ -437,7 +437,7 @@ angular.module('autoForceLayout', [])
             // Cancel current selection
             //---------------------------------------------------
             onContainerClicked: function (myInstance) {
-                if (myInstance.selectedNodes.size > 0) {
+                if (myInstance.selectedEntities.size > 0) {
                     myInstance.inSetNodeSelected(null, null, null, true);
                 }
             },
