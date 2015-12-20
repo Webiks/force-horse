@@ -68,7 +68,6 @@ angular.module('autoForceLayout', [])
         function AutoForceLayoutFactory(element, options, externalEventHandlers) {
             this.element = element[0];
             this.options = options;
-            this.data = options.data;
             this.externalEventHandlers = externalEventHandlers;
 
         }
@@ -84,6 +83,7 @@ angular.module('autoForceLayout', [])
         proto.redraw = function () {
             this.initLayout();
             this.draw();
+            return this;
         };
 
         //---------------------------------------------------
@@ -91,10 +91,10 @@ angular.module('autoForceLayout', [])
         // Init force layout & SVG
         //---------------------------------------------------
         proto.initLayout = function () {
-            //console.log('in initLayout()');
             var myInstance = this;
 
             // Input initial processing
+            this.data = this.options.data;
             this.nodesById = services.compileNodes(this.data.nodes);
             services.compileLinks(this.data.links, this.nodesById);
 

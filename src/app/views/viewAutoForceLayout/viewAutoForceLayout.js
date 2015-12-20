@@ -16,11 +16,16 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
     }])
 
     //---------------------------------------------------------------//
-    .controller('view3Ctrl', ['$scope', 'graphData', function ($scope, data) {
+    .controller('view3Ctrl', ['$scope', 'graphData', 'ViewAutoForceLayoutConstants', function ($scope, data, constants) {
         //console.log('In view3Ctrl');
 
-        $scope.options = {};
-        $scope.options.data = data.get();
+        $scope.options = {data: {}};
+        $scope.options.data = data.get($scope.numOfNodes = constants.INITIAL_NUM_OF_NODES);
+
+        $scope.recreateGraph = function() {
+            $scope.options.data = data.get($scope.numOfNodes);
+            $scope.options.autoForceLayoutInstance.redraw();
+        }
 
         $scope.selectedNodes = new Set();
 
@@ -140,10 +145,11 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
 
     }])
 
+
     //---------------------------------------------------------------//
     .service('graphData', function () {
         return {
-            get: function () {
+            get: function (numOfNodes) {
                 var graph = {
                     nodes: [], links: []
                 };
@@ -186,23 +192,25 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
                 };
 */
 
-                // Generate a random graph ...
+                // Generate a random graph
 
-                const numNodes = 30;
-                //const numNodes = 12;
-                var i, node, link;
-                for (i = 0; i < numNodes; i++) {
+                var i, node, link, nodeIdx;
+                for (i = 0; i < numOfNodes; i++) {
                     node = graph.nodes[i] = {};
                     node.id = i;
                     node.label = Math.random().toString(36).slice(2).substr(0,5);
                 }
 
-                var numLinks = numNodes * 3 / 2;
+                var numLinks = numOfNodes * 3 / 2;
                 for (i = 0; i < numLinks; i++) {
                     link = graph.links[i] = {};
                     link.id = i;
-                    link.sourceID = graph.nodes[Math.floor(Math.random()*numNodes)].id;
-                    link.targetID = graph.nodes[Math.floor(Math.random()*numNodes)].id;
+                    nodeIdx = Math.floor(Math.random()*numOfNodes);
+                    link.sourceID = graph.nodes[nodeIdx].id;
+                    link.sourceLabel = graph.nodes[nodeIdx].label;
+                    nodeIdx = Math.floor(Math.random()*numOfNodes);
+                    link.targetID = graph.nodes[nodeIdx].id;
+                    link.targetLabel = graph.nodes[nodeIdx].label;
                 }
 
                 // Add some random attributes
@@ -218,5 +226,11 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
                 return graph;
             }
         };
+    })
+
+
+    //---------------------------------------------------------------//
+    .constant('ViewAutoForceLayoutConstants', {
+        INITIAL_NUM_OF_NODES: 20
     })
 ;
