@@ -20,12 +20,14 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
         //console.log('In view3Ctrl');
 
         $scope.options = {data: {}};
-        $scope.options.data = data.get($scope.numOfNodes = constants.INITIAL_NUM_OF_NODES);
+        $scope.graph = data.get($scope.numOfNodes = constants.INITIAL_NUM_OF_NODES);
+        $scope.options.data = $scope.graph.nodes.concat($scope.graph.edges);
 
         $scope.recreateGraph = function() {
-            $scope.options.data = data.get($scope.numOfNodes);
+            $scope.graph = data.get($scope.numOfNodes);
+            $scope.options.data = $scope.graph.nodes.concat($scope.graph.edges);
             $scope.options.autoForceLayoutInstance.redraw();
-        }
+        };
 
         $scope.selectedEntities = new Set();
 
@@ -44,7 +46,7 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
 
         // Node was hovered outside this view (in the graph component)
         $scope.setNodeHovered = function (nodeObj, on) {
-            nodeObj = $scope.options.data.nodes.find(function (node) {
+            nodeObj = $scope.graph.nodes.find(function (node) {
                 return node.id === nodeObj.id;
             });
             nodeObj.hovered = on;
@@ -53,25 +55,25 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
             }
         };
 
-        // Link was hovered inside this view
-        $scope.inSetLinkHovered = function (linkObj, on) {
-            linkObj.hovered = on;
+        // Edge was hovered inside this view
+        $scope.inSetEdgeHovered = function (edgeObj, on) {
+            edgeObj.hovered = on;
             if (on) {
-                $scope.lastHoveredLink = linkObj;
+                $scope.lastHoveredEdge = edgeObj;
             }
             if (angular.isDefined($scope.options.autoForceLayoutInstance)) {
-                $scope.options.autoForceLayoutInstance.apiSetLinkHovered(linkObj, on);
+                $scope.options.autoForceLayoutInstance.apiSetEdgeHovered(edgeObj, on);
             }
         };
 
-        // Link was hovered outside this view (in the graph component)
-        $scope.setLinkHovered = function (linkObj, on) {
-            linkObj = $scope.options.data.links.find(function (link) {
-                return link.id === linkObj.id;
+        // Edge was hovered outside this view (in the graph component)
+        $scope.setEdgeHovered = function (edgeObj, on) {
+            edgeObj = $scope.options.data.edges.find(function (edge) {
+                return edge.id === edgeObj.id;
             });
-            linkObj.hovered = on;
+            edgeObj.hovered = on;
             if (on) {
-                $scope.lastHoveredLink = linkObj;
+                $scope.lastHoveredEdge = edgeObj;
             }
         };
 
@@ -147,90 +149,85 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
 
 
     //---------------------------------------------------------------//
-    .service('graphData', function () {
+    .service('graphData', ['ViewAutoForceLayoutConstants', function (constants) {
         return {
             get: function (numOfNodes) {
-                var graph = {
-                    nodes: [], links: []
-                };
-/*
-                    "nodes": [
-                        {id: 0, label: 'aaa'},
-                        {id: 1, label: 'bbb'},
-                        {id: 2, label: 'ccc'},
-                        {id: 3, label: 'ddd'},
-                        {id: 4, label: 'eee'},
-                        {id: 5, label: 'fff'},
-                        {id: 6, label: 'ggg'},
-                        {id: 7, label: 'hhh'},
-                        {id: 8, label: 'iii'},
-                        {id: 9, label: 'jjj'},
-                        {id: 10, label: 'kkk'},
-                        {id: 11, label: 'lll'},
-                        {id: 12, label: 'mmm'}
-                    ],
-                    "links": [
-                        {id: 0, "sourceID": 0, "targetID": 1},
-                        {id: 1, "sourceID": 1, "targetID": 2},
-                        {id: 2, "sourceID": 2, "targetID": 0},
-                        {id: 3, "sourceID": 1, "targetID": 3},
-                        {id: 4, "sourceID": 3, "targetID": 2},
-                        {id: 5, "sourceID": 3, "targetID": 4},
-                        {id: 6, "sourceID": 4, "targetID": 5},
-                        {id: 7, "sourceID": 5, "targetID": 6},
-                        {id: 8, "sourceID": 5, "targetID": 7},
-                        {id: 9, "sourceID": 6, "targetID": 7},
-                        {id: 10, "sourceID": 6, "targetID": 8},
-                        {id: 11, "sourceID": 7, "targetID": 8},
-                        {id: 12, "sourceID": 9, "targetID": 4},
-                        {id: 13, "sourceID": 9, "targetID": 11},
-                        {id: 14, "sourceID": 9, "targetID": 10},
-                        {id: 15, "sourceID": 10, "targetID": 11},
-                        {id: 16, "sourceID": 11, "targetID": 12},
-                        {id: 17, "sourceID": 12, "targetID": 10}
-                    ]
-                };
-*/
+                var graph = {nodes: [], edges: []};
 
                 // Generate a random graph
 
-                var i, node, link, nodeIdx;
+                var i, node, edge, nodeIdx;
+                var shapes = d3.svg.symbolTypes;
                 for (i = 0; i < numOfNodes; i++) {
                     node = graph.nodes[i] = {};
-                    node.id = i;
+                    node.class = 'Node';
                     node.label = Math.random().toString(36).slice(2).substr(0,5);
-                }
-
-                var numLinks = numOfNodes * 3 / 2;
-                for (i = 0; i < numLinks; i++) {
-                    link = graph.links[i] = {};
-                    link.id = i;
-                    nodeIdx = Math.floor(Math.random()*numOfNodes);
-                    link.sourceID = graph.nodes[nodeIdx].id;
-                    link.sourceLabel = graph.nodes[nodeIdx].label;
-                    nodeIdx = Math.floor(Math.random()*numOfNodes);
-                    link.targetID = graph.nodes[nodeIdx].id;
-                    link.targetLabel = graph.nodes[nodeIdx].label;
-                }
-
-                // Add some random attributes
-
-                var maxColor = parseInt("0xffffff");
-                var shapes = d3.svg.symbolTypes;
-                //var shapes = ['circle', 'cross', 'diamond', 'square', 'triangle-down', 'triangle-up'];
-                graph.nodes.forEach(function (node) {
-                    node.color = '#' + Math.floor(Math.random() * maxColor).toString(16);
                     node.shape = shapes[Math.floor(Math.random() * shapes.length)];
-                });
-                //-----//
+                    node.id = i;
+                    node.color = '#' + Math.floor(Math.random() * constants.MAX_COLOR).toString(16);
+                }
+
+                var numEdges = numOfNodes * 3 / 2;
+                for (i = 0; i < numEdges; i++) {
+                    edge = graph.edges[i] = {};
+                    edge.class = 'Edge';
+                    nodeIdx = Math.floor(Math.random()*numOfNodes);
+                    edge.sourceID = graph.nodes[nodeIdx].id;
+                    edge.sourceLabel = graph.nodes[nodeIdx].label;
+                    nodeIdx = Math.floor(Math.random()*numOfNodes);
+                    edge.targetID = graph.nodes[nodeIdx].id;
+                    edge.targetLabel = graph.nodes[nodeIdx].label;
+                    edge.id = i;
+                    edge.color = '#' + Math.floor(Math.random() * constants.MAX_COLOR).toString(16);
+                }
+
                 return graph;
             }
         };
-    })
+    }])
+    /*
+     "nodes": [
+     {id: 0, label: 'aaa'},
+     {id: 1, label: 'bbb'},
+     {id: 2, label: 'ccc'},
+     {id: 3, label: 'ddd'},
+     {id: 4, label: 'eee'},
+     {id: 5, label: 'fff'},
+     {id: 6, label: 'ggg'},
+     {id: 7, label: 'hhh'},
+     {id: 8, label: 'iii'},
+     {id: 9, label: 'jjj'},
+     {id: 10, label: 'kkk'},
+     {id: 11, label: 'lll'},
+     {id: 12, label: 'mmm'}
+     ],
+     "edges": [
+     {id: 0, "sourceID": 0, "targetID": 1},
+     {id: 1, "sourceID": 1, "targetID": 2},
+     {id: 2, "sourceID": 2, "targetID": 0},
+     {id: 3, "sourceID": 1, "targetID": 3},
+     {id: 4, "sourceID": 3, "targetID": 2},
+     {id: 5, "sourceID": 3, "targetID": 4},
+     {id: 6, "sourceID": 4, "targetID": 5},
+     {id: 7, "sourceID": 5, "targetID": 6},
+     {id: 8, "sourceID": 5, "targetID": 7},
+     {id: 9, "sourceID": 6, "targetID": 7},
+     {id: 10, "sourceID": 6, "targetID": 8},
+     {id: 11, "sourceID": 7, "targetID": 8},
+     {id: 12, "sourceID": 9, "targetID": 4},
+     {id: 13, "sourceID": 9, "targetID": 11},
+     {id: 14, "sourceID": 9, "targetID": 10},
+     {id: 15, "sourceID": 10, "targetID": 11},
+     {id: 16, "sourceID": 11, "targetID": 12},
+     {id: 17, "sourceID": 12, "targetID": 10}
+     ]
+     };
+     */
 
 
     //---------------------------------------------------------------//
     .constant('ViewAutoForceLayoutConstants', {
-        INITIAL_NUM_OF_NODES: 20
-    })
+        INITIAL_NUM_OF_NODES: 20,
+        MAX_COLOR: parseInt("0xffffff")
+})
 ;

@@ -14,7 +14,7 @@ angular.module('autoForceLayout', [])
                 <i class="mdi mdi-filter"></i>\
                 <i class="mdi mdi-wrap"></i>\
                 <i class="play-pause-btn mdi"\
-                   ng-class="autoForceLayoutInstance.fixedMode ? \'mdi-play-circle-outline\' : \'mdi-pause-circle-outline\'" \
+                   ng-class="autoForceLayoutInstance.fixedNodesMode ? \'mdi-play-circle-outline\' : \'mdi-pause-circle-outline\'" \
                    ng-click="autoForceLayoutInstance.onPlayPauseBtnClick()"></i>\
               </span>\
               <span flex>\
@@ -33,7 +33,7 @@ angular.module('autoForceLayout', [])
             priority: 100,
             scope: {
                 options: "=",
-                onLinkHovered: '&',
+                onEdgeHovered: '&',
                 onNodeHovered: '&',
                 onNodeSelected: '&'
             },
@@ -46,7 +46,7 @@ angular.module('autoForceLayout', [])
                 // Also provide the caller with a reference to my instance, for API
                 this.options.autoForceLayoutInstance =
                     $scope.autoForceLayoutInstance = new AutoForceLayoutFactory($element, this.options, this.externalEventHandlers)
-                    .redraw();
+                        .redraw();
             },
             link: function (scope, element) { //, attr, ctrl) {
                 //console.log('In autoForceLayout link');
@@ -94,18 +94,21 @@ angular.module('autoForceLayout', [])
             var myInstance = this;
 
             // Input initial processing
-            this.data = this.options.data;
-            this.nodesById = services.compileNodes(this.data.nodes);
-            services.compileLinks(this.data.links, this.nodesById);
+            this.commonData = this.options.data;
+            this.myData = {};
+            this.myData.nodes = this.commonData.filter(function (entity) {
+                return entity.class === constants.CLASS_NODE;
+            });
+            this.myData.edges = this.commonData.filter(function (entity) {
+                return entity.class === constants.CLASS_EDGE;
+            });
+            this.myData.nodesById = services.compileNodes(this.myData.nodes);
+            services.compileEdges(this.myData.edges, this.myData.nodesById);
 
             // Some nodes-related fields
-            //this.numOfNodes = this.data.nodes.length;
             this.nodeDefaultSize = constants.INNER_SVG_WIDTH / 64 * constants.INNER_SVG_HEIGHT / 48 * 2;
-            //this.numOfSelectedNodes = 0;
             this.selectedEntities = new Set();
-            this.dragMode = false;
-            this.draggedNodeId = null;
-            this.fixedMode = false;
+            this.fixedNodesMode = false;
 
             // Create a forceLayout instance
             this.force = d3.layout.force()
@@ -126,8 +129,8 @@ angular.module('autoForceLayout', [])
                 })
                 .on("dragend", services.onDragEnd);
 
-            this.force.nodes(this.data.nodes)
-                .links(this.data.links)
+            this.force.nodes(this.myData.nodes)
+                .links(this.myData.edges)
                 .start();
 
             // Create the main SVG canvas.
@@ -143,35 +146,41 @@ angular.module('autoForceLayout', [])
                 .attr("class", "graph-svg")
                 .attr("viewBox", "0 0 " + constants.INNER_SVG_WIDTH + " " + constants.INNER_SVG_HEIGHT)
                 .attr("preserveAspectRatio", "none")
-                .on("click", function() {services.onContainerClicked(myInstance)}) ;
+                .on("click", function () {
+                    services.onContainerClicked(myInstance)
+                });
 
             return this;
         }; // end of Layout()
 
         //---------------------------------------------------
         // draw
-        // Draw the graph: nodes, links, labels
+        // Draw the graph: nodes, edges, labels
         //---------------------------------------------------
         proto.draw = function () {
             //console.log('in redraw()');
             var myInstance = this;
+            myInstance.myElements = {};
 
-            // draw links
-            this.links = this.svg.selectAll(".link")
-                .data(this.data.links)
+            // draw edges
+            this.myElements.edges = this.svg.selectAll("."+constants.CSS_CLASS_EDGE)
+                .data(this.myData.edges)
                 .enter()
                 .append("line")
-                .attr("class", "link")
+                .attr("class", constants.CSS_CLASS_EDGE)
+                .attr("style", function (d) {
+                    return "stroke:" + d.color;
+                })
                 .on("mouseenter", function (d) {
-                    myInstance.inSetLinkHovered(this, d, true);
+                    myInstance.inSetEdgeHovered(this, d, true);
                 })
                 .on("mouseleave", function (d) {
-                    myInstance.inSetLinkHovered(this, d, false);
+                    myInstance.inSetEdgeHovered(this, d, false);
                 });
 
             // draw nodes
-            this.nodes = this.svg.selectAll(".node")
-                .data(this.data.nodes)
+            this.myElements.nodes = this.svg.selectAll("."+constants.CSS_CLASS_NODE)
+                .data(this.myData.nodes)
                 .enter()
                 .append("path")
                 // Set node shape & size
@@ -180,7 +189,7 @@ angular.module('autoForceLayout', [])
                         return d.shape;
                     })
                     .size(myInstance.nodeDefaultSize))
-                .attr("class", "node")
+                .attr("class", constants.CSS_CLASS_NODE)
                 .attr("style", function (d) {
                     return "fill:" + d.color;
                 })
@@ -197,7 +206,7 @@ angular.module('autoForceLayout', [])
 
             // draw node labels
             this.labels = this.svg.selectAll("text.label")
-                .data(this.data.nodes)
+                .data(this.myData.nodes)
                 .enter()
                 .append("text")
                 .attr("class", "label")
@@ -239,28 +248,28 @@ angular.module('autoForceLayout', [])
         };
 
         //---------------------------------------------------
-        // inSetLinkHovered
-        // When a link was hovered inside this component.
-        // Params: linkData: a link object
-        // linkElement: the corresponding DOM element
+        // inSetEdgeHovered
+        // When a edge was hovered inside this component.
+        // Params: edgeData: a edge object
+        // edgeElement: the corresponding DOM element
         // on: boolean
         //---------------------------------------------------
-        proto.inSetLinkHovered = function (linkElement, linkData, on) {
+        proto.inSetEdgeHovered = function (edgeElement, edgeData, on) {
             var myInstance = this;
-            d3.select(linkElement).classed("hovered", linkData.hovered = on);
-            myInstance.externalEventHandlers.onLinkHovered(linkData, on);
+            d3.select(edgeElement).classed("hovered", edgeData.hovered = on);
+            myInstance.externalEventHandlers.onEdgeHovered(edgeData, on);
         };
 
         //---------------------------------------------------
-        // apiSetLinkHovered
-        // When a link was hovered outside this component.
-        // Params: linkData: a link object
+        // apiSetEdgeHovered
+        // When a edge was hovered outside this component.
+        // Params: edgeData: a edge object
         // on: boolean
         //---------------------------------------------------
-        proto.apiSetLinkHovered = function (linkData, on) {
+        proto.apiSetEdgeHovered = function (edgeData, on) {
             var myInstance = this;
-            myInstance.links.filter(function (d) {
-                    return d.id === linkData.id;
+            myInstance.edges.filter(function (d) {
+                    return d.id === edgeData.id;
                 })
                 .classed("hovered", function (d) {
                     return d.hovered = on;
@@ -330,7 +339,7 @@ angular.module('autoForceLayout', [])
             nodeData = myInstance.data.nodes[myInstance.nodesById[nodeData.id]];
 
             // Get the corresponding element, and update it
-            myInstance.nodes.filter(function(d) {
+            myInstance.nodes.filter(function (d) {
                 return d.id === nodeData.id;
             }).classed("selected", nodeData.selected = on);
 
@@ -346,15 +355,19 @@ angular.module('autoForceLayout', [])
         };
 
         // TODO Add comments
-        proto.onPlayPauseBtnClick = function() {
-          if (this.fixedMode) {
-              this.nodes.classed('fixed', function(d) {return d.fixed = false;});
-              this.fixedMode = false;
-              this.force.start();
-          } else {
-              this.nodes.classed('fixed', function(d) {return d.fixed = true;});
-              this.fixedMode = true;
-          }
+        proto.onPlayPauseBtnClick = function () {
+            if (this.fixedNodesMode) {
+                this.myElements.nodes.classed('fixed', function (d) {
+                    return d.fixed = false;
+                });
+                this.fixedNodesMode = false;
+                this.force.start();
+            } else {
+                this.myElements.nodes.classed('fixed', function (d) {
+                    return d.fixed = true;
+                });
+                this.fixedNodesMode = true;
+            }
         };
 
         //---------------------------------------------------
@@ -367,7 +380,11 @@ angular.module('autoForceLayout', [])
         INNER_SVG_WIDTH: 640,
         INNER_SVG_HEIGHT: 480,
         SOURCE_IN: 0,
-        SOURCE_OUT: 1
+        SOURCE_OUT: 1,
+        CLASS_NODE: 'Node',
+        CLASS_EDGE: 'Edge',
+        CSS_CLASS_NODE: 'node',
+        CSS_CLASS_EDGE: 'edge'
     })
 
 
@@ -380,8 +397,8 @@ angular.module('autoForceLayout', [])
             // Update the graph
             //---------------------------------------------------
             onTick: function (myInstance) {
-                // Update links
-                myInstance.links.attr("x1", function (d) {
+                // Update edges
+                myInstance.myElements.edges.attr("x1", function (d) {
                         return d.source.x;
                     })
                     .attr("y1", function (d) {
@@ -395,7 +412,7 @@ angular.module('autoForceLayout', [])
                     });
 
                 // Update nodes
-                myInstance.nodes.attr('transform', function (d) {
+                myInstance.myElements.nodes.attr('transform', function (d) {
                     return "translate(" + d.x + "," + d.y + ")";
                 });
 
@@ -424,7 +441,7 @@ angular.module('autoForceLayout', [])
                     // If the clicked node is selected, unselect the other nodes
                     // Else, clear the current selection, and select the clicked node
                     //if (!data.selected) {
-                        myInstance.inSetNodeSelected(element, data, true, true);
+                    myInstance.inSetNodeSelected(element, data, true, true);
                     //}
                 }
                 // Prevent bubbling, so that we can separately detect a click on the container
@@ -433,7 +450,7 @@ angular.module('autoForceLayout', [])
 
             //---------------------------------------------------
             // onContainerClicked
-            // Event handler. on a click not on a node or link
+            // Event handler. on a click not on a node or edge
             // Cancel current selection
             //---------------------------------------------------
             onContainerClicked: function (myInstance) {
@@ -454,28 +471,12 @@ angular.module('autoForceLayout', [])
             // Event handler
             //---------------------------------------------------
             onDrag: function (d, myInstance) {
-                // Flag drag mode, and make the dragged node fixed (not moved by the simulation).
-                // These settings will be removed on force end event (end of current simulation).
-                // I flag the dragging on drag event, and not on dragStart event,
-                // because dragStart is thrown even if you just click on the node, without really dragging.
-                if (!myInstance.dragMode || myInstance.draggedNodeId !== d.id) {
-                    // Mark drag mode (it will cancelled in the next force-end event)
-                    myInstance.dragMode = true; // TODO remove drag mode
-                    // Mark the presently dragged node as immovable by the simulation.
-                    myInstance.nodes.filter(function(nodeData) {
-                        return nodeData.id === d.id;
-                    }).classed("fixed", d.fixed = true);
+                // Make the dragged node fixed (not moved by the simulation)
+                myInstance.nodes.filter(function (nodeData) {
+                    return nodeData.id === d.id;
+                }).classed("fixed", d.fixed = true);
 
-                    myInstance.fixedMode = true;
-
-                    // If we drag a node, before the simulation that started after we dragged another node,
-                    // had ended, mark the previously dragged node as movable by the simulation.
-                    // (Update: the previous node will stay fixed)
-                    //if (myInstance.draggedNodeId !== d.id && Number.isInteger(myInstance.draggedNodeId)) {
-                    //    myInstance.data.nodes[myInstance.nodesById[myInstance.draggedNodeId]].fixed = false;
-                    //}
-                    myInstance.draggedNodeId = d.id;
-                }
+                myInstance.fixedNodesMode = true;
             },
 
             //---------------------------------------------------
@@ -490,15 +491,6 @@ angular.module('autoForceLayout', [])
             // Event handler
             //---------------------------------------------------
             onForceEnd: function (myInstance) {
-                //console.log('onForceEnd called');
-                // If the ending simulation is one triggered by a node dragging,
-                // make the dragged node movable (it gets fixed during the dragging and
-                // the ensuing simulation)
-                // (Update: the node will stay fixed after the dragging)
-                if (myInstance.dragMode) {
-                    myInstance.dragMode = false;
-                    //myInstance.data.nodes[myInstance.nodesById[myInstance.draggedNodeId]].fixed = false;
-                }
             },
 
             //---------------------------------------------------
@@ -531,29 +523,29 @@ angular.module('autoForceLayout', [])
             },
 
             //---------------------------------------------------
-            // compileLinks
-            // Add references to the given links array
+            // compileEdges
+            // Add references to the given edges array
             //---------------------------------------------------
-            compileLinks: function (linksArray, nodesById) {
-                var linksById = {};
-                linksArray.forEach(function (val, idx) {
+            compileEdges: function (edgesArray, nodesById) {
+                var edgesById = {};
+                edgesArray.forEach(function (val, idx) {
                     if (typeof val.id === "undefined") {
-                        console.error("Undefined <id> in links array");
+                        console.error("Undefined <id> in edges array");
                     } else {
-                        linksById[val.id] = idx;
+                        edgesById[val.id] = idx;
                     }
                     if (typeof val.sourceID === "undefined") {
-                        console.error("Undefined [sourceID] in links array");
+                        console.error("Undefined [sourceID] in edges array");
                     } else {
                         val.source = nodesById[val.sourceID];
                     }
                     if (typeof val.targetID === "undefined") {
-                        console.error("Undefined [targetID] in links array");
+                        console.error("Undefined [targetID] in edges array");
                     } else {
                         val.target = nodesById[val.targetID];
                     }
                 });
-                return linksById;
+                return edgesById;
             },
 
             //---------------------------------------------------
@@ -563,9 +555,9 @@ angular.module('autoForceLayout', [])
             applyScopeToEventHandlers: function (ctrl, scope) {
                 return {
 
-                    onLinkHovered: function (d, on) {
+                    onEdgeHovered: function (d, on) {
                         scope.$apply(function () {
-                            ctrl.onLinkHovered({item: d, on: on});
+                            ctrl.onEdgeHovered({item: d, on: on});
                         });
                     },
 

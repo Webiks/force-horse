@@ -27,12 +27,12 @@
     overflow: auto;
 }
 
-.auto-force-layout svg.graph-svg .link {
+.auto-force-layout svg.graph-svg .edge {
     stroke: lightgray;
     stroke-width: 1.5px;
 }
 
-.auto-force-layout svg.graph-svg .link.hovered {
+.auto-force-layout svg.graph-svg .edge.hovered {
     stroke: black;
     stroke-dasharray: 1,1;
 }
