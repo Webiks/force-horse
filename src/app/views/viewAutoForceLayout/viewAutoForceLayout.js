@@ -68,7 +68,7 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
 
         // Edge was hovered outside this view (in the graph component)
         $scope.setEdgeHovered = function (edgeObj, on) {
-            edgeObj = $scope.options.data.edges.find(function (edge) {
+            edgeObj = $scope.graph.edges.find(function(edge) {
                 return edge.id === edgeObj.id;
             });
             edgeObj.hovered = on;
@@ -96,7 +96,7 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
         $scope.inSetNodeSelected = function (element, nodeData, on, clearOldSelection) {
 
             if (clearOldSelection) {
-                $scope.options.data.nodes.filter(function (d) {
+                $scope.graph.nodes.filter(function (d) {
                     return $scope.selectedEntities.has(d.id);
                 }).forEach(function (d) {
                     d.selected = false;
@@ -119,7 +119,7 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
         $scope.setNodeSelected = function (nodeData, on, clearOldSelection) {
 
             if (clearOldSelection) {
-                $scope.options.data.nodes.filter(function (d) {
+                $scope.graph.nodes.filter(function (d) {
                     return $scope.selectedEntities.has(d.id);
                 }).forEach(function (d) {
                     d.selected = false;
@@ -129,7 +129,7 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
 
             if (nodeData) {
                 // Get the inner node object that corresponds the node object parameter
-                nodeData = $scope.options.data.nodes.find(function (node) {
+                nodeData = $scope.graph.nodes.find(function (node) {
                     return node.id === nodeData.id;
                 });
 

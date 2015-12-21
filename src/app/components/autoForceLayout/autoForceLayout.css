@@ -44,7 +44,7 @@
 }
 
 .auto-force-layout svg.graph-svg .node.hovered {
-    stroke: #000;
+    stroke: #000 !important;
     stroke-width: 1.5px;
 }
 

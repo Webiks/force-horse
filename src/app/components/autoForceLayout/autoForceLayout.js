@@ -239,7 +239,7 @@ angular.module('autoForceLayout', [])
         //---------------------------------------------------
         proto.apiSetNodeHovered = function (nodeData, on) {
             var myInstance = this;
-            myInstance.nodes.filter(function (d) {
+            myInstance.myElements.nodes.filter(function (d) {
                     return d.id === nodeData.id;
                 })
                 .classed("hovered", function (d) {
@@ -268,7 +268,7 @@ angular.module('autoForceLayout', [])
         //---------------------------------------------------
         proto.apiSetEdgeHovered = function (edgeData, on) {
             var myInstance = this;
-            myInstance.edges.filter(function (d) {
+            myInstance.myElements.edges.filter(function (d) {
                     return d.id === edgeData.id;
                 })
                 .classed("hovered", function (d) {
@@ -288,7 +288,7 @@ angular.module('autoForceLayout', [])
             var myInstance = this;
 
             if (clearOldSelection) {
-                myInstance.nodes.filter(function (d) {
+                myInstance.myElements.nodes.filter(function (d) {
                     return myInstance.selectedEntities.has(d.id);
                 }).classed("selected", function (d) {
                     return d.selected = false;
@@ -327,7 +327,7 @@ angular.module('autoForceLayout', [])
             var myInstance = this;
 
             if (clearOldSelection) {
-                myInstance.nodes.filter(function (d) {
+                myInstance.myElements.nodes.filter(function (d) {
                     return myInstance.selectedEntities.has(d.id);
                 }).classed("selected", function (d) {
                     return d.selected = false;
@@ -336,10 +336,10 @@ angular.module('autoForceLayout', [])
             }
 
             // Get the inner node object that corresponds the node object parameter
-            nodeData = myInstance.data.nodes[myInstance.nodesById[nodeData.id]];
+            nodeData = myInstance.myData.nodes[myInstance.myData.nodesById[nodeData.id]];
 
             // Get the corresponding element, and update it
-            myInstance.nodes.filter(function (d) {
+            myInstance.myElements.nodes.filter(function (d) {
                 return d.id === nodeData.id;
             }).classed("selected", nodeData.selected = on);
 
@@ -472,7 +472,7 @@ angular.module('autoForceLayout', [])
             //---------------------------------------------------
             onDrag: function (d, myInstance) {
                 // Make the dragged node fixed (not moved by the simulation)
-                myInstance.nodes.filter(function (nodeData) {
+                myInstance.myElements.nodes.filter(function (nodeData) {
                     return nodeData.id === d.id;
                 }).classed("fixed", d.fixed = true);
 
