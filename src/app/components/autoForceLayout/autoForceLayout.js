@@ -194,7 +194,7 @@ angular.module('autoForceLayout', [])
                     myInstance.onHoveredInside(this, d, false);
                 })
                 .on("click", function (d) {
-                    services.onNodeClicked(d, this, myInstance);
+                    myInstance.onClick(d, this);
                 })
                 .call(this.drag);
 
@@ -210,6 +210,29 @@ angular.module('autoForceLayout', [])
                 });
 
             return this;
+        };
+
+        //---------------------------------------------------
+        // onClick
+        // Event handler. Manage element selection
+        //---------------------------------------------------
+        proto.onClick = function (item, element) {
+            // Ignore the click event at the end of a drag
+            if (d3.event.defaultPrevented) return;
+            // If the Ctrl key was pressed during the click ..
+            // If the clicked element was marked as selected, unselect it, and vice versa
+            if (d3.event.ctrlKey) {
+                this.inSetNodeSelected(element, item, !item.selected);
+            } else {
+                // If the Ctrl key was not pressed ..
+                // If the clicked element is selected, unselect the other elements
+                // Else, clear the current selection, and select the clicked element
+                //if (!data.selected) {
+                this.inSetNodeSelected(element, item, true, true);
+                //}
+            }
+            // Prevent bubbling, so that we can separately detect a click on the container
+            d3.event.stopPropagation();
         };
 
         //---------------------------------------------------
@@ -391,29 +414,6 @@ angular.module('autoForceLayout', [])
                     .attr("y", function (d) {
                         return d.y;
                     });
-            },
-
-            //---------------------------------------------------
-            // onNodeClicked
-            // Event handler. Manage node selection
-            //---------------------------------------------------
-            onNodeClicked: function (data, element, myInstance) {
-                // Ignore the click event at the end of a drag
-                if (d3.event.defaultPrevented) return;
-                // If the Ctrl key was pressed during the click ..
-                // If the clicked element was marked as selected, unselect it, and vice versa
-                if (d3.event.ctrlKey) {
-                    myInstance.inSetNodeSelected(element, data, !data.selected);
-                } else {
-                    // If the Ctrl key was not pressed ..
-                    // If the clicked node is selected, unselect the other nodes
-                    // Else, clear the current selection, and select the clicked node
-                    //if (!data.selected) {
-                    myInstance.inSetNodeSelected(element, data, true, true);
-                    //}
-                }
-                // Prevent bubbling, so that we can separately detect a click on the container
-                d3.event.stopPropagation();
             },
 
             //---------------------------------------------------
