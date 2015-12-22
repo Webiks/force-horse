@@ -41,7 +41,7 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
             item.hovered = on;
             $scope.setHoveredState(item);
             if (angular.isDefined($scope.options.autoForceLayoutInstance)) {
-                $scope.options.autoForceLayoutInstance.onHoveredOutside(nodeObj);
+                $scope.options.autoForceLayoutInstance.onHoveredOutside(item);
             }
         };
 

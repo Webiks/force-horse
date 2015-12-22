@@ -33,8 +33,7 @@ angular.module('autoForceLayout', [])
             priority: 100,
             scope: {
                 options: "=",
-                onEdgeHovered: '&',
-                onNodeHovered: '&',
+                onHovered: '&',
                 onNodeSelected: '&'
             },
             bindToController: true,
@@ -223,7 +222,7 @@ angular.module('autoForceLayout', [])
         proto.onHoveredInside = function (element, item, on) {
             var myInstance = this;
             d3.select(element).classed("hovered", item.hovered = on);
-            myInstance.externalEventHandlers.onHoveredOutside(item);
+            myInstance.externalEventHandlers.onHovered(item);
         };
 
         //---------------------------------------------------
@@ -524,15 +523,9 @@ angular.module('autoForceLayout', [])
             applyScopeToEventHandlers: function (ctrl, scope) {
                 return {
 
-                    onEdgeHovered: function (d, on) {
+                    onHovered: function (d, on) {
                         scope.$apply(function () {
-                            ctrl.onEdgeHovered({item: d, on: on});
-                        });
-                    },
-
-                    onNodeHovered: function (d, on) {
-                        scope.$apply(function () {
-                            ctrl.onNodeHovered({item: d, on: on});
+                            ctrl.onHovered({item: d, on: on});
                         });
                     },
 
