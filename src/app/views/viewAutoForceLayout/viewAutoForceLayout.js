@@ -36,47 +36,30 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
 
         //----- Event handlers -----//
 
-        // Node was hovered inside this view
-        $scope.inSetNodeHovered = function (nodeObj, on) {
-            nodeObj.hovered = on;
-            if (on) {
-                $scope.lastHoveredNode = nodeObj;
-            }
+        // An element was hovered inside this view
+        $scope.onHoveredInside = function (item, on) {
+            item.hovered = on;
+            $scope.setHoveredState(item);
             if (angular.isDefined($scope.options.autoForceLayoutInstance)) {
-                $scope.options.autoForceLayoutInstance.apiSetNodeHovered(nodeObj, on);
+                $scope.options.autoForceLayoutInstance.onHoveredOutside(nodeObj);
             }
         };
 
-        // Node was hovered outside this view (in the graph component)
-        $scope.setNodeHovered = function (nodeObj, on) {
-            nodeObj = $scope.nodeDataArray.find(function (node) {
-                return node.id === nodeObj.id;
-            });
-            nodeObj.hovered = on;
-            if (on) {
-                $scope.lastHoveredNode = nodeObj;
-            }
+        // An element was hovered outside this view (in the graph component)
+        $scope.onHoveredOutside = function (item) {
+            $scope.setHoveredState(item);
         };
 
-        // Edge was hovered inside this view
-        $scope.inSetEdgeHovered = function (edgeObj, on) {
-            edgeObj.hovered = on;
-            if (on) {
-                $scope.lastHoveredEdge = edgeObj;
-            }
-            if (angular.isDefined($scope.options.autoForceLayoutInstance)) {
-                $scope.options.autoForceLayoutInstance.apiSetEdgeHovered(edgeObj, on);
-            }
-        };
-
-        // Edge was hovered outside this view (in the graph component)
-        $scope.setEdgeHovered = function (edgeObj, on) {
-            edgeObj = $scope.edgeDataArray.find(function(edge) {
-                return edge.id === edgeObj.id;
-            });
-            edgeObj.hovered = on;
-            if (on) {
-                $scope.lastHoveredEdge = edgeObj;
+        // Update hover-related fields
+        $scope.setHoveredState = function(item) {
+            if (item) {
+                if (item.hovered) {
+                    if (item.class === constants.CLASS_NODE) {
+                        $scope.lastHoveredNode = item;
+                    } else if (item.class === constants.CLASS_EDGE) {
+                        $scope.lastHoveredEdge = item;
+                    }
+                }
             }
         };
 
@@ -166,7 +149,7 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
                 var shapes = d3.svg.symbolTypes;
                 for (i = 0; i < numOfNodes; i++) {
                     node = graphData[constants.NODES].data[i] = {};
-                    node.class = 'Node';
+                    node.class = constants.CLASS_NODE;
                     node.label = Math.random().toString(36).slice(2).substr(0,5); // a random string, 5 chars
                     node.shape = shapes[Math.floor(Math.random() * shapes.length)];
                     node.id = i;
@@ -176,7 +159,7 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
                 var numEdges = numOfNodes * 3 / 2;
                 for (i = 0; i < numEdges; i++) {
                     edge = graphData[constants.EDGES].data[i] = {};
-                    edge.class = 'Edge';
+                    edge.class = constants.CLASS_EDGE;
                     nodeIdx = Math.floor(Math.random()*numOfNodes);
                     edge.sourceID = graphData[constants.NODES].data[nodeIdx].id;
                     edge.sourceLabel = graphData[constants.NODES].data[nodeIdx].label;
@@ -238,6 +221,8 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
         NODES: 0,
         EDGES: 1,
         NODES_ID: 1,
-        EDGES_ID: 2
+        EDGES_ID: 2,
+        CLASS_NODE: 'Node',
+        CLASS_EDGE: 'Edge'
 })
 ;

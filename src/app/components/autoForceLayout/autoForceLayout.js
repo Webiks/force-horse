@@ -167,10 +167,10 @@ angular.module('autoForceLayout', [])
                     return "stroke:" + d.color;
                 })
                 .on("mouseenter", function (d) {
-                    myInstance.inSetEdgeHovered(this, d, true);
+                    myInstance.onHoveredInside(this, d, true);
                 })
                 .on("mouseleave", function (d) {
-                    myInstance.inSetEdgeHovered(this, d, false);
+                    myInstance.onHoveredInside(this, d, false);
                 });
 
             // draw nodes
@@ -189,10 +189,10 @@ angular.module('autoForceLayout', [])
                     return "fill:" + d.color;
                 })
                 .on("mouseenter", function (d) {
-                    myInstance.inSetNodeHovered(this, d, true);
+                    myInstance.onHoveredInside(this, d, true);
                 })
                 .on("mouseleave", function (d) {
-                    myInstance.inSetNodeHovered(this, d, false);
+                    myInstance.onHoveredInside(this, d, false);
                 })
                 .on("click", function (d) {
                     services.onNodeClicked(d, this, myInstance);
@@ -214,61 +214,31 @@ angular.module('autoForceLayout', [])
         };
 
         //---------------------------------------------------
-        // inSetNodeHovered
-        // When a node was hovered inside this component.
-        // Params: nodeData: a node object
-        // nodeElement: the corresponding DOM element
+        // onHoveredInside
+        // An element was hovered inside this component.
+        // Params: item: a data object
+        // element: the corresponding DOM element
         // on: boolean
         //---------------------------------------------------
-        proto.inSetNodeHovered = function (nodeElement, nodeData, on) {
+        proto.onHoveredInside = function (element, item, on) {
             var myInstance = this;
-            d3.select(nodeElement).classed("hovered", nodeData.hovered = on);
-            myInstance.externalEventHandlers.onNodeHovered(nodeData, on);
+            d3.select(element).classed("hovered", item.hovered = on);
+            myInstance.externalEventHandlers.onHoveredOutside(item);
         };
 
         //---------------------------------------------------
-        // apiSetNodeHovered
-        // When a node was hovered outside this component.
-        // Params: nodeData: a node object
-        // on: boolean
+        // onHoveredOutside
+        // An element was hovered outside this component.
+        // Params: item: data of the hovered element
         //---------------------------------------------------
-        proto.apiSetNodeHovered = function (nodeData, on) {
+        proto.onHoveredOutside = function (item) {
             var myInstance = this;
-            myInstance.myElements.nodes.filter(function (d) {
-                    return d.id === nodeData.id;
+            var elements = (item.class === constants.CLASS_NODE ?
+                myInstance.myElements.nodes : myInstance.myElements.edges);
+            elements.filter(function (d) {
+                    return d.id === item.id;
                 })
-                .classed("hovered", function (d) {
-                    return d.hovered = on;
-                });
-        };
-
-        //---------------------------------------------------
-        // inSetEdgeHovered
-        // When a edge was hovered inside this component.
-        // Params: edgeData: a edge object
-        // edgeElement: the corresponding DOM element
-        // on: boolean
-        //---------------------------------------------------
-        proto.inSetEdgeHovered = function (edgeElement, edgeData, on) {
-            var myInstance = this;
-            d3.select(edgeElement).classed("hovered", edgeData.hovered = on);
-            myInstance.externalEventHandlers.onEdgeHovered(edgeData, on);
-        };
-
-        //---------------------------------------------------
-        // apiSetEdgeHovered
-        // When a edge was hovered outside this component.
-        // Params: edgeData: a edge object
-        // on: boolean
-        //---------------------------------------------------
-        proto.apiSetEdgeHovered = function (edgeData, on) {
-            var myInstance = this;
-            myInstance.myElements.edges.filter(function (d) {
-                    return d.id === edgeData.id;
-                })
-                .classed("hovered", function (d) {
-                    return d.hovered = on;
-                });
+                .classed("hovered", item.hovered);
         };
 
         //---------------------------------------------------
