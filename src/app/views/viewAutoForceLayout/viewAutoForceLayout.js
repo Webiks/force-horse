@@ -37,21 +37,21 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
         //----- Event handlers -----//
 
         // An element was hovered inside this view
-        $scope.onHoveredInside = function (item, on) {
+        $scope.onHoverInside = function (item, on) {
             item.hovered = on;
-            $scope.setHoveredState(item);
+            $scope.setHoverState(item);
             if (angular.isDefined($scope.options.autoForceLayoutInstance)) {
-                $scope.options.autoForceLayoutInstance.onHoveredOutside(item);
+                $scope.options.autoForceLayoutInstance.onHoverOutside(item);
             }
         };
 
         // An element was hovered outside this view (in the graph component)
-        $scope.onHoveredOutside = function (item) {
-            $scope.setHoveredState(item);
+        $scope.onHoverOutside = function (item) {
+            $scope.setHoverState(item);
         };
 
         // Update hover-related fields
-        $scope.setHoveredState = function(item) {
+        $scope.setHoverState = function(item) {
             if (item) {
                 if (item.hovered) {
                     if (item.class === constants.CLASS_NODE) {
@@ -63,18 +63,18 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
             }
         };
 
-        $scope.onNodeClicked = function(event, nodeData) {
+        $scope.onClick = function(event, item) {
             var element = event.currentTarget;
             // If the Ctrl key was pressed during the click ..
             // If the clicked element was marked as selected, unselect it, and vice versa
             if (event.ctrlKey) {
-                $scope.inSetNodeSelected(element, nodeData, !nodeData.selected);
+                $scope.inSetNodeSelected(element, item, !item.selected);
             } else {
                 // If the Ctrl key was not pressed ..
                 // If the clicked node is selected, ignore the click
                 // Else, clear the current selection, and select the clicked node
-                if (!nodeData.selected) {
-                    $scope.inSetNodeSelected(element, nodeData, true, true);
+                if (!item.selected) {
+                    $scope.inSetNodeSelected(element, item, true, true);
                 }
             }
         };

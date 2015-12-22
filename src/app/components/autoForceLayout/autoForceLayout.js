@@ -166,10 +166,10 @@ angular.module('autoForceLayout', [])
                     return "stroke:" + d.color;
                 })
                 .on("mouseenter", function (d) {
-                    myInstance.onHoveredInside(this, d, true);
+                    myInstance.onHoverInside(this, d, true);
                 })
                 .on("mouseleave", function (d) {
-                    myInstance.onHoveredInside(this, d, false);
+                    myInstance.onHoverInside(this, d, false);
                 });
 
             // draw nodes
@@ -188,10 +188,10 @@ angular.module('autoForceLayout', [])
                     return "fill:" + d.color;
                 })
                 .on("mouseenter", function (d) {
-                    myInstance.onHoveredInside(this, d, true);
+                    myInstance.onHoverInside(this, d, true);
                 })
                 .on("mouseleave", function (d) {
-                    myInstance.onHoveredInside(this, d, false);
+                    myInstance.onHoverInside(this, d, false);
                 })
                 .on("click", function (d) {
                     myInstance.onClick(d, this);
@@ -236,24 +236,24 @@ angular.module('autoForceLayout', [])
         };
 
         //---------------------------------------------------
-        // onHoveredInside
+        // onHoverInside
         // An element was hovered inside this component.
         // Params: item: a data object
         // element: the corresponding DOM element
         // on: boolean
         //---------------------------------------------------
-        proto.onHoveredInside = function (element, item, on) {
+        proto.onHoverInside = function (element, item, on) {
             var myInstance = this;
             d3.select(element).classed("hovered", item.hovered = on);
             myInstance.externalEventHandlers.onHovered(item);
         };
 
         //---------------------------------------------------
-        // onHoveredOutside
+        // onHoverOutside
         // An element was hovered outside this component.
         // Params: item: data of the hovered element
         //---------------------------------------------------
-        proto.onHoveredOutside = function (item) {
+        proto.onHoverOutside = function (item) {
             var myInstance = this;
             var elements = (item.class === constants.CLASS_NODE ?
                 myInstance.myElements.nodes : myInstance.myElements.edges);
