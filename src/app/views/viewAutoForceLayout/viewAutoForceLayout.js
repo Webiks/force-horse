@@ -19,13 +19,16 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
     .controller('view3Ctrl', ['$scope', 'graphData', 'ViewAutoForceLayoutConstants', function ($scope, data, constants) {
         //console.log('In view3Ctrl');
 
-        $scope.options = {data: {}};
-        $scope.graph = data.get($scope.numOfNodes = constants.INITIAL_NUM_OF_NODES);
-        $scope.options.data = $scope.graph.nodes.concat($scope.graph.edges);
+        $scope.options = {};
+        $scope.options.data = data.get($scope.numOfNodes = constants.INITIAL_NUM_OF_NODES);
+        $scope.setArrays = function() {
+            $scope.nodeDataArray = $scope.options.data[constants.NODES].data;
+            $scope.edgeDataArray = $scope.options.data[constants.EDGES].data;
+        }();
 
         $scope.recreateGraph = function() {
-            $scope.graph = data.get($scope.numOfNodes);
-            $scope.options.data = $scope.graph.nodes.concat($scope.graph.edges);
+            $scope.options.data = data.get($scope.numOfNodes);
+            $scope.setArrays();
             $scope.options.autoForceLayoutInstance.redraw();
         };
 
@@ -46,7 +49,7 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
 
         // Node was hovered outside this view (in the graph component)
         $scope.setNodeHovered = function (nodeObj, on) {
-            nodeObj = $scope.graph.nodes.find(function (node) {
+            nodeObj = $scope.nodeDataArray.find(function (node) {
                 return node.id === nodeObj.id;
             });
             nodeObj.hovered = on;
@@ -68,7 +71,7 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
 
         // Edge was hovered outside this view (in the graph component)
         $scope.setEdgeHovered = function (edgeObj, on) {
-            edgeObj = $scope.graph.edges.find(function(edge) {
+            edgeObj = $scope.edgeDataArray.find(function(edge) {
                 return edge.id === edgeObj.id;
             });
             edgeObj.hovered = on;
@@ -96,7 +99,7 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
         $scope.inSetNodeSelected = function (element, nodeData, on, clearOldSelection) {
 
             if (clearOldSelection) {
-                $scope.graph.nodes.filter(function (d) {
+                $scope.nodeDataArray.filter(function (d) {
                     return $scope.selectedEntities.has(d.id);
                 }).forEach(function (d) {
                     d.selected = false;
@@ -119,7 +122,7 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
         $scope.setNodeSelected = function (nodeData, on, clearOldSelection) {
 
             if (clearOldSelection) {
-                $scope.graph.nodes.filter(function (d) {
+                $scope.nodeDataArray.filter(function (d) {
                     return $scope.selectedEntities.has(d.id);
                 }).forEach(function (d) {
                     d.selected = false;
@@ -129,7 +132,7 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
 
             if (nodeData) {
                 // Get the inner node object that corresponds the node object parameter
-                nodeData = $scope.graph.nodes.find(function (node) {
+                nodeData = $scope.nodeDataArray.find(function (node) {
                     return node.id === nodeData.id;
                 });
 
@@ -152,16 +155,19 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
     .service('graphData', ['ViewAutoForceLayoutConstants', function (constants) {
         return {
             get: function (numOfNodes) {
-                var graph = {nodes: [], edges: []};
+                var graphData = [
+                    {id: constants.NODES_ID, data: []},
+                    {id: constants.EDGES_ID, data: []}
+                    ];
 
                 // Generate a random graph
 
                 var i, node, edge, nodeIdx;
                 var shapes = d3.svg.symbolTypes;
                 for (i = 0; i < numOfNodes; i++) {
-                    node = graph.nodes[i] = {};
+                    node = graphData[constants.NODES].data[i] = {};
                     node.class = 'Node';
-                    node.label = Math.random().toString(36).slice(2).substr(0,5);
+                    node.label = Math.random().toString(36).slice(2).substr(0,5); // a random string, 5 chars
                     node.shape = shapes[Math.floor(Math.random() * shapes.length)];
                     node.id = i;
                     node.color = '#' + Math.floor(Math.random() * constants.MAX_COLOR).toString(16);
@@ -169,19 +175,19 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
 
                 var numEdges = numOfNodes * 3 / 2;
                 for (i = 0; i < numEdges; i++) {
-                    edge = graph.edges[i] = {};
+                    edge = graphData[constants.EDGES].data[i] = {};
                     edge.class = 'Edge';
                     nodeIdx = Math.floor(Math.random()*numOfNodes);
-                    edge.sourceID = graph.nodes[nodeIdx].id;
-                    edge.sourceLabel = graph.nodes[nodeIdx].label;
+                    edge.sourceID = graphData[constants.NODES].data[nodeIdx].id;
+                    edge.sourceLabel = graphData[constants.NODES].data[nodeIdx].label;
                     nodeIdx = Math.floor(Math.random()*numOfNodes);
-                    edge.targetID = graph.nodes[nodeIdx].id;
-                    edge.targetLabel = graph.nodes[nodeIdx].label;
+                    edge.targetID = graphData[constants.NODES].data[nodeIdx].id;
+                    edge.targetLabel = graphData[constants.NODES].data[nodeIdx].label;
                     edge.id = i;
                     edge.color = '#' + Math.floor(Math.random() * constants.MAX_COLOR).toString(16);
                 }
 
-                return graph;
+                return graphData;
             }
         };
     }])
@@ -228,6 +234,10 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
     //---------------------------------------------------------------//
     .constant('ViewAutoForceLayoutConstants', {
         INITIAL_NUM_OF_NODES: 20,
-        MAX_COLOR: parseInt("0xffffff")
+        MAX_COLOR: parseInt("0xffffff"),
+        NODES: 0,
+        EDGES: 1,
+        NODES_ID: 1,
+        EDGES_ID: 2
 })
 ;

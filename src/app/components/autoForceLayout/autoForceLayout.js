@@ -94,16 +94,11 @@ angular.module('autoForceLayout', [])
             var myInstance = this;
 
             // Input initial processing
-            this.commonData = this.options.data;
-            this.myData = {};
-            this.myData.nodes = this.commonData.filter(function (entity) {
-                return entity.class === constants.CLASS_NODE;
-            });
-            this.myData.edges = this.commonData.filter(function (entity) {
-                return entity.class === constants.CLASS_EDGE;
-            });
-            this.myData.nodesById = services.compileNodes(this.myData.nodes);
-            services.compileEdges(this.myData.edges, this.myData.nodesById);
+            //this.commonData = this.options.data;
+            this.nodeDataArray = this.options.data[constants.NODES].data;
+            this.edgeDataArray = this.options.data[constants.EDGES].data;
+            this.nodesById = services.compileNodes(this.nodeDataArray);
+            services.compileEdges(this.edgeDataArray, this.nodesById);
 
             // Some nodes-related fields
             this.nodeDefaultSize = constants.INNER_SVG_WIDTH / 64 * constants.INNER_SVG_HEIGHT / 48 * 2;
@@ -129,8 +124,8 @@ angular.module('autoForceLayout', [])
                 })
                 .on("dragend", services.onDragEnd);
 
-            this.force.nodes(this.myData.nodes)
-                .links(this.myData.edges)
+            this.force.nodes(this.nodeDataArray)
+                .links(this.edgeDataArray)
                 .start();
 
             // Create the main SVG canvas.
@@ -164,7 +159,7 @@ angular.module('autoForceLayout', [])
 
             // draw edges
             this.myElements.edges = this.svg.selectAll("."+constants.CSS_CLASS_EDGE)
-                .data(this.myData.edges)
+                .data(this.edgeDataArray)
                 .enter()
                 .append("line")
                 .attr("class", constants.CSS_CLASS_EDGE)
@@ -180,7 +175,7 @@ angular.module('autoForceLayout', [])
 
             // draw nodes
             this.myElements.nodes = this.svg.selectAll("."+constants.CSS_CLASS_NODE)
-                .data(this.myData.nodes)
+                .data(this.nodeDataArray)
                 .enter()
                 .append("path")
                 // Set node shape & size
@@ -206,7 +201,7 @@ angular.module('autoForceLayout', [])
 
             // draw node labels
             this.labels = this.svg.selectAll("text.label")
-                .data(this.myData.nodes)
+                .data(this.nodeDataArray)
                 .enter()
                 .append("text")
                 .attr("class", "label")
@@ -336,7 +331,7 @@ angular.module('autoForceLayout', [])
             }
 
             // Get the inner node object that corresponds the node object parameter
-            nodeData = myInstance.myData.nodes[myInstance.myData.nodesById[nodeData.id]];
+            nodeData = myInstance.nodeDataArray[myInstance.nodesById[nodeData.id]];
 
             // Get the corresponding element, and update it
             myInstance.myElements.nodes.filter(function (d) {
@@ -381,6 +376,10 @@ angular.module('autoForceLayout', [])
         INNER_SVG_HEIGHT: 480,
         SOURCE_IN: 0,
         SOURCE_OUT: 1,
+        NODES: 0,
+        EDGES: 1,
+        NODES_ID: 1,
+        EDGES_ID: 2,
         CLASS_NODE: 'Node',
         CLASS_EDGE: 'Edge',
         CSS_CLASS_NODE: 'node',
