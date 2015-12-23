@@ -143,6 +143,16 @@ angular.module('autoForceLayout', [])
                     services.onContainerClick(myInstance)
                 });
 
+            // Set SVG groups, and through them default colors,
+            // for nodes and edges
+            this.nodeGroup = this.svg.append("g")
+                .attr("class", "nodes") // TODO: constants
+                .attr("fill", "lightgray");
+            this.edgeGroup = this.svg.append("g")
+                .attr("class", "edges") // TODO: constants
+                .attr("stroke", "lightgray");
+
+
             return this;
         }; // end of Layout()
 
@@ -156,7 +166,7 @@ angular.module('autoForceLayout', [])
             myInstance.elements = new Array(2); // nodes, edges
 
             // draw edges
-            this.elements[constants.EDGES] = this.svg.selectAll("."+constants.CSS_CLASS_EDGE)
+            this.elements[constants.EDGES] = this.edgeGroup.selectAll("."+constants.CSS_CLASS_EDGE)
                 .data(this.edgeDataArray)
                 .enter()
                 .append("line")
@@ -179,7 +189,7 @@ angular.module('autoForceLayout', [])
             ;
 
             // draw nodes
-            this.elements[constants.NODES] = this.svg.selectAll("."+constants.CSS_CLASS_NODE)
+            this.elements[constants.NODES] = this.nodeGroup.selectAll("."+constants.CSS_CLASS_NODE)
                 .data(this.nodeDataArray)
                 .enter()
                 .append("path")

@@ -34,7 +34,7 @@
 
 .auto-force-layout svg.graph-svg .edge.hovered {
     stroke: black;
-    stroke-dasharray: 1,1;
+    /*stroke-dasharray: 1,1;*/
 }
 
 .auto-force-layout svg.graph-svg .node {

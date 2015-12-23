@@ -25,7 +25,8 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
             $scope.data = [];
             $scope.data[constants.NODES] = $scope.options.data[constants.NODES].data;
             $scope.data[constants.EDGES] = $scope.options.data[constants.EDGES].data;
-        }();
+        };
+        $scope.setArrays();
         $scope.NODES = constants.NODES;
         $scope.EDGES = constants.EDGES;
 
