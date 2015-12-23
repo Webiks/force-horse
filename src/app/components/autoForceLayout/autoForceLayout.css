@@ -28,7 +28,7 @@
 }
 
 .auto-force-layout svg.graph-svg .edge {
-    stroke: lightgray;
+    /*stroke: lightgray;*/
     stroke-width: 1.5px;
 }
 
@@ -39,20 +39,22 @@
 
 .auto-force-layout svg.graph-svg .node {
     /*cursor: move;*/
-    fill: #ccc;
+    /*fill: #ccc;*/
     stroke: none;
 }
 
 .auto-force-layout svg.graph-svg .node.hovered {
-    stroke: #000 !important;
+    stroke: #000;
     stroke-width: 1.5px;
 }
 
-.auto-force-layout svg.graph-svg.selectionMode .node {
+.auto-force-layout svg.graph-svg.selectionMode .node,
+.auto-force-layout svg.graph-svg.selectionMode .edge {
     opacity: 0.5;
 }
 
-.auto-force-layout svg.graph-svg.selectionMode .node.selected {
+.auto-force-layout svg.graph-svg.selectionMode .node.selected,
+.auto-force-layout svg.graph-svg.selectionMode .edge.selected {
     opacity: 1;
 }
 

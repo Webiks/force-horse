@@ -33,8 +33,8 @@ angular.module('autoForceLayout', [])
             priority: 100,
             scope: {
                 options: "=",
-                onHovered: '&',
-                onNodeSelected: '&'
+                onHover: '&',
+                onSelect: '&'
             },
             bindToController: true,
             controller: function ($scope, $element) {
@@ -93,7 +93,6 @@ angular.module('autoForceLayout', [])
             var myInstance = this;
 
             // Input initial processing
-            //this.commonData = this.options.data;
             this.nodeDataArray = this.options.data[constants.NODES].data;
             this.edgeDataArray = this.options.data[constants.EDGES].data;
             this.nodesById = services.compileNodes(this.nodeDataArray);
@@ -101,7 +100,7 @@ angular.module('autoForceLayout', [])
 
             // Some nodes-related fields
             this.nodeDefaultSize = constants.INNER_SVG_WIDTH / 64 * constants.INNER_SVG_HEIGHT / 48 * 2;
-            this.selectedEntities = new Set();
+            this.selectedItems = [new Set(), new Set()]; // selected nodes, selected edges
             this.fixedNodesMode = false;
 
             // Create a forceLayout instance
@@ -141,7 +140,7 @@ angular.module('autoForceLayout', [])
                 .attr("viewBox", "0 0 " + constants.INNER_SVG_WIDTH + " " + constants.INNER_SVG_HEIGHT)
                 .attr("preserveAspectRatio", "none")
                 .on("click", function () {
-                    services.onContainerClicked(myInstance)
+                    services.onContainerClick(myInstance)
                 });
 
             return this;
@@ -154,26 +153,33 @@ angular.module('autoForceLayout', [])
         proto.draw = function () {
             //console.log('in redraw()');
             var myInstance = this;
-            myInstance.myElements = {};
+            myInstance.elements = new Array(2); // nodes, edges
 
             // draw edges
-            this.myElements.edges = this.svg.selectAll("."+constants.CSS_CLASS_EDGE)
+            this.elements[constants.EDGES] = this.svg.selectAll("."+constants.CSS_CLASS_EDGE)
                 .data(this.edgeDataArray)
                 .enter()
                 .append("line")
                 .attr("class", constants.CSS_CLASS_EDGE)
-                .attr("style", function (d) {
-                    return "stroke:" + d.color;
+                .attr("stroke", function (d) {
+                    return d.color;
                 })
+                //.attr("style", function (d) {
+                //    return "stroke:" + d.color;
+                //})
                 .on("mouseenter", function (d) {
                     myInstance.onHoverInside(this, d, true);
                 })
                 .on("mouseleave", function (d) {
                     myInstance.onHoverInside(this, d, false);
-                });
+                })
+                .on("click", function (d) {
+                    myInstance.onClick(d, this);
+                })
+            ;
 
             // draw nodes
-            this.myElements.nodes = this.svg.selectAll("."+constants.CSS_CLASS_NODE)
+            this.elements[constants.NODES] = this.svg.selectAll("."+constants.CSS_CLASS_NODE)
                 .data(this.nodeDataArray)
                 .enter()
                 .append("path")
@@ -184,9 +190,12 @@ angular.module('autoForceLayout', [])
                     })
                     .size(myInstance.nodeDefaultSize))
                 .attr("class", constants.CSS_CLASS_NODE)
-                .attr("style", function (d) {
-                    return "fill:" + d.color;
+                .attr("fill", function (d) {
+                    return d.color;
                 })
+                //.attr("style", function (d) {
+                //    return "fill:" + d.color;
+                //})
                 .on("mouseenter", function (d) {
                     myInstance.onHoverInside(this, d, true);
                 })
@@ -222,13 +231,13 @@ angular.module('autoForceLayout', [])
             // If the Ctrl key was pressed during the click ..
             // If the clicked element was marked as selected, unselect it, and vice versa
             if (d3.event.ctrlKey) {
-                this.inSetNodeSelected(element, item, !item.selected);
+                this.onSelectInside(element, item, !item.selected);
             } else {
                 // If the Ctrl key was not pressed ..
                 // If the clicked element is selected, unselect the other elements
                 // Else, clear the current selection, and select the clicked element
                 //if (!data.selected) {
-                this.inSetNodeSelected(element, item, true, true);
+                this.onSelectInside(element, item, true, true);
                 //}
             }
             // Prevent bubbling, so that we can separately detect a click on the container
@@ -245,7 +254,7 @@ angular.module('autoForceLayout', [])
         proto.onHoverInside = function (element, item, on) {
             var myInstance = this;
             d3.select(element).classed("hovered", item.hovered = on);
-            myInstance.externalEventHandlers.onHovered(item);
+            myInstance.externalEventHandlers.onHover(item);
         };
 
         //---------------------------------------------------
@@ -254,103 +263,98 @@ angular.module('autoForceLayout', [])
         // Params: item: data of the hovered element
         //---------------------------------------------------
         proto.onHoverOutside = function (item) {
-            var myInstance = this;
-            var elements = (item.class === constants.CLASS_NODE ?
-                myInstance.myElements.nodes : myInstance.myElements.edges);
-            elements.filter(function (d) {
+            var itemType = (item.class === constants.CLASS_NODE ?
+                constants.NODES : constants.EDGES);
+            this.elements[itemType].filter(function (d) {
                     return d.id === item.id;
                 })
                 .classed("hovered", item.hovered);
         };
 
         //---------------------------------------------------
-        // inSetNodeSelected
-        // When a node (or nodes) was selected inside this component.
-        // Params: nodeData: a node object
-        // element: the corresponding DOM element
+        // onSelectInside
+        // When an element was selected inside this component.
+        // Params: item: the data object bound to the selected element
+        // element: the DOM element
         // on: boolean
         // clearOldSelection: whether to clear first the current selection
         //---------------------------------------------------
-        proto.inSetNodeSelected = function (element, nodeData, on, clearOldSelection) {
+        proto.onSelectInside = function (element, item, on, clearOldSelection) {
             var myInstance = this;
+            var itemType;
 
             if (clearOldSelection) {
-                myInstance.myElements.nodes.filter(function (d) {
-                    return myInstance.selectedEntities.has(d.id);
-                }).classed("selected", function (d) {
-                    return d.selected = false;
-                });
-                myInstance.selectedEntities.clear();
+                for (itemType = constants.NODES; itemType <= constants.EDGES; itemType++) {
+                    myInstance.elements[itemType].filter(function (d) {
+                        return myInstance.selectedItems[itemType].has(d.id);
+                    }).classed("selected", function (d) {
+                        return d.selected = false;
+                    });
+                    myInstance.selectedItems[itemType].clear();
+                }
             }
 
             // Update the DOM element
             if (element) {
-                d3.select(element).classed("selected", nodeData.selected = on);
+                d3.select(element).classed("selected", item.selected = on);
             }
 
-            // Update the selectedEntities set
-            if (nodeData) {
-                if (nodeData.selected) {
-                    myInstance.selectedEntities.add(nodeData.id);
+            // Update the selectedItems set
+            if (item) {
+                itemType = (item.class === constants.CLASS_NODE ? constants.NODES : constants.EDGES);
+                if (item.selected) {
+                    myInstance.selectedItems[itemType].add(item.id);
                 } else {
-                    myInstance.selectedEntities.delete(nodeData.id);
+                    myInstance.selectedItems[itemType].delete(item.id);
                 }
             }
 
             // In "selectionMode" the unselected nodes are visually marked
-            myInstance.svg.classed("selectionMode", myInstance.selectedEntities.size);
+            myInstance.svg.classed("selectionMode", 
+                myInstance.selectedItems[constants.NODES].size + myInstance.selectedItems[constants.EDGES].size);
 
-            myInstance.externalEventHandlers.onNodeSelected(nodeData, on, clearOldSelection);
+            myInstance.externalEventHandlers.onSelect();
         };
 
         //---------------------------------------------------
-        // apiSetNodeSelected
-        // When a node (or nodes) was selected outside this component.
-        // Params: nodeData: a node object
-        // on: boolean
-        // clearOldSelection: whether to clear first the current selection
+        // onSelectOutside
+        // Elements were selected and/or unselected outside this component.
         //---------------------------------------------------
-        proto.apiSetNodeSelected = function (nodeData, on, clearOldSelection) {
-            var myInstance = this;
+        proto.onSelectOutside = function () {
+                var myInstance = this;
 
-            if (clearOldSelection) {
-                myInstance.myElements.nodes.filter(function (d) {
-                    return myInstance.selectedEntities.has(d.id);
-                }).classed("selected", function (d) {
-                    return d.selected = false;
-                });
-                myInstance.selectedEntities.clear();
-            }
-
-            // Get the inner node object that corresponds the node object parameter
-            nodeData = myInstance.nodeDataArray[myInstance.nodesById[nodeData.id]];
-
-            // Get the corresponding element, and update it
-            myInstance.myElements.nodes.filter(function (d) {
-                return d.id === nodeData.id;
-            }).classed("selected", nodeData.selected = on);
-
-            // Update the selectedEntities set
-            if (nodeData.selected) {
-                myInstance.selectedEntities.add(nodeData.id);
-            } else {
-                myInstance.selectedEntities.delete(nodeData.id);
+            for (var itemType = constants.NODES; itemType <= constants.EDGES; itemType++) {
+                this.selectedItems[itemType].clear();
+                this.elements[itemType]
+                    .classed('selected', function(d) {
+                        if (d.selected) {
+                            myInstance.selectedItems[itemType].add(d.id);
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    });
             }
 
             // In "selectionMode" the unselected nodes are visually marked
-            myInstance.svg.classed("selectionMode", myInstance.selectedEntities.size);
+            myInstance.svg.classed("selectionMode",
+                myInstance.selectedItems[constants.NODES].size + myInstance.selectedItems[constants.EDGES].size);
         };
 
-        // TODO Add comments
+        //---------------------------------------------------
+        // onPlayPauseBtnClick
+        // Pause fixes all the nodes
+        // Play unfixes all the nodes
+        //---------------------------------------------------
         proto.onPlayPauseBtnClick = function () {
             if (this.fixedNodesMode) {
-                this.myElements.nodes.classed('fixed', function (d) {
+                this.elements[constants.NODES].classed('fixed', function (d) {
                     return d.fixed = false;
                 });
                 this.fixedNodesMode = false;
                 this.force.start();
             } else {
-                this.myElements.nodes.classed('fixed', function (d) {
+                this.elements.nodes.classed('fixed', function (d) {
                     return d.fixed = true;
                 });
                 this.fixedNodesMode = true;
@@ -389,7 +393,7 @@ angular.module('autoForceLayout', [])
             //---------------------------------------------------
             onTick: function (myInstance) {
                 // Update edges
-                myInstance.myElements.edges.attr("x1", function (d) {
+                myInstance.elements[constants.EDGES].attr("x1", function (d) {
                         return d.source.x;
                     })
                     .attr("y1", function (d) {
@@ -403,7 +407,7 @@ angular.module('autoForceLayout', [])
                     });
 
                 // Update nodes
-                myInstance.myElements.nodes.attr('transform', function (d) {
+                myInstance.elements[constants.NODES].attr('transform', function (d) {
                     return "translate(" + d.x + "," + d.y + ")";
                 });
 
@@ -417,13 +421,13 @@ angular.module('autoForceLayout', [])
             },
 
             //---------------------------------------------------
-            // onContainerClicked
+            // onContainerClick
             // Event handler. on a click not on a node or edge
             // Cancel current selection
             //---------------------------------------------------
-            onContainerClicked: function (myInstance) {
-                if (myInstance.selectedEntities.size > 0) {
-                    myInstance.inSetNodeSelected(null, null, null, true);
+            onContainerClick: function (myInstance) {
+                if (myInstance.selectedItems[constants.NODES].size + myInstance.selectedItems[constants.EDGES].size > 0) {
+                    myInstance.onSelectInside(null, null, null, true);
                 }
             },
 
@@ -440,7 +444,7 @@ angular.module('autoForceLayout', [])
             //---------------------------------------------------
             onDrag: function (d, myInstance) {
                 // Make the dragged node fixed (not moved by the simulation)
-                myInstance.myElements.nodes.filter(function (nodeData) {
+                myInstance.elements[constants.NODES].filter(function (nodeData) {
                     return nodeData.id === d.id;
                 }).classed("fixed", d.fixed = true);
 
@@ -523,15 +527,15 @@ angular.module('autoForceLayout', [])
             applyScopeToEventHandlers: function (ctrl, scope) {
                 return {
 
-                    onHovered: function (d, on) {
+                    onHover: function (d, on) {
                         scope.$apply(function () {
-                            ctrl.onHovered({item: d, on: on});
+                            ctrl.onHover({item: d, on: on});
                         });
                     },
 
-                    onNodeSelected: function (d, on, clearOldSelection) {
+                    onSelect: function (d, on, clearOldSelection) {
                         scope.$apply(function () {
-                            ctrl.onNodeSelected({item: d, on: on, clearOldSelection: clearOldSelection});
+                            ctrl.onSelect({item: d, on: on, clearOldSelection: clearOldSelection});
                         });
                     }
 

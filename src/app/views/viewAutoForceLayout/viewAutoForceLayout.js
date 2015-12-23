@@ -21,18 +21,21 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
 
         $scope.options = {};
         $scope.options.data = data.get($scope.numOfNodes = constants.INITIAL_NUM_OF_NODES);
-        $scope.setArrays = function() {
-            $scope.nodeDataArray = $scope.options.data[constants.NODES].data;
-            $scope.edgeDataArray = $scope.options.data[constants.EDGES].data;
+        $scope.setArrays = function () {
+            $scope.data = [];
+            $scope.data[constants.NODES] = $scope.options.data[constants.NODES].data;
+            $scope.data[constants.EDGES] = $scope.options.data[constants.EDGES].data;
         }();
+        $scope.NODES = constants.NODES;
+        $scope.EDGES = constants.EDGES;
 
-        $scope.recreateGraph = function() {
+        $scope.recreateGraph = function () {
             $scope.options.data = data.get($scope.numOfNodes);
             $scope.setArrays();
             $scope.options.autoForceLayoutInstance.redraw();
         };
 
-        $scope.selectedEntities = new Set();
+        $scope.selectedItems = [new Set(), new Set()]; // selected nodes, edges
 
         //----- Event handlers -----//
 
@@ -51,7 +54,7 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
         };
 
         // Update hover-related fields
-        $scope.setHoverState = function(item) {
+        $scope.setHoverState = function (item) {
             if (item) {
                 if (item.hovered) {
                     if (item.class === constants.CLASS_NODE) {
@@ -63,75 +66,61 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
             }
         };
 
-        $scope.onClick = function(event, item) {
+        // An element was clicked on
+        $scope.onClick = function (event, item) {
             var element = event.currentTarget;
             // If the Ctrl key was pressed during the click ..
             // If the clicked element was marked as selected, unselect it, and vice versa
             if (event.ctrlKey) {
-                $scope.inSetNodeSelected(element, item, !item.selected);
+                $scope.onSelectInside(element, item, !item.selected);
             } else {
                 // If the Ctrl key was not pressed ..
                 // If the clicked node is selected, ignore the click
                 // Else, clear the current selection, and select the clicked node
                 if (!item.selected) {
-                    $scope.inSetNodeSelected(element, item, true, true);
+                    $scope.onSelectInside(element, item, true, true);
                 }
             }
         };
 
-        $scope.inSetNodeSelected = function (element, nodeData, on, clearOldSelection) {
+        // Elements were selected inside this view
+        $scope.onSelectInside = function (element, item, on, clearOldSelection) {
+            var itemType = (item.class === constants.CLASS_NODE ? constants.NODES : constants.EDGES);
 
             if (clearOldSelection) {
-                $scope.nodeDataArray.filter(function (d) {
-                    return $scope.selectedEntities.has(d.id);
+                $scope.data[itemType].filter(function (d) {
+                    return $scope.selectedItems[itemType].has(d.id);
                 }).forEach(function (d) {
                     d.selected = false;
                 });
-                $scope.selectedEntities.clear();
+                $scope.selectedItems[itemType].clear();
             }
 
-            // Update the selectedEntities set
-            if (nodeData.selected = on) {
-                $scope.selectedEntities.add(nodeData.id);
+            // Update the selectedItems set
+            if (item.selected = on) {
+                $scope.selectedItems[itemType].add(item.id);
             } else {
-                $scope.selectedEntities.delete(nodeData.id);
+                $scope.selectedItems[itemType].delete(item.id);
             }
 
             if (angular.isDefined($scope.options.autoForceLayoutInstance)) {
-                $scope.options.autoForceLayoutInstance.apiSetNodeSelected(nodeData, on, clearOldSelection);
+                $scope.options.autoForceLayoutInstance.onSelectOutside();
             }
         };
 
-        $scope.setNodeSelected = function (nodeData, on, clearOldSelection) {
-
-            if (clearOldSelection) {
-                $scope.nodeDataArray.filter(function (d) {
-                    return $scope.selectedEntities.has(d.id);
-                }).forEach(function (d) {
-                    d.selected = false;
+        // Elements were selected and/or unselected somewhere
+        $scope.onSelectOutside = function () {
+            for (var itemType = constants.NODES; itemType <= constants.EDGES; itemType++) {
+                $scope.selectedItems[itemType].clear();
+                $scope.data[itemType].forEach(function (item) {
+                    if (item.selected) {
+                        $scope.selectedItems[itemType].add(item.id);
+                    }
                 });
-                $scope.selectedEntities.clear();
-            }
-
-            if (nodeData) {
-                // Get the inner node object that corresponds the node object parameter
-                nodeData = $scope.nodeDataArray.find(function (node) {
-                    return node.id === nodeData.id;
-                });
-
-                nodeData.selected = on;
-
-                // Update the selectedEntities set
-                if (nodeData.selected) {
-                    $scope.selectedEntities.add(nodeData.id);
-                } else {
-                    $scope.selectedEntities.delete(nodeData.id);
-                }
             }
         };
 
-
-    }])
+    }]) // .controller
 
 
     //---------------------------------------------------------------//
@@ -141,7 +130,7 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
                 var graphData = [
                     {id: constants.NODES_ID, data: []},
                     {id: constants.EDGES_ID, data: []}
-                    ];
+                ];
 
                 // Generate a random graph
 
@@ -150,7 +139,7 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
                 for (i = 0; i < numOfNodes; i++) {
                     node = graphData[constants.NODES].data[i] = {};
                     node.class = constants.CLASS_NODE;
-                    node.label = Math.random().toString(36).slice(2).substr(0,5); // a random string, 5 chars
+                    node.label = Math.random().toString(36).slice(2).substr(0, 5); // a random string, 5 chars
                     node.shape = shapes[Math.floor(Math.random() * shapes.length)];
                     node.id = i;
                     node.color = '#' + Math.floor(Math.random() * constants.MAX_COLOR).toString(16);
@@ -160,10 +149,10 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
                 for (i = 0; i < numEdges; i++) {
                     edge = graphData[constants.EDGES].data[i] = {};
                     edge.class = constants.CLASS_EDGE;
-                    nodeIdx = Math.floor(Math.random()*numOfNodes);
+                    nodeIdx = Math.floor(Math.random() * numOfNodes);
                     edge.sourceID = graphData[constants.NODES].data[nodeIdx].id;
                     edge.sourceLabel = graphData[constants.NODES].data[nodeIdx].label;
-                    nodeIdx = Math.floor(Math.random()*numOfNodes);
+                    nodeIdx = Math.floor(Math.random() * numOfNodes);
                     edge.targetID = graphData[constants.NODES].data[nodeIdx].id;
                     edge.targetLabel = graphData[constants.NODES].data[nodeIdx].label;
                     edge.id = i;
@@ -224,5 +213,5 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
         EDGES_ID: 2,
         CLASS_NODE: 'Node',
         CLASS_EDGE: 'Edge'
-})
+    })
 ;
