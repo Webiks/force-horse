@@ -212,9 +212,6 @@ angular.module('autoForceLayout', [])
                 .attr("fill", function (d) {
                     return d.color;
                 })
-                //.attr("style", function (d) {
-                //    return "fill:" + d.color;
-                //})
                 .on("mouseenter", function (d) {
                     myInstance.onHoverInside(this, d, true);
                 })
@@ -223,6 +220,10 @@ angular.module('autoForceLayout', [])
                 })
                 .on("click", function (d) {
                     myInstance.onClick(d, this);
+                })
+                // Prevent panning when dragging a node
+                .on("mousedown", function () {
+                    d3.event.stopPropagation();
                 })
                 .call(this.drag);
 
