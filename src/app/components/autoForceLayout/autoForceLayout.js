@@ -141,14 +141,23 @@ angular.module('autoForceLayout', [])
                 .attr("preserveAspectRatio", "none")
                 .on("click", function () {
                     services.onContainerClick(myInstance)
-                });
+                })
+                .call(d3.behavior.zoom()
+                    .scaleExtent([constants.MIN_ZOOM, constants.MAX_ZOOM])
+                    .on("zoom", function () {
+                        myInstance.onZoom();
+                    }))
+            ;
+
+            // Set wrapper group, to use for pan & zoom
+            this.inSvgWrapper = this.svg.append("g");
 
             // Set SVG groups, and through them default colors,
             // for nodes and edges
-            this.nodeGroup = this.svg.append("g")
+            this.nodeGroup = this.inSvgWrapper.append("g")
                 .attr("class", "nodes") // TODO: constants
                 .attr("fill", "lightgray");
-            this.edgeGroup = this.svg.append("g")
+            this.edgeGroup = this.inSvgWrapper.append("g")
                 .attr("class", "edges") // TODO: constants
                 .attr("stroke", "lightgray");
 
@@ -166,7 +175,7 @@ angular.module('autoForceLayout', [])
             myInstance.elements = new Array(2); // nodes, edges
 
             // draw edges
-            this.elements[constants.EDGES] = this.edgeGroup.selectAll("."+constants.CSS_CLASS_EDGE)
+            this.elements[constants.EDGES] = this.edgeGroup.selectAll("." + constants.CSS_CLASS_EDGE)
                 .data(this.edgeDataArray)
                 .enter()
                 .append("line")
@@ -189,7 +198,7 @@ angular.module('autoForceLayout', [])
             ;
 
             // draw nodes
-            this.elements[constants.NODES] = this.nodeGroup.selectAll("."+constants.CSS_CLASS_NODE)
+            this.elements[constants.NODES] = this.nodeGroup.selectAll("." + constants.CSS_CLASS_NODE)
                 .data(this.nodeDataArray)
                 .enter()
                 .append("path")
@@ -218,7 +227,7 @@ angular.module('autoForceLayout', [])
                 .call(this.drag);
 
             // draw node labels
-            this.labels = this.svg.selectAll("text.label")
+            this.labels = this.inSvgWrapper.selectAll("text.label")
                 .data(this.nodeDataArray)
                 .enter()
                 .append("text")
@@ -320,7 +329,7 @@ angular.module('autoForceLayout', [])
             }
 
             // In "selectionMode" the unselected nodes are visually marked
-            myInstance.svg.classed("selectionMode", 
+            myInstance.svg.classed("selectionMode",
                 myInstance.selectedItems[constants.NODES].size + myInstance.selectedItems[constants.EDGES].size);
 
             myInstance.externalEventHandlers.onSelect();
@@ -331,12 +340,12 @@ angular.module('autoForceLayout', [])
         // Elements were selected and/or unselected outside this component.
         //---------------------------------------------------
         proto.onSelectOutside = function () {
-                var myInstance = this;
+            var myInstance = this;
 
             for (var itemType = constants.NODES; itemType <= constants.EDGES; itemType++) {
                 this.selectedItems[itemType].clear();
                 this.elements[itemType]
-                    .classed('selected', function(d) {
+                    .classed('selected', function (d) {
                         if (d.selected) {
                             myInstance.selectedItems[itemType].add(d.id);
                             return true;
@@ -349,6 +358,19 @@ angular.module('autoForceLayout', [])
             // In "selectionMode" the unselected nodes are visually marked
             myInstance.svg.classed("selectionMode",
                 myInstance.selectedItems[constants.NODES].size + myInstance.selectedItems[constants.EDGES].size);
+        };
+
+        //---------------------------------------------------
+        // onZoom
+        // Perform pan/zoom
+        //---------------------------------------------------
+        proto.onZoom = function () {
+            var trans=d3.event.translate,
+            scale=d3.event.scale;
+
+            this.inSvgWrapper.attr("transform",
+                "translate(" + trans + ")"
+                + " scale(" + scale + ")");
         };
 
         //---------------------------------------------------
@@ -389,7 +411,9 @@ angular.module('autoForceLayout', [])
         CLASS_NODE: 'Node',
         CLASS_EDGE: 'Edge',
         CSS_CLASS_NODE: 'node',
-        CSS_CLASS_EDGE: 'edge'
+        CSS_CLASS_EDGE: 'edge',
+        MIN_ZOOM: 0.5,
+        MAX_ZOOM: 2
     })
 
 
