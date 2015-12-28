@@ -29,7 +29,7 @@
 
 .auto-force-layout svg.graph-svg .edge {
     /*stroke: lightgray;*/
-    stroke-width: 1.5px;
+    /*stroke-width: 1.5px;*/
 }
 
 .auto-force-layout svg.graph-svg .edge.hovered {

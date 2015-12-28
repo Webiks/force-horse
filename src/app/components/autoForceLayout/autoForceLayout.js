@@ -159,7 +159,8 @@ angular.module('autoForceLayout', [])
                 .attr("fill", "lightgray");
             this.edgeGroup = this.inSvgWrapper.append("g")
                 .attr("class", "edges") // TODO: constants
-                .attr("stroke", "lightgray");
+                .attr("stroke", "lightgray")
+                .attr("stroke-width", constants.DEFAULT_LINE_WIDTH + 'px');
 
 
             return this;
@@ -293,7 +294,7 @@ angular.module('autoForceLayout', [])
                     }
                     // Calculate edge offset from the index in the multiple-edges array:
                     // 1 -> 0, 2 -> 2, 3-> -2, 4 -> 4, 5 -> -4, ...
-                    val.multiOffset = (val.multiIdx % 2 === 0 ? val.multiIdx : -val.multiIdx+1);
+                    val.multiOffset = (val.multiIdx % 2 === 0 ? val.multiIdx * constants.DEFAULT_LINE_WIDTH : (-val.multiIdx+1) * constants.DEFAULT_LINE_WIDTH);
                 }
             });
         };
@@ -504,7 +505,8 @@ angular.module('autoForceLayout', [])
         CSS_CLASS_NODE: 'node',
         CSS_CLASS_EDGE: 'edge',
         MIN_ZOOM: 0.5,
-        MAX_ZOOM: 2
+        MAX_ZOOM: 2,
+        DEFAULT_LINE_WIDTH: 1.5
     })
 
 
