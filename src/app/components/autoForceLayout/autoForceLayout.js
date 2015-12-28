@@ -92,11 +92,11 @@ angular.module('autoForceLayout', [])
         proto.initLayout = function () {
             var myInstance = this;
 
-            // Input initial processing
+            // Process input data
             this.nodeDataArray = this.options.data[constants.NODES].data;
             this.edgeDataArray = this.options.data[constants.EDGES].data;
-            this.nodesById = services.compileNodes(this.nodeDataArray);
-            services.compileEdges(this.edgeDataArray, this.nodesById);
+            this.processNodes();
+            this.processEdges();
 
             // Some nodes-related fields
             this.nodeDefaultSize = constants.INNER_SVG_WIDTH / 64 * constants.INNER_SVG_HEIGHT / 48 * 2;
@@ -109,24 +109,24 @@ angular.module('autoForceLayout', [])
                 .charge(-400)// TODO: constants
                 .linkDistance(40)
                 .on("tick", function () {
-                    services.onTick(myInstance);
+                    myInstance.onTick();
                 })
                 .on("end", function () {
-                    services.onForceEnd(myInstance);
+                    services.onForceEnd(myInstance); // TODO: move to factory
                 });
 
             this.drag = this.force.drag()
-                .on("dragstart", services.onDragStart)
+                .on("dragstart", services.onDragStart) // TODO: move to factory
                 .on("drag", function (d) {
-                    services.onDrag(d, myInstance);
+                    services.onDrag(d, myInstance); // TODO: move to factory
                 })
-                .on("dragend", services.onDragEnd);
+                .on("dragend", services.onDragEnd); // TODO: move to factory
 
             this.force.nodes(this.nodeDataArray)
                 .links(this.edgeDataArray)
                 .start();
 
-            // Create the main SVG canvas.
+            // Create the main SVG (canvas).
             // If that element exists, remove it first.
             // TODO - is the element really removed from memory (and not just the DOM)?
             d3.select(this.element)
@@ -242,6 +242,96 @@ angular.module('autoForceLayout', [])
         };
 
         //---------------------------------------------------
+        // processNodes
+        // Add references to the given nodes array
+        //---------------------------------------------------
+        proto.processNodes = function () {
+                var myInstance = this;
+            this.nodesById = {};
+            this.nodeDataArray.forEach(function (val, idx) {
+                if (typeof val.id === "undefined") {
+                    console.error("Undefined [id] in nodes array");
+                } else {
+                    myInstance.nodesById[val.id] = idx;
+                }
+            });
+        };
+
+        //---------------------------------------------------
+        // processEdges
+        // Get nodes data from nodes id's
+        // Build an index to help handle the case of multiple edges between two nodes
+        //---------------------------------------------------
+        proto.processEdges = function () {
+            var myInstance = this, sid, tid, key;
+            this.edgesFromNodes = {};
+            this.edgeDataArray.forEach(function (val, idx) {
+                if (angular.isUndefined(val.id)) {
+                    console.error("Undefined [id] in edge " + val.sourceID + "-" + val.targetID);
+                }
+                // Get nodes data from nodes id's
+                if (angular.isUndefined(val.sourceID)) {
+                    console.error("Undefined [sourceID] in edge #" + val.id);
+                } else {
+                    val.source = myInstance.nodesById[val.sourceID];
+                }
+                if (angular.isUndefined(val.targetID)) {
+                    console.error("Undefined [targetID] in edges #" + val.id);
+                } else {
+                    val.target = myInstance.nodesById[val.targetID];
+                }
+                // Build an index to help handle the case of multiple edges between two nodes
+                if (angular.isDefined(val.sourceID) && angular.isDefined(val.targetID)) {
+                    sid = val.sourceID;
+                    tid = val.targetID;
+                    key = (sid < tid ? sid + "," + tid : tid + "," + sid);
+                    if (angular.isUndefined(myInstance.edgesFromNodes[key])) {
+                        myInstance.edgesFromNodes[key] = [idx];
+                        val.multiIdx = 1;
+                    } else {
+                        val.multiIdx = myInstance.edgesFromNodes[key].push(idx);
+                    }
+                    // Calculate edge offset from the index in the multiple-edges array:
+                    // 1 -> 0, 2 -> 2, 3-> -2, 4 -> 4, 5 -> -4, ...
+                    val.multiOffset = (val.multiIdx % 2 === 0 ? val.multiIdx : -val.multiIdx+1);
+                }
+            });
+        };
+
+        //---------------------------------------------------
+        // onTick
+        // Update the graph
+        //---------------------------------------------------
+        proto.onTick = function () {
+            // Update edges
+            this.elements[constants.EDGES].attr("x1", function (d) {
+                    return d.source.x + d.multiOffset;
+                })
+                .attr("y1", function (d) {
+                    return d.source.y + d.multiOffset;
+                })
+                .attr("x2", function (d) {
+                    return d.target.x + d.multiOffset;
+                })
+                .attr("y2", function (d) {
+                    return d.target.y + d.multiOffset;
+                });
+
+            // Update nodes
+            this.elements[constants.NODES].attr('transform', function (d) {
+                return "translate(" + d.x + "," + d.y + ")";
+            });
+
+            // Update labels
+            this.labels.attr("x", function (d) {
+                    return d.x;
+                })
+                .attr("y", function (d) {
+                    return d.y;
+                });
+        };
+
+        //---------------------------------------------------
         // onClick
         // Event handler. Manage element selection
         //---------------------------------------------------
@@ -341,14 +431,14 @@ angular.module('autoForceLayout', [])
         // Elements were selected and/or unselected outside this component.
         //---------------------------------------------------
         proto.onSelectOutside = function () {
-            var myInstance = this;
+            var myInstance = this, mySet;
 
             for (var itemType = constants.NODES; itemType <= constants.EDGES; itemType++) {
-                this.selectedItems[itemType].clear();
+                (mySet = this.selectedItems[itemType]).clear();
                 this.elements[itemType]
                     .classed('selected', function (d) {
                         if (d.selected) {
-                            myInstance.selectedItems[itemType].add(d.id);
+                            mySet.add(d.id);
                             return true;
                         } else {
                             return false;
@@ -423,39 +513,6 @@ angular.module('autoForceLayout', [])
         return {
 
             //---------------------------------------------------
-            // onTick
-            // Update the graph
-            //---------------------------------------------------
-            onTick: function (myInstance) {
-                // Update edges
-                myInstance.elements[constants.EDGES].attr("x1", function (d) {
-                        return d.source.x;
-                    })
-                    .attr("y1", function (d) {
-                        return d.source.y;
-                    })
-                    .attr("x2", function (d) {
-                        return d.target.x;
-                    })
-                    .attr("y2", function (d) {
-                        return d.target.y;
-                    });
-
-                // Update nodes
-                myInstance.elements[constants.NODES].attr('transform', function (d) {
-                    return "translate(" + d.x + "," + d.y + ")";
-                });
-
-                // Update labels
-                myInstance.labels.attr("x", function (d) {
-                        return d.x;
-                    })
-                    .attr("y", function (d) {
-                        return d.y;
-                    });
-            },
-
-            //---------------------------------------------------
             // onContainerClick
             // Event handler. on a click not on a node or edge
             // Cancel current selection
@@ -511,48 +568,6 @@ angular.module('autoForceLayout', [])
                 container.prepend(compiledElement);
                 // Event handlers
                 //scope.onPlayPauseBtnClick =
-            },
-
-            //---------------------------------------------------
-            // compileNodes
-            // Add references to the given nodes array
-            //---------------------------------------------------
-            compileNodes: function (nodesArray) {
-                var nodesById = {};
-                nodesArray.forEach(function (val, idx) {
-                    if (typeof val.id === "undefined") {
-                        console.error("Undefined [id] in nodes array");
-                    } else {
-                        nodesById[val.id] = idx;
-                    }
-                });
-                return nodesById;
-            },
-
-            //---------------------------------------------------
-            // compileEdges
-            // Add references to the given edges array
-            //---------------------------------------------------
-            compileEdges: function (edgesArray, nodesById) {
-                var edgesById = {};
-                edgesArray.forEach(function (val, idx) {
-                    if (typeof val.id === "undefined") {
-                        console.error("Undefined <id> in edges array");
-                    } else {
-                        edgesById[val.id] = idx;
-                    }
-                    if (typeof val.sourceID === "undefined") {
-                        console.error("Undefined [sourceID] in edges array");
-                    } else {
-                        val.source = nodesById[val.sourceID];
-                    }
-                    if (typeof val.targetID === "undefined") {
-                        console.error("Undefined [targetID] in edges array");
-                    } else {
-                        val.target = nodesById[val.targetID];
-                    }
-                });
-                return edgesById;
             },
 
             //---------------------------------------------------
