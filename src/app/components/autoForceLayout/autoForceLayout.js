@@ -153,18 +153,18 @@ angular.module('autoForceLayout', [])
             this.inSvgWrapper = this.svg.append("g");
 
             // Set SVG groups, and through them default colors,
-            // for nodes and edges
-            this.nodeGroup = this.inSvgWrapper.append("g")
-                .attr("class", "nodes") // TODO: constants
-                .attr("fill", "lightgray");
+            // for nodes and edges (note: the edge group has to be inserted first, so that the nodes
+            // will render above the edges.
             this.edgeGroup = this.inSvgWrapper.append("g")
                 .attr("class", "edges") // TODO: constants
                 .attr("stroke", "lightgray")
                 .attr("stroke-width", constants.DEFAULT_LINE_WIDTH + 'px');
-
+            this.nodeGroup = this.inSvgWrapper.append("g")
+                .attr("class", "nodes") // TODO: constants
+                .attr("fill", "lightgray");
 
             return this;
-        }; // end of Layout()
+        }; // initLayout()
 
         //---------------------------------------------------
         // draw
@@ -184,9 +184,6 @@ angular.module('autoForceLayout', [])
                 .attr("stroke", function (d) {
                     return d.color;
                 })
-                //.attr("style", function (d) {
-                //    return "stroke:" + d.color;
-                //})
                 .on("mouseenter", function (d) {
                     myInstance.onHoverInside(this, d, true);
                 })
@@ -195,6 +192,10 @@ angular.module('autoForceLayout', [])
                 })
                 .on("click", function (d) {
                     myInstance.onClick(d, this);
+                })
+                // Prevent panning when dragging a node
+                .on("mousedown", function () {
+                    d3.event.stopPropagation();
                 })
             ;
 
@@ -292,7 +293,7 @@ angular.module('autoForceLayout', [])
                     } else {
                         val.multiIdx = myInstance.edgesFromNodes[key].push(idx);
                     }
-                    // Calculate edge offset from the index in the multiple-edges array:
+                    // Calculate base edge offset, from the index in the multiple-edges array:
                     // 1 -> 0, 2 -> 2, 3-> -2, 4 -> 4, 5 -> -4, ...
                     val.multiOffset = (val.multiIdx % 2 === 0 ? val.multiIdx * constants.DEFAULT_LINE_WIDTH : (-val.multiIdx+1) * constants.DEFAULT_LINE_WIDTH);
                 }
@@ -306,16 +307,16 @@ angular.module('autoForceLayout', [])
         proto.onTick = function () {
             // Update edges
             this.elements[constants.EDGES].attr("x1", function (d) {
-                    return d.source.x + d.multiOffset;
+                    return d.source.x + services.calcRightAngledOffset(d.multiOffset, d.target.x - d.source.x, d.target.y - d.source.y).dx;
                 })
                 .attr("y1", function (d) {
-                    return d.source.y + d.multiOffset;
+                    return d.source.y + services.calcRightAngledOffset(d.multiOffset, d.target.x - d.source.x, d.target.y - d.source.y).dy;
                 })
                 .attr("x2", function (d) {
-                    return d.target.x + d.multiOffset;
+                    return d.target.x + services.calcRightAngledOffset(d.multiOffset, d.target.x - d.source.x, d.target.y - d.source.y).dx;
                 })
                 .attr("y2", function (d) {
-                    return d.target.y + d.multiOffset;
+                    return d.target.y + services.calcRightAngledOffset(d.multiOffset, d.target.x - d.source.x, d.target.y - d.source.y).dy;
                 });
 
             // Update nodes
@@ -592,9 +593,28 @@ angular.module('autoForceLayout', [])
                     }
 
                 }; // return {
+            },
+
+
+            //---------------------------------------------------
+            // calcRightAngledOffset
+            // Calculate where to display edges, for the case of multiple edges between two nodes
+            //---------------------------------------------------
+            calcRightAngledOffset: function (basicOffset, origDx, origDy) {
+                var dx, dy;
+                if (basicOffset === 0) {
+                    dx = dy = 0;
+                } else if (origDy === 0 || Math.abs(origDx/origDy) > 1 ) {
+                    dy = -basicOffset * constants.INNER_SVG_WIDTH / constants.INNER_SVG_HEIGHT;
+                    dx = basicOffset * (origDy) / origDx;
+                } else {
+                    dx = basicOffset;
+                    dy = basicOffset * (-origDx) / origDy;
+                }
+                return {dx: dx, dy: dy};
             }
 
-        }; // return {
+    }; // return {
     }]) // .service
 
 
