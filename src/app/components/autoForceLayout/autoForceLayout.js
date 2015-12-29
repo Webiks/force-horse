@@ -154,7 +154,7 @@ angular.module('autoForceLayout', [])
 
             // Set SVG groups, and through them default colors,
             // for nodes and edges (note: the edge group has to be inserted first, so that the nodes
-            // will render above the edges.
+            // will render above the edges).
             this.edgeGroup = this.inSvgWrapper.append("g")
                 .attr("class", "edges") // TODO: constants
                 .attr("stroke", "lightgray")
@@ -295,7 +295,7 @@ angular.module('autoForceLayout', [])
                     }
                     // Calculate base edge offset, from the index in the multiple-edges array:
                     // 1 -> 0, 2 -> 2, 3-> -2, 4 -> 4, 5 -> -4, ...
-                    val.multiOffset = (val.multiIdx % 2 === 0 ? val.multiIdx * constants.DEFAULT_LINE_WIDTH : (-val.multiIdx+1) * constants.DEFAULT_LINE_WIDTH);
+                    val.basicOffset = (val.multiIdx % 2 === 0 ? val.multiIdx * constants.DEFAULT_LINE_WIDTH : (-val.multiIdx+1) * constants.DEFAULT_LINE_WIDTH);
                 }
             });
         };
@@ -307,17 +307,23 @@ angular.module('autoForceLayout', [])
         proto.onTick = function () {
             // Update edges
             this.elements[constants.EDGES].attr("x1", function (d) {
-                    return d.source.x + services.calcRightAngledOffset(d.multiOffset, d.target.x - d.source.x, d.target.y - d.source.y).dx;
+                    return d.source.x;
                 })
                 .attr("y1", function (d) {
-                    return d.source.y + services.calcRightAngledOffset(d.multiOffset, d.target.x - d.source.x, d.target.y - d.source.y).dy;
+                    return d.source.y;
                 })
                 .attr("x2", function (d) {
-                    return d.target.x + services.calcRightAngledOffset(d.multiOffset, d.target.x - d.source.x, d.target.y - d.source.y).dx;
+                    return d.target.x;
                 })
                 .attr("y2", function (d) {
-                    return d.target.y + services.calcRightAngledOffset(d.multiOffset, d.target.x - d.source.x, d.target.y - d.source.y).dy;
-                });
+                    return d.target.y;
+                })
+                // Add some translation, for the case of multiple edges between two nodes
+                .attr('transform', function (d) {
+                    var offset = services.calcRightAngledOffset(d.basicOffset, d.target.x - d.source.x, d.target.y - d.source.y);
+                    return "translate(" + offset.dx + "," + offset.dy + ")";
+                })
+            ;
 
             // Update nodes
             this.elements[constants.NODES].attr('transform', function (d) {
