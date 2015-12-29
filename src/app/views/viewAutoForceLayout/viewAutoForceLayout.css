@@ -16,26 +16,36 @@
     margin: 16px; }
 
 #view3 md-virtual-repeat-container {
+    /*
     border-color: lightgray;
     border-style: solid;
     border-width: 1px 1px 0 0;
+    */
 }
 
 #view3 h3 {
     text-align: center;
-    text-decoration: underline;
+    background-color: lightgoldenrodyellow;
 }
 
 #view3 table {
     width: 100%;
 }
 
+#view3 table tr:nth-child(odd) {
+    background-color: lightcyan;
+}
+
+#view3 table tr:nth-child(even) {
+    background-color: lightgoldenrodyellow;
+}
+
 #view3 table tr.hovered {
-    background-color: lightgray;
+    background-color: lightgreen;
 }
 
 #view3 table tr.selected {
-    background-color: lightgray;
+    background-color: lightgreen;
 }
 
 #view3 table td {
