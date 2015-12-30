@@ -9,11 +9,11 @@
 
     <div class="external-console" flex="30" layout="column">
         <div>
-            <p>Last hovered node = {{lastHoveredNode.label}}</p>
-            <div>
+            <div layout="row" layout-padding="">Last hovered node = {{lastHoveredNode.label}}</div>
+            <div layout="row" layout-padding="" layout-align="space-between center">
                 <label for="numOfNodes">Number of nodes:</label>
+                <input type="text" pattern="\d+" ng-model="numOfNodes" size="4">
                 <input type="range" id="numOfNodes" ng-model="numOfNodes" min="10" max="1000">
-                <input type="text" readonly value="{{numOfNodes}}">
                 <button ng-click="recreateGraph()">Recreate graph</button>
             </div>
         </div>
