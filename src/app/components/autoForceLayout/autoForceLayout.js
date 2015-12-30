@@ -99,7 +99,10 @@ angular.module('autoForceLayout', [])
             this.processEdges();
 
             // Some nodes-related fields
-            this.nodeDefaultSize = constants.INNER_SVG_WIDTH / 64 * constants.INNER_SVG_HEIGHT / 48 * 2;
+            // The size (area) of the containing circle
+            this.nodeIconArea = constants.INNER_SVG_WIDTH / 64 * constants.INNER_SVG_HEIGHT / 48 * 2;
+            this.nodeIconRadius = Math.sqrt(this.nodeIconArea / Math.PI);
+            this.isBoundedGraphMode = false;
             this.selectedItems = [new Set(), new Set()]; // selected nodes, selected edges
             this.fixedNodesMode = false;
 
@@ -112,15 +115,13 @@ angular.module('autoForceLayout', [])
                     myInstance.onTick();
                 })
                 .on("end", function () {
-                    services.onForceEnd(myInstance); // TODO: move to factory
+                    myInstance.onForceEnd();
                 });
 
             this.drag = this.force.drag()
-                .on("dragstart", services.onDragStart) // TODO: move to factory
                 .on("drag", function (d) {
-                    services.onDrag(d, myInstance); // TODO: move to factory
-                })
-                .on("dragend", services.onDragEnd); // TODO: move to factory
+                    myInstance.onDrag(d);
+                });
 
             this.force.nodes(this.nodeDataArray)
                 .links(this.edgeDataArray)
@@ -140,7 +141,7 @@ angular.module('autoForceLayout', [])
                 .attr("viewBox", "0 0 " + constants.INNER_SVG_WIDTH + " " + constants.INNER_SVG_HEIGHT)
                 .attr("preserveAspectRatio", "none")
                 .on("click", function () {
-                    services.onContainerClick(myInstance)
+                    myInstance.onContainerClick()
                 })
                 .call(d3.behavior.zoom()
                     .scaleExtent([constants.MIN_ZOOM, constants.MAX_ZOOM])
@@ -209,7 +210,7 @@ angular.module('autoForceLayout', [])
                     .type(function (d) {
                         return d.shape;
                     })
-                    .size(myInstance.nodeDefaultSize))
+                    .size(myInstance.nodeIconArea))
                 .attr("class", constants.CSS_CLASS_NODE)
                 .attr("fill", function (d) {
                     return d.color;
@@ -305,6 +306,27 @@ angular.module('autoForceLayout', [])
         // Update the graph
         //---------------------------------------------------
         proto.onTick = function () {
+            var myInstance = this;
+
+            // Update nodes
+            this.elements[constants.NODES].attr('transform', function (d) {
+                if (myInstance.isBoundedGraphMode) {
+                    // Force the nodes inside the visible area
+                    var radius = myInstance.nodeIconRadius;
+                    d.x = Math.max(radius, Math.min(constants.INNER_SVG_WIDTH - radius, d.x));
+                    d.y = Math.max(radius, Math.min(constants.INNER_SVG_HEIGHT - radius, d.y));
+                }
+                return "translate(" + d.x + "," + d.y + ")";
+            });
+
+            // Update labels
+            this.labels.attr("x", function (d) {
+                    return d.x;
+                })
+                .attr("y", function (d) {
+                    return d.y;
+                });
+
             // Update edges
             this.elements[constants.EDGES].attr("x1", function (d) {
                     return d.source.x;
@@ -324,19 +346,13 @@ angular.module('autoForceLayout', [])
                     return "translate(" + offset.dx + "," + offset.dy + ")";
                 })
             ;
+        };
 
-            // Update nodes
-            this.elements[constants.NODES].attr('transform', function (d) {
-                return "translate(" + d.x + "," + d.y + ")";
-            });
-
-            // Update labels
-            this.labels.attr("x", function (d) {
-                    return d.x;
-                })
-                .attr("y", function (d) {
-                    return d.y;
-                });
+        //---------------------------------------------------
+        // onForceEnd
+        // Event handler
+        //---------------------------------------------------
+        proto.onForceEnd = function () {
         };
 
         //---------------------------------------------------
@@ -360,6 +376,17 @@ angular.module('autoForceLayout', [])
             }
             // Prevent bubbling, so that we can separately detect a click on the container
             d3.event.stopPropagation();
+        };
+
+        //---------------------------------------------------
+        // onContainerClick
+        // Event handler. on a click not on a node or edge
+        // Cancel current selection
+        //---------------------------------------------------
+        proto.onContainerClick = function () {
+            if (this.selectedItems[constants.NODES].size + this.selectedItems[constants.EDGES].size > 0) {
+                this.onSelectInside(null, null, null, true);
+            }
         };
 
         //---------------------------------------------------
@@ -473,6 +500,19 @@ angular.module('autoForceLayout', [])
         };
 
         //---------------------------------------------------
+        // onDrag
+        // Node-dragging event handler
+        //---------------------------------------------------
+        proto.onDrag = function (d) {
+            // Make the dragged node fixed (not moved by the simulation)
+            this.elements[constants.NODES].filter(function (nodeData) {
+                return nodeData.id === d.id;
+            }).classed("fixed", d.fixed = true);
+
+            this.fixedNodesMode = true;
+        };
+
+        //---------------------------------------------------
         // onPlayPauseBtnClick
         // Pause fixes all the nodes
         // Play unfixes all the nodes
@@ -520,51 +560,6 @@ angular.module('autoForceLayout', [])
     //---------------------------------------------------------------//
     .service('AutoForceLayoutServices', ['AutoForceLayoutConstants', '$templateCache', '$compile', function (constants, templates, $compile) {
         return {
-
-            //---------------------------------------------------
-            // onContainerClick
-            // Event handler. on a click not on a node or edge
-            // Cancel current selection
-            //---------------------------------------------------
-            onContainerClick: function (myInstance) {
-                if (myInstance.selectedItems[constants.NODES].size + myInstance.selectedItems[constants.EDGES].size > 0) {
-                    myInstance.onSelectInside(null, null, null, true);
-                }
-            },
-
-            //---------------------------------------------------
-            // onDragStart
-            // Event handler
-            //---------------------------------------------------
-            onDragStart: function (d) {
-            },
-
-            //---------------------------------------------------
-            // onDrag
-            // Event handler
-            //---------------------------------------------------
-            onDrag: function (d, myInstance) {
-                // Make the dragged node fixed (not moved by the simulation)
-                myInstance.elements[constants.NODES].filter(function (nodeData) {
-                    return nodeData.id === d.id;
-                }).classed("fixed", d.fixed = true);
-
-                myInstance.fixedNodesMode = true;
-            },
-
-            //---------------------------------------------------
-            // onDragEnd
-            // Event handler
-            //---------------------------------------------------
-            onDragEnd: function (d) {
-            },
-
-            //---------------------------------------------------
-            // onForceEnd
-            // Event handler
-            //---------------------------------------------------
-            onForceEnd: function (myInstance) {
-            },
 
             //---------------------------------------------------
             // addButtons
