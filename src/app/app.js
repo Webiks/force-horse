@@ -8,7 +8,7 @@ angular.module('myApp', [
     'ngMaterial'
 ]).
     config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
-        $urlRouterProvider.otherwise('/home');
+        $urlRouterProvider.otherwise('/home/viewAutoForceLayout');
 
         $stateProvider.state('index', {
             url: "/home",
