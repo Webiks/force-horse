@@ -102,9 +102,10 @@ angular.module('autoForceLayout', [])
             // The size (area) of the containing circle
             this.nodeIconArea = constants.INNER_SVG_WIDTH / 64 * constants.INNER_SVG_HEIGHT / 48 * 2;
             this.nodeIconRadius = Math.sqrt(this.nodeIconArea / Math.PI);
-            this.isBoundedGraphMode = false;
             this.selectedItems = [new Set(), new Set()]; // selected nodes, selected edges
             this.fixedNodesMode = false;
+            this.isBoundedGraphMode = false; // TODO: delete?
+            this.isFirstZoomDone = false; // See onForceEnd()
 
             // Create a forceLayout instance
             this.force = d3.layout.force()
@@ -249,7 +250,7 @@ angular.module('autoForceLayout', [])
         // Add references to the given nodes array
         //---------------------------------------------------
         proto.processNodes = function () {
-                var myInstance = this;
+            var myInstance = this;
             this.nodesById = {};
             this.nodeDataArray.forEach(function (val, idx) {
                 if (typeof val.id === "undefined") {
@@ -296,7 +297,7 @@ angular.module('autoForceLayout', [])
                     }
                     // Calculate base edge offset, from the index in the multiple-edges array:
                     // 1 -> 0, 2 -> 2, 3-> -2, 4 -> 4, 5 -> -4, ...
-                    val.basicOffset = (val.multiIdx % 2 === 0 ? val.multiIdx * constants.DEFAULT_LINE_WIDTH : (-val.multiIdx+1) * constants.DEFAULT_LINE_WIDTH);
+                    val.basicOffset = (val.multiIdx % 2 === 0 ? val.multiIdx * constants.DEFAULT_LINE_WIDTH : (-val.multiIdx + 1) * constants.DEFAULT_LINE_WIDTH);
                 }
             });
         };
@@ -350,9 +351,31 @@ angular.module('autoForceLayout', [])
 
         //---------------------------------------------------
         // onForceEnd
-        // Event handler
+        // Event handler, called whenever the d3 force-simulation
+        // comes to a halt.
         //---------------------------------------------------
         proto.onForceEnd = function () {
+            // Zoom out the graph, if needed, so that it is fully visible.
+            // This is done only on the first time after componenet start.
+            var width = constants.INNER_SVG_WIDTH,
+                height = constants.INNER_SVG_HEIGHT;
+            if (!this.isFirstZoomDone) {
+                var maxMarginX = d3.max(this.nodeDataArray, function (d) {
+                        return Math.max(-d.x, d.x - width, 0); // TODO: add node radius
+                    }),
+                    maxMarginY = d3.max(this.nodeDataArray, function (d) {
+                        return Math.max(-d.y, d.y - height, 0); // TODO: add node radius
+                    });
+                if (maxMarginX > 0 || maxMarginY > 0) {
+                    var scale = Math.min(width / (width + 2 * maxMarginX),
+                            height / (height + 2 * maxMarginY)),
+                        translate = [(width / 2) * (1 - scale), (height / 2) * (1 - scale)];
+                    this.inSvgWrapper.transition()
+                        .duration(750)// TODO: constant
+                        .attr("transform", "translate(" + translate + ")scale(" + scale + ")");
+                }
+                this.isFirstZoomDone = true;
+            }
         };
 
         //---------------------------------------------------
@@ -491,8 +514,8 @@ angular.module('autoForceLayout', [])
         // Perform pan/zoom
         //---------------------------------------------------
         proto.onZoom = function () {
-            var trans=d3.event.translate,
-            scale=d3.event.scale;
+            var trans = d3.event.translate,
+                scale = d3.event.scale;
 
             this.inSvgWrapper.attr("transform",
                 "translate(" + trans + ")"
@@ -605,7 +628,7 @@ angular.module('autoForceLayout', [])
                 var dx, dy;
                 if (basicOffset === 0) {
                     dx = dy = 0;
-                } else if (origDy === 0 || Math.abs(origDx/origDy) > 1 ) {
+                } else if (origDy === 0 || Math.abs(origDx / origDy) > 1) {
                     dy = -basicOffset * constants.INNER_SVG_WIDTH / constants.INNER_SVG_HEIGHT;
                     dx = basicOffset * (origDy) / origDx;
                 } else {
@@ -615,7 +638,7 @@ angular.module('autoForceLayout', [])
                 return {dx: dx, dy: dy};
             }
 
-    }; // return {
+        }; // return {
     }]) // .service
 
 
