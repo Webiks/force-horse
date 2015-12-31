@@ -128,6 +128,12 @@ angular.module('autoForceLayout', [])
                 .links(this.edgeDataArray)
                 .start();
 
+            this.zoom = d3.behavior.zoom()
+                .scaleExtent([constants.MIN_ZOOM, constants.MAX_ZOOM])
+                .on("zoom", function () {
+                    myInstance.onZoom();
+                });
+
             // Create the main SVG (canvas).
             // If that element exists, remove it first.
             // TODO - is the element really removed from memory (and not just the DOM)?
@@ -144,11 +150,8 @@ angular.module('autoForceLayout', [])
                 .on("click", function () {
                     myInstance.onContainerClick()
                 })
-                .call(d3.behavior.zoom()
-                    .scaleExtent([constants.MIN_ZOOM, constants.MAX_ZOOM])
-                    .on("zoom", function () {
-                        myInstance.onZoom();
-                    }))
+                .call(this.zoom)
+                .call(this.zoom.event) // See onForceEnd()
             ;
 
             // Set wrapper group, to use for pan & zoom
@@ -368,11 +371,11 @@ angular.module('autoForceLayout', [])
                     });
                 if (maxMarginX > 0 || maxMarginY > 0) {
                     var scale = Math.min(width / (width + 2 * maxMarginX),
-                            height / (height + 2 * maxMarginY)),
+                            height / (height + 2 * maxMarginY)),// TODO: separate horizontal & vertical scaling
                         translate = [(width / 2) * (1 - scale), (height / 2) * (1 - scale)];
-                    this.inSvgWrapper.transition()
+                    this.svg.transition()
                         .duration(750)// TODO: constant
-                        .attr("transform", "translate(" + translate + ")scale(" + scale + ")");
+                        .call(this.zoom.translate(translate).scale(scale).event);
                 }
                 this.isFirstZoomDone = true;
             }
@@ -517,9 +520,11 @@ angular.module('autoForceLayout', [])
             var trans = d3.event.translate,
                 scale = d3.event.scale;
 
-            this.inSvgWrapper.attr("transform",
+            if (this.inSvgWrapper) {
+                this.inSvgWrapper.attr("transform",
                 "translate(" + trans + ")"
                 + " scale(" + scale + ")");
+            }
         };
 
         //---------------------------------------------------
