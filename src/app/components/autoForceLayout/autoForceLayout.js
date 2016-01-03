@@ -570,7 +570,7 @@ angular.module('autoForceLayout', [])
 
     //---------------------------------------------------------------//
     .constant('AutoForceLayoutConstants', {
-        INNER_SVG_WIDTH: 640,
+        INNER_SVG_WIDTH: 540,
         INNER_SVG_HEIGHT: 480,
         SOURCE_IN: 0,
         SOURCE_OUT: 1,
