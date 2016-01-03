@@ -359,28 +359,35 @@ angular.module('autoForceLayout', [])
         //---------------------------------------------------
         proto.onForceEnd = function () {
             // Zoom out the graph, if needed, so that it is fully visible.
-            // This is done only on the first time after componenet start.
-            // TODO: move to separate method
+            // This is done only on the first time after component start.
             if (!this.isFirstZoomDone) {
-                var width = constants.INNER_SVG_WIDTH,
-                    height = constants.INNER_SVG_HEIGHT,
-                    radius = this.nodeIconRadius,
-                    maxMarginX = d3.max(this.nodeDataArray, function (d) {
-                        return Math.max(-d.x+radius, d.x+radius-width, 0);
-                    }),
-                    maxMarginY = d3.max(this.nodeDataArray, function (d) {
-                        return Math.max(-d.y+radius, d.y+radius-height, 0);
-                    });
-                if (maxMarginX > 0 || maxMarginY > 0) {
-                    var scaleX = width / (width + 2 * maxMarginX),
-                        scaleY = height / (height + 2 * maxMarginY),
-                        scale = Math.min(scaleX, scaleY),
-                        translate = [(width / 2) * (1 - scale), (height / 2) * (1 - scale)];
-                    this.svg.transition()
-                        .duration(1000)// TODO: constant
-                        .call(this.zoom.translate(translate).scale(scale).event);
-                }
+                this.zoomToViewport();
                 this.isFirstZoomDone = true;
+            }
+        };
+
+        //---------------------------------------------------
+        // zoomToViewport
+        // Zoom out the graph, if needed, so that it is fully visible.
+        //---------------------------------------------------
+        proto.zoomToViewport = function () {
+            var width = constants.INNER_SVG_WIDTH,
+                height = constants.INNER_SVG_HEIGHT,
+                radius = this.nodeIconRadius,
+                maxMarginX = d3.max(this.nodeDataArray, function (d) {
+                    return Math.max(-d.x+radius, d.x+radius-width, 0);
+                }),
+                maxMarginY = d3.max(this.nodeDataArray, function (d) {
+                    return Math.max(-d.y+radius, d.y+radius-height, 0);
+                });
+            if (maxMarginX > 0 || maxMarginY > 0) {
+                var scaleX = width / (width + 2 * maxMarginX),
+                    scaleY = height / (height + 2 * maxMarginY),
+                    scale = Math.min(scaleX, scaleY),
+                    translate = [(width / 2) * (1 - scale), (height / 2) * (1 - scale)];
+                this.svg.transition()
+                    .duration(1000)// TODO: constant
+                    .call(this.zoom.translate(translate).scale(scale).event);
             }
         };
 
