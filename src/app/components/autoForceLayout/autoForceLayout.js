@@ -11,7 +11,8 @@ angular.module('autoForceLayout', [])
             '<div class="buttonsWrapper" layout="row" layout-align="start center">\
               <span flex="10"></span>\
               <span flex="40">\
-                <i class="mdi mdi-filter"></i>\
+                <i class="mdi mdi-filter"\
+                   ng-click="autoForceLayoutInstance.removeSelectedElements()"></i>\
                 <i class="mdi mdi-wrap"></i>\
                 <i class="mdi"\
                    ng-class="autoForceLayoutInstance.fixedNodesMode ? \'mdi-play-circle-outline\' : \'mdi-pause-circle-outline\'" \
@@ -242,6 +243,9 @@ angular.module('autoForceLayout', [])
                 .data(this.nodeDataArray)
                 .enter()
                 .append("text")
+                .attr("fill", function(d) {
+                    return d.color;
+                })
                 .attr("class", "label")
                 .attr("dx", "15") // TODO
                 .text(function (d) {
@@ -250,6 +254,14 @@ angular.module('autoForceLayout', [])
 
             return this;
         };
+
+        //---------------------------------------------------
+        // removeSelectedElements
+        // "Filter" button action
+        //---------------------------------------------------
+        proto.removeSelectedElements = function () {
+            // It does not seem an action for this component
+        }
 
         //---------------------------------------------------
         // processNodes
@@ -595,8 +607,6 @@ angular.module('autoForceLayout', [])
     .constant('AutoForceLayoutConstants', {
         INNER_SVG_WIDTH: 540,
         INNER_SVG_HEIGHT: 480,
-        SOURCE_IN: 0,
-        SOURCE_OUT: 1,
         NODES: 0,
         EDGES: 1,
         NODES_ID: 1,

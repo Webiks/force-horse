@@ -65,9 +65,10 @@
 }
 
 .auto-force-layout svg.graph-svg text.label {
-    fill: black;
-    stroke: none;
-    font-size: 10px;
+    /*fill: black;*/
+    stroke: black;
+    stroke-width: 1px;
+    font-size: 14px;
     pointer-events: none;
 }
 
