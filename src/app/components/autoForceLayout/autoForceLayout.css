@@ -1,13 +1,14 @@
 
 .auto-force-layout {
-    /* height: 100%; */
-    /* flex: 1; */
+}
+
+.auto-force-layout .hide {
+    display: none;
 }
 
 .auto-force-layout .svgWrapper {
     height: 90%;
     position: relative;
-    /* flex: 1; */
     flex-grow: 1;
 }
 

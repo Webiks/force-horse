@@ -13,12 +13,14 @@ angular.module('autoForceLayout', [])
               <span flex="40">\
                 <i class="mdi mdi-filter"></i>\
                 <i class="mdi mdi-wrap"></i>\
-                <i class="play-pause-btn mdi"\
+                <i class="mdi"\
                    ng-class="autoForceLayoutInstance.fixedNodesMode ? \'mdi-play-circle-outline\' : \'mdi-pause-circle-outline\'" \
                    ng-click="autoForceLayoutInstance.onPlayPauseBtnClick()"></i>\
               </span>\
               <span flex>\
-                <i class="mdi mdi-label"></i>\
+                <i class="mdi"\
+                   ng-class="autoForceLayoutInstance.hideLabels ? \'mdi-label\' : \'mdi-label-outline\'" \
+                   ng-click="autoForceLayoutInstance.onLabelsShowHideBtnClick()"></i>\
                 <i class="mdi mdi-minus"></i>\
                 <i class="mdi mdi-regex"></i>\
               </span>\
@@ -104,6 +106,7 @@ angular.module('autoForceLayout', [])
             this.nodeIconRadius = Math.sqrt(this.nodeIconArea / Math.PI);
             this.selectedItems = [new Set(), new Set()]; // selected nodes, selected edges
             this.fixedNodesMode = false;
+            this.hideLabels = false;
             this.isBoundedGraphMode = false; // TODO: delete?
             this.isFirstZoomDone = false; // See onForceEnd()
 
@@ -151,10 +154,10 @@ angular.module('autoForceLayout', [])
                     myInstance.onContainerClick()
                 })
                 .call(this.zoom)
-                .call(this.zoom.event) // See onForceEnd()
+                .call(this.zoom.event) // Used in zoomToViewport()
             ;
 
-            // Set wrapper group, to use for pan & zoom
+            // Set wrapper group, to use for pan & zoom transforms
             this.inSvgWrapper = this.svg.append("g");
 
             // Set SVG groups, and through them default colors,
@@ -391,7 +394,7 @@ angular.module('autoForceLayout', [])
                 }
                 // Perform the zoom
                 this.svg.transition()
-                    .duration(1000)// TODO: constant
+                    .duration(constants.ZOOM_TRANSITION_DURATION_MS)
                     .call(this.zoom.translate(translate).scale(scale).event);
             }
         };
@@ -576,6 +579,14 @@ angular.module('autoForceLayout', [])
         };
 
         //---------------------------------------------------
+        // onLabelsShowHideBtnClick
+        //---------------------------------------------------
+        proto.onLabelsShowHideBtnClick = function () {
+            this.hideLabels = !this.hideLabels;
+            this.labels.classed('hide', this.hideLabels);
+        };
+
+        //---------------------------------------------------
         return AutoForceLayoutFactory;
     }])
 
@@ -596,6 +607,7 @@ angular.module('autoForceLayout', [])
         CSS_CLASS_EDGE: 'edge',
         MAX_ZOOM: 0.5,
         MIN_ZOOM: 2,
+        ZOOM_TRANSITION_DURATION_MS: 1000,
         DEFAULT_LINE_WIDTH: 1.5
     })
 
