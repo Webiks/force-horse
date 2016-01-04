@@ -563,7 +563,7 @@ angular.module('autoForceLayout', [])
                 this.fixedNodesMode = false;
                 this.force.start();
             } else {
-                this.elements.nodes.classed('fixed', function (d) {
+                this.elements[constants.NODES].classed('fixed', function (d) {
                     return d.fixed = true;
                 });
                 this.fixedNodesMode = true;
