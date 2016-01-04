@@ -129,7 +129,7 @@ angular.module('autoForceLayout', [])
                 .start();
 
             this.zoom = d3.behavior.zoom()
-                .scaleExtent([constants.MIN_ZOOM, constants.MAX_ZOOM])
+                .scaleExtent([constants.MAX_ZOOM, constants.MIN_ZOOM])
                 .on("zoom", function () {
                     myInstance.onZoom();
                 });
@@ -385,6 +385,11 @@ angular.module('autoForceLayout', [])
                     scaleY = height / (height + 2 * maxMarginY),
                     scale = Math.min(scaleX, scaleY),
                     translate = [(width / 2) * (1 - scale), (height / 2) * (1 - scale)];
+                // If the calculated zoom is bigger than the zoom limit, increase the limit
+                if (scale < constants.MAX_ZOOM) {
+                    this.zoom.scaleExtent([scale, constants.MIN_ZOOM]);
+                }
+                // Perform the zoom
                 this.svg.transition()
                     .duration(1000)// TODO: constant
                     .call(this.zoom.translate(translate).scale(scale).event);
@@ -589,8 +594,8 @@ angular.module('autoForceLayout', [])
         CLASS_EDGE: 'Edge',
         CSS_CLASS_NODE: 'node',
         CSS_CLASS_EDGE: 'edge',
-        MIN_ZOOM: 0.5,
-        MAX_ZOOM: 2,
+        MAX_ZOOM: 0.5,
+        MIN_ZOOM: 2,
         DEFAULT_LINE_WIDTH: 1.5
     })
 
