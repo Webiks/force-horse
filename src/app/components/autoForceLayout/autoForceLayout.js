@@ -14,7 +14,8 @@ angular.module('autoForceLayout', [])
                 <i class="mdi mdi-filter"\
                    title="Filter"\
                    ng-click="autoForceLayoutInstance.removeSelectedElements()"></i>\
-                <i class="mdi mdi-wrap"></i>\
+                <i class="mdi mdi-wrap"\
+                   title="Find shortest path"></i>\
                 <i class="mdi"\
                    title="Fix/release nodes"\
                    ng-class="autoForceLayoutInstance.fixedNodesMode ? \'mdi-play-circle-outline\' : \'mdi-pause-circle-outline\'" \
@@ -25,7 +26,9 @@ angular.module('autoForceLayout', [])
                    title="Hide/show labels"\
                    ng-class="autoForceLayoutInstance.hideLabels ? \'mdi-label\' : \'mdi-label-outline\'" \
                    ng-click="autoForceLayoutInstance.onLabelsShowHideBtnClick()"></i>\
-                <i class="mdi mdi-minus"></i>\
+                <i class="mdi mdi-minus"\
+                   title="Show/hide edge weight"\
+                   ng-click="autoForceLayoutInstance.onEdgeWeightShowHideBtnClick()"></i>\
                 <i class="mdi mdi-regex"\
                    title="Show/hide node weight"\
                    ng-click="autoForceLayoutInstance.onNodeWeightShowHideBtnClick()"></i>\
@@ -114,6 +117,7 @@ angular.module('autoForceLayout', [])
             this.fixedNodesMode = false;
             this.hideLabels = false;
             this.showNodeWeight = false;
+            this.showEdgeWeight = false;
             this.isBoundedGraphMode = false; // TODO: delete?
             this.isFirstZoomDone = false; // See onForceEnd()
 
@@ -249,7 +253,7 @@ angular.module('autoForceLayout', [])
                 .data(this.nodeDataArray)
                 .enter()
                 .append("text")
-                .attr("fill", function(d) {
+                .attr("fill", function (d) {
                     return d.color;
                 })
                 .attr("class", "label")
@@ -267,7 +271,7 @@ angular.module('autoForceLayout', [])
         //---------------------------------------------------
         proto.removeSelectedElements = function () {
             // Does not seem an action for this component ..
-        }
+        };
 
         //---------------------------------------------------
         // processNodes
@@ -396,10 +400,10 @@ angular.module('autoForceLayout', [])
                 height = constants.INNER_SVG_HEIGHT,
                 radius = this.nodeIconRadius,
                 maxMarginX = d3.max(this.nodeDataArray, function (d) {
-                    return Math.max(-d.x+radius, d.x+radius-width, 0);
+                    return Math.max(-d.x + radius, d.x + radius - width, 0);
                 }),
                 maxMarginY = d3.max(this.nodeDataArray, function (d) {
-                    return Math.max(-d.y+radius, d.y+radius-height, 0);
+                    return Math.max(-d.y + radius, d.y + radius - height, 0);
                 });
             if (maxMarginX > 0 || maxMarginY > 0) {
                 var scaleX = width / (width + 2 * maxMarginX),
@@ -558,8 +562,8 @@ angular.module('autoForceLayout', [])
 
             if (this.inSvgWrapper) {
                 this.inSvgWrapper.attr("transform",
-                "translate(" + trans + ")"
-                + " scale(" + scale + ")");
+                    "translate(" + trans + ")"
+                    + " scale(" + scale + ")");
             }
         };
 
@@ -604,13 +608,13 @@ angular.module('autoForceLayout', [])
             var myInstance = this;
             if (this.hideLabels = !this.hideLabels) {
                 this.labels.classed('opacity_none', true);
-                setTimeout( function () {
+                setTimeout(function () {
                     myInstance.labels.classed('display_none', true);
                 }, constants.SHORT_ANIMATION_DELAY_MS); // TODO: animation temporarily disabled; re-check
                 //}, constants.LONG_ANIMATION_DELAY_MS);
             } else { // show labels
                 this.labels.classed('display_none', false);
-                setTimeout( function () {
+                setTimeout(function () {
                     myInstance.labels.classed('opacity_none', false);
                 }, constants.SHORT_ANIMATION_DELAY_MS);
             }
@@ -620,7 +624,7 @@ angular.module('autoForceLayout', [])
         // onNodeWeightShowHideBtnClick
         // Show or hide node weights
         //---------------------------------------------------
-        proto.onNodeWeightShowHideBtnClick = function() {
+        proto.onNodeWeightShowHideBtnClick = function () {
             var myInstance = this;
             this.showNodeWeight = !this.showNodeWeight;
             const NODE_SIZE_ADDITION_PER_WEIGHT = constants.INNER_SVG_WIDTH * constants.INNER_SVG_HEIGHT / (64 * 48 * 5); // TODO: constants
@@ -629,10 +633,22 @@ angular.module('autoForceLayout', [])
                     .type(function (d) {
                         return d.shape;
                     })
-                    .size(function(d) {
+                    .size(function (d) {
                         return myInstance.nodeIconArea
                             + (myInstance.showNodeWeight ? d.weight * NODE_SIZE_ADDITION_PER_WEIGHT : 0);
                     }));
+        };
+
+        //---------------------------------------------------
+        // onEdgeWeightShowHideBtnClick
+        // Show or hide edge weights
+        //---------------------------------------------------
+        proto.onEdgeWeightShowHideBtnClick = function () {
+            this.showEdgeWeight = !this.showEdgeWeight;
+            this.elements[constants.EDGES]
+                .attr("stroke-width", (!this.showEdgeWeight ? null : function (d) {
+                    return constants.DEFAULT_LINE_WIDTH + (d.weight / 4) + 'px';
+                }));
         };
 
         //---------------------------------------------------
