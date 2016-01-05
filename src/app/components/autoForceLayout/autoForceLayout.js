@@ -673,7 +673,15 @@ angular.module('autoForceLayout', [])
         MIN_ZOOM: 2,
         ZOOM_TRANSITION_DURATION_MS: 1000,
         LONG_ANIMATION_DELAY_MS: 1000,
-        SHORT_ANIMATION_DELAY_MS: 200
+        SHORT_ANIMATION_DELAY_MS: 200,
+        FORCE_PARAMS: {
+            CHARGE: -350,
+            LINK_STRENGTH: 1,
+            GRAVITY: 0.3,
+            FRICTION_A: 0.0356,
+            FRICTION_B: -1.162,
+            LINK_DISTANCE: 10
+        }
     })
 
 
