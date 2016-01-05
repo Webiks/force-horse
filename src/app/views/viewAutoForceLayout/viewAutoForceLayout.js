@@ -144,6 +144,7 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
                     node.shape = shapes[Math.floor(Math.random() * shapes.length)];
                     node.id = i;
                     node.color = '#' + Math.floor(Math.random() * constants.MAX_COLOR).toString(16);
+                    node.weight = constants.MIN_WEIGHT + Math.floor(Math.random() * (constants.MAX_WEIGHT - constants.MIN_WEIGHT + 1));
                 }
 
                 var numEdges = numOfNodes * 3 / 2;
@@ -158,6 +159,7 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
                     edge.targetLabel = graphData[constants.NODES].data[nodeIdx].label;
                     edge.id = i;
                     edge.color = '#' + Math.floor(Math.random() * constants.MAX_COLOR).toString(16);
+                    edge.weight = constants.MIN_WEIGHT + Math.floor(Math.random() * (constants.MAX_WEIGHT - constants.MIN_WEIGHT + 1));
                 }
 
                 return graphData;
@@ -213,6 +215,8 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
         NODES_ID: 1,
         EDGES_ID: 2,
         CLASS_NODE: 'Node',
-        CLASS_EDGE: 'Edge'
+        CLASS_EDGE: 'Edge',
+        MIN_WEIGHT: 0,
+        MAX_WEIGHT: 4
     })
 ;

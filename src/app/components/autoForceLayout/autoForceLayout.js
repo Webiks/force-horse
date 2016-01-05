@@ -12,18 +12,23 @@ angular.module('autoForceLayout', [])
               <span flex="10"></span>\
               <span flex="40">\
                 <i class="mdi mdi-filter"\
+                   title="Filter"\
                    ng-click="autoForceLayoutInstance.removeSelectedElements()"></i>\
                 <i class="mdi mdi-wrap"></i>\
                 <i class="mdi"\
+                   title="Fix/release nodes"\
                    ng-class="autoForceLayoutInstance.fixedNodesMode ? \'mdi-play-circle-outline\' : \'mdi-pause-circle-outline\'" \
                    ng-click="autoForceLayoutInstance.onPlayPauseBtnClick()"></i>\
               </span>\
               <span flex>\
                 <i class="mdi"\
+                   title="Hide/show labels"\
                    ng-class="autoForceLayoutInstance.hideLabels ? \'mdi-label\' : \'mdi-label-outline\'" \
                    ng-click="autoForceLayoutInstance.onLabelsShowHideBtnClick()"></i>\
                 <i class="mdi mdi-minus"></i>\
-                <i class="mdi mdi-regex"></i>\
+                <i class="mdi mdi-regex"\
+                   title="Show/hide node weight"\
+                   ng-click="autoForceLayoutInstance.onNodeWeightShowHideBtnClick()"></i>\
               </span>\
             </div>');
     })
@@ -108,6 +113,7 @@ angular.module('autoForceLayout', [])
             this.selectedItems = [new Set(), new Set()]; // selected nodes, selected edges
             this.fixedNodesMode = false;
             this.hideLabels = false;
+            this.showNodeWeight = false;
             this.isBoundedGraphMode = false; // TODO: delete?
             this.isFirstZoomDone = false; // See onForceEnd()
 
@@ -595,12 +601,12 @@ angular.module('autoForceLayout', [])
         // Hide or show labels, with CSS animation
         //---------------------------------------------------
         proto.onLabelsShowHideBtnClick = function () {
-                var myInstance = this;
+            var myInstance = this;
             if (this.hideLabels = !this.hideLabels) {
                 this.labels.classed('opacity_none', true);
                 setTimeout( function () {
                     myInstance.labels.classed('display_none', true);
-                }, constants.SHORT_ANIMATION_DELAY_MS); // TODO: temporary; check animation
+                }, constants.SHORT_ANIMATION_DELAY_MS); // TODO: animation temporarily disabled; re-check
                 //}, constants.LONG_ANIMATION_DELAY_MS);
             } else { // show labels
                 this.labels.classed('display_none', false);
@@ -608,6 +614,25 @@ angular.module('autoForceLayout', [])
                     myInstance.labels.classed('opacity_none', false);
                 }, constants.SHORT_ANIMATION_DELAY_MS);
             }
+        };
+
+        //---------------------------------------------------
+        // onNodeWeightShowHideBtnClick
+        // Show or hide node weights
+        //---------------------------------------------------
+        proto.onNodeWeightShowHideBtnClick = function() {
+            var myInstance = this;
+            this.showNodeWeight = !this.showNodeWeight;
+            const NODE_SIZE_ADDITION_PER_WEIGHT = constants.INNER_SVG_WIDTH * constants.INNER_SVG_HEIGHT / (64 * 48 * 5); // TODO: constants
+            this.elements[constants.NODES]
+                .attr("d", d3.svg.symbol()
+                    .type(function (d) {
+                        return d.shape;
+                    })
+                    .size(function(d) {
+                        return myInstance.nodeIconArea
+                            + (myInstance.showNodeWeight ? d.weight * NODE_SIZE_ADDITION_PER_WEIGHT : 0);
+                    }));
         };
 
         //---------------------------------------------------
