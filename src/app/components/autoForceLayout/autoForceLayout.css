@@ -2,8 +2,12 @@
 .auto-force-layout {
 }
 
-.auto-force-layout .hide {
+.auto-force-layout .display_none {
     display: none;
+}
+
+.auto-force-layout .opacity_none {
+    opacity: 0;
 }
 
 .auto-force-layout .svgWrapper {
@@ -69,6 +73,8 @@
     stroke-width: 0.3px;
     font-size: 14px;
     pointer-events: none;
+    opacity: 1;
+    transition: opacity 1s;
 }
 
 .auto-force-layout .buttonsWrapper {

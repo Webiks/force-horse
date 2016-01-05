@@ -260,7 +260,7 @@ angular.module('autoForceLayout', [])
         // "Filter" button action
         //---------------------------------------------------
         proto.removeSelectedElements = function () {
-            // It does not seem an action for this component
+            // Does not seem an action for this component ..
         }
 
         //---------------------------------------------------
@@ -592,10 +592,22 @@ angular.module('autoForceLayout', [])
 
         //---------------------------------------------------
         // onLabelsShowHideBtnClick
+        // Hide or show labels, with CSS animation
         //---------------------------------------------------
         proto.onLabelsShowHideBtnClick = function () {
-            this.hideLabels = !this.hideLabels;
-            this.labels.classed('hide', this.hideLabels);
+                var myInstance = this;
+            if (this.hideLabels = !this.hideLabels) {
+                this.labels.classed('opacity_none', true);
+                setTimeout( function () {
+                    myInstance.labels.classed('display_none', true);
+                }, constants.SHORT_ANIMATION_DELAY_MS); // TODO: temporary; check animation
+                //}, constants.LONG_ANIMATION_DELAY_MS);
+            } else { // show labels
+                this.labels.classed('display_none', false);
+                setTimeout( function () {
+                    myInstance.labels.classed('opacity_none', false);
+                }, constants.SHORT_ANIMATION_DELAY_MS);
+            }
         };
 
         //---------------------------------------------------
@@ -615,10 +627,12 @@ angular.module('autoForceLayout', [])
         CLASS_EDGE: 'Edge',
         CSS_CLASS_NODE: 'node',
         CSS_CLASS_EDGE: 'edge',
+        DEFAULT_LINE_WIDTH: 1.5,
         MAX_ZOOM: 0.5,
         MIN_ZOOM: 2,
         ZOOM_TRANSITION_DURATION_MS: 1000,
-        DEFAULT_LINE_WIDTH: 1.5
+        LONG_ANIMATION_DELAY_MS: 1000,
+        SHORT_ANIMATION_DELAY_MS: 200
     })
 
 
