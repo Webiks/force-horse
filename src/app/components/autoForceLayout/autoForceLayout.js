@@ -37,7 +37,7 @@ angular.module('autoForceLayout', [])
     })
 
     //---------------------------------------------------------------//
-    .directive('autoForceLayout', ['$compile', 'AutoForceLayoutFactory', 'AutoForceLayoutServices', function ($compile, AutoForceLayoutFactory, services) {
+    .directive('autoForceLayout', ['$compile', 'AutoForceLayoutFactory', 'AutoForceLayoutHelper', function ($compile, AutoForceLayoutFactory, helper) {
         return {
             restrict: "EA",
             controllerAs: "autoForceLayoutCtrl",
@@ -51,7 +51,7 @@ angular.module('autoForceLayout', [])
             controller: function ($scope, $element) {
                 //console.log('In autoForceLayout controller');
 
-                this.externalEventHandlers = services.applyScopeToEventHandlers(this, $scope);
+                this.externalEventHandlers = helper.applyScopeToEventHandlers(this, $scope);
                 // Create my instance
                 // Also provide the caller with a reference to my instance, for API
                 this.options.autoForceLayoutInstance =
@@ -67,13 +67,13 @@ angular.module('autoForceLayout', [])
                 element.attr("layout", "column");
                 element.attr("flex", "");
                 // Add button bar
-                services.addButtons(scope, element);
+                helper.addButtons(scope, element);
             }
         };
     }])
 
     //---------------------------------------------------------------//
-    .factory('AutoForceLayoutFactory', ['AutoForceLayoutConstants', 'AutoForceLayoutServices', function (constants, services) {
+    .factory('AutoForceLayoutFactory', ['AutoForceLayoutConstants', 'AutoForceLayoutHelper', function (constants, helper) {
         // constructor
         function AutoForceLayoutFactory(element, options, externalEventHandlers) {
             this.element = element[0];
@@ -118,13 +118,20 @@ angular.module('autoForceLayout', [])
             this.hideLabels = false;
             this.showNodeWeight = false;
             this.showEdgeWeight = false;
-            this.isBoundedGraphMode = false; // TODO: delete?
+            this.isBoundedGraphMode = false; // TODO: redundant?
             this.isFirstZoomDone = false; // See onForceEnd()
 
             // Create a forceLayout instance
             this.force = d3.layout.force()
                 .size([constants.INNER_SVG_WIDTH, constants.INNER_SVG_HEIGHT])
-                .charge(-400)// TODO: constants
+                // New parameters
+                //.linkStrength(constants.FORCE_PARAMS.linkStrength)
+                //.linkDistance(constants.FORCE_PARAMS.linkDistance)
+                //.charge(constants.FORCE_PARAMS.charge)
+                //.gravity(constants.FORCE_PARAMS.gravity)
+                //.friction(helper.computeFrictionParameter(constants.INNER_SVG_WIDTH, constants.INNER_SVG_HEIGHT, this.nodeDataArray.length))
+                // Old parameters
+                .charge(-400)
                 .linkDistance(40)
                 .on("tick", function () {
                     myInstance.onTick();
@@ -371,7 +378,7 @@ angular.module('autoForceLayout', [])
                 })
                 // Add some translation, for the case of multiple edges between two nodes
                 .attr('transform', function (d) {
-                    var offset = services.calcRightAngledOffset(d.basicOffset, d.target.x - d.source.x, d.target.y - d.source.y);
+                    var offset = helper.calcRightAngledOffset(d.basicOffset, d.target.x - d.source.x, d.target.y - d.source.y);
                     return "translate(" + offset.dx + "," + offset.dy + ")";
                 })
             ;
@@ -675,18 +682,18 @@ angular.module('autoForceLayout', [])
         LONG_ANIMATION_DELAY_MS: 1000,
         SHORT_ANIMATION_DELAY_MS: 200,
         FORCE_PARAMS: {
-            CHARGE: -350,
-            LINK_STRENGTH: 1,
-            GRAVITY: 0.3,
-            FRICTION_A: 0.0356,
-            FRICTION_B: -1.162,
-            LINK_DISTANCE: 10
+            charge: -350,
+            linkStrength: 1,
+            gravity: 0.3,
+            friction_A: 0.0356,
+            friction_B: -1.162,
+            linkDistance: 10
         }
     })
 
 
     //---------------------------------------------------------------//
-    .service('AutoForceLayoutServices', ['AutoForceLayoutConstants', '$templateCache', '$compile', function (constants, templates, $compile) {
+    .service('AutoForceLayoutHelper', ['AutoForceLayoutConstants', '$templateCache', '$compile', function (constants, templates, $compile) {
         return {
 
             //---------------------------------------------------
@@ -724,7 +731,6 @@ angular.module('autoForceLayout', [])
                 }; // return {
             },
 
-
             //---------------------------------------------------
             // calcRightAngledOffset
             // Calculate where to display edges, for the case of multiple edges between two nodes
@@ -741,6 +747,16 @@ angular.module('autoForceLayout', [])
                     dy = basicOffset * (-origDx) / origDy;
                 }
                 return {dx: dx, dy: dy};
+            },
+
+            //---------------------------------------------------
+            // computeFrictionParameter
+            // For the force-simulation, a mysterious formula supplied by Omer.
+            //---------------------------------------------------
+            computeFrictionParameter: function (width_in_pixels, height_in_pixels, number_of_nodes) {
+                var  x = 100 * number_of_nodes / (height_in_pixels * width_in_pixels);
+                var  result =  constants.FORCE_PARAMS.friction_A * Math.pow(x, -constants.FORCE_PARAMS.friction_B);
+                return result;
             }
 
         }; // return {
