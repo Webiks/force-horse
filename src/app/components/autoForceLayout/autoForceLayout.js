@@ -654,7 +654,7 @@ angular.module('autoForceLayout', [])
         proto.onNodeWeightShowHideBtnClick = function () {
             var myInstance = this;
             this.config.showNodeWeight = !this.config.showNodeWeight;
-            const NODE_SIZE_ADDITION_PER_WEIGHT = constants.INNER_SVG_WIDTH * constants.INNER_SVG_HEIGHT / (64 * 48 * 5); // TODO: constants
+            //const NODE_SIZE_ADDITION_PER_WEIGHT = constants.INNER_SVG_WIDTH * constants.INNER_SVG_HEIGHT / (64 * 48 * 5); // TODO: constants
             this.elements[constants.NODES]
                 .attr("d", d3.svg.symbol()
                     .type(function (d) {
@@ -662,7 +662,7 @@ angular.module('autoForceLayout', [])
                     })
                     .size(function (d) {
                         return myInstance.nodeIconArea
-                            + (myInstance.config.showNodeWeight ? d.weight * NODE_SIZE_ADDITION_PER_WEIGHT : 0);
+                            + (myInstance.config.showNodeWeight ? d.weight * constants.NODE_SIZE_ADDITION_PER_WEIGHT_UNIT : 0);
                     }));
         };
 
@@ -701,6 +701,9 @@ angular.module('autoForceLayout', [])
         ZOOM_TRANSITION_DURATION_MS: 1000,
         LONG_ANIMATION_DELAY_MS: 1000,
         SHORT_ANIMATION_DELAY_MS: 200,
+        get NODE_SIZE_ADDITION_PER_WEIGHT_UNIT() {
+            return this.INNER_SVG_WIDTH * this.INNER_SVG_HEIGHT / (64 * 48 * 5);
+        },
         FORCE_PARAMS: {
             charge: -350,
             linkStrength: 1,

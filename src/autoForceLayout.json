@@ -1,5 +1,5 @@
 {
-  "hideLabels": true,
+  "hideLabels": false,
   "showNodeWeight": true,
   "showEdgeWeight": false
 }
