@@ -24,7 +24,7 @@ angular.module('autoForceLayout', [])
               <span flex>\
                 <i class="mdi"\
                    title="Hide/show labels"\
-                   ng-class="autoForceLayoutInstance.hideLabels ? \'mdi-label\' : \'mdi-label-outline\'" \
+                   ng-class="autoForceLayoutInstance.config.hideLabels ? \'mdi-label\' : \'mdi-label-outline\'" \
                    ng-click="autoForceLayoutInstance.onLabelsShowHideBtnClick()"></i>\
                 <i class="mdi mdi-minus"\
                    title="Show/hide edge weight"\
@@ -91,8 +91,15 @@ angular.module('autoForceLayout', [])
         // removed from the graph data
         //---------------------------------------------------
         proto.redraw = function () {
-            this.initLayout();
-            this.draw();
+            var myInstance = this;
+            d3.json("autoForceLayout.json", function (error, json) {
+                if (error) {
+                    console.warn(error);
+                    json = {};
+                }
+                myInstance.initLayout(json);
+                myInstance.draw();
+            });
             return this;
         };
 
@@ -100,7 +107,7 @@ angular.module('autoForceLayout', [])
         // initLayout
         // Init force layout & SVG
         //---------------------------------------------------
-        proto.initLayout = function () {
+        proto.initLayout = function (config) {
             var myInstance = this;
 
             // Process input data
@@ -115,14 +122,24 @@ angular.module('autoForceLayout', [])
             this.nodeIconRadius = Math.sqrt(this.nodeIconArea / Math.PI);
             this.selectedItems = [new Set(), new Set()]; // selected nodes, selected edges
             this.fixedNodesMode = false;
-            this.hideLabels = false;
-            this.showNodeWeight = false;
-            this.showEdgeWeight = false;
             this.isBoundedGraphMode = false; // TODO: redundant?
             this.isFirstZoomDone = false; // See onForceEnd()
 
+            // Set config parameters, which may be overwritten by the config parameter
+            this.config = {
+                hideLabels: false,
+                showNodeWeight: false,
+                showEdgeWeight: false
+            };
+            for (key in config) {
+                if (config.hasOwnProperty(key)) {
+                    myInstance.config[key] = config[key];
+                }
+            }
+
+
             // Create a forceLayout instance
-            this.force = d3.layout.force()
+            myInstance.force = d3.layout.force()
                 .size([constants.INNER_SVG_WIDTH, constants.INNER_SVG_HEIGHT])
                 // New parameters
                 //.linkStrength(constants.FORCE_PARAMS.linkStrength)
@@ -140,16 +157,16 @@ angular.module('autoForceLayout', [])
                     myInstance.onForceEnd();
                 });
 
-            this.drag = this.force.drag()
+            myInstance.drag = myInstance.force.drag()
                 .on("drag", function (d) {
                     myInstance.onDrag(d);
                 });
 
-            this.force.nodes(this.nodeDataArray)
+            myInstance.force.nodes(myInstance.nodeDataArray)
                 .links(this.edgeDataArray)
                 .start();
 
-            this.zoom = d3.behavior.zoom()
+            myInstance.zoom = d3.behavior.zoom()
                 .scaleExtent([constants.MAX_ZOOM, constants.MIN_ZOOM])
                 .on("zoom", function () {
                     myInstance.onZoom();
@@ -158,10 +175,10 @@ angular.module('autoForceLayout', [])
             // Create the main SVG (canvas).
             // If that element exists, remove it first.
             // TODO - is the element really removed from memory (and not just the DOM)?
-            d3.select(this.element)
+            d3.select(myInstance.element)
                 .select("div.svgWrapper")
                 .remove();
-            this.svg = d3.select(this.element)
+            myInstance.svg = d3.select(myInstance.element)
                 .append("div")
                 .attr("class", "svgWrapper")
                 .append("svg")
@@ -171,25 +188,28 @@ angular.module('autoForceLayout', [])
                 .on("click", function () {
                     myInstance.onContainerClick()
                 })
-                .call(this.zoom)
-                .call(this.zoom.event) // Used in zoomToViewport()
+                .call(myInstance.zoom)
+                .call(myInstance.zoom.event) // Used in zoomToViewport()
             ;
 
             // Set wrapper group, to use for pan & zoom transforms
-            this.inSvgWrapper = this.svg.append("g");
+            myInstance.inSvgWrapper = myInstance.svg.append("g");
 
             // Set SVG groups, and through them default colors,
             // for nodes and edges (note: the edge group has to be inserted first, so that the nodes
             // will render above the edges).
-            this.edgeGroup = this.inSvgWrapper.append("g")
-                .attr("class", "edges") // TODO: constants
+            myInstance.edgeGroup = myInstance.inSvgWrapper.append("g")
+                .attr("class", "edges")
                 .attr("stroke", "lightgray")
                 .attr("stroke-width", constants.DEFAULT_LINE_WIDTH + 'px');
-            this.nodeGroup = this.inSvgWrapper.append("g")
-                .attr("class", "nodes") // TODO: constants
+            myInstance.nodeGroup = myInstance.inSvgWrapper.append("g")
+                .attr("class", "nodes")
                 .attr("fill", "lightgray");
+            myInstance.labelGroup = myInstance.inSvgWrapper.append("g")
+                .attr("class", "labels")
+                .classed("display_none", myInstance.config.hideLabels);
 
-            return this;
+            return myInstance;
         }; // initLayout()
 
         //---------------------------------------------------
@@ -256,15 +276,14 @@ angular.module('autoForceLayout', [])
                 .call(this.drag);
 
             // draw node labels
-            this.labels = this.inSvgWrapper.selectAll("text.label")
+            this.labels = this.labelGroup.selectAll("text.label")
                 .data(this.nodeDataArray)
                 .enter()
                 .append("text")
                 .attr("fill", function (d) {
                     return d.color;
                 })
-                .attr("class", "label")
-                .attr("dx", "15") // TODO
+                .attr("dx", "15") // displacement from the node
                 .text(function (d) {
                     return d.label;
                 });
@@ -609,20 +628,21 @@ angular.module('autoForceLayout', [])
 
         //---------------------------------------------------
         // onLabelsShowHideBtnClick
-        // Hide or show labels, with CSS animation
+        // Hide or show labels
+        // TODO: add animation
         //---------------------------------------------------
         proto.onLabelsShowHideBtnClick = function () {
             var myInstance = this;
-            if (this.hideLabels = !this.hideLabels) {
-                this.labels.classed('opacity_none', true);
+            if (this.config.hideLabels = !this.config.hideLabels) {
+                this.labelGroup.transition().attr("opacity", "0");
                 setTimeout(function () {
-                    myInstance.labels.classed('display_none', true);
-                }, constants.SHORT_ANIMATION_DELAY_MS); // TODO: animation temporarily disabled; re-check
-                //}, constants.LONG_ANIMATION_DELAY_MS);
+                    myInstance.labelGroup.classed('display_none', true);
+                    //}, constants.SHORT_ANIMATION_DELAY_MS); // TODO: animation temporarily disabled
+                }, constants.LONG_ANIMATION_DELAY_MS);
             } else { // show labels
-                this.labels.classed('display_none', false);
+                this.labelGroup.classed('display_none', false);
                 setTimeout(function () {
-                    myInstance.labels.classed('opacity_none', false);
+                    myInstance.labelGroup.transition().attr("opacity", "1");
                 }, constants.SHORT_ANIMATION_DELAY_MS);
             }
         };
@@ -633,7 +653,7 @@ angular.module('autoForceLayout', [])
         //---------------------------------------------------
         proto.onNodeWeightShowHideBtnClick = function () {
             var myInstance = this;
-            this.showNodeWeight = !this.showNodeWeight;
+            this.config.showNodeWeight = !this.config.showNodeWeight;
             const NODE_SIZE_ADDITION_PER_WEIGHT = constants.INNER_SVG_WIDTH * constants.INNER_SVG_HEIGHT / (64 * 48 * 5); // TODO: constants
             this.elements[constants.NODES]
                 .attr("d", d3.svg.symbol()
@@ -642,7 +662,7 @@ angular.module('autoForceLayout', [])
                     })
                     .size(function (d) {
                         return myInstance.nodeIconArea
-                            + (myInstance.showNodeWeight ? d.weight * NODE_SIZE_ADDITION_PER_WEIGHT : 0);
+                            + (myInstance.config.showNodeWeight ? d.weight * NODE_SIZE_ADDITION_PER_WEIGHT : 0);
                     }));
         };
 
@@ -651,9 +671,9 @@ angular.module('autoForceLayout', [])
         // Show or hide edge weights
         //---------------------------------------------------
         proto.onEdgeWeightShowHideBtnClick = function () {
-            this.showEdgeWeight = !this.showEdgeWeight;
+            this.config.showEdgeWeight = !this.config.showEdgeWeight;
             this.elements[constants.EDGES]
-                .attr("stroke-width", (!this.showEdgeWeight ? null : function (d) {
+                .attr("stroke-width", (!this.config.showEdgeWeight ? null : function (d) {
                     return constants.DEFAULT_LINE_WIDTH + (d.weight / 4) + 'px';
                 }));
         };
@@ -754,8 +774,8 @@ angular.module('autoForceLayout', [])
             // For the force-simulation, a mysterious formula supplied by Omer.
             //---------------------------------------------------
             computeFrictionParameter: function (width_in_pixels, height_in_pixels, number_of_nodes) {
-                var  x = 100 * number_of_nodes / (height_in_pixels * width_in_pixels);
-                var  result =  constants.FORCE_PARAMS.friction_A * Math.pow(x, -constants.FORCE_PARAMS.friction_B);
+                var x = 100 * number_of_nodes / (height_in_pixels * width_in_pixels);
+                var result = constants.FORCE_PARAMS.friction_A * Math.pow(x, -constants.FORCE_PARAMS.friction_B);
                 return result;
             }
 

@@ -68,13 +68,13 @@
     stroke-dasharray: 1,1;
 }
 
-.auto-force-layout svg.graph-svg text.label {
+.auto-force-layout svg.graph-svg .labels text {
     stroke: black;
     stroke-width: 0.3px;
     font-size: 14px;
     pointer-events: none;
-    opacity: 1;
-    transition: opacity 1s;
+    /*opacity: 1;*/
+    /*transition: opacity 1s;*/
 }
 
 .auto-force-layout .buttonsWrapper {
