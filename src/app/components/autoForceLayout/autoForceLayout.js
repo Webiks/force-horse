@@ -118,8 +118,8 @@ angular.module('autoForceLayout', [])
 
             // Some nodes-related fields
             // The size (area) of the containing circle
-            this.nodeIconArea = constants.INNER_SVG_WIDTH / 64 * constants.INNER_SVG_HEIGHT / 48 * 2;
-            this.nodeIconRadius = Math.sqrt(this.nodeIconArea / Math.PI);
+            this.nodeIconAreaDefault = constants.INNER_SVG_WIDTH / 64 * constants.INNER_SVG_HEIGHT / 48 * 2;
+            this.nodeIconRadius = Math.sqrt(this.nodeIconAreaDefault / Math.PI);
             this.selectedItems = [new Set(), new Set()]; // selected nodes, selected edges
             this.fixedNodesMode = false;
             this.isBoundedGraphMode = false; // TODO: redundant?
@@ -255,7 +255,9 @@ angular.module('autoForceLayout', [])
                     .type(function (d) {
                         return d.shape;
                     })
-                    .size(myInstance.nodeIconArea))
+                    .size(function (d) {
+                        return myInstance.getNodeIconArea(d);
+                    }))
                 .attr("class", constants.CSS_CLASS_NODE)
                 .attr("fill", function (d) {
                     return d.color;
@@ -289,6 +291,15 @@ angular.module('autoForceLayout', [])
                 });
 
             return this;
+        };
+
+        //---------------------------------------------------
+        // getNodeIconArea
+        //---------------------------------------------------
+        proto.getNodeIconArea = function (nodeData) {
+            var myInstance = this;
+            return myInstance.nodeIconAreaDefault
+                + (myInstance.config.showNodeWeight ? nodeData.weight * constants.NODE_SIZE_ADDITION_PER_WEIGHT_UNIT : 0);
         };
 
         //---------------------------------------------------
@@ -654,15 +665,13 @@ angular.module('autoForceLayout', [])
         proto.onNodeWeightShowHideBtnClick = function () {
             var myInstance = this;
             this.config.showNodeWeight = !this.config.showNodeWeight;
-            //const NODE_SIZE_ADDITION_PER_WEIGHT = constants.INNER_SVG_WIDTH * constants.INNER_SVG_HEIGHT / (64 * 48 * 5); // TODO: constants
             this.elements[constants.NODES]
                 .attr("d", d3.svg.symbol()
                     .type(function (d) {
                         return d.shape;
                     })
                     .size(function (d) {
-                        return myInstance.nodeIconArea
-                            + (myInstance.config.showNodeWeight ? d.weight * constants.NODE_SIZE_ADDITION_PER_WEIGHT_UNIT : 0);
+                        return myInstance.getNodeIconArea(d);
                     }));
         };
 
