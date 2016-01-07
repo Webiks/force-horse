@@ -1,4 +1,4 @@
-//"use strict";
+"use strict";
 //===============================================================//
 // define the autoForceLayout module
 
@@ -129,33 +129,43 @@ angular.module('autoForceLayout', [])
             this.config = {
                 hideLabels: false,
                 showNodeWeight: false,
-                showEdgeWeight: false
+                showEdgeWeight: false,
+                forceParameters: {
+                    // New parameters
+                    charge: -350,
+                    linkStrength: 1,
+                    gravity: 0.3,
+                    linkDistance: 10
+                    // Old parameters
+                    //charge: -400,
+                    //linkDistance: 40
+                }
             };
-            for (key in config) {
+            for (let key in config) {
                 if (config.hasOwnProperty(key)) {
                     myInstance.config[key] = config[key];
                 }
             }
 
-
             // Create a forceLayout instance
             myInstance.force = d3.layout.force()
                 .size([constants.INNER_SVG_WIDTH, constants.INNER_SVG_HEIGHT])
-                // New parameters
-                //.linkStrength(constants.FORCE_PARAMS.linkStrength)
-                //.linkDistance(constants.FORCE_PARAMS.linkDistance)
-                //.charge(constants.FORCE_PARAMS.charge)
-                //.gravity(constants.FORCE_PARAMS.gravity)
-                //.friction(helper.computeFrictionParameter(constants.INNER_SVG_WIDTH, constants.INNER_SVG_HEIGHT, this.nodeDataArray.length))
-                // Old parameters
-                .charge(-400)
-                .linkDistance(40)
                 .on("tick", function () {
                     myInstance.onTick();
                 })
                 .on("end", function () {
                     myInstance.onForceEnd();
                 });
+            var p;
+            if (angular.isDefined(p = myInstance.config.forceParameters.linkDistance)) myInstance.force.linkDistance(p);
+            if (angular.isDefined(p = myInstance.config.forceParameters.linkStrength)) myInstance.force.linkStrength(p);
+            if (angular.isDefined(p = myInstance.config.forceParameters.charge)) myInstance.force.charge(p);
+            if (angular.isDefined(p = myInstance.config.forceParameters.gravity)) myInstance.force.gravity(p);
+            if (angular.isDefined(p = myInstance.config.forceParameters.friction)) {
+                myInstance.force.friction(p);
+            } else {
+                //myInstance.force.friction(helper.computeFrictionParameter(constants.INNER_SVG_WIDTH, constants.INNER_SVG_HEIGHT, this.nodeDataArray.length))
+            }
 
             myInstance.drag = myInstance.force.drag()
                 .on("drag", function (d) {
@@ -723,14 +733,6 @@ angular.module('autoForceLayout', [])
         SHORT_ANIMATION_DELAY_MS: 200,
         get NODE_SIZE_ADDITION_PER_WEIGHT_UNIT() {
             return this.INNER_SVG_WIDTH * this.INNER_SVG_HEIGHT / (64 * 48 * 5);
-        },
-        FORCE_PARAMS: {
-            charge: -350,
-            linkStrength: 1,
-            gravity: 0.3,
-            friction_A: 0.0356,
-            friction_B: -1.162,
-            linkDistance: 10
         }
     })
 
@@ -797,8 +799,10 @@ angular.module('autoForceLayout', [])
             // For the force-simulation, a mysterious formula supplied by Omer.
             //---------------------------------------------------
             computeFrictionParameter: function (width_in_pixels, height_in_pixels, number_of_nodes) {
-                var x = 100 * number_of_nodes / (height_in_pixels * width_in_pixels);
-                var result = constants.FORCE_PARAMS.friction_A * Math.pow(x, -constants.FORCE_PARAMS.friction_B);
+                var A = 0.0356,
+                B = -1.162,
+                x = 100 * number_of_nodes / (height_in_pixels * width_in_pixels),
+                result = A * Math.pow(x, -B);
                 return result;
             }
 

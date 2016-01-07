@@ -1,5 +1,12 @@
 {
   "hideLabels": true,
   "showNodeWeight": false,
-  "showEdgeWeight": false
+  "showEdgeWeight": false,
+  "forceParameters": {
+    "charge": -350,
+    "linkStrength": 1,
+    "gravity": 0.2,
+    "linkDistance": 10,
+    "#friction": 1
+  }
 }
