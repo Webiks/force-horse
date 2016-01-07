@@ -230,6 +230,9 @@ angular.module('autoForceLayout', [])
                 .attr("stroke", function (d) {
                     return d.color;
                 })
+                .attr("stroke-width", (!this.config.showEdgeWeight ? null : function (d) {
+                    return myInstance.getEdgeWidth(d);
+                }))
                 .on("mouseenter", function (d) {
                     myInstance.onHoverInside(this, d, true);
                 })
@@ -300,6 +303,13 @@ angular.module('autoForceLayout', [])
             var myInstance = this;
             return myInstance.nodeIconAreaDefault
                 + (myInstance.config.showNodeWeight ? nodeData.weight * constants.NODE_SIZE_ADDITION_PER_WEIGHT_UNIT : 0);
+        };
+
+        //---------------------------------------------------
+        // getEdgeWidth
+        //---------------------------------------------------
+        proto.getEdgeWidth = function (edgeData) {
+            return constants.DEFAULT_LINE_WIDTH + (edgeData.weight / 4) + 'px';
         };
 
         //---------------------------------------------------
@@ -680,10 +690,11 @@ angular.module('autoForceLayout', [])
         // Show or hide edge weights
         //---------------------------------------------------
         proto.onEdgeWeightShowHideBtnClick = function () {
+            var myInstance = this;
             this.config.showEdgeWeight = !this.config.showEdgeWeight;
             this.elements[constants.EDGES]
                 .attr("stroke-width", (!this.config.showEdgeWeight ? null : function (d) {
-                    return constants.DEFAULT_LINE_WIDTH + (d.weight / 4) + 'px';
+                    return myInstance.getEdgeWidth(d);
                 }));
         };
 
