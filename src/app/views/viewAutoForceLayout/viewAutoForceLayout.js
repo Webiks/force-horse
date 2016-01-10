@@ -16,11 +16,11 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
     }])
 
     //---------------------------------------------------------------//
-    .controller('view3Ctrl', ['$scope', 'graphData', 'ViewAutoForceLayoutConstants', function ($scope, data, constants) {
+    .controller('view3Ctrl', ['$scope', '$http', 'graphData', 'ViewAutoForceLayoutConstants', function ($scope, $http, graphData, constants) {
         //console.log('In view3Ctrl');
 
         $scope.options = {};
-        $scope.options.data = data.get($scope.numOfNodes = constants.INITIAL_NUM_OF_NODES);
+        $scope.options.data = graphData.getRandomData($scope.numOfNodes = constants.INITIAL_NUM_OF_NODES);
         $scope.setArrays = function () {
             $scope.data = [];
             $scope.data[constants.NODES] = $scope.options.data[constants.NODES].data;
@@ -30,10 +30,23 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
         $scope.NODES = constants.NODES;
         $scope.EDGES = constants.EDGES;
 
-        $scope.recreateGraph = function () {
-            $scope.options.data = data.get($scope.numOfNodes);
+        $scope.createRandomGraph = function () {
+            $scope.options.data = graphData.getRandomData($scope.numOfNodes);
             $scope.setArrays();
             $scope.options.autoForceLayoutInstance.redraw();
+        };
+
+        $scope.graphDataFileName = "";
+        $scope.createGraphFromFile = function () {
+            $http.get($scope.graphDataFileName)
+                .then(function (response) {
+                    $scope.options.data = graphData.getDataFromFile(response.data);
+                    $scope.setArrays();
+                    $scope.options.autoForceLayoutInstance.redraw();
+                },
+                function(response) {
+                    console.warn(`File read error: status = ${response.status}, message = ${response.statusText}`);
+                });
         };
 
         $scope.selectedItems = [new Set(), new Set()]; // selected nodes, edges
@@ -127,7 +140,11 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
     //---------------------------------------------------------------//
     .service('graphData', ['ViewAutoForceLayoutConstants', function (constants) {
         return {
-            get: function (numOfNodes) {
+            //---------------------------------------------------
+            // get
+            // Get random data for the graph
+            //---------------------------------------------------
+            getRandomData: function (numOfNodes) {
                 var graphData = [
                     {id: constants.NODES_ID, data: []},
                     {id: constants.EDGES_ID, data: []}
@@ -163,8 +180,22 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
                 }
 
                 return graphData;
+            },
+
+
+            //---------------------------------------------------
+            // getDataFromFile
+            //---------------------------------------------------
+            getDataFromFile: function (fileData) {
+                //var graphData =
+                return    [
+                    {id: constants.NODES_ID, data: fileData.nodes},
+                    {id: constants.EDGES_ID, data: fileData.links}
+                ];
+                //return graphData;
             }
-        };
+
+        }; // return
     }])
     /*
      "nodes": [
