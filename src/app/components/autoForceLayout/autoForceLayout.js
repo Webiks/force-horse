@@ -106,6 +106,8 @@ angular.module('autoForceLayout', [])
         //---------------------------------------------------
         // initLayout
         // Init force layout & SVG
+        // Parameters: config: an external configration object
+        // (typically from a json file)
         //---------------------------------------------------
         proto.initLayout = function (config) {
             var myInstance = this;
@@ -125,7 +127,7 @@ angular.module('autoForceLayout', [])
             this.isBoundedGraphMode = false; // TODO: redundant?
             this.isFirstZoomDone = false; // See onForceEnd()
 
-            // Set config parameters, which may be overwritten by the config parameter
+            // Set config parameters, which may be overwritten by the config argument
             this.config = {
                 hideLabels: false,
                 showNodeWeight: false,
@@ -141,11 +143,12 @@ angular.module('autoForceLayout', [])
                     //linkDistance: 40
                 }
             };
-            for (let key in config) {
-                if (config.hasOwnProperty(key)) {
-                    myInstance.config[key] = config[key];
-                }
-            }
+            Object.assign(this.config, config); // Transfer properties, ES6 style
+            //for (let key in config) {
+            //    if (config.hasOwnProperty(key)) {
+            //        myInstance.config[key] = config[key];
+            //    }
+            //}
 
             // Create a forceLayout instance
             myInstance.force = d3.layout.force()
@@ -164,7 +167,7 @@ angular.module('autoForceLayout', [])
             if (angular.isDefined(p = myInstance.config.forceParameters.friction)) {
                 myInstance.force.friction(p);
             } else {
-                //myInstance.force.friction(helper.computeFrictionParameter(constants.INNER_SVG_WIDTH, constants.INNER_SVG_HEIGHT, this.nodeDataArray.length))
+                myInstance.force.friction(helper.computeFrictionParameter(constants.INNER_SVG_WIDTH, constants.INNER_SVG_HEIGHT, this.nodeDataArray.length))
             }
 
             myInstance.drag = myInstance.force.drag()
@@ -298,7 +301,7 @@ angular.module('autoForceLayout', [])
                 .attr("fill", function (d) {
                     return d.color;
                 })
-                .attr("dx", "15") // displacement from the node
+                .attr("dx", "10") // displacement from the node
                 .text(function (d) {
                     return d.label;
                 });
@@ -356,7 +359,8 @@ angular.module('autoForceLayout', [])
             this.edgesFromNodes = {};
             this.edgeDataArray.forEach(function (val, idx) {
                 if (angular.isUndefined(val.id)) {
-                    console.warn(`Undefined [id] in edge ${val.sourceID} - ${val.targetID}`);
+                    // (Edges ids are not really needed, so I cancel the warning)
+                    // console.warn(`Undefined [id] in edge ${val.sourceID} - ${val.targetID}`);
                 }
                 // Get nodes data from nodes id's
                 if (angular.isUndefined(val.sourceID)) {
@@ -801,8 +805,10 @@ angular.module('autoForceLayout', [])
             computeFrictionParameter: function (width_in_pixels, height_in_pixels, number_of_nodes) {
                 var A = 0.0356,
                 B = -1.162,
-                x = 100 * number_of_nodes / (height_in_pixels * width_in_pixels),
-                result = A * Math.pow(x, -B);
+                x = 100 * number_of_nodes / (height_in_pixels * width_in_pixels);
+                if (x < 0.0634) x = 0.0634;
+                var result = A * Math.pow(x, -B);
+                console.log(`Calculated friction = ${result} (A=${A} B=${B} x=${x})`);
                 return result;
             }
 

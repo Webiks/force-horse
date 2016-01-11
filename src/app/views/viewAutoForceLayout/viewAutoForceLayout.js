@@ -42,6 +42,7 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
                 .then(function (response) {
                     $scope.options.data = graphData.getDataFromFile(response.data);
                     $scope.setArrays();
+                    $scope.numOfNodes = $scope.data[constants.NODES].length; // show no. of nodes on screen
                     $scope.options.autoForceLayoutInstance.redraw();
                 },
                 function(response) {
@@ -193,6 +194,7 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
                     {id: constants.EDGES_ID, data: fileData.links}
                 ];
                 //return graphData;
+                // TODO: automatic fixing of property names?
             }
 
         }; // return

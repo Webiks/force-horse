@@ -71,7 +71,7 @@
 .auto-force-layout svg.graph-svg .labels text {
     stroke: black;
     stroke-width: 0.3px;
-    font-size: 14px;
+    font-size: 11px;
     pointer-events: none;
     /*opacity: 1;*/
     /*transition: opacity 1s;*/
