@@ -804,7 +804,7 @@ angular.module('autoForceLayout', [])
             //---------------------------------------------------
             computeFrictionParameter: function (width_in_pixels, height_in_pixels, number_of_nodes) {
                 var A = 0.0356,
-                B = -1.162,
+                B = 1.162,
                 x = 100 * number_of_nodes / (height_in_pixels * width_in_pixels);
                 if (x < 0.0634) x = 0.0634;
                 var result = A * Math.pow(x, -B);

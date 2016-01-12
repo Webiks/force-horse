@@ -8,6 +8,6 @@
     "gravity": 0.2,
     "#linkDistance": 30,
     "linkDistance": 10,
-    "friction": 0.5
+    "#friction": 0.5
   }
 }
