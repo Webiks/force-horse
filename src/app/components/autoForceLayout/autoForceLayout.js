@@ -395,6 +395,30 @@ angular.module('autoForceLayout', [])
         };
 
         //---------------------------------------------------
+        // onForceStart
+        // Move the animation
+        //---------------------------------------------------
+        proto.onForceStart = function() {
+            var myInstance = this;
+            var ticksPerRender = 10,
+            t0=performance.now(), t1;
+            requestAnimationFrame(function render() {
+                for (var i = 0; i < ticksPerRender; i++) {
+                    myInstance.force.tick();
+                }
+                myInstance.onTick();
+
+                if (myInstance.force.alpha() > 0) {
+                    requestAnimationFrame(render);
+                } else {
+                    t1 = performance.now();
+                    console.log(`Force Simulation time = ${((t1-t0)/1000).toFixed(2)}s`);
+                    myInstance.onForceEnd();
+                }
+            })
+        };
+
+        //---------------------------------------------------
         // onTick
         // Update the graph
         //---------------------------------------------------
@@ -480,7 +504,7 @@ angular.module('autoForceLayout', [])
                 }
                 // Perform the zoom
                 this.svg.transition()
-                    .duration(constants.ZOOM_TRANSITION_DURATION_MS)
+                    .duration(constants.ANIMATION_DURATION)
                     .call(this.zoom.translate(translate).scale(scale).event);
             }
         };
@@ -675,13 +699,13 @@ angular.module('autoForceLayout', [])
                 this.labelGroup.transition().attr("opacity", "0");
                 setTimeout(function () {
                     myInstance.labelGroup.classed('display_none', true);
-                    //}, constants.SHORT_ANIMATION_DELAY_MS); // TODO: animation temporarily disabled
-                }, constants.LONG_ANIMATION_DELAY_MS);
+                    //}, constants.ANIMATION_DELAY); // TODO: animation temporarily disabled
+                }, constants.ANIMATION_DURATION);
             } else { // show labels
                 this.labelGroup.classed('display_none', false);
                 setTimeout(function () {
                     myInstance.labelGroup.transition().attr("opacity", "1");
-                }, constants.SHORT_ANIMATION_DELAY_MS);
+                }, constants.ANIMATION_DELAY);
             }
         };
 
@@ -735,9 +759,8 @@ angular.module('autoForceLayout', [])
         DEFAULT_LINE_WIDTH: 1.5,
         MAX_ZOOM: 0.5,
         MIN_ZOOM: 2,
-        ZOOM_TRANSITION_DURATION_MS: 1000,
-        LONG_ANIMATION_DELAY_MS: 1000,
-        SHORT_ANIMATION_DELAY_MS: 200,
+        ANIMATION_DURATION: 1000,
+        ANIMATION_DELAY: 200,
         get NODE_SIZE_ADDITION_PER_WEIGHT_UNIT() {
             return this.INNER_SVG_WIDTH * this.INNER_SVG_HEIGHT / (64 * 48 * 5);
         }
