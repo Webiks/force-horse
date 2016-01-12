@@ -188,13 +188,32 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
             // getDataFromFile
             //---------------------------------------------------
             getDataFromFile: function (fileData) {
-                //var graphData =
+                // Process nodes
+                var nodes = fileData.nodes;
+                nodes.forEach(function (node, idx) {
+                    if (angular.isUndefined(node.id)) {
+                        node.id = idx;
+                    }
+                    if (angular.isUndefined(node.label)) {
+                        node.label = "" + node.id;
+                    }
+                    node.class = constants.CLASS_NODE;
+                });
+                // Process edges
+                var edges = (fileData.edges ? fileData.edges : fileData.links);
+                edges.forEach( function(edge, idx) {
+                    if (angular.isUndefined(edge.id)) {
+                        edge.id = idx;
+                    }
+                    edge.sourceLabel = edge.sourceID;
+                    edge.targetLabel = edge.targetID;
+                    edge.class = constants.CLASS_EDGE;
+                });
+                // Return the (processed) data
                 return    [
-                    {id: constants.NODES_ID, data: fileData.nodes},
-                    {id: constants.EDGES_ID, data: fileData.links}
+                    {id: constants.NODES_ID, data: nodes},
+                    {id: constants.EDGES_ID, data: edges}
                 ];
-                //return graphData;
-                // TODO: automatic fixing of property names?
             }
 
         }; // return

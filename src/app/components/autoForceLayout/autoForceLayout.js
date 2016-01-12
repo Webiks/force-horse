@@ -341,10 +341,13 @@ angular.module('autoForceLayout', [])
             var myInstance = this;
             this.nodesById = {};
             this.nodeDataArray.forEach(function (val, idx) {
-                if (typeof val.id === "undefined") {
-                    console.error("Undefined [id] in nodes array");
-                } else {
-                    myInstance.nodesById[val.id] = idx;
+                if (angular.isUndefined(val.id)) {
+                    val.id = idx;
+                    //console.error("Undefined [id] in nodes array");
+                }
+                myInstance.nodesById[val.id] = idx;
+                if (angular.isUndefined(val.label)) {
+                    val.label = "" + val.id;
                 }
             });
         };
@@ -359,7 +362,7 @@ angular.module('autoForceLayout', [])
             this.edgesFromNodes = {};
             this.edgeDataArray.forEach(function (val, idx) {
                 if (angular.isUndefined(val.id)) {
-                    // (Edges ids are not really needed, so I cancel the warning)
+                    val.id = idx;
                     // console.warn(`Undefined [id] in edge ${val.sourceID} - ${val.targetID}`);
                 }
                 // Get nodes data from nodes id's
