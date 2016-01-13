@@ -36,19 +36,36 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
             $scope.options.autoForceLayoutInstance.redraw();
         };
 
-        $scope.graphDataFileName = "";
-        $scope.createGraphFromFile = function () {
-            $http.get($scope.graphDataFileName)
-                .then(function (response) {
-                    $scope.options.data = graphData.getDataFromFile(response.data);
+        $scope.createGraphFromFile = function (evt) {
+            var f = evt.target.files[0];
+            if (f) {
+                var r = new FileReader();
+                r.onload = function(evt2) {
+                    var data = JSON.parse(evt2.target.result);
+                    $scope.options.data = graphData.getDataFromFile(data);
                     $scope.setArrays();
                     $scope.numOfNodes = $scope.data[constants.NODES].length; // show no. of nodes on screen
                     $scope.options.autoForceLayoutInstance.redraw();
-                },
-                function(response) {
-                    console.warn(`File read error: status = ${response.status}, message = ${response.statusText}`);
-                });
+                };
+                r.readAsText(f);
+            } else {
+                console.warn(`File read error`);
+            }
         };
+
+        //$scope.graphDataFileName = "";
+        //$scope.createGraphFromFile = function () {
+        //    $http.get($scope.graphDataFileName)
+        //        .then(function (response) {
+        //            $scope.options.data = graphData.getDataFromFile(response.data);
+        //            $scope.setArrays();
+        //            $scope.numOfNodes = $scope.data[constants.NODES].length; // show no. of nodes on screen
+        //            $scope.options.autoForceLayoutInstance.redraw();
+        //        },
+        //        function(response) {
+        //            console.warn(`File read error: status = ${response.status}, message = ${response.statusText}`);
+        //        });
+        //};
 
         $scope.selectedItems = [new Set(), new Set()]; // selected nodes, edges
 
