@@ -368,15 +368,15 @@ angular.module('autoForceLayout', [])
                 }
                 // Get nodes data from nodes id's
                 if (angular.isUndefined(val.sourceID)) {
-                    console.error("Undefined [sourceID] in edge #" + val.id);
-                } else {
-                    val.source = myInstance.nodesById[val.sourceID];
+                    val.sourceID = val.source;
+                    //console.error("Undefined [sourceID] in edge #" + val.id);
                 }
+                val.source = myInstance.nodesById[val.sourceID];
                 if (angular.isUndefined(val.targetID)) {
-                    console.error("Undefined [targetID] in edges #" + val.id);
-                } else {
-                    val.target = myInstance.nodesById[val.targetID];
+                    val.targetID = val.target;
+                    //console.error("Undefined [targetID] in edges #" + val.id);
                 }
+                val.target = myInstance.nodesById[val.targetID];
                 // Build an index to help handle the case of multiple edges between two nodes
                 if (angular.isDefined(val.sourceID) && angular.isDefined(val.targetID)) {
                     sid = val.sourceID;

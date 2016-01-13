@@ -205,6 +205,12 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
                     if (angular.isUndefined(edge.id)) {
                         edge.id = idx;
                     }
+                    if (angular.isUndefined(edge.sourceID)) {
+                        edge.sourceID = edge.source;
+                    }
+                    if (angular.isUndefined(edge.targetID)) {
+                        edge.targetID = edge.target;
+                    }
                     edge.sourceLabel = edge.sourceID;
                     edge.targetLabel = edge.targetID;
                     edge.class = constants.CLASS_EDGE;
