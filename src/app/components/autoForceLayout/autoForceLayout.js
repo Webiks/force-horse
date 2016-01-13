@@ -125,7 +125,8 @@ angular.module('autoForceLayout', [])
             this.selectedItems = [new Set(), new Set()]; // selected nodes, selected edges
             this.fixedNodesMode = false;
             this.isBoundedGraphMode = false; // TODO: redundant?
-            this.isFirstZoomDone = false; // See onForceEnd()
+            this.isFirstZoomDone = false, // Zooming to viewport after first simlation
+            this.isDragging = false;
 
             // Set config parameters, which may be overwritten by the config argument
             this.config = {
@@ -143,23 +144,22 @@ angular.module('autoForceLayout', [])
                     //linkDistance: 40
                 }
             };
-            Object.assign(this.config, config); // Transfer properties, ES6 style
-            //for (let key in config) {
-            //    if (config.hasOwnProperty(key)) {
-            //        myInstance.config[key] = config[key];
-            //    }
-            //}
+            Object.assign(this.config, config);
 
             // Create a forceLayout instance
             myInstance.force = d3.layout.force()
                 .size([constants.INNER_SVG_WIDTH, constants.INNER_SVG_HEIGHT])
-                .on("tick", function () {
-                    myInstance.onTick();
+                .on("start", function () {
+                    myInstance.onForceStart();
                 })
-                .on("end", function () {
-                    myInstance.onForceEnd();
-                });
-            var p;
+                //.on("tick", function () {
+                //    myInstance.onTick();
+                //})
+                //.on("end", function () {
+                //    myInstance.onForceEnd();
+                //})
+            ;
+            let p;
             if (angular.isDefined(p = myInstance.config.forceParameters.linkDistance)) myInstance.force.linkDistance(p);
             if (angular.isDefined(p = myInstance.config.forceParameters.linkStrength)) myInstance.force.linkStrength(p);
             if (angular.isDefined(p = myInstance.config.forceParameters.charge)) myInstance.force.charge(p);
@@ -173,7 +173,8 @@ angular.module('autoForceLayout', [])
             myInstance.drag = myInstance.force.drag()
                 .on("drag", function (d) {
                     myInstance.onDrag(d);
-                });
+                })
+                .on("dragend", myInstance.onDragEnd);
 
             myInstance.force.nodes(myInstance.nodeDataArray)
                 .links(this.edgeDataArray)
@@ -396,23 +397,28 @@ angular.module('autoForceLayout', [])
 
         //---------------------------------------------------
         // onForceStart
-        // Move the animation
+        // Move the animation, with acceleration
         //---------------------------------------------------
         proto.onForceStart = function() {
             var myInstance = this;
-            var ticksPerRender = 10,
-            t0=performance.now(), t1;
+            var ticksPerRender,
+            t0=performance.now(), t1,
+                ticks = 0;
+            //
             requestAnimationFrame(function render() {
-                for (var i = 0; i < ticksPerRender; i++) {
+                // Do not accelerate the simulation during dragging, so as not to slow the dragging
+                ticksPerRender = (myInstance.isDragging ? 1 : 60);
+                for (let i = 0; i < ticksPerRender; i++) {
                     myInstance.force.tick();
                 }
                 myInstance.onTick();
+                ticks += ticksPerRender;
 
                 if (myInstance.force.alpha() > 0) {
                     requestAnimationFrame(render);
                 } else {
                     t1 = performance.now();
-                    console.log(`Force Simulation time = ${((t1-t0)/1000).toFixed(2)}s`);
+                    console.log(`Force Simulation time = ${((t1-t0)/1000).toFixed(2)}s, ${ticks} ticks`);
                     myInstance.onForceEnd();
                 }
             })
@@ -666,6 +672,15 @@ angular.module('autoForceLayout', [])
             }).classed("fixed", d.fixed = true);
 
             this.fixedNodesMode = true;
+
+            this.isDragging = true;
+        };
+
+        //---------------------------------------------------
+        // onDragEnd
+        //---------------------------------------------------
+        proto.onDragEnd = function () {
+            this.isDragging = false;
         };
 
         //---------------------------------------------------
