@@ -15,7 +15,8 @@ angular.module('autoForceLayout', [])
                    title="Filter"\
                    ng-click="autoForceLayoutInstance.removeSelectedElements()"></i>\
                 <i class="mdi mdi-home"\
-                   title="Zoom.to viewport"></i>\
+                   title="Zoom to viewport"\
+                   ng-click="autoForceLayoutInstance.zoomToViewport()"></i>\
                 <i class="mdi"\
                    title="Fix/release nodes"\
                    ng-class="autoForceLayoutInstance.fixedNodesMode ? \'mdi-play-circle-outline\' : \'mdi-pause-circle-outline\'" \
@@ -482,36 +483,8 @@ angular.module('autoForceLayout', [])
             // Zoom out the graph, if needed, so that it is fully visible.
             // This is done only on the first time after component start.
             if (!this.isFirstZoomDone) {
-                this.calcZoomToViewport();
                 this.zoomToViewport();
                 this.isFirstZoomDone = true;
-            }
-        };
-
-        //---------------------------------------------------
-        // calcZoomToViewport
-        // Zoom out the graph, if needed, so that it is fully visible.
-        //---------------------------------------------------
-        proto.calcZoomToViewport = function () {
-            var width = constants.INNER_SVG_WIDTH,
-                height = constants.INNER_SVG_HEIGHT,
-                radius = this.nodeIconRadius,
-                maxMarginX = d3.max(this.nodeDataArray, function (d) {
-                    return Math.max(-d.x + radius, d.x + radius - width, 0);
-                }),
-                maxMarginY = d3.max(this.nodeDataArray, function (d) {
-                    return Math.max(-d.y + radius, d.y + radius - height, 0);
-                });
-            if (maxMarginX > 0 || maxMarginY > 0) {
-                var scaleX = width / (width + 2 * maxMarginX),
-                    scaleY = height / (height + 2 * maxMarginY),
-                    scale = Math.min(scaleX, scaleY),
-                    translate = [(width / 2) * (1 - scale), (height / 2) * (1 - scale)];
-                // If the calculated zoom is bigger than the zoom limit, increase the limit
-                if (scale < constants.MAX_ZOOM) {
-                    this.zoom.scaleExtent([scale, constants.MIN_ZOOM]);
-                }
-                this.home = {scale: scale, translate: translate};
             }
         };
 
@@ -530,9 +503,17 @@ angular.module('autoForceLayout', [])
                     return Math.max(-d.y + radius, d.y + radius - height, 0);
                 });
             if (maxMarginX > 0 || maxMarginY > 0) {
+                var scaleX = width / (width + 2 * maxMarginX),
+                    scaleY = height / (height + 2 * maxMarginY),
+                    scale = Math.min(scaleX, scaleY),
+                    translate = [(width / 2) * (1 - scale), (height / 2) * (1 - scale)];
+                // If the calculated zoom is bigger than the zoom limit, increase the limit
+                if (scale < constants.MAX_ZOOM) {
+                    this.zoom.scaleExtent([scale, constants.MIN_ZOOM]);
+                }
                 this.svg.transition()
                     .duration(constants.ANIMATION_DURATION)
-                    .call(this.zoom.translate(this.home.translate).scale(this.home.scale).event);
+                    .call(this.zoom.translate(translate).scale(scale).event);
             }
         };
 
