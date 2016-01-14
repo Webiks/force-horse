@@ -174,7 +174,9 @@ angular.module('autoForceLayout', [])
                 .on("drag", function (d) {
                     myInstance.onDrag(d);
                 })
-                .on("dragend", myInstance.onDragEnd);
+                .on("dragend", function() {
+                    myInstance.onDragEnd();
+                });
 
             myInstance.force.nodes(myInstance.nodeDataArray)
                 .links(this.edgeDataArray)
@@ -671,9 +673,12 @@ angular.module('autoForceLayout', [])
                 return nodeData.id === d.id;
             }).classed("fixed", d.fixed = true);
 
-            this.fixedNodesMode = true;
+            if (!this.fixedNodesMode) this.fixedNodesMode = true;
 
-            this.isDragging = true;
+            if (!this.isDragging) {
+                this.isDragging = true;
+                console.log("Now dragging");
+            }
         };
 
         //---------------------------------------------------
@@ -681,6 +686,7 @@ angular.module('autoForceLayout', [])
         //---------------------------------------------------
         proto.onDragEnd = function () {
             this.isDragging = false;
+            console.log("Dragging ended");
         };
 
         //---------------------------------------------------
