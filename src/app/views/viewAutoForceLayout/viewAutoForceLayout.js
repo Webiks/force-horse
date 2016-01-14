@@ -36,8 +36,8 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
             $scope.options.autoForceLayoutInstance.redraw();
         };
 
-        $scope.createGraphFromFile = function (evt) {
-            var f = evt.target.files[0];
+        $scope.createGraphFromFile = function () {
+            var f = event.target.files[0];
             if (f) {
                 var r = new FileReader();
                 r.onload = function(evt2) {
@@ -294,4 +294,20 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
         MIN_WEIGHT: 0,
         MAX_WEIGHT: 4
     })
+
+
+    //---------------------------------------------------------------//
+        // A special on-change attribute for <input type="file">
+        // which is not currently supported by angular's ng-change.
+        // Borrowed from http://stackoverflow.com/a/19647381/4402222
+    //---------------------------------------------------------------//
+    .directive('fileInputOnChange', function() {
+    return {
+        restrict: 'A',
+        link: function (scope, element, attrs) {
+            var onChangeFunc = scope.$eval(attrs.fileInputOnChange);
+            element.bind('change', onChangeFunc);
+        }
+    }
+});
 ;

@@ -16,9 +16,9 @@
                 <input flex="" type="range" id="numOfNodes" ng-model="numOfNodes" min="10" max="1000">
                 <button flex="" ng-click="createRandomGraph()">Create random graph</button>
             </div>
-            <div layout="row" layout-margin="" layout-align="space-between center">
-                <label flex="" for="graph-data-file-read">Create graph from file:</label>
-                <input flex="" type="file" id="graph-data-file-read" ng-change="createGraphFromFile($event)">
+            <div layout="row" layout-margin="" layout-align="start center">
+                <label flex="20" for="graph-data-file-read">Create graph from file:</label>
+                <input flex="" type="file" id="graph-data-file-read" file-input-on-change="createGraphFromFile">
                 <!--
                 <label flex="" for="graph-data-file-name">File name:</label>
                 <input flex="50" type="text" id="graph-data-file-name" ng-model="graphDataFileName">
