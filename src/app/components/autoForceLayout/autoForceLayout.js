@@ -305,10 +305,16 @@ angular.module('autoForceLayout', [])
                 .attr("fill", function (d) {
                     return d.color;
                 })
-                .attr("dx", "10") // displacement from the node
                 .text(function (d) {
                     return d.label;
-                });
+                })
+                .attr("dx", function (d) {
+                    return (helper.isHebrewString(d.label) ? -1 : +1) * constants.LABEL_DISPLACEMENT;
+                })
+                .attr("text-anchor", function (d) {
+                    return (helper.isHebrewString(d.label) ? "end" : "start");
+                })
+            ;
 
             return this;
         };
@@ -778,6 +784,7 @@ angular.module('autoForceLayout', [])
         CSS_CLASS_NODE: 'node',
         CSS_CLASS_EDGE: 'edge',
         DEFAULT_LINE_WIDTH: 1.5,
+        LABEL_DISPLACEMENT: 10,
         MAX_ZOOM: 0.5,
         MIN_ZOOM: 2,
         ANIMATION_DURATION: 1000,
@@ -857,6 +864,15 @@ angular.module('autoForceLayout', [])
                 var result = A * Math.pow(x, -B);
                 console.log(`Calculated friction = ${result} (A=${A} B=${B} x=${x})`);
                 return result;
+            },
+
+            //---------------------------------------------------
+            // isHebrewString
+            // (Does the string s start with a hebrew letter?)
+            //---------------------------------------------------
+            isHebrewString: function (s) {
+                var c = s.charAt(0);
+                return (c >= 'א'&& c <= 'ת');
             }
 
         }; // return {

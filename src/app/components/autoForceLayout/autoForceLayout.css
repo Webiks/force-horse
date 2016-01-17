@@ -73,14 +73,12 @@
     stroke-width: 0.3px;
     font-size: 11px;
     pointer-events: none;
-    /*opacity: 1;*/
-    /*transition: opacity 1s;*/
+    /* text-anchor: end; */
 }
 
 .auto-force-layout .buttonsWrapper {
     height: 10%;
     color: lightgray;
-    /*background-color: #00A000;*/
 }
 
 .auto-force-layout .buttonsWrapper i {

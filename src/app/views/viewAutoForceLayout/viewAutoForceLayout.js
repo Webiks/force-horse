@@ -170,12 +170,14 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
 
                 // Generate a random graph
 
-                var i, node, edge, nodeIdx;
-                var shapes = d3.svg.symbolTypes;
+                var i, node, edge, nodeIdx,
+                alephbet = "abcdefghijklmnopqrstuvwxyz0123456789אבגדהוזחטיכלמנסעפצקרשת",
+                shapes = d3.svg.symbolTypes;
                 for (i = 0; i < numOfNodes; i++) {
                     node = graphData[constants.NODES].data[i] = {};
                     node.class = constants.CLASS_NODE;
-                    node.label = Math.random().toString(36).slice(2).substr(0, 5); // a random string, 5 chars
+                    node.label = Array(constants.LABEL_LENGTH).fill(null).map(function() { return alephbet.charAt(Math.floor(Math.random() * alephbet.length)); }).join('');
+                    //node.label = Math.random().toString(36).slice(2).substr(0, 5); // a random string, 5 chars
                     node.shape = shapes[Math.floor(Math.random() * shapes.length)];
                     node.id = i;
                     node.color = '#' + Math.floor(Math.random() * constants.MAX_COLOR).toString(16);
@@ -292,7 +294,8 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
         CLASS_NODE: 'Node',
         CLASS_EDGE: 'Edge',
         MIN_WEIGHT: 0,
-        MAX_WEIGHT: 4
+        MAX_WEIGHT: 4,
+        LABEL_LENGTH: 5
     })
 
 
