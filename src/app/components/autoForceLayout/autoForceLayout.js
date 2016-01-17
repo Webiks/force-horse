@@ -14,13 +14,13 @@ angular.module('autoForceLayout', [])
                 <i class="mdi mdi-filter"\
                    title="Filter"\
                    ng-click="autoForceLayoutInstance.removeSelectedElements()"></i>\
-                <i class="mdi mdi-home"\
-                   title="Zoom to viewport"\
-                   ng-click="autoForceLayoutInstance.zoomToViewport()"></i>\
                 <i class="mdi"\
                    title="Fix/release nodes"\
                    ng-class="autoForceLayoutInstance.fixedNodesMode ? \'mdi-play-circle-outline\' : \'mdi-pause-circle-outline\'" \
                    ng-click="autoForceLayoutInstance.onPlayPauseBtnClick()"></i>\
+                <i class="mdi mdi-home"\
+                   title="Zoom to viewport"\
+                   ng-click="autoForceLayoutInstance.zoomToViewport()"></i>\
               </span>\
               <span flex>\
                 <i class="mdi"\
