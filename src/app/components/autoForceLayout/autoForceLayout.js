@@ -114,7 +114,9 @@ angular.module('autoForceLayout', [])
         proto.initLayout = function (config) {
             var myInstance = this;
             // Generate a random instance name, for a "namespace"
-            this.instanceName = new Array(constants.INSTANCE_NAME_LENGTH).fill(null).map(function() { return constants.ALEPHBET.charAt(Math.floor(Math.random() * constants.ALEPHBET.length)); }).join('');
+            this.instanceName = new Array(constants.INSTANCE_NAME_LENGTH).fill(null).map(function () {
+                return constants.ALEPHBET.charAt(Math.floor(Math.random() * constants.ALEPHBET.length));
+            }).join('');
 
             // Process input data
             this.nodeDataArray = this.options.data[constants.NODES].data;
@@ -178,13 +180,13 @@ angular.module('autoForceLayout', [])
                 .on("drag", function (d) {
                     myInstance.onDrag(d);
                 })
-                .on("dragend", function() {
+                .on("dragend", function () {
                     myInstance.onDragEnd();
                 });
 
             myInstance.force.nodes(myInstance.nodeDataArray)
                 .links(this.edgeDataArray);
-                //.start();
+            //.start();
 
             myInstance.zoom = d3.behavior.zoom()
                 .scaleExtent([constants.MAX_ZOOM, constants.MIN_ZOOM])
@@ -320,7 +322,7 @@ angular.module('autoForceLayout', [])
             ;
 
             // set an on-resize event, to fix aspect ratios
-            d3.select(window).on(`resize.${this.instanceName}`, function() {
+            d3.select(window).on(`resize.${this.instanceName}`, function () {
                 myInstance.onWindowResize();
             });
 
@@ -339,7 +341,7 @@ angular.module('autoForceLayout', [])
         //---------------------------------------------------
         proto.calcFixAspectRatio = function () {
             this.fixAspectRatio = (this.svg ?
-                (constants.INNER_SVG_WIDTH / constants.INNER_SVG_HEIGHT) * (this.svg[0][0].offsetHeight / this.svg[0][0].offsetWidth)
+            (constants.INNER_SVG_WIDTH / constants.INNER_SVG_HEIGHT) * (this.svg[0][0].offsetHeight / this.svg[0][0].offsetWidth)
                 : 1);
             console.log(`fixAspectRatio = ${this.fixAspectRatio}`);
         };
@@ -433,7 +435,7 @@ angular.module('autoForceLayout', [])
         // onWindowResize
         // Fix aspect ratios, when the window resizes
         //---------------------------------------------------
-        proto.onWindowResize = function() {
+        proto.onWindowResize = function () {
             this.calcFixAspectRatio();
             this.onTick();
         };
@@ -442,10 +444,10 @@ angular.module('autoForceLayout', [])
         // onForceStart
         // Move the animation, with acceleration
         //---------------------------------------------------
-        proto.onForceStart = function() {
+        proto.onForceStart = function () {
             var myInstance = this;
             var ticksPerRender,
-            t0=performance.now(), t1,
+                t0 = performance.now(), t1,
                 ticks = 0;
             myInstance.calcFixAspectRatio();
             //
@@ -462,7 +464,7 @@ angular.module('autoForceLayout', [])
                     requestAnimationFrame(render);
                 } else {
                     t1 = performance.now();
-                    console.log(`Force Simulation time = ${((t1-t0)/1000).toFixed(2)}s, ${ticks} ticks`);
+                    console.log(`Force Simulation time = ${((t1 - t0) / 1000).toFixed(2)}s, ${ticks} ticks`);
                     myInstance.onForceEnd();
                 }
             })
@@ -565,10 +567,11 @@ angular.module('autoForceLayout', [])
         //---------------------------------------------------
         proto.onClick = function (item, element) {
             // Ignore the click event at the end of a drag
-            if (d3.event.defaultPrevented) return;
+            if (d3.event.defaultPrevented) {
+            }
             // If the Ctrl key was pressed during the click ..
             // If the clicked element was marked as selected, unselect it, and vice versa
-            if (d3.event.ctrlKey) {
+            else if (d3.event.ctrlKey) {
                 this.onSelectInside(element, item, !item.selected);
             } else {
                 // If the Ctrl key was not pressed ..
@@ -588,6 +591,7 @@ angular.module('autoForceLayout', [])
         // Cancel current selection
         //---------------------------------------------------
         proto.onContainerClick = function () {
+            //console.log("Container was clicked");
             if (this.selectedItems[constants.NODES].size + this.selectedItems[constants.EDGES].size > 0) {
                 this.onSelectInside(null, null, null, true);
             }
@@ -896,8 +900,8 @@ angular.module('autoForceLayout', [])
             //---------------------------------------------------
             computeFrictionParameter: function (width_in_pixels, height_in_pixels, number_of_nodes) {
                 var A = 0.0356,
-                B = 1.162,
-                x = 100 * number_of_nodes / (height_in_pixels * width_in_pixels);
+                    B = 1.162,
+                    x = 100 * number_of_nodes / (height_in_pixels * width_in_pixels);
                 if (x < 0.0634) x = 0.0634;
                 var result = A * Math.pow(x, -B);
                 console.log(`Calculated friction = ${result} (A=${A} B=${B} x=${x})`);
@@ -910,7 +914,7 @@ angular.module('autoForceLayout', [])
             //---------------------------------------------------
             isHebrewString: function (s) {
                 var c = s.charAt(0);
-                return (c >= 'א'&& c <= 'ת');
+                return (c >= 'א' && c <= 'ת');
             }
 
         }; // return {
