@@ -100,6 +100,7 @@ angular.module('autoForceLayout', [])
                 }
                 myInstance.initLayout(json);
                 myInstance.draw();
+                myInstance.startForceSimulation();
             });
             return this;
         };
@@ -112,6 +113,8 @@ angular.module('autoForceLayout', [])
         //---------------------------------------------------
         proto.initLayout = function (config) {
             var myInstance = this;
+            // Generate a random instance name, for a "namespace"
+            this.instanceName = new Array(constants.INSTANCE_NAME_LENGTH).fill(null).map(function() { return constants.ALEPHBET.charAt(Math.floor(Math.random() * constants.ALEPHBET.length)); }).join('');
 
             // Process input data
             this.nodeDataArray = this.options.data[constants.NODES].data;
@@ -121,12 +124,12 @@ angular.module('autoForceLayout', [])
 
             // Some nodes-related fields
             // The size (area) of the containing circle
-            this.nodeIconAreaDefault = constants.INNER_SVG_WIDTH / 64 * constants.INNER_SVG_HEIGHT / 48 * 2;
+            this.nodeIconAreaDefault = constants.INNER_SVG_WIDTH / 54 * constants.INNER_SVG_HEIGHT / 48 * 2;
             this.nodeIconRadius = Math.sqrt(this.nodeIconAreaDefault / Math.PI);
             this.selectedItems = [new Set(), new Set()]; // selected nodes, selected edges
             this.fixedNodesMode = false;
             this.isBoundedGraphMode = false; // TODO: redundant?
-            this.isFirstZoomDone = false, // Zooming to viewport after first simlation
+            this.isFirstZoomDone = false; // Zooming to viewport after first simlation
             this.isDragging = false;
 
             // Set config parameters, which may be overwritten by the config argument
@@ -180,8 +183,8 @@ angular.module('autoForceLayout', [])
                 });
 
             myInstance.force.nodes(myInstance.nodeDataArray)
-                .links(this.edgeDataArray)
-                .start();
+                .links(this.edgeDataArray);
+                //.start();
 
             myInstance.zoom = d3.behavior.zoom()
                 .scaleExtent([constants.MAX_ZOOM, constants.MIN_ZOOM])
@@ -316,7 +319,29 @@ angular.module('autoForceLayout', [])
                 })
             ;
 
+            // set an on-resize event, to fix aspect ratios
+            d3.select(window).on(`resize.${this.instanceName}`, function() {
+                myInstance.onWindowResize();
+            });
+
             return this;
+        };
+
+        //---------------------------------------------------
+        // startForceSimulation
+        //---------------------------------------------------
+        proto.startForceSimulation = function () {
+            this.force.start();
+        };
+
+        //---------------------------------------------------
+        // calcFixAspectRatio
+        //---------------------------------------------------
+        proto.calcFixAspectRatio = function () {
+            this.fixAspectRatio = (this.svg ?
+                (constants.INNER_SVG_WIDTH / constants.INNER_SVG_HEIGHT) * (this.svg[0][0].offsetHeight / this.svg[0][0].offsetWidth)
+                : 1);
+            console.log(`fixAspectRatio = ${this.fixAspectRatio}`);
         };
 
         //---------------------------------------------------
@@ -405,6 +430,15 @@ angular.module('autoForceLayout', [])
         };
 
         //---------------------------------------------------
+        // onWindowResize
+        // Fix aspect ratios, when the window resizes
+        //---------------------------------------------------
+        proto.onWindowResize = function() {
+            this.calcFixAspectRatio();
+            this.onTick();
+        };
+
+        //---------------------------------------------------
         // onForceStart
         // Move the animation, with acceleration
         //---------------------------------------------------
@@ -413,6 +447,7 @@ angular.module('autoForceLayout', [])
             var ticksPerRender,
             t0=performance.now(), t1,
                 ticks = 0;
+            myInstance.calcFixAspectRatio();
             //
             requestAnimationFrame(function render() {
                 // Do not accelerate the simulation during dragging, so as not to slow the dragging
@@ -448,7 +483,7 @@ angular.module('autoForceLayout', [])
                     d.x = Math.max(radius, Math.min(constants.INNER_SVG_WIDTH - radius, d.x));
                     d.y = Math.max(radius, Math.min(constants.INNER_SVG_HEIGHT - radius, d.y));
                 }
-                return "translate(" + d.x + "," + d.y + ")";
+                return `translate(${d.x},${d.y}) scale(${myInstance.fixAspectRatio},1)`;
             });
 
             // Update labels
@@ -457,7 +492,8 @@ angular.module('autoForceLayout', [])
                 })
                 .attr("y", function (d) {
                     return d.y;
-                });
+                })
+            ;
 
             // Update edges
             this.elements[constants.EDGES].attr("x1", function (d) {
@@ -511,7 +547,7 @@ angular.module('autoForceLayout', [])
             if (maxMarginX > 0 || maxMarginY > 0) {
                 var scaleX = width / (width + 2 * maxMarginX),
                     scaleY = height / (height + 2 * maxMarginY),
-                    scale = Math.min(scaleX, scaleY),
+                    scale = Math.min(scaleX, scaleY) * 0.95,
                     translate = [(width / 2) * (1 - scale), (height / 2) * (1 - scale)];
                 // If the calculated zoom is bigger than the zoom limit, increase the limit
                 if (scale < constants.MAX_ZOOM) {
@@ -789,6 +825,8 @@ angular.module('autoForceLayout', [])
         MIN_ZOOM: 2,
         ANIMATION_DURATION: 1000,
         ANIMATION_DELAY: 200,
+        ALEPHBET: 'abcdefghijklmnopqrstuvwxyz',
+        INSTANCE_NAME_LENGTH: 5,
         get NODE_SIZE_ADDITION_PER_WEIGHT_UNIT() {
             return this.INNER_SVG_WIDTH * this.INNER_SVG_HEIGHT / (64 * 48 * 5);
         }
