@@ -357,7 +357,7 @@ angular.module('autoForceLayout', [])
         // getEdgeWidth
         //---------------------------------------------------
         proto.getEdgeWidth = function (edgeData) {
-            return constants.DEFAULT_LINE_WIDTH + (edgeData.weight / 4) + 'px';
+            return constants.DEFAULT_LINE_WIDTH + (edgeData.weight / 2) + 'px';
         };
 
         //---------------------------------------------------
@@ -828,7 +828,7 @@ angular.module('autoForceLayout', [])
         ALEPHBET: 'abcdefghijklmnopqrstuvwxyz',
         INSTANCE_NAME_LENGTH: 5,
         get NODE_SIZE_ADDITION_PER_WEIGHT_UNIT() {
-            return this.INNER_SVG_WIDTH * this.INNER_SVG_HEIGHT / (64 * 48 * 5);
+            return this.INNER_SVG_WIDTH * this.INNER_SVG_HEIGHT / (54 * 48 * 2);
         }
     })
 
