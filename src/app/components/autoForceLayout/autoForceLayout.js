@@ -367,24 +367,35 @@ angular.module('autoForceLayout', [])
         // Filter button action: remove selected elements
         //---------------------------------------------------
         proto.removeSelectedElements = function () {
-            if (confirm("Filtering - are you sure?")) {
+            var myInstance = this;
+
+            if (confirm("Remove selected elements - are you sure?")) {
                 // Mark the selected items as removed, and unselect them
                 // Also clear the selected-items sets
                 for (var itemType = constants.NODES; itemType <= constants.EDGES; itemType++) {
                     this.elements[itemType].filter(function (item) {
                         return item.selected;
-                    }).forEach(function (item) {
-                        item.classed('removed', item.removed = true)
-                            .classed('selected', item.selected = false);
+                    }).classed('removed', function (d) {
+                        return d.removed = true;
+                    }).classed('selected', function (d) {
+                        return d.selected = false;
                     });
                     this.selectedItems[itemType].clear();
                 }
 
-                // Update the labels
+                // Remove the labels of removed nodes
                 this.labels.classed("selected", "false")
                     .classed("removed", function (d) {
                         return d.removed;
                     });
+
+                // Remove edges connected to removed nodes
+                this.elements[constants.EDGES].filter(function (d) {
+                    return myInstance.nodeDataArray[d.source].removed
+                        || myInstance.nodeDataArray[d.target].removed;
+                }).classed("removed", function (d) {
+                    return d.removed = true;
+                });
 
                 // Cancel selection mode
                 this.svg.classed("selectionMode", false);
