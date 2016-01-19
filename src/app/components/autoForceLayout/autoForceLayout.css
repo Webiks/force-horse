@@ -54,17 +54,19 @@
 }
 
 .auto-force-layout svg.graph-svg.selectionMode .node,
-.auto-force-layout svg.graph-svg.selectionMode .edge {
+.auto-force-layout svg.graph-svg.selectionMode .edge,
+.auto-force-layout svg.graph-svg.selectionMode .labels text {
     opacity: 0.3;
 }
 
 .auto-force-layout svg.graph-svg.selectionMode .node.selected,
-.auto-force-layout svg.graph-svg.selectionMode .edge.selected {
+.auto-force-layout svg.graph-svg.selectionMode .edge.selected,
+.auto-force-layout svg.graph-svg.selectionMode .labels text.selected {
     opacity: 1;
 }
 
 .auto-force-layout svg.graph-svg .node.fixed {
-    stroke: black;
+    stroke: yellow;
     stroke-dasharray: 1,1;
 }
 

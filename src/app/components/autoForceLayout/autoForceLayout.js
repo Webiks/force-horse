@@ -359,7 +359,7 @@ angular.module('autoForceLayout', [])
         // getEdgeWidth
         //---------------------------------------------------
         proto.getEdgeWidth = function (edgeData) {
-            return constants.DEFAULT_LINE_WIDTH + (edgeData.weight / 2) + 'px';
+            return constants.DEFAULT_LINE_WIDTH + (edgeData.weight / 3) + 'px';
         };
 
         //---------------------------------------------------
@@ -567,19 +567,19 @@ angular.module('autoForceLayout', [])
         //---------------------------------------------------
         proto.onClick = function (item, element) {
             // Ignore the click event at the end of a drag
-            if (d3.event.defaultPrevented) {
-            }
-            // If the Ctrl key was pressed during the click ..
-            // If the clicked element was marked as selected, unselect it, and vice versa
-            else if (d3.event.ctrlKey) {
-                this.onSelectInside(element, item, !item.selected);
-            } else {
-                // If the Ctrl key was not pressed ..
-                // If the clicked element is selected, unselect the other elements
-                // Else, clear the current selection, and select the clicked element
-                //if (!data.selected) {
-                this.onSelectInside(element, item, true, true);
-                //}
+            if (!d3.event.defaultPrevented) {
+                // If the Ctrl key was pressed during the click ..
+                // If the clicked element was marked as selected, unselect it, and vice versa
+                if (d3.event.ctrlKey) {
+                    this.onSelectInside(element, item, !item.selected);
+                } else {
+                    // If the Ctrl key was not pressed ..
+                    // If the clicked element is selected, unselect the other elements
+                    // Else, clear the current selection, and select the clicked element
+                    //if (!data.selected) {
+                    this.onSelectInside(element, item, true, true);
+                    //}
+                }
             }
             // Prevent bubbling, so that we can separately detect a click on the container
             d3.event.stopPropagation();
@@ -652,6 +652,11 @@ angular.module('autoForceLayout', [])
                 d3.select(element).classed("selected", item.selected = on);
             }
 
+            // Update the labels
+            myInstance.labels.classed("selected", function(d) {
+                return d.selected;
+            });
+
             // Update the selectedItems set
             if (item) {
                 itemType = (item.class === constants.CLASS_NODE ? constants.NODES : constants.EDGES);
@@ -688,6 +693,11 @@ angular.module('autoForceLayout', [])
                         }
                     });
             }
+
+            // Update the labels
+            myInstance.labels.classed("selected", function(d) {
+                return d.selected;
+            });
 
             // In "selectionMode" the unselected nodes are visually marked
             myInstance.svg.classed("selectionMode",
@@ -832,7 +842,7 @@ angular.module('autoForceLayout', [])
         ALEPHBET: 'abcdefghijklmnopqrstuvwxyz',
         INSTANCE_NAME_LENGTH: 5,
         get NODE_SIZE_ADDITION_PER_WEIGHT_UNIT() {
-            return this.INNER_SVG_WIDTH * this.INNER_SVG_HEIGHT / (54 * 48 * 2);
+            return this.INNER_SVG_WIDTH * this.INNER_SVG_HEIGHT / (54 * 48 * 3);
         }
     })
 
