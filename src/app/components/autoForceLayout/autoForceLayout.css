@@ -53,6 +53,18 @@
     stroke-width: 1.5px;
 }
 
+.auto-force-layout svg.graph-svg .node.fixed {
+    stroke: yellow;
+    stroke-dasharray: 1,1;
+}
+
+.auto-force-layout svg.graph-svg .labels text {
+    stroke: black;
+    stroke-width: 0.3px;
+    font-size: 11px;
+    pointer-events: none;
+}
+
 .auto-force-layout svg.graph-svg.selectionMode .node,
 .auto-force-layout svg.graph-svg.selectionMode .edge,
 .auto-force-layout svg.graph-svg.selectionMode .labels text {
@@ -65,17 +77,10 @@
     opacity: 1;
 }
 
-.auto-force-layout svg.graph-svg .node.fixed {
-    stroke: yellow;
-    stroke-dasharray: 1,1;
-}
-
-.auto-force-layout svg.graph-svg .labels text {
-    stroke: black;
-    stroke-width: 0.3px;
-    font-size: 11px;
-    pointer-events: none;
-    /* text-anchor: end; */
+.auto-force-layout svg.graph-svg .node.removed,
+.auto-force-layout svg.graph-svg .edge.removed,
+.auto-force-layout svg.graph-svg .labels text.removed {
+    display: none;
 }
 
 .auto-force-layout .buttonsWrapper {

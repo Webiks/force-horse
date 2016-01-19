@@ -364,10 +364,31 @@ angular.module('autoForceLayout', [])
 
         //---------------------------------------------------
         // removeSelectedElements
-        // "Filter" button action
+        // Filter button action: remove selected elements
         //---------------------------------------------------
         proto.removeSelectedElements = function () {
-            // Does not seem an action for this component ..
+            if (confirm("Filtering - are you sure?")) {
+                // Mark the selected items as removed, and unselect them
+                // Also clear the selected-items sets
+                for (var itemType = constants.NODES; itemType <= constants.EDGES; itemType++) {
+                    this.elements[itemType].filter(function (item) {
+                        return item.selected;
+                    }).forEach(function (item) {
+                        item.classed('removed', item.removed = true)
+                            .classed('selected', item.selected = false);
+                    });
+                    this.selectedItems[itemType].clear();
+                }
+
+                // Update the labels
+                this.labels.classed("selected", "false")
+                    .classed("removed", function (d) {
+                        return d.removed;
+                    });
+
+                // Cancel selection mode
+                this.svg.classed("selectionMode", false);
+            }
         };
 
         //---------------------------------------------------
@@ -653,7 +674,7 @@ angular.module('autoForceLayout', [])
             }
 
             // Update the labels
-            myInstance.labels.classed("selected", function(d) {
+            myInstance.labels.classed("selected", function (d) {
                 return d.selected;
             });
 
@@ -695,7 +716,7 @@ angular.module('autoForceLayout', [])
             }
 
             // Update the labels
-            myInstance.labels.classed("selected", function(d) {
+            myInstance.labels.classed("selected", function (d) {
                 return d.selected;
             });
 
