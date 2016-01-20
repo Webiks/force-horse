@@ -12,8 +12,8 @@ angular.module('autoForceLayout', [])
               <span flex="10"></span>\
               <span flex="40">\
                 <i class="mdi mdi-filter"\
-                   title="Filter"\
-                   ng-click="autoForceLayoutInstance.removeSelectedElements()"></i>\
+                   title="Remove selected elements"\
+                   ng-click="onFilterButtonClick()"></i>\
                 <i class="mdi"\
                    title="Fix/release nodes"\
                    ng-class="autoForceLayoutInstance.fixedNodesMode ? \'mdi-play-circle-outline\' : \'mdi-pause-circle-outline\'" \
@@ -58,6 +58,10 @@ angular.module('autoForceLayout', [])
                 this.options.autoForceLayoutInstance =
                     $scope.autoForceLayoutInstance = new AutoForceLayoutFactory($element, this.options, this.externalEventHandlers)
                         .redraw();
+
+                $scope.onFilterButtonClick = function (ev) {
+                    helper.confirmFilterButton(ev, $scope.autoForceLayoutInstance);
+                };
             },
             link: function (scope, element) { //, attr, ctrl) {
                 //console.log('In autoForceLayout link');
@@ -367,39 +371,36 @@ angular.module('autoForceLayout', [])
         // Filter button action: remove selected elements
         //---------------------------------------------------
         proto.removeSelectedElements = function () {
-            var myInstance = this;
+            //var myInstance = this;
 
-            if (confirm("Remove selected elements - are you sure?")) {
-                // Mark the selected items as removed, and unselect them
-                // Also clear the selected-items sets
-                for (var itemType = constants.NODES; itemType <= constants.EDGES; itemType++) {
-                    this.elements[itemType].filter(function (item) {
-                        return item.selected;
-                    }).classed('removed', function (d) {
-                        return d.removed = true;
-                    }).classed('selected', function (d) {
-                        return d.selected = false;
-                    });
-                    this.selectedItems[itemType].clear();
-                }
-
-                // Remove the labels of removed nodes
-                this.labels.classed("selected", "false")
-                    .classed("removed", function (d) {
-                        return d.removed;
-                    });
-
-                // Remove edges connected to removed nodes
-                this.elements[constants.EDGES].filter(function (d) {
-                    return myInstance.nodeDataArray[d.source].removed
-                        || myInstance.nodeDataArray[d.target].removed;
-                }).classed("removed", function (d) {
+            // Mark the selected items as removed, and unselect them
+            // Also clear the selected-items sets
+            for (var itemType = constants.NODES; itemType <= constants.EDGES; itemType++) {
+                this.elements[itemType].filter(function (item) {
+                    return item.selected;
+                }).classed('removed', function (d) {
                     return d.removed = true;
+                }).classed('selected', function (d) {
+                    return d.selected = false;
+                });
+                this.selectedItems[itemType].clear();
+            }
+
+            // Remove the labels of removed nodes
+            this.labels.classed("selected", "false")
+                .classed("removed", function (d) {
+                    return d.removed;
                 });
 
-                // Cancel selection mode
-                this.svg.classed("selectionMode", false);
-            }
+            // Remove edges connected to removed nodes
+            this.elements[constants.EDGES].filter(function (d) {
+                return d.source.removed || d.target.removed;
+            }).classed("removed", function (d) {
+                return d.removed = true;
+            });
+
+            // Cancel selection mode
+            this.svg.classed("selectionMode", false);
         };
 
         //---------------------------------------------------
@@ -880,7 +881,7 @@ angular.module('autoForceLayout', [])
 
 
     //---------------------------------------------------------------//
-    .service('AutoForceLayoutHelper', ['AutoForceLayoutConstants', '$templateCache', '$compile', function (constants, templates, $compile) {
+    .service('AutoForceLayoutHelper', ['AutoForceLayoutConstants', '$templateCache', '$compile', '$mdDialog', function (constants, templates, $compile, $mdDialog) {
         return {
 
             //---------------------------------------------------
@@ -957,6 +958,23 @@ angular.module('autoForceLayout', [])
             isHebrewString: function (s) {
                 var c = s.charAt(0);
                 return (c >= 'א' && c <= 'ת');
+            },
+
+            //---------------------------------------------------
+            // confirmFilterButton
+            //---------------------------------------------------
+            confirmFilterButton: function (ev, myInstance) {
+                var confirm = $mdDialog.confirm()
+                    .title('Please confirm')
+                    .content('Remove selected elements - are you sure?')
+                    .ariaLabel('Remove selected elements - Please confirm')
+                    .targetEvent(ev)
+                    .ok('Remove')
+                    .cancel('Cancel');
+
+                $mdDialog.show(confirm).then(function () {
+                    myInstance.removeSelectedElements();
+                });
             }
 
         }; // return {
