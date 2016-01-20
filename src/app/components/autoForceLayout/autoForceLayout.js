@@ -226,13 +226,14 @@ angular.module('autoForceLayout', [])
             // will render above the edges).
             myInstance.edgeGroup = myInstance.inSvgWrapper.append("g")
                 .attr("class", "edges")
-                .attr("stroke", "lightgray")
-                .attr("stroke-width", constants.DEFAULT_LINE_WIDTH + 'px');
+                .attr("stroke", constants.DEFAULT_EDGE_COLOR)
+                .attr("stroke-width", constants.DEFAULT_EDGE_WIDTH + 'px');
             myInstance.nodeGroup = myInstance.inSvgWrapper.append("g")
                 .attr("class", "nodes")
-                .attr("fill", "lightgray");
+                .attr("fill", constants.DEFAULT_NODE_COLOR);
             myInstance.labelGroup = myInstance.inSvgWrapper.append("g")
                 .attr("class", "labels")
+                .attr("fill", constants.DEFAULT_NODE_COLOR)
                 .classed("display_none", myInstance.config.hideLabels);
 
             return myInstance;
@@ -363,7 +364,7 @@ angular.module('autoForceLayout', [])
         // getEdgeWidth
         //---------------------------------------------------
         proto.getEdgeWidth = function (edgeData) {
-            return constants.DEFAULT_LINE_WIDTH + (edgeData.weight / 3) + 'px';
+            return constants.DEFAULT_EDGE_WIDTH + (edgeData.weight / 3) + 'px';
         };
 
         //---------------------------------------------------
@@ -459,7 +460,7 @@ angular.module('autoForceLayout', [])
                     }
                     // Calculate base edge offset, from the index in the multiple-edges array:
                     // 1 -> 0, 2 -> 2, 3-> -2, 4 -> 4, 5 -> -4, ...
-                    val.basicOffset = (val.multiIdx % 2 === 0 ? val.multiIdx * constants.DEFAULT_LINE_WIDTH : (-val.multiIdx + 1) * constants.DEFAULT_LINE_WIDTH);
+                    val.basicOffset = (val.multiIdx % 2 === 0 ? val.multiIdx * constants.DEFAULT_EDGE_WIDTH : (-val.multiIdx + 1) * constants.DEFAULT_EDGE_WIDTH);
                 }
             });
         };
@@ -866,7 +867,9 @@ angular.module('autoForceLayout', [])
         CLASS_EDGE: 'Edge',
         CSS_CLASS_NODE: 'node',
         CSS_CLASS_EDGE: 'edge',
-        DEFAULT_LINE_WIDTH: 1.5,
+        DEFAULT_EDGE_WIDTH: 1.5,
+        DEFAULT_EDGE_COLOR: 'brown',
+        DEFAULT_NODE_COLOR: '#6060a0',
         LABEL_DISPLACEMENT: 10,
         MAX_ZOOM: 0.5,
         MIN_ZOOM: 2,
