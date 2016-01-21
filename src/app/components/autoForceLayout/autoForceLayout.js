@@ -343,12 +343,14 @@ angular.module('autoForceLayout', [])
 
         //---------------------------------------------------
         // calcFixAspectRatio
+        // Returns a number to be multiplied by an element's width, to fix aspect ratio
+        // deformation, due to the <svg fixAspectRatio="none">
         //---------------------------------------------------
         proto.calcFixAspectRatio = function () {
             this.fixAspectRatio = (this.svg ?
             (constants.INNER_SVG_WIDTH / constants.INNER_SVG_HEIGHT) * (this.svg[0][0].offsetHeight / this.svg[0][0].offsetWidth)
                 : 1);
-            console.log(`fixAspectRatio = ${this.fixAspectRatio}`);
+            //console.log(`fixAspectRatio = ${this.fixAspectRatio}`);
         };
 
         //---------------------------------------------------
@@ -767,7 +769,7 @@ angular.module('autoForceLayout', [])
 
             if (!this.isDragging) {
                 this.isDragging = true;
-                console.log("Now dragging");
+                //console.log("Now dragging");
             }
         };
 
@@ -776,7 +778,7 @@ angular.module('autoForceLayout', [])
         //---------------------------------------------------
         proto.onDragEnd = function () {
             this.isDragging = false;
-            console.log("Dragging ended");
+            //console.log("Dragging ended");
         };
 
         //---------------------------------------------------
@@ -802,7 +804,6 @@ angular.module('autoForceLayout', [])
         //---------------------------------------------------
         // onLabelsShowHideBtnClick
         // Hide or show labels
-        // TODO: add animation
         //---------------------------------------------------
         proto.onLabelsShowHideBtnClick = function () {
             var myInstance = this;
@@ -810,8 +811,7 @@ angular.module('autoForceLayout', [])
                 this.labelGroup.transition().attr("opacity", "0");
                 setTimeout(function () {
                     myInstance.labelGroup.classed('display_none', true);
-                    //}, constants.ANIMATION_DELAY); // TODO: animation temporarily disabled
-                }, constants.ANIMATION_DURATION);
+                }, constants.ANIMATION_DELAY);
             } else { // show labels
                 this.labelGroup.classed('display_none', false);
                 setTimeout(function () {
@@ -950,7 +950,7 @@ angular.module('autoForceLayout', [])
                     x = 100 * number_of_nodes / (height_in_pixels * width_in_pixels);
                 if (x < 0.0634) x = 0.0634;
                 var result = A * Math.pow(x, -B);
-                console.log(`Calculated friction = ${result} (A=${A} B=${B} x=${x})`);
+                //console.log(`Calculated friction = ${result} (A=${A} B=${B} x=${x})`);
                 return result;
             },
 
