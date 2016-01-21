@@ -611,10 +611,13 @@ angular.module('autoForceLayout', [])
                 } else {
                     // If the Ctrl key was not pressed ..
                     // If the clicked element is selected, unselect the other elements
+                    // (if only the clicked element is selected, unselect it)
                     // Else, clear the current selection, and select the clicked element
-                    //if (!data.selected) {
-                    this.onSelectInside(element, item, true, true);
-                    //}
+                    if (item.selected && (this.selectedItems[constants.NODES].size + this.selectedItems[constants.EDGES].size) === 1) {
+                        this.onSelectInside(element, item, false);
+                    } else {
+                        this.onSelectInside(element, item, true, true);
+                    }
                 }
             }
             // Prevent bubbling, so that we can separately detect a click on the container
