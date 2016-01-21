@@ -13,7 +13,7 @@ angular.module('autoForceLayout', [])
               <span flex="40">\
                 <i class="mdi mdi-filter"\
                    title="Remove selected elements"\
-                   ng-click="onFilterButtonClick()"></i>\
+                   ng-click="autoForceLayoutInstance.removeSelectedElements()"></i>\
                 <i class="mdi"\
                    title="Fix/release nodes"\
                    ng-class="autoForceLayoutInstance.fixedNodesMode ? \'mdi-play-circle-outline\' : \'mdi-pause-circle-outline\'" \
@@ -59,9 +59,9 @@ angular.module('autoForceLayout', [])
                     $scope.autoForceLayoutInstance = new AutoForceLayoutFactory($element, this.options, this.externalEventHandlers)
                         .redraw();
 
-                $scope.onFilterButtonClick = function (ev) {
-                    helper.confirmFilterButton(ev, $scope.autoForceLayoutInstance);
-                };
+                //$scope.onFilterButtonClick = function (ev) {
+                //    helper.confirmFilterButton(ev, $scope.autoForceLayoutInstance);
+                //};
             },
             link: function (scope, element) { //, attr, ctrl) {
                 //console.log('In autoForceLayout link');
@@ -961,24 +961,24 @@ angular.module('autoForceLayout', [])
             isHebrewString: function (s) {
                 var c = s.charAt(0);
                 return (c >= 'א' && c <= 'ת');
-            },
+            }
 
             //---------------------------------------------------
             // confirmFilterButton
             //---------------------------------------------------
-            confirmFilterButton: function (ev, myInstance) {
-                var confirm = $mdDialog.confirm()
-                    .title('Please confirm')
-                    .content('Remove selected elements - are you sure?')
-                    .ariaLabel('Remove selected elements - Please confirm')
-                    .targetEvent(ev)
-                    .ok('Remove')
-                    .cancel('Cancel');
-
-                $mdDialog.show(confirm).then(function () {
-                    myInstance.removeSelectedElements();
-                });
-            }
+            //confirmFilterButton: function (ev, myInstance) {
+            //    var confirm = $mdDialog.confirm()
+            //        .title('Please confirm')
+            //        .content('Remove selected elements - are you sure?')
+            //        .ariaLabel('Remove selected elements - Please confirm')
+            //        .targetEvent(ev)
+            //        .ok('Remove')
+            //        .cancel('Cancel');
+            //
+            //    $mdDialog.show(confirm).then(function () {
+            //        myInstance.removeSelectedElements();
+            //    });
+            //}
 
         }; // return {
     }]) // .service
