@@ -483,16 +483,18 @@ angular.module('autoForceLayout', [])
         proto.onForceStart = function () {
             var myInstance = this;
             var ticksPerRender,
-                t0 = performance.now(), t1,
+                t0 = performance.now(), t1, t2, calculationTime = 0,
                 ticks = 0;
             myInstance.calcFixAspectRatio();
             //
             requestAnimationFrame(function render() {
                 // Do not accelerate the simulation during dragging, so as not to slow the dragging
                 ticksPerRender = (myInstance.isDragging ? 1 : 60);
+                t2 = performance.now();
                 for (let i = 0; i < ticksPerRender; i++) {
                     myInstance.force.tick();
                 }
+                calculationTime += (performance.now() - t2);
                 myInstance.onTick();
                 ticks += ticksPerRender;
 
@@ -500,7 +502,7 @@ angular.module('autoForceLayout', [])
                     requestAnimationFrame(render);
                 } else {
                     t1 = performance.now();
-                    console.log(`Force Simulation time = ${((t1 - t0) / 1000).toFixed(2)}s, ${ticks} ticks`);
+                    console.log(`Force Simulation time = ${((t1 - t0) / 1000).toFixed(2)}s, Calculation time =  ${(calculationTime / 1000).toFixed(2)}s, ${ticks} ticks`);
                     myInstance.onForceEnd();
                 }
             })
