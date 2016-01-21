@@ -806,17 +806,18 @@ angular.module('autoForceLayout', [])
         // Hide or show labels
         //---------------------------------------------------
         proto.onLabelsShowHideBtnClick = function () {
-            var myInstance = this;
+            //var myInstance = this;
             if (this.config.hideLabels = !this.config.hideLabels) {
-                this.labelGroup.transition().attr("opacity", "0");
-                setTimeout(function () {
-                    myInstance.labelGroup.classed('display_none', true);
-                }, constants.ANIMATION_DELAY);
+                this.labelGroup.classed('display_none', true);
+                //this.labelGroup.transition().attr("opacity", "0");
+                //setTimeout(function () {
+                //    myInstance.labelGroup.classed('display_none', true);
+                //}, constants.ANIMATION_DELAY);
             } else { // show labels
                 this.labelGroup.classed('display_none', false);
-                setTimeout(function () {
-                    myInstance.labelGroup.transition().attr("opacity", "1");
-                }, constants.ANIMATION_DELAY);
+                //setTimeout(function () {
+                //    myInstance.labelGroup.transition().attr("opacity", "1");
+                //}, constants.ANIMATION_DELAY);
             }
         };
 
