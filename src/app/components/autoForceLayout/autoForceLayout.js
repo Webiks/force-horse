@@ -327,6 +327,15 @@ angular.module('autoForceLayout', [])
                 })
             ;
 
+            // Draw progress bar
+            this.progressBar = this.svg
+                .append('line')
+                .attr('class', 'progress')
+                .attr('x1', '0')
+                .attr('y1', '0')
+                .attr('x2', '0')
+                .attr('y2', '0');
+
             // set an on-resize event, to fix aspect ratios
             d3.select(window).on(`resize.${this.instanceName}`, function () {
                 myInstance.onWindowResize();
@@ -516,7 +525,7 @@ angular.module('autoForceLayout', [])
 
         //---------------------------------------------------
         // onTick
-        // Update the graph
+        // Update the force simulation in the DOM
         //---------------------------------------------------
         proto.onTick = function () {
             var myInstance = this;
@@ -560,6 +569,10 @@ angular.module('autoForceLayout', [])
                     return "translate(" + offset.dx + "," + offset.dy + ")";
                 })
             ;
+
+            // Update simulation progress bar (alpha decreases)
+            this.progressBar.attr('x2',
+                constants.INNER_SVG_WIDTH * (1 - this.force.alpha() / constants.MAX_ALPHA));
         };
 
         //---------------------------------------------------
@@ -889,6 +902,7 @@ angular.module('autoForceLayout', [])
         ANIMATION_DELAY: 200,
         ALEPHBET: 'abcdefghijklmnopqrstuvwxyz',
         INSTANCE_NAME_LENGTH: 5,
+        MAX_ALPHA: 0.1,
         HEAVY_SIMULATION_NUM_OF_NODES: 420,
         HEAVY_SIMULATION_NUM_OF_TICKS: 1000,
         get NODE_SIZE_ADDITION_PER_WEIGHT_UNIT() {

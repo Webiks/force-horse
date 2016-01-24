@@ -83,6 +83,11 @@
     display: none;
 }
 
+.auto-force-layout svg.graph-svg line.progress {
+    stroke: black;
+    stroke-width: 4;
+}
+
 .auto-force-layout .buttonsWrapper {
     height: 10%;
     color: lightgray;
