@@ -130,6 +130,7 @@ angular.module('autoForceLayout', [])
 
             // Some nodes-related fields
             // The size (area) of the containing circle
+            this.numOfNodes = this.nodeDataArray.length;
             this.nodeIconAreaDefault = constants.INNER_SVG_WIDTH / 54 * constants.INNER_SVG_HEIGHT / 48 * 2;
             this.nodeIconRadius = Math.sqrt(this.nodeIconAreaDefault / Math.PI);
             this.selectedItems = [new Set(), new Set()]; // selected nodes, selected edges
@@ -478,7 +479,9 @@ angular.module('autoForceLayout', [])
 
         //---------------------------------------------------
         // onForceStart
-        // Move the animation, with acceleration
+        // This is the main method of the force simulation.
+        // The simulation ticks are called synchronously.
+        // The number of renderings (paints) is controlled.
         //---------------------------------------------------
         proto.onForceStart = function () {
             var myInstance = this;
@@ -488,15 +491,18 @@ angular.module('autoForceLayout', [])
             myInstance.calcFixAspectRatio();
             //
             requestAnimationFrame(function render() {
-                // Do not accelerate the simulation during dragging, so as not to slow the dragging
-                ticksPerRender = (myInstance.isDragging ? 1 : 60);
+                // Do not accelerate the simulation during dragging, so as not to slow the dragging.
+                // For heavy simulations, do one render
+                ticksPerRender = (myInstance.isDragging ? 1 : // 60)
+                    myInstance.numOfNodes <= constants.HEAVY_SIMULATION_NUM_OF_NODES ?
+                    myInstance.numOfNodes / 7 : constants.HEAVY_SIMULATION_NUM_OF_TICKS);
                 t2 = performance.now();
-                for (let i = 0; i < ticksPerRender; i++) {
+                for (let i = 0; i < ticksPerRender && myInstance.force.alpha() > 0; i++) {
                     myInstance.force.tick();
+                    ticks++;
                 }
                 calculationTime += (performance.now() - t2);
-                myInstance.onTick();
-                ticks += ticksPerRender;
+                myInstance.onTick(); // Update the DOM
 
                 if (myInstance.force.alpha() > 0) {
                     requestAnimationFrame(render);
@@ -883,6 +889,8 @@ angular.module('autoForceLayout', [])
         ANIMATION_DELAY: 200,
         ALEPHBET: 'abcdefghijklmnopqrstuvwxyz',
         INSTANCE_NAME_LENGTH: 5,
+        HEAVY_SIMULATION_NUM_OF_NODES: 420,
+        HEAVY_SIMULATION_NUM_OF_TICKS: 1000,
         get NODE_SIZE_ADDITION_PER_WEIGHT_UNIT() {
             return this.INNER_SVG_WIDTH * this.INNER_SVG_HEIGHT / (54 * 48 * 3);
         }
