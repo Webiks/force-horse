@@ -109,8 +109,9 @@
 .auto-force-layout .buttonsWrapper i.rmdi {
     background-color: lightgray;
     display: inline-block;
-    width: 6vh;
+    width: 5.5vh;
     height: 6vh;
+    margin: 0 1.5vh;
     mask-size: contain;
     -webkit-mask-size: contain;
 }
