@@ -111,6 +111,8 @@
     display: inline-block;
     width: 6vh;
     height: 6vh;
+    mask-size: contain;
+    -webkit-mask-size: contain;
 }
 
 .auto-force-layout .buttonsWrapper i.rmdi:hover {
@@ -122,11 +124,11 @@
 }
 
 .auto-force-layout .buttonsWrapper i.rmdi.rmdi-node-weight {
-    mask-image: url(node_weight.svg);
-    -webkit-mask-image: url(node_weight.svg);
+    mask-image: url(img/node_weight.png);
+    -webkit-mask-image: url(img/node_weight.png);
 }
 
 .auto-force-layout .buttonsWrapper i.rmdi.rmdi-link-weight {
-    mask-image: url(link_weight.svg);
-    -webkit-mask-image: url(link_weight.svg);
+    mask-image: url(img/link_weight.png);
+    -webkit-mask-image: url(img/link_weight.png);
 }
