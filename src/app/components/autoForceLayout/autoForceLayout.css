@@ -105,3 +105,28 @@
 .auto-force-layout .buttonsWrapper i:active {
     color: red;
 }
+
+.auto-force-layout .buttonsWrapper i.rmdi {
+    background-color: lightgray;
+    display: inline-block;
+    width: 6vh;
+    height: 6vh;
+}
+
+.auto-force-layout .buttonsWrapper i.rmdi:hover {
+    background-color: black;
+}
+
+.auto-force-layout .buttonsWrapper i.rmdi:active {
+    background-color: red;;
+}
+
+.auto-force-layout .buttonsWrapper i.rmdi.rmdi-node-weight {
+    mask-image: url(node_weight.svg);
+    -webkit-mask-image: url(node_weight.svg);
+}
+
+.auto-force-layout .buttonsWrapper i.rmdi.rmdi-link-weight {
+    mask-image: url(link_weight.svg);
+    -webkit-mask-image: url(link_weight.svg);
+}

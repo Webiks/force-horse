@@ -33,6 +33,8 @@ angular.module('autoForceLayout', [])
                 <i class="mdi mdi-regex"\
                    title="Show/hide node weight"\
                    ng-click="autoForceLayoutInstance.onNodeWeightShowHideBtnClick()"></i>\
+                <i class="rmdi rmdi-node-weight"></i>\
+                <i class="rmdi rmdi-link-weight"></i>\
               </span>\
             </div>');
     })
