@@ -164,7 +164,7 @@ angular.module('autoForceLayout', [])
                     myInstance.onForceStart();
                 })
                 //.on("tick", function () {
-                //    myInstance.onTick();
+                //    myInstance.updateGraphInDOM();
                 //})
                 //.on("end", function () {
                 //    myInstance.onForceEnd();
@@ -332,9 +332,9 @@ angular.module('autoForceLayout', [])
                 .append('line')
                 .attr('class', 'progress')
                 .attr('x1', '0')
-                .attr('y1', '0')
+                .attr('y1', '1')
                 .attr('x2', '0')
-                .attr('y2', '0');
+                .attr('y2', '1');
 
             // set an on-resize event, to fix aspect ratios
             d3.select(window).on(`resize.${this.instanceName}`, function () {
@@ -360,7 +360,7 @@ angular.module('autoForceLayout', [])
             this.fixAspectRatio = (this.svg ?
             (constants.INNER_SVG_WIDTH / constants.INNER_SVG_HEIGHT) * (this.svg[0][0].offsetHeight / this.svg[0][0].offsetWidth)
                 : 1);
-            //console.log(`fixAspectRatio = ${this.fixAspectRatio}`);
+            return this;
         };
 
         //---------------------------------------------------
@@ -483,51 +483,92 @@ angular.module('autoForceLayout', [])
         //---------------------------------------------------
         proto.onWindowResize = function () {
             this.calcFixAspectRatio();
-            this.onTick();
+            this.updateGraphInDOM();
         };
 
         //---------------------------------------------------
         // onForceStart
-        // This is the main method of the force simulation.
-        // The simulation ticks are called synchronously.
-        // The number of renderings (paints) is controlled.
+        // Called when a force-simulation is about to start.
         //---------------------------------------------------
         proto.onForceStart = function () {
+            this.calcFixAspectRatio();
+            if (this.numOfNodes < constants.HEAVY_SIMULATION_NUM_OF_NODES) {
+                this.runSimulation();
+            } else {
+                this.runHeavySimulation();
+            }
+        };
+
+        //---------------------------------------------------
+        // runSimulation
+        //---------------------------------------------------
+        proto.runSimulation = function () {
             var myInstance = this;
             var ticksPerRender,
-                t0 = performance.now(), t1, t2, calculationTime = 0,
+                simulationStart = performance.now(), simulationDuration, calculationStart, calculationDuration = 0,
                 ticks = 0;
-            myInstance.calcFixAspectRatio();
-            //
+
             requestAnimationFrame(function render() {
                 // Do not accelerate the simulation during dragging, so as not to slow the dragging.
-                // For heavy simulations, do one render
-                ticksPerRender = (myInstance.isDragging ? 1 : // 60)
-                    myInstance.numOfNodes <= constants.HEAVY_SIMULATION_NUM_OF_NODES ?
-                    myInstance.numOfNodes / 7 : constants.HEAVY_SIMULATION_NUM_OF_TICKS);
-                t2 = performance.now();
+                ticksPerRender = (myInstance.isDragging ? 1 : myInstance.numOfNodes / 7);
+                calculationStart = performance.now();
                 for (let i = 0; i < ticksPerRender && myInstance.force.alpha() > 0; i++) {
                     myInstance.force.tick();
                     ticks++;
                 }
-                calculationTime += (performance.now() - t2);
-                myInstance.onTick(); // Update the DOM
+                calculationDuration += (performance.now() - calculationStart);
+                myInstance.updateGraphInDOM().updateProgressBar();
 
                 if (myInstance.force.alpha() > 0) {
                     requestAnimationFrame(render);
                 } else {
-                    t1 = performance.now();
-                    console.log(`Force Simulation time = ${((t1 - t0) / 1000).toFixed(2)}s, Calculation time =  ${(calculationTime / 1000).toFixed(2)}s, ${ticks} ticks`);
+                    simulationDuration = performance.now() - simulationStart;
+                    console.log(`Force Simulation time = ${(simulationDuration / 1000).toFixed(2)}s, Calculation time =  ${(calculationDuration / 1000).toFixed(2)}s, ${ticks} ticks`);
                     myInstance.onForceEnd();
                 }
-            })
+            }); // render
         };
 
         //---------------------------------------------------
-        // onTick
+        // runHeavySimulation
+        // A simulation runner for graphs with many nodes:
+        // First do all the calculations, and update only the progress bar.
+        // Only then update the graph in DOM.
+        //---------------------------------------------------
+        proto.runHeavySimulation = function () {
+            var myInstance = this;
+            var ticksPerRender,
+                calculationStart, calculationDuration = 0,
+                ticks = 0;
+
+            requestAnimationFrame(function render() {
+                // Do not accelerate the simulation during dragging, so as not to slow the dragging.
+                ticksPerRender = (myInstance.isDragging ? 1 : 30);
+                calculationStart = performance.now();
+                for (let i = 0; i < ticksPerRender && myInstance.force.alpha() > 0; i++) {
+                    myInstance.force.tick();
+                    ticks++;
+                }
+                calculationDuration += (performance.now() - calculationStart);
+                myInstance.updateProgressBar();
+                if (myInstance.isDragging) {
+                    myInstance.updateGraphInDOM();
+                }
+
+                if (myInstance.force.alpha() > 0) {
+                    requestAnimationFrame(render);
+                } else {
+                    console.log(`Calculation time =  ${(calculationDuration / 1000).toFixed(2)}s, ${ticks} ticks`);
+                    myInstance.updateGraphInDOM().onForceEnd();
+                }
+            }); // render
+        };
+
+        //---------------------------------------------------
+        // updateGraphInDOM
         // Update the force simulation in the DOM
         //---------------------------------------------------
-        proto.onTick = function () {
+        proto.updateGraphInDOM = function () {
             var myInstance = this;
 
             // Update nodes
@@ -570,7 +611,13 @@ angular.module('autoForceLayout', [])
                 })
             ;
 
-            // Update simulation progress bar (alpha decreases)
+            return this;
+        };
+
+        //---------------------------------------------------
+        // updateProgressBar
+        //---------------------------------------------------
+        proto.updateProgressBar = function () {
             this.progressBar.attr('x2',
                 constants.INNER_SVG_WIDTH * (1 - this.force.alpha() / constants.MAX_ALPHA));
         };
@@ -912,7 +959,7 @@ angular.module('autoForceLayout', [])
 
 
     //---------------------------------------------------------------//
-    .service('AutoForceLayoutHelper', ['AutoForceLayoutConstants', '$templateCache', '$compile', '$mdDialog', function (constants, templates, $compile, $mdDialog) {
+    .service('AutoForceLayoutHelper', ['AutoForceLayoutConstants', '$templateCache', '$compile', function (constants, templates, $compile) {
         return {
 
             //---------------------------------------------------
@@ -977,9 +1024,7 @@ angular.module('autoForceLayout', [])
                     B = 1.162,
                     x = 100 * number_of_nodes / (height_in_pixels * width_in_pixels);
                 if (x < 0.0634) x = 0.0634;
-                var result = A * Math.pow(x, -B);
-                //console.log(`Calculated friction = ${result} (A=${A} B=${B} x=${x})`);
-                return result;
+                return A * Math.pow(x, -B);
             },
 
             //---------------------------------------------------

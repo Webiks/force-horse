@@ -85,7 +85,7 @@
 
 .auto-force-layout svg.graph-svg line.progress {
     stroke: black;
-    stroke-width: 4;
+    stroke-width: 2;
 }
 
 .auto-force-layout .buttonsWrapper {
