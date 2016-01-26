@@ -579,14 +579,18 @@ angular.module('autoForceLayout', [])
 
             // Update nodes
             this.elements[constants.NODES].attr('transform', function (d) {
-                if (myInstance.isBoundedGraphMode) {
-                    // Force the nodes inside the visible area
-                    var radius = myInstance.nodeIconRadius;
-                    d.x = Math.max(radius, Math.min(constants.INNER_SVG_WIDTH - radius, d.x));
-                    d.y = Math.max(radius, Math.min(constants.INNER_SVG_HEIGHT - radius, d.y));
-                }
+                //if (myInstance.isBoundedGraphMode) {
+                //    // Force the nodes inside the visible area
+                //    var radius = myInstance.nodeIconRadius;
+                //    d.x = Math.max(radius, Math.min(constants.INNER_SVG_WIDTH - radius, d.x));
+                //    d.y = Math.max(radius, Math.min(constants.INNER_SVG_HEIGHT - radius, d.y));
+                //}
                 return `translate(${d.x},${d.y}) scale(${myInstance.fixAspectRatio},1)`;
-            });
+            })
+            .each(function (d) {
+                myInstance.preventNodesOverlap(0.5)(d);
+            })
+            ;
 
             // Update labels
             this.labels.attr("x", function (d) {
@@ -672,6 +676,40 @@ angular.module('autoForceLayout', [])
                     .duration(constants.ANIMATION_DURATION)
                     .call(this.zoom.translate(translate).scale(scale).event);
             }
+        };
+
+        //---------------------------------------------------
+        // preventNodesOverlap
+        // A collision-detection algorithm, Based on
+        // http://www.coppelia.io/2014/07/an-a-to-z-of-extra-features-for-the-d3-force-layout/
+        // and http://bl.ocks.org/mbostock/7881887
+        //---------------------------------------------------
+        proto.preventNodesOverlap = function (alpha) {
+            var radius = this.nodeIconRadius,
+            padding = constants.NODE_MARGIN,
+            quadtree = d3.geom.quadtree(this.nodeDataArray);
+            return function(d) {
+                var rb = 2*radius + padding,
+                    nx1 = d.x - rb,
+                    nx2 = d.x + rb,
+                    ny1 = d.y - rb,
+                    ny2 = d.y + rb;
+                quadtree.visit(function(quad, x1, y1, x2, y2) {
+                    if (quad.point && (quad.point !== d)) {
+                        var x = d.x - quad.point.x,
+                            y = d.y - quad.point.y,
+                            l = Math.sqrt(x * x + y * y);
+                        if (l < rb) {
+                            l = (l - rb) / l * alpha;
+                            d.x -= x *= l;
+                            d.y -= y *= l;
+                            quad.point.x += x;
+                            quad.point.y += y;
+                        }
+                    }
+                    return x1 > nx2 || x2 < nx1 || y1 > ny2 || y2 < ny1;
+                });
+            };
         };
 
         //---------------------------------------------------
@@ -951,6 +989,7 @@ angular.module('autoForceLayout', [])
         DEFAULT_EDGE_WIDTH: 1.5,
         DEFAULT_EDGE_COLOR: 'brown',
         DEFAULT_NODE_COLOR: '#6060a0',
+        NODE_MARGIN: 1,
         LABEL_DISPLACEMENT: 10,
         MAX_ZOOM: 0.5,
         MIN_ZOOM: 2,
