@@ -27,14 +27,12 @@ angular.module('autoForceLayout', [])
                    title="Hide/show labels"\
                    ng-class="autoForceLayoutInstance.config.hideLabels ? \'mdi-label\' : \'mdi-label-outline\'" \
                    ng-click="autoForceLayoutInstance.onLabelsShowHideBtnClick()"></i>\
-                <i class="mdi mdi-minus"\
+                <i class="img img-link-weight"\
                    title="Show/hide edge weight"\
                    ng-click="autoForceLayoutInstance.onEdgeWeightShowHideBtnClick()"></i>\
-                <i class="mdi mdi-regex"\
+                <i class="img img-node-weight"\
                    title="Show/hide node weight"\
                    ng-click="autoForceLayoutInstance.onNodeWeightShowHideBtnClick()"></i>\
-                <i class="rmdi rmdi-node-weight"></i>\
-                <i class="rmdi rmdi-link-weight"></i>\
               </span>\
             </div>');
     })

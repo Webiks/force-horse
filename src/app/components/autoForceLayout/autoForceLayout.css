@@ -106,7 +106,7 @@
     color: red;
 }
 
-.auto-force-layout .buttonsWrapper i.rmdi {
+.auto-force-layout .buttonsWrapper i.img {
     background-color: lightgray;
     display: inline-block;
     width: 5.5vh;
@@ -116,20 +116,20 @@
     -webkit-mask-size: contain;
 }
 
-.auto-force-layout .buttonsWrapper i.rmdi:hover {
+.auto-force-layout .buttonsWrapper i.img:hover {
     background-color: black;
 }
 
-.auto-force-layout .buttonsWrapper i.rmdi:active {
+.auto-force-layout .buttonsWrapper i.img:active {
     background-color: red;;
 }
 
-.auto-force-layout .buttonsWrapper i.rmdi.rmdi-node-weight {
+.auto-force-layout .buttonsWrapper i.img.img-node-weight {
     mask-image: url(img/node_weight.png);
     -webkit-mask-image: url(img/node_weight.png);
 }
 
-.auto-force-layout .buttonsWrapper i.rmdi.rmdi-link-weight {
+.auto-force-layout .buttonsWrapper i.img.img-link-weight {
     mask-image: url(img/link_weight.png);
     -webkit-mask-image: url(img/link_weight.png);
 }
