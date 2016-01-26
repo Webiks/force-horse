@@ -15,7 +15,7 @@ angular.module('autoForceLayout', [])
                    title="Remove selected elements"\
                    ng-click="autoForceLayoutInstance.removeSelectedElements()"></i>\
                 <i class="mdi"\
-                   title="Fix/release nodes"\
+                   title="Fix/release all nodes"\
                    ng-class="autoForceLayoutInstance.fixedNodesMode ? \'mdi-play-circle-outline\' : \'mdi-pause-circle-outline\'" \
                    ng-click="autoForceLayoutInstance.onPlayPauseBtnClick()"></i>\
                 <i class="mdi mdi-home"\
@@ -491,6 +491,12 @@ angular.module('autoForceLayout', [])
         // Called when a force-simulation is about to start.
         //---------------------------------------------------
         proto.onForceStart = function () {
+            // Prevent simulation when dragging a node
+            if (this.isDragging) {
+                this.force.stop();
+                return;
+            }
+            // Proceed with simulation
             this.calcFixAspectRatio();
             if (this.numOfNodes < constants.HEAVY_SIMULATION_NUM_OF_NODES) {
                 this.runSimulation();
@@ -618,8 +624,11 @@ angular.module('autoForceLayout', [])
         // updateProgressBar
         //---------------------------------------------------
         proto.updateProgressBar = function () {
-            this.progressBar.attr('x2',
-                constants.INNER_SVG_WIDTH * (1 - this.force.alpha() / constants.MAX_ALPHA));
+            // Do not update progress bar in fixed nodes mode
+            if (!this.fixedNodesMode) {
+                this.progressBar.attr('x2',
+                    constants.INNER_SVG_WIDTH * (1 - this.force.alpha() / constants.MAX_ALPHA));
+            }
         };
 
         //---------------------------------------------------
@@ -836,7 +845,7 @@ angular.module('autoForceLayout', [])
                 return nodeData.id === d.id;
             }).classed("fixed", d.fixed = true);
 
-            if (!this.fixedNodesMode) this.fixedNodesMode = true;
+            //if (!this.fixedNodesMode) this.fixedNodesMode = true;
 
             if (!this.isDragging) {
                 this.isDragging = true;
@@ -1011,6 +1020,9 @@ angular.module('autoForceLayout', [])
                 } else {
                     dx = basicOffset;
                     dy = basicOffset * (-origDx) / origDy;
+                }
+                if (!angular.isNumber(dx)) {
+                    console.warn(`calcRightAngledOffset: dx is not a number! basicOffset=${basicOffset} origDx=${origDx} origDy=${origDy}`);
                 }
                 return {dx: dx, dy: dy};
             },
