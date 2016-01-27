@@ -578,18 +578,19 @@ angular.module('autoForceLayout', [])
             var myInstance = this;
 
             // Update nodes
-            this.elements[constants.NODES].attr('transform', function (d) {
-                //if (myInstance.isBoundedGraphMode) {
-                //    // Force the nodes inside the visible area
-                //    var radius = myInstance.nodeIconRadius;
-                //    d.x = Math.max(radius, Math.min(constants.INNER_SVG_WIDTH - radius, d.x));
-                //    d.y = Math.max(radius, Math.min(constants.INNER_SVG_HEIGHT - radius, d.y));
-                //}
-                return `translate(${d.x},${d.y}) scale(${myInstance.fixAspectRatio},1)`;
-            })
-            .each(function (d) {
-                myInstance.preventNodesOverlap(0.5)(d);
-            })
+            this.elements[constants.NODES]
+                .each(function (d) {
+                    myInstance.preventNodesOverlap(1.0)(d);
+                })
+                .attr('transform', function (d) {
+                    //if (myInstance.isBoundedGraphMode) {
+                    //    // Force the nodes inside the visible area
+                    //    var radius = myInstance.nodeIconRadius;
+                    //    d.x = Math.max(radius, Math.min(constants.INNER_SVG_WIDTH - radius, d.x));
+                    //    d.y = Math.max(radius, Math.min(constants.INNER_SVG_HEIGHT - radius, d.y));
+                    //}
+                    return `translate(${d.x},${d.y}) scale(${myInstance.fixAspectRatio},1)`;
+                })
             ;
 
             // Update labels
@@ -686,15 +687,15 @@ angular.module('autoForceLayout', [])
         //---------------------------------------------------
         proto.preventNodesOverlap = function (alpha) {
             var radius = this.nodeIconRadius,
-            padding = constants.NODE_MARGIN,
-            quadtree = d3.geom.quadtree(this.nodeDataArray);
-            return function(d) {
-                var rb = 2*radius + padding,
+                padding = constants.NODE_MARGIN,
+                quadtree = d3.geom.quadtree(this.nodeDataArray);
+            return function (d) {
+                var rb = 2 * radius + padding,
                     nx1 = d.x - rb,
                     nx2 = d.x + rb,
                     ny1 = d.y - rb,
                     ny2 = d.y + rb;
-                quadtree.visit(function(quad, x1, y1, x2, y2) {
+                quadtree.visit(function (quad, x1, y1, x2, y2) {
                     if (quad.point && (quad.point !== d)) {
                         var x = d.x - quad.point.x,
                             y = d.y - quad.point.y,
@@ -989,7 +990,7 @@ angular.module('autoForceLayout', [])
         DEFAULT_EDGE_WIDTH: 1.5,
         DEFAULT_EDGE_COLOR: 'brown',
         DEFAULT_NODE_COLOR: '#6060a0',
-        NODE_MARGIN: 1,
+        NODE_MARGIN: 10,
         LABEL_DISPLACEMENT: 10,
         MAX_ZOOM: 0.5,
         MIN_ZOOM: 2,
@@ -999,7 +1000,6 @@ angular.module('autoForceLayout', [])
         INSTANCE_NAME_LENGTH: 5,
         MAX_ALPHA: 0.1,
         HEAVY_SIMULATION_NUM_OF_NODES: 420,
-        HEAVY_SIMULATION_NUM_OF_TICKS: 1000,
         get NODE_SIZE_ADDITION_PER_WEIGHT_UNIT() {
             return this.INNER_SVG_WIDTH * this.INNER_SVG_HEIGHT / (54 * 48 * 3);
         }
