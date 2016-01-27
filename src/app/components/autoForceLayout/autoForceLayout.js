@@ -171,9 +171,13 @@ angular.module('autoForceLayout', [])
             if (angular.isDefined(p = myInstance.config.forceParameters.charge)) {
                 myInstance.force.charge(p);
             } else {
-                myInstance.force.charge(function (d) {
-                    return d.weight * -350;
-                });
+                if (myInstance.numOfNodes < constants.HEAVY_SIMULATION_NUM_OF_NODES) {
+                    myInstance.force.charge(function (d) {
+                        return d.weight * constants.DEFAULT_CHARGE_LIGHT;
+                    });
+                } else {
+                    myInstance.force.charge(constants.DEFAULT_CHARGE_HEAVY);
+                }
             }
             if (angular.isDefined(p = myInstance.config.forceParameters.friction)) {
                 myInstance.force.friction(p);
