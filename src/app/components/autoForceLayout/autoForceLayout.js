@@ -146,7 +146,7 @@ angular.module('autoForceLayout', [])
                 showEdgeWeight: false,
                 forceParameters: {
                     // New parameters
-                    charge: -350,
+                    //charge: -350,
                     linkStrength: 1,
                     gravity: 0.3,
                     linkDistance: 10
@@ -162,19 +162,19 @@ angular.module('autoForceLayout', [])
                 .size([constants.INNER_SVG_WIDTH, constants.INNER_SVG_HEIGHT])
                 .on("start", function () {
                     myInstance.onForceStart();
-                })
-                //.on("tick", function () {
-                //    myInstance.updateGraphInDOM();
-                //})
-                //.on("end", function () {
-                //    myInstance.onForceEnd();
-                //})
-            ;
+                });
             let p;
             if (angular.isDefined(p = myInstance.config.forceParameters.linkDistance)) myInstance.force.linkDistance(p);
             if (angular.isDefined(p = myInstance.config.forceParameters.linkStrength)) myInstance.force.linkStrength(p);
-            if (angular.isDefined(p = myInstance.config.forceParameters.charge)) myInstance.force.charge(p);
+            //if (angular.isDefined(p = myInstance.config.forceParameters.charge)) myInstance.force.charge(p);
             if (angular.isDefined(p = myInstance.config.forceParameters.gravity)) myInstance.force.gravity(p);
+            if (angular.isDefined(p = myInstance.config.forceParameters.charge)) {
+                myInstance.force.charge(p);
+            } else {
+                myInstance.force.charge(function (d) {
+                    return d.weight * -350;
+                });
+            }
             if (angular.isDefined(p = myInstance.config.forceParameters.friction)) {
                 myInstance.force.friction(p);
             } else {
@@ -579,9 +579,9 @@ angular.module('autoForceLayout', [])
 
             // Update nodes
             this.elements[constants.NODES]
-                .each(function (d) {
-                    myInstance.preventNodesOverlap(1.0)(d);
-                })
+                //.each(function (d) {
+                //    myInstance.preventNodesOverlap(1.0)(d);
+                //})
                 .attr('transform', function (d) {
                     //if (myInstance.isBoundedGraphMode) {
                     //    // Force the nodes inside the visible area
@@ -1000,6 +1000,8 @@ angular.module('autoForceLayout', [])
         INSTANCE_NAME_LENGTH: 5,
         MAX_ALPHA: 0.1,
         HEAVY_SIMULATION_NUM_OF_NODES: 420,
+        DEFAULT_CHARGE_LIGHT: -350,
+        DEFAULT_CHARGE_HEAVY: -15000,
         get NODE_SIZE_ADDITION_PER_WEIGHT_UNIT() {
             return this.INNER_SVG_WIDTH * this.INNER_SVG_HEIGHT / (54 * 48 * 3);
         }

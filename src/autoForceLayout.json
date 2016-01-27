@@ -3,9 +3,9 @@
   "showNodeWeight": false,
   "showEdgeWeight": false,
   "forceParameters": {
-    "charge": -15000,
+    "##charge": -15000,
     "#charge": -1200,
-    "##charge": -350,
+    "###charge": -350,
     "linkStrength": 1,
     "gravity": 0.2,
     "#linkDistance": 30,
