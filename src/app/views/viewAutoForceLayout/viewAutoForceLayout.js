@@ -97,8 +97,10 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
 
         // An element was hovered outside this view (in the graph component)
         vm.onHoverOutside = function (item) {
-            console.log("onHoverOutside: label=" + item.label + " hovered=" + item.hovered);
-            vm.setHoverState(item);
+            $scope.$apply(function () {
+                //console.log("onHoverOutside: label=" + item.label + " hovered=" + item.hovered);
+                vm.setHoverState(item);
+            });
         };
 
         // Update hover-related fields
@@ -158,14 +160,16 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
 
         // Elements were selected and/or unselected somewhere
         vm.onSelectOutside = function () {
-            for (var itemType = constants.NODES; itemType <= constants.EDGES; itemType++) {
-                vm.selectedItems[itemType].clear();
-                vm.data[itemType].forEach(function (item) {
-                    if (item.selected) {
-                        vm.selectedItems[itemType].add(item.id);
-                    }
-                });
-            }
+            $scope.$apply(function () {
+                for (var itemType = constants.NODES; itemType <= constants.EDGES; itemType++) {
+                    vm.selectedItems[itemType].clear();
+                    vm.data[itemType].forEach(function (item) {
+                        if (item.selected) {
+                            vm.selectedItems[itemType].add(item.id);
+                        }
+                    });
+                }
+            });
         };
 
     }]) // .controller
@@ -187,7 +191,8 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
                 // Generate a random graph
 
                 var i, node, edge, nodeIdx,
-                alephbet = "abcdefghijklmnopqrstuvwxyz0123456789אבגדהוזחטיכלמנסעפצקרשת",
+                    alephbet = "abcdefghijklmnopqrstuvwxyz0123456789",
+                    //alephbet = "abcdefghijklmnopqrstuvwxyz0123456789אבגדהוזחטיכלמנסעפצקרשת",
                 shapes = d3.svg.symbolTypes;
                 for (i = 0; i < numOfNodes; i++) {
                     node = graphData[constants.NODES].data[i] = {};

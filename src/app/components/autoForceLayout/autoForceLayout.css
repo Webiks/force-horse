@@ -48,14 +48,13 @@
     stroke: none;
 }
 
+.auto-force-layout svg.graph-svg .node.fixed {
+    /*stroke-dasharray: 1,1;*/
+}
+
 .auto-force-layout svg.graph-svg .node.hovered {
     stroke: #000;
     stroke-width: 1.5px;
-}
-
-.auto-force-layout svg.graph-svg .node.fixed {
-    stroke: yellow;
-    stroke-dasharray: 1,1;
 }
 
 .auto-force-layout svg.graph-svg .labels text {
