@@ -44,19 +44,18 @@ angular.module('autoForceLayout', [])
             controllerAs: "autoForceLayoutCtrl",
             priority: 100,
             scope: {
-                options: "=",
-                onHover: '&',
-                onSelect: '&'
+                options: "="
+                //onHover: '&',
+                //onSelect: '&'
             },
             bindToController: true,
             controller: function ($scope, $element) {
-                //console.log('In autoForceLayout controller');
+                //this.externalEventHandlers = helper.applyScopeToEventHandlers(this, $scope);
 
-                this.externalEventHandlers = helper.applyScopeToEventHandlers(this, $scope);
                 // Create my instance
                 // Also provide the caller with a reference to my instance, for API
                 this.options.autoForceLayoutInstance =
-                    $scope.autoForceLayoutInstance = new AutoForceLayoutFactory($element, this.options, this.externalEventHandlers)
+                    $scope.autoForceLayoutInstance = new AutoForceLayoutFactory($element, this.options)
                         .redraw();
 
                 //$scope.onFilterButtonClick = function (ev) {
@@ -80,11 +79,11 @@ angular.module('autoForceLayout', [])
     //---------------------------------------------------------------//
     .factory('AutoForceLayoutFactory', ['AutoForceLayoutConstants', 'AutoForceLayoutHelper', function (constants, helper) {
         // constructor
-        function AutoForceLayoutFactory(element, options, externalEventHandlers) {
+        function AutoForceLayoutFactory(element, options) {
             this.element = element[0];
             this.options = options;
-            this.externalEventHandlers = externalEventHandlers;
-
+            // Set a variable to hold references to registered event listeners
+            this.eventListeners = {hover:[], select:[]};
         }
 
         var proto = AutoForceLayoutFactory.prototype;
@@ -135,7 +134,7 @@ angular.module('autoForceLayout', [])
             this.nodeIconRadius = Math.sqrt(this.nodeIconAreaDefault / Math.PI);
             this.selectedItems = [new Set(), new Set()]; // selected nodes, selected edges
             this.fixedNodesMode = false;
-            this.isBoundedGraphMode = false; // TODO: redundant?
+            //this.isBoundedGraphMode = false; // TODO: redundant?
             this.isFirstZoomDone = false; // Zooming to viewport after first simlation
             this.isDragging = false;
 
@@ -689,33 +688,33 @@ angular.module('autoForceLayout', [])
         // http://www.coppelia.io/2014/07/an-a-to-z-of-extra-features-for-the-d3-force-layout/
         // and http://bl.ocks.org/mbostock/7881887
         //---------------------------------------------------
-        proto.preventNodesOverlap = function (alpha) {
-            var radius = this.nodeIconRadius,
-                padding = constants.NODE_MARGIN,
-                quadtree = d3.geom.quadtree(this.nodeDataArray);
-            return function (d) {
-                var rb = 2 * radius + padding,
-                    nx1 = d.x - rb,
-                    nx2 = d.x + rb,
-                    ny1 = d.y - rb,
-                    ny2 = d.y + rb;
-                quadtree.visit(function (quad, x1, y1, x2, y2) {
-                    if (quad.point && (quad.point !== d)) {
-                        var x = d.x - quad.point.x,
-                            y = d.y - quad.point.y,
-                            l = Math.sqrt(x * x + y * y);
-                        if (l < rb) {
-                            l = (l - rb) / l * alpha;
-                            d.x -= x *= l;
-                            d.y -= y *= l;
-                            quad.point.x += x;
-                            quad.point.y += y;
-                        }
-                    }
-                    return x1 > nx2 || x2 < nx1 || y1 > ny2 || y2 < ny1;
-                });
-            };
-        };
+        //proto.preventNodesOverlap = function (alpha) {
+        //    var radius = this.nodeIconRadius,
+        //        padding = constants.NODE_MARGIN,
+        //        quadtree = d3.geom.quadtree(this.nodeDataArray);
+        //    return function (d) {
+        //        var rb = 2 * radius + padding,
+        //            nx1 = d.x - rb,
+        //            nx2 = d.x + rb,
+        //            ny1 = d.y - rb,
+        //            ny2 = d.y + rb;
+        //        quadtree.visit(function (quad, x1, y1, x2, y2) {
+        //            if (quad.point && (quad.point !== d)) {
+        //                var x = d.x - quad.point.x,
+        //                    y = d.y - quad.point.y,
+        //                    l = Math.sqrt(x * x + y * y);
+        //                if (l < rb) {
+        //                    l = (l - rb) / l * alpha;
+        //                    d.x -= x *= l;
+        //                    d.y -= y *= l;
+        //                    quad.point.x += x;
+        //                    quad.point.y += y;
+        //                }
+        //            }
+        //            return x1 > nx2 || x2 < nx1 || y1 > ny2 || y2 < ny1;
+        //        });
+        //    };
+        //};
 
         //---------------------------------------------------
         // onClick
@@ -766,7 +765,8 @@ angular.module('autoForceLayout', [])
         proto.onHoverInside = function (element, item, on) {
             var myInstance = this;
             d3.select(element).classed("hovered", item.hovered = on);
-            myInstance.externalEventHandlers.onHover(item);
+            myInstance.callEventListeners('hover', item);
+            //myInstance.externalEventHandlers.onHover(item);
         };
 
         //---------------------------------------------------
@@ -830,7 +830,8 @@ angular.module('autoForceLayout', [])
             myInstance.svg.classed("selectionMode",
                 myInstance.selectedItems[constants.NODES].size + myInstance.selectedItems[constants.EDGES].size);
 
-            myInstance.externalEventHandlers.onSelect();
+            myInstance.callEventListeners('select');
+            //myInstance.externalEventHandlers.onSelect();
         };
 
         //---------------------------------------------------
@@ -975,6 +976,25 @@ angular.module('autoForceLayout', [])
         };
 
         //---------------------------------------------------
+        // addEventListener
+        // An API for the user app, to register event callbacks
+        //---------------------------------------------------
+        proto.addEventListener = function (type, callback) {
+            this.eventListeners[type].push(callback);
+            return this;
+        };
+
+        //---------------------------------------------------
+        // callEventListeners
+        // Call the registered event listeners, for an event type
+        //---------------------------------------------------
+        proto.callEventListeners = function (type, ...args) {
+            this.eventListeners[type].forEach(function(callback) {
+                callback(...args);
+            });
+        };
+
+        //---------------------------------------------------
         return AutoForceLayoutFactory;
     }])
 
@@ -1025,31 +1045,29 @@ angular.module('autoForceLayout', [])
                 var element = angular.element(template);
                 var compiledElement = $compile(element)(scope);
                 container.prepend(compiledElement);
-                // Event handlers
-                //scope.onPlayPauseBtnClick =
             },
 
             //---------------------------------------------------
             // applyScopeToEventHandlers
             // apply Angular's scope.$apply (set $watch) to user's event handlers
             //---------------------------------------------------
-            applyScopeToEventHandlers: function (ctrl, scope) {
-                return {
-
-                    onHover: function (d, on) {
-                        scope.$apply(function () {
-                            ctrl.onHover({item: d, on: on});
-                        });
-                    },
-
-                    onSelect: function (d, on, clearOldSelection) {
-                        scope.$apply(function () {
-                            ctrl.onSelect({item: d, on: on, clearOldSelection: clearOldSelection});
-                        });
-                    }
-
-                }; // return {
-            },
+            //applyScopeToEventHandlers: function (ctrl, scope) {
+            //    return {
+            //
+            //        onHover: function (d, on) {
+            //            scope.$apply(function () {
+            //                ctrl.onHover({item: d, on: on});
+            //            });
+            //        },
+            //
+            //        onSelect: function (d, on, clearOldSelection) {
+            //            scope.$apply(function () {
+            //                ctrl.onSelect({item: d, on: on, clearOldSelection: clearOldSelection});
+            //            });
+            //        }
+            //
+            //    }; // return {
+            //},
 
             //---------------------------------------------------
             // calcRightAngledOffset

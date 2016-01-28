@@ -16,18 +16,32 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
     }])
 
     //---------------------------------------------------------------//
-    .controller('view3Ctrl', ['$http', 'graphData', 'ViewAutoForceLayoutConstants', function ($http, graphData, constants) {
+    .controller('view3Ctrl', ['$scope','$http', 'graphData', 'ViewAutoForceLayoutConstants', function ($scope, $http, graphData, constants) {
         //console.log('In view3Ctrl');
         var vm = this;
-        
+
+        // Set the options, which are passed as a parameter to the directive
         vm.options = {};
+
         vm.options.data = graphData.getRandomData(vm.numOfNodes = constants.INITIAL_NUM_OF_NODES);
+
+        // Watch the variable where the directive will reference its instance.
+        // Register my event handlers when the directive is ready
+        $scope.$watch(function () {
+            return vm.options.autoForceLayoutInstance;
+        }, function(newValue) {
+            newValue.addEventListener.call(newValue, 'hover', vm.onHoverOutside)
+                .addEventListener.call(newValue, 'select', vm.onSelectOutside);
+        });
+
+        // Other initializations
         vm.setArrays = function () {
             vm.data = [];
             vm.data[constants.NODES] = vm.options.data[constants.NODES].data;
             vm.data[constants.EDGES] = vm.options.data[constants.EDGES].data;
         };
         vm.setArrays();
+
         vm.NODES = constants.NODES;
         vm.EDGES = constants.EDGES;
 
@@ -83,6 +97,7 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
 
         // An element was hovered outside this view (in the graph component)
         vm.onHoverOutside = function (item) {
+            console.log("onHoverOutside: label=" + item.label + " hovered=" + item.hovered);
             vm.setHoverState(item);
         };
 
@@ -177,7 +192,7 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
                 for (i = 0; i < numOfNodes; i++) {
                     node = graphData[constants.NODES].data[i] = {};
                     node.class = constants.CLASS_NODE;
-                    node.label = Array(constants.LABEL_LENGTH).fill(null).map(function() { return alephbet.charAt(Math.floor(Math.random() * alephbet.length)); }).join('');
+                    node.label = (new Array(constants.LABEL_LENGTH)).fill(null).map(function() { return alephbet.charAt(Math.floor(Math.random() * alephbet.length)); }).join('');
                     //node.label = Math.random().toString(36).slice(2).substr(0, 5); // a random string, 5 chars
                     node.shape = shapes[Math.floor(Math.random() * shapes.length)];
                     node.id = i;
@@ -314,4 +329,3 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
         }
     }
 });
-;
