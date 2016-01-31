@@ -360,9 +360,10 @@ angular.module('autoForceLayout', [])
         // deformation, due to the <svg fixAspectRatio="none">
         //---------------------------------------------------
         proto.calcFixAspectRatio = function () {
-            this.fixAspectRatio = (this.svg ?
-            (constants.INNER_SVG_WIDTH / constants.INNER_SVG_HEIGHT) * (this.svg[0][0].offsetHeight / this.svg[0][0].offsetWidth)
-                : 1);
+            var currentRect = this.svg[0][0].getBoundingClientRect(),
+                currentHeight = currentRect.height,
+                currentWidth = currentRect.width;
+            this.fixAspectRatio = (constants.INNER_SVG_WIDTH / constants.INNER_SVG_HEIGHT) * (currentHeight / currentWidth);
             return this;
         };
 
