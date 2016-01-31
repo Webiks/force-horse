@@ -52,7 +52,7 @@ angular.module('autoForceLayout', [])
 
             controller: function ($scope, $element) {
                 //this.externalEventHandlers = helper.applyScopeToEventHandlers(this, $scope);
-
+                var vm = this;
                 // Create my instance
                 // Also provide the caller with a reference to my instance, for API
                 this.options.autoForceLayoutInstance =
@@ -62,7 +62,8 @@ angular.module('autoForceLayout', [])
                 // Clear the instance reference on destruction, to prevent memory leak
                 $scope.$on("$destroy", function () {
                     console.log("Destroying autoForceLayout instance");
-                    $scope.autoForceLayoutInstance = null;
+                    vm.options.autoForceLayoutInstance =
+                        $scope.autoForceLayoutInstance = null;
                 });
             },
 
