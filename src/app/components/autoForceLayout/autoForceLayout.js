@@ -661,7 +661,8 @@ angular.module('autoForceLayout', [])
         // Zoom out the graph, if needed, so that it is fully visible.
         //---------------------------------------------------
         proto.zoomToViewport = function () {
-            var width = constants.INNER_SVG_WIDTH,
+            var scale, translate,
+                width = constants.INNER_SVG_WIDTH,
                 height = constants.INNER_SVG_HEIGHT,
                 radius = this.nodeIconRadius,
                 maxMarginX = d3.max(this.nodeDataArray, function (d) {
@@ -672,17 +673,20 @@ angular.module('autoForceLayout', [])
                 });
             if (maxMarginX > 0 || maxMarginY > 0) {
                 var scaleX = width / (width + 2 * maxMarginX),
-                    scaleY = height / (height + 2 * maxMarginY),
-                    scale = Math.min(scaleX, scaleY) * 0.95,
-                    translate = [(width / 2) * (1 - scale), (height / 2) * (1 - scale)];
+                    scaleY = height / (height + 2 * maxMarginY);
+                scale = Math.min(scaleX, scaleY) * 0.95;
+                translate = [(width / 2) * (1 - scale), (height / 2) * (1 - scale)];
                 // If the calculated zoom is bigger than the zoom limit, increase the limit
                 if (scale < constants.MAX_ZOOM) {
                     this.zoom.scaleExtent([scale, constants.MIN_ZOOM]);
                 }
-                this.svg.transition()
-                    .duration(constants.ANIMATION_DURATION)
-                    .call(this.zoom.translate(translate).scale(scale).event);
+            } else {
+                scale = 1;
+                translate = [0,0];
             }
+            this.svg.transition()
+                   .duration(constants.ANIMATION_DURATION)
+                   .call(this.zoom.translate(translate).scale(scale).event);
         };
 
         //---------------------------------------------------
