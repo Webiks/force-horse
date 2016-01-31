@@ -17,7 +17,7 @@ angular.module('autoForceLayout', [])
                 <i class="mdi"\
                    title="Fix/release all nodes"\
                    ng-class="autoForceLayoutInstance.fixedNodesMode ? \'mdi-play-circle-outline\' : \'mdi-pause-circle-outline\'" \
-                   ng-click="autoForceLayoutInstance.onPlayPauseBtnClick()"></i>\
+                   ng-click="autoForceLayoutInstance.toggleFixedNodesMode()"></i>\
                 <i class="mdi mdi-home"\
                    title="Zoom to viewport"\
                    ng-click="autoForceLayoutInstance.zoomToViewport()"></i>\
@@ -134,7 +134,7 @@ angular.module('autoForceLayout', [])
             this.nodeIconRadius = Math.sqrt(this.nodeIconAreaDefault / Math.PI);
             this.selectedItems = [new Set(), new Set()]; // selected nodes, selected edges
             this.fixedNodesMode = false;
-            //this.isBoundedGraphMode = false; // TODO: redundant?
+            //this.isBoundedGraphMode = false; // redundant?
             this.isFirstZoomDone = false; // Zooming to viewport after first simlation
             this.isDragging = false;
 
@@ -292,10 +292,10 @@ angular.module('autoForceLayout', [])
                     .size(function (d) {
                         return myInstance.getNodeIconArea(d);
                     }))
-                .attr("class", constants.CSS_CLASS_NODE)
                 .attr("fill", function (d) {
                     return d.color;
                 })
+                .attr("class", constants.CSS_CLASS_NODE)
                 .on("mouseenter", function (d) {
                     myInstance.onHoverInside(this, d, true);
                 })
@@ -650,6 +650,8 @@ angular.module('autoForceLayout', [])
             if (!this.isFirstZoomDone) {
                 this.zoomToViewport();
                 this.isFirstZoomDone = true;
+                // Also make the graph fixed, after the first force-simulation
+                this.toggleFixedNodesMode();
             }
         };
 
@@ -906,11 +908,12 @@ angular.module('autoForceLayout', [])
         };
 
         //---------------------------------------------------
-        // onPlayPauseBtnClick
+        // toggleFixedNodesMode
+        // Called from Pause/Play button
         // Pause fixes all the nodes
         // Play unfixes all the nodes
         //---------------------------------------------------
-        proto.onPlayPauseBtnClick = function () {
+        proto.toggleFixedNodesMode = function () {
             if (this.fixedNodesMode) {
                 this.elements[constants.NODES].classed('fixed', function (d) {
                     return d.fixed = false;
