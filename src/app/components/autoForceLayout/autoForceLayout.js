@@ -672,6 +672,8 @@ angular.module('autoForceLayout', [])
                     return Math.max(-d.y + radius, d.y + radius - height, 0);
                 });
             if (maxMarginX > 0 || maxMarginY > 0) {
+                // If the graph (without the current zoom/pan) exceeds the view boundaries,
+                // calculate the zoom/pan extent to return it to the viewport.
                 var scaleX = width / (width + 2 * maxMarginX),
                     scaleY = height / (height + 2 * maxMarginY);
                 scale = Math.min(scaleX, scaleY) * 0.95;
@@ -681,6 +683,8 @@ angular.module('autoForceLayout', [])
                     this.zoom.scaleExtent([scale, constants.MIN_ZOOM]);
                 }
             } else {
+                // If the graph, without the current zoom/pan, is within the view boundaries,
+                // then simply reset the zoom/pan extent.
                 scale = 1;
                 translate = [0,0];
             }
