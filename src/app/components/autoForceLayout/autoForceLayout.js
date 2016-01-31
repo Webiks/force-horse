@@ -49,6 +49,7 @@ angular.module('autoForceLayout', [])
                 //onSelect: '&'
             },
             bindToController: true,
+
             controller: function ($scope, $element) {
                 //this.externalEventHandlers = helper.applyScopeToEventHandlers(this, $scope);
 
@@ -58,10 +59,13 @@ angular.module('autoForceLayout', [])
                     $scope.autoForceLayoutInstance = new AutoForceLayoutFactory($element, this.options)
                         .redraw();
 
-                //$scope.onFilterButtonClick = function (ev) {
-                //    helper.confirmFilterButton(ev, $scope.autoForceLayoutInstance);
-                //};
+                // Clear the instance reference on destruction, to prevent memory leak
+                $scope.$on("$destroy", function () {
+                    console.log("Destroying autoForceLayout instance");
+                    $scope.autoForceLayoutInstance = null;
+                });
             },
+
             link: function (scope, element) { //, attr, ctrl) {
                 //console.log('In autoForceLayout link');
 
