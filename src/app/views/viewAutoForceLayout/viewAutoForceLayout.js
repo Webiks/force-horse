@@ -31,7 +31,8 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
             return vm.options.autoForceLayoutInstance;
         }, function(newValue) {
             newValue.addEventListener.call(newValue, 'hover', vm.onHoverOutside)
-                .addEventListener.call(newValue, 'select', vm.onSelectOutside);
+                .addEventListener.call(newValue, 'select', vm.onSelectOutside)
+            .addEventListener.call(newValue, 'filter', vm.onFilterOutside);
         });
 
         // Other initializations
@@ -174,7 +175,7 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
 
         // Elements were filtered out somewhere
         vm.onFilterOutside = function () {
-            $scope.$apply(); // refresh watchers
+            //$scope.$apply(); // refresh watchers
         };
 
     }]) // .controller
