@@ -76,9 +76,9 @@
     opacity: 1;
 }
 
-.auto-force-layout svg.graph-svg .node.removed,
-.auto-force-layout svg.graph-svg .edge.removed,
-.auto-force-layout svg.graph-svg .labels text.removed {
+.auto-force-layout svg.graph-svg .node.filtered,
+.auto-force-layout svg.graph-svg .edge.filtered,
+.auto-force-layout svg.graph-svg .labels text.filtered {
     display: none;
 }
 

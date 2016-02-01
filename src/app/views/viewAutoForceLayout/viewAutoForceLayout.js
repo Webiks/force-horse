@@ -172,6 +172,11 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
             });
         };
 
+        // Elements were filtered out somewhere
+        vm.onFilterOutside = function () {
+            $scope.$apply(); // refresh watchers
+        };
+
     }]) // .controller
 
 

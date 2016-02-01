@@ -13,7 +13,7 @@ angular.module('autoForceLayout', [])
               <span flex="40">\
                 <i class="mdi mdi-filter"\
                    title="Remove selected elements"\
-                   ng-click="autoForceLayoutInstance.removeSelectedElements()"></i>\
+                   ng-click="autoForceLayoutInstance.onFilterInside()"></i>\
                 <i class="mdi"\
                    title="Fix/release all nodes"\
                    ng-class="autoForceLayoutInstance.fixedNodesMode ? \'mdi-play-circle-outline\' : \'mdi-pause-circle-outline\'" \
@@ -88,7 +88,7 @@ angular.module('autoForceLayout', [])
             this.element = element[0];
             this.options = options;
             // Set a variable to hold references to registered event listeners
-            this.eventListeners = {hover:[], select:[]};
+            this.eventListeners = {hover:[], select:[], filter:[]};
         }
 
         var proto = AutoForceLayoutFactory.prototype;
@@ -97,7 +97,7 @@ angular.module('autoForceLayout', [])
         // redraw
         // Recreate the graph
         // To be called whenever elements are added or
-        // removed from the graph data
+        // filtered from the graph data
         //---------------------------------------------------
         proto.redraw = function () {
             var myInstance = this;
@@ -209,7 +209,7 @@ angular.module('autoForceLayout', [])
 
             // Create the main SVG (canvas).
             // If that element exists, remove it first.
-            // TODO - is the element really removed from memory (and not just the DOM)?
+            // TODO - is the element really filtered from memory (and not just the DOM)?
             d3.select(myInstance.element)
                 .select("div.svgWrapper")
                 .remove();
@@ -389,40 +389,78 @@ angular.module('autoForceLayout', [])
         };
 
         //---------------------------------------------------
-        // removeSelectedElements
+        // onFilterInside
         // Filter button action: remove selected elements
         //---------------------------------------------------
-        proto.removeSelectedElements = function () {
-            //var myInstance = this;
-
-            // Mark the selected items as removed, and unselect them
+        proto.onFilterInside = function () {
+            // Mark the selected items as filtered, and unselect them
             // Also clear the selected-items sets
             for (var itemType = constants.NODES; itemType <= constants.EDGES; itemType++) {
                 this.elements[itemType].filter(function (item) {
                     return item.selected;
-                }).classed('removed', function (d) {
-                    return d.removed = true;
+                }).classed('filtered', function (d) {
+                    return d.filtered = true;
                 }).classed('selected', function (d) {
                     return d.selected = false;
                 });
                 this.selectedItems[itemType].clear();
             }
 
-            // Remove the labels of removed nodes
+            // Remove the labels of filtered nodes
             this.labels.classed("selected", "false")
-                .classed("removed", function (d) {
-                    return d.removed;
+                .classed("filtered", function (d) {
+                    return d.filtered;
                 });
 
-            // Remove edges connected to removed nodes
+            // Remove edges connected to filtered nodes
             this.elements[constants.EDGES].filter(function (d) {
-                return d.source.removed || d.target.removed;
-            }).classed("removed", function (d) {
-                return d.removed = true;
+                return d.source.filtered || d.target.filtered;
+            }).classed("filtered", function (d) {
+                return d.filtered = true;
             });
 
             // Cancel selection mode
             this.svg.classed("selectionMode", false);
+            
+            // Broadcast event
+            this.callEventListeners('filter');
+        };
+
+        //---------------------------------------------------
+        // onFilterOuside
+        // API: some elements were filtered out
+        //---------------------------------------------------
+        proto.onFilterOutside = function () {
+            var myInstance = this;
+            // Give the filtered elements the approprite CSS class
+            // If a filtered element was selected, mark it as unselected
+            for (var itemType = constants.NODES; itemType <= constants.EDGES; itemType++) {
+                this.elements[itemType].filter(function (item) {
+                    return item.filtered;
+                }).classed('filtered', true)
+                    .classed('selected', false)
+                .each(function(d) {
+                    let type = (d.class === constants.CLASS_NODE ? constants.NODES : constants.EDGES);
+                    myInstance.selectedItems[type].delete(d.id);
+                });
+            }
+
+            // Remove the labels of filtered nodes
+            this.labels.filter(function (item) {
+                return item.filtered;
+            }).classed('filtered', true)
+                .classed('selected', false);
+
+            // Remove edges connected to filtered nodes
+            this.elements[constants.EDGES].filter(function (d) {
+                return d.source.filtered || d.target.filtered;
+            }).classed("filtered", function (d) {
+                return d.filtered = true;
+            });
+
+            // Update visual selection mode
+            myInstance.svg.classed("selectionMode",
+                myInstance.selectedItems[constants.NODES].size + myInstance.selectedItems[constants.EDGES].size);
         };
 
         //---------------------------------------------------
@@ -1141,7 +1179,7 @@ angular.module('autoForceLayout', [])
             //        .cancel('Cancel');
             //
             //    $mdDialog.show(confirm).then(function () {
-            //        myInstance.removeSelectedElements();
+            //        myInstance.onFilterInside();
             //    });
             //}
 
