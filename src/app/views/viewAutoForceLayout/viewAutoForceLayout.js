@@ -32,7 +32,8 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
         }, function(newValue) {
             newValue.addEventListener.call(newValue, 'hover', vm.onHoverOutside)
                 .addEventListener.call(newValue, 'select', vm.onSelectOutside)
-            .addEventListener.call(newValue, 'filter', vm.onFilterOutside);
+                .addEventListener.call(newValue, 'filter', vm.onFilterOutside)
+            .addEventListener.call(newValue, 'dblclick', vm.onDblClickOutside);
         });
 
         // Other initializations
@@ -219,7 +220,12 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
             //});
         };
 
-    }]) // .controller
+        // A node was double-clicked on outside the view
+        vm.onDblClickOutside = function (node) {
+            console.log(`view3: got a double-click on node ${node.label}`);
+        };
+
+        }]) // .controller
 
 
     //---------------------------------------------------------------//

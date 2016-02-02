@@ -88,7 +88,7 @@ angular.module('autoForceLayout', [])
             this.element = element[0];
             this.options = options;
             // Set a variable to hold references to registered event listeners
-            this.eventListeners = {hover:[], select:[], filter:[]};
+            this.eventListeners = {hover:[], select:[], filter:[], dblclick:[]};
         }
 
         var proto = AutoForceLayoutFactory.prototype;
@@ -277,6 +277,9 @@ angular.module('autoForceLayout', [])
                 })
                 .on("click", function (d) {
                     myInstance.onClick(d, this);
+                })
+                .on("dblclick", function (d) {
+                    myInstance.callEventListeners("dblclick", d);
                 })
                 // Prevent panning when dragging a node
                 .on("mousedown", function () {
