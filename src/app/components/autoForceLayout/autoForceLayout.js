@@ -13,6 +13,7 @@ angular.module('autoForceLayout', [])
               <span flex="40">\
                 <i class="mdi mdi-filter"\
                    title="Remove selected elements"\
+                   ng-if="autoForceLayoutInstance.config.showFilterButton" \
                    ng-click="autoForceLayoutInstance.onFilterInside()"></i>\
                 <i class="mdi"\
                    title="Fix/release all nodes"\
@@ -144,10 +145,12 @@ angular.module('autoForceLayout', [])
             this.isDragging = false;
 
             // Set config parameters, which may be overwritten by the config argument
+            // (that is, in fact, by an external json file)
             this.config = {
                 hideLabels: false,
                 showNodeWeight: false,
                 showEdgeWeight: false,
+                showFilterButton: true,
                 forceParameters: {
                     // New parameters
                     //charge: -350,
