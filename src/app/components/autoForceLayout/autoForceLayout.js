@@ -278,9 +278,6 @@ angular.module('autoForceLayout', [])
                 .on("click", function (d) {
                     myInstance.onClick(d, this);
                 })
-                .on("dblclick", function (d) {
-                    myInstance.callEventListeners("dblclick", d);
-                })
                 // Prevent panning when dragging a node
                 .on("mousedown", function () {
                     d3.event.stopPropagation();
@@ -312,6 +309,9 @@ angular.module('autoForceLayout', [])
                 })
                 .on("click", function (d) {
                     myInstance.onClick(d, this);
+                })
+                .on("dblclick", function (d) {
+                    myInstance.callEventListeners("dblclick", d);
                 })
                 // Prevent panning when dragging a node
                 .on("mousedown", function () {
