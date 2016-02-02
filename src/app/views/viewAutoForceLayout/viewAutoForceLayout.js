@@ -40,6 +40,10 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
             vm.data = [];
             vm.data[constants.NODES] = vm.options.data[constants.NODES].data;
             vm.data[constants.EDGES] = vm.options.data[constants.EDGES].data;
+            vm.nodeById = {};
+            vm.data[constants.NODES].forEach(function (item, idx) {
+                vm.nodeById[item.id] = item;
+            });
         };
         vm.setArrays();
 
@@ -173,9 +177,46 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
             });
         };
 
+        // Elements were filtered out inside this view
+        vm.onFilterInside = function () {
+            // Mark the selected items as filtered, and unselect them
+            // Also clear the selected-items sets
+            for (let itemType = constants.NODES; itemType <= constants.EDGES; itemType++) {
+                vm.data[itemType].filter(function (d) {
+                    return d.selected;
+                }).forEach(function (d) {
+                    d.filtered = true;
+                    d.selected = false;
+                });
+                vm.selectedItems[itemType].clear();
+            }
+
+            // Remove edges connected to filtered nodes
+            vm.data[constants.EDGES].filter(function (d) {
+                return vm.nodeById[d.sourceID].filtered || vm.nodeById[d.targetID].filtered;
+            }).forEach(function (d) {
+                d.filtered = true;
+            });
+
+            // Broadcast event
+            if (angular.isDefined(vm.options.autoForceLayoutInstance)) {
+                vm.options.autoForceLayoutInstance.onFilterOutside();
+            }
+        };
+
         // Elements were filtered out somewhere
         vm.onFilterOutside = function () {
-            //$scope.$apply(); // refresh watchers
+            //$scope.$apply(function () {
+                // Referesh the selected-items sets
+                for (var itemType = constants.NODES; itemType <= constants.EDGES; itemType++) {
+                    vm.selectedItems[itemType].clear();
+                    vm.data[itemType].forEach(function (item) {
+                        if (item.selected) {
+                            vm.selectedItems[itemType].add(item.id);
+                        }
+                    });
+                }
+            //});
         };
 
     }]) // .controller

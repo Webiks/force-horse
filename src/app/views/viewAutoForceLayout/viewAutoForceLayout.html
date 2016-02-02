@@ -44,7 +44,10 @@
                 </md-virtual-repeat-container>
             </div>
             <div flex layout="column">
-                <h3>Edges</h3>
+                <h3>Edges                <i class="mdi mdi-filter"
+                                            title="Remove selected elements"
+                                            ng-click="ctrl.onFilterInside()"></i>
+                </h3>
                 <md-virtual-repeat-container flex="">
                     <table class="edges-table" flex>
                         <tr class="repeated-item">

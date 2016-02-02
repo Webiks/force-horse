@@ -28,6 +28,20 @@
     background-color: lightgoldenrodyellow;
 }
 
+#view3 h3 i {
+    float: right;
+    margin-right: 1vw;
+    color: lightgray;
+}
+
+#view3 h3 i:hover {
+    color: black;
+}
+
+#view3 h3 i:active {
+    color: red;
+}
+
 #view3 table {
     width: 100%;
 }
