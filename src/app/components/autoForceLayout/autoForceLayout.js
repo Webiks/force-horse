@@ -25,14 +25,17 @@ angular.module('autoForceLayout', [])
               </span>\
               <span flex>\
                 <i class="mdi"\
-                   title="Hide/show labels"\
-                   ng-class="autoForceLayoutInstance.config.hideLabels ? \'mdi-label\' : \'mdi-label-outline\'" \
+                   title="Show/hide labels"\
+                   ng-if="autoForceLayoutInstance.config.showLabelsButton" \
+                   ng-class="autoForceLayoutInstance.config.showLabels ? \'mdi-label-outline\' : \'mdi-label\'" \
                    ng-click="autoForceLayoutInstance.onLabelsShowHideBtnClick()"></i>\
                 <i class="img img-link-weight"\
                    title="Show/hide edge weight"\
+                   ng-if="autoForceLayoutInstance.config.showEdgeWeightButton" \
                    ng-click="autoForceLayoutInstance.onEdgeWeightShowHideBtnClick()"></i>\
                 <i class="img img-node-weight"\
                    title="Show/hide node weight"\
+                   ng-if="autoForceLayoutInstance.config.showNodeWeightButton" \
                    ng-click="autoForceLayoutInstance.onNodeWeightShowHideBtnClick()"></i>\
               </span>\
             </div>');
@@ -147,19 +150,18 @@ angular.module('autoForceLayout', [])
             // Set config parameters, which may be overwritten by the config argument
             // (that is, in fact, by an external json file)
             this.config = {
-                hideLabels: false,
+                showLabels: false,
                 showNodeWeight: false,
                 showEdgeWeight: false,
                 showFilterButton: true,
+                showLabelsButton: true,
+                showNodeWeightButton: true,
+                showEdgeWeightButton: true,
                 forceParameters: {
-                    // New parameters
                     //charge: -350,
                     linkStrength: 1,
                     gravity: 0.3,
                     linkDistance: 10
-                    // Old parameters
-                    //charge: -400,
-                    //linkDistance: 40
                 }
             };
             Object.assign(this.config, config);
@@ -246,7 +248,7 @@ angular.module('autoForceLayout', [])
             myInstance.labelGroup = myInstance.inSvgWrapper.append("g")
                 .attr("class", "labels")
                 .attr("fill", constants.DEFAULT_NODE_COLOR)
-                .classed("display_none", myInstance.config.hideLabels);
+                .classed("display_none", !myInstance.config.showLabels);
 
             return myInstance;
         }; // initLayout()
@@ -992,14 +994,14 @@ angular.module('autoForceLayout', [])
         //---------------------------------------------------
         proto.onLabelsShowHideBtnClick = function () {
             //var myInstance = this;
-            if (this.config.hideLabels = !this.config.hideLabels) {
-                this.labelGroup.classed('display_none', true);
+            if (this.config.showLabels = !this.config.showLabels) {
+                this.labelGroup.classed('display_none', false);
                 //this.labelGroup.transition().attr("opacity", "0");
                 //setTimeout(function () {
                 //    myInstance.labelGroup.classed('display_none', true);
                 //}, constants.ANIMATION_DELAY);
             } else { // show labels
-                this.labelGroup.classed('display_none', false);
+                this.labelGroup.classed('display_none', true);
                 //setTimeout(function () {
                 //    myInstance.labelGroup.transition().attr("opacity", "1");
                 //}, constants.ANIMATION_DELAY);
