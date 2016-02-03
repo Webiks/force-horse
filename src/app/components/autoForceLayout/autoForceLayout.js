@@ -508,10 +508,12 @@ angular.module('autoForceLayout', [])
             return this;
         };
 
-        //---------------------------------------------------
-        // processNodes
-        // Add references to the given nodes array
-        //---------------------------------------------------
+        /**
+         * @ngdoc method
+         * @name autoForceLayout.factory:AutoForceLayoutFactory#processNodes
+         * @description Graph initialization: add auxiliary properties and variables to the nodes array
+         * @returns {AutoForceLayoutFactory} current instance
+         */
         proto.processNodes = function () {
             var myInstance = this;
             this.nodesById = {};
@@ -525,13 +527,15 @@ angular.module('autoForceLayout', [])
                     val.label = "" + val.id;
                 }
             });
+            return this;
         };
 
-        //---------------------------------------------------
-        // processEdges
-        // Get nodes data from nodes id's
-        // Build an index to help handle the case of multiple edges between two nodes
-        //---------------------------------------------------
+        /**
+         * @ngdoc method
+         * @name autoForceLayout.factory:AutoForceLayoutFactory#processEdges
+         * @description Graph initialization: add auxiliary properties and variables to the edges array
+         * @returns {AutoForceLayoutFactory} current instance
+         */
         proto.processEdges = function () {
             var myInstance = this, sid, tid, key;
             this.edgesFromNodes = {};
@@ -567,26 +571,32 @@ angular.module('autoForceLayout', [])
                     val.basicOffset = (val.multiIdx % 2 === 0 ? val.multiIdx * constants.DEFAULT_EDGE_WIDTH : (-val.multiIdx + 1) * constants.DEFAULT_EDGE_WIDTH);
                 }
             });
+            return this;
         };
 
-        //---------------------------------------------------
-        // onWindowResize
-        // Fix aspect ratios, when the window resizes
-        //---------------------------------------------------
+        /**
+         * @ngdoc method
+         * @name autoForceLayout.factory:AutoForceLayoutFactory#onWindowResize
+         * @description Fix aspect ratios, when the window resizes
+         * @returns {AutoForceLayoutFactory} current instance
+         */
         proto.onWindowResize = function () {
-            this.calcFixAspectRatio();
+            this.calcFixAspectRatio(); // TODO: chain & check
             this.updateGraphInDOM();
+            return this;
         };
 
-        //---------------------------------------------------
-        // onForceStart
-        // Called when a force-simulation is about to start.
-        //---------------------------------------------------
+        /**
+         * @ngdoc method
+         * @name autoForceLayout.factory:AutoForceLayoutFactory#onForceStart
+         * @description Called when a force-simulation is about to start.
+         * @returns {AutoForceLayoutFactory} current instance
+         */
         proto.onForceStart = function () {
             // Prevent simulation when dragging a node
             if (this.isDragging) {
                 this.force.stop();
-                return;
+                return this; // TODO: chain & check
             }
             // Proceed with simulation
             this.calcFixAspectRatio();
@@ -595,11 +605,15 @@ angular.module('autoForceLayout', [])
             } else {
                 this.runHeavySimulation();
             }
+            return this; // TODO: chain ([]) & check;
         };
 
-        //---------------------------------------------------
-        // runSimulation
-        //---------------------------------------------------
+        /**
+         * @ngdoc method
+         * @name autoForceLayout.factory:AutoForceLayoutFactory#runSimulation
+         * @description Run the force-simulation with control. The DOM is not updated for every tick.
+         * @returns {AutoForceLayoutFactory} current instance
+         */
         proto.runSimulation = function () {
             var myInstance = this;
             var ticksPerRender,
@@ -625,14 +639,15 @@ angular.module('autoForceLayout', [])
                     myInstance.onForceEnd();
                 }
             }); // render
+            return this;
         };
 
-        //---------------------------------------------------
-        // runHeavySimulation
-        // A simulation runner for graphs with many nodes:
-        // First do all the calculations, and update only the progress bar.
-        // Only then update the graph in DOM.
-        //---------------------------------------------------
+        /**
+         * @ngdoc method
+         * @name autoForceLayout.factory:AutoForceLayoutFactory#runHeavySimulation
+         * @description Heavy graphs version: run the force-simulation with control. The DOM is not updated for every tick.
+         * @returns {AutoForceLayoutFactory} current instance
+         */
         proto.runHeavySimulation = function () {
             var myInstance = this;
             var ticksPerRender,
@@ -660,6 +675,7 @@ angular.module('autoForceLayout', [])
                     myInstance.updateGraphInDOM().onForceEnd();
                 }
             }); // render
+            return this;
         };
 
         //---------------------------------------------------
