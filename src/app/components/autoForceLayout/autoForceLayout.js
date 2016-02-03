@@ -1,7 +1,9 @@
 "use strict";
-//===============================================================//
-// define the autoForceLayout module
-
+/**
+ * @ngdoc overview
+ * @name autoForceLayout
+ * @description A graph visualizer using a "force layout" engine (d3.js)
+ */
 angular.module('autoForceLayout', [])
 
     //---------------------------------------------------------------//
@@ -41,7 +43,11 @@ angular.module('autoForceLayout', [])
             </div>');
     })
 
-    //---------------------------------------------------------------//
+    /**
+     * @ngdoc directive
+     * @name autoForceLayout.directive:autoForceLayout
+     * @description HTML directive definition of the autoForceLayout component
+     */
     .directive('autoForceLayout', ['$compile', 'AutoForceLayoutFactory', 'AutoForceLayoutHelper', function ($compile, AutoForceLayoutFactory, helper) {
         return {
             restrict: "EA",
@@ -85,9 +91,19 @@ angular.module('autoForceLayout', [])
         };
     }])
 
-    //---------------------------------------------------------------//
+    /**
+     * @ngdoc factory
+     * @name autoForceLayout.factory:AutoForceLayoutFactory
+     * @description Produces a class-instance for each instance of AutoForceLayout on a page
+     */
     .factory('AutoForceLayoutFactory', ['AutoForceLayoutConstants', 'AutoForceLayoutHelper', function (constants, helper) {
-        // constructor
+        /**
+         * @ngdoc method
+         * @name autoForceLayout.factory:AutoForceLayoutFactory#AutoForceLayoutFactory
+         * @description constructor; initializes the eventListeners object
+         * @param element A JSLite reference to the HTML container for this component
+         * @param options An external options object
+         */
         function AutoForceLayoutFactory(element, options) {
             this.element = element[0];
             this.options = options;
@@ -97,12 +113,12 @@ angular.module('autoForceLayout', [])
 
         var proto = AutoForceLayoutFactory.prototype;
 
-        //---------------------------------------------------
-        // redraw
-        // Recreate the graph
-        // To be called whenever elements are added or
-        // filtered from the graph data
-        //---------------------------------------------------
+        /**
+         * @ngdoc method
+         * @name autoForceLayout.factory:AutoForceLayoutFactory#redraw
+         * @description Draws a new graph, based on the input data
+         * @returns {AutoForceLayoutFactory} current instance
+         */
         proto.redraw = function () {
             var myInstance = this;
             d3.json("autoForceLayout.json", function (error, json) {
@@ -117,12 +133,13 @@ angular.module('autoForceLayout', [])
             return this;
         };
 
-        //---------------------------------------------------
-        // initLayout
-        // Init force layout & SVG
-        // Parameters: config: an external configration object
-        // (typically from a json file)
-        //---------------------------------------------------
+        /**
+         * @ngdoc method
+         * @name autoForceLayout.factory:AutoForceLayoutFactory#initLayout
+         * @description Init force layout & SVG
+         * @param config an external configration object (typically from a json file)
+         * @returns {AutoForceLayoutFactory} current instance
+         */
         proto.initLayout = function (config) {
             var myInstance = this;
             // Generate a random instance name, for a "namespace"
@@ -253,12 +270,13 @@ angular.module('autoForceLayout', [])
             return myInstance;
         }; // initLayout()
 
-        //---------------------------------------------------
-        // draw
-        // Draw the graph: nodes, edges, labels
-        //---------------------------------------------------
+        /**
+         * @ngdoc method
+         * @name autoForceLayout.factory:AutoForceLayoutFactory#draw
+         * @description Set the graph in the DOM: nodes, edges, labels, progress bar
+         * @returns {AutoForceLayoutFactory} current instance
+         */
         proto.draw = function () {
-            //console.log('in redraw()');
             var myInstance = this;
             myInstance.elements = new Array(2); // nodes, edges
 
@@ -360,18 +378,23 @@ angular.module('autoForceLayout', [])
             return this;
         };
 
-        //---------------------------------------------------
-        // startForceSimulation
-        //---------------------------------------------------
+        /**
+         * @ngdoc method
+         * @name autoForceLayout.factory:AutoForceLayoutFactory#startForceSimulation
+         * @description Restart the force simulation
+         * @returns {AutoForceLayoutFactory} current instance
+         */
         proto.startForceSimulation = function () {
             this.force.start();
+            return this;
         };
 
-        //---------------------------------------------------
-        // calcFixAspectRatio
-        // Returns a number to be multiplied by an element's width, to fix aspect ratio
-        // deformation, due to the <svg fixAspectRatio="none">
-        //---------------------------------------------------
+        /**
+         * @ngdoc method
+         * @name autoForceLayout.factory:AutoForceLayoutFactory#calcFixAspectRatio
+         * @description Returns a number to be multiplied by an element's width, to fix aspect ratio deformation, due to the svg fixAspectRatio="none"
+         * @returns {AutoForceLayoutFactory} current instance
+         */
         proto.calcFixAspectRatio = function () {
             var currentRect = this.svg[0][0].getBoundingClientRect(),
                 currentHeight = currentRect.height,
@@ -380,26 +403,34 @@ angular.module('autoForceLayout', [])
             return this;
         };
 
-        //---------------------------------------------------
-        // getNodeIconArea
-        //---------------------------------------------------
+        /**
+         * @ngdoc method
+         * @name autoForceLayout.factory:AutoForceLayoutFactory#getNodeIconArea
+         * @description Calculates the desired node icon area (with or without showing weight)
+         * @returns {number} the node icon area
+         */
         proto.getNodeIconArea = function (nodeData) {
             var myInstance = this;
             return myInstance.nodeIconAreaDefault
                 + (myInstance.config.showNodeWeight ? nodeData.weight * constants.NODE_SIZE_ADDITION_PER_WEIGHT_UNIT : 0);
         };
 
-        //---------------------------------------------------
-        // getEdgeWidth
-        //---------------------------------------------------
+        /**
+         * @ngdoc method
+         * @name autoForceLayout.factory:AutoForceLayoutFactory#getEdgeWidth
+         * @description Calculates the desired edge width (with or without showing weight)
+         * @returns {number} the edge width
+         */
         proto.getEdgeWidth = function (edgeData) {
             return constants.DEFAULT_EDGE_WIDTH + (edgeData.weight / 3) + 'px';
         };
 
-        //---------------------------------------------------
-        // onFilterInside
-        // Filter button action: remove selected elements
-        //---------------------------------------------------
+        /**
+         * @ngdoc method
+         * @name autoForceLayout.factory:AutoForceLayoutFactory#onFilterInside
+         * @description Filter button action: remove selected elements
+         * @returns {AutoForceLayoutFactory} current instance
+         */
         proto.onFilterInside = function () {
             // Mark the selected items as filtered, and unselect them
             // Also clear the selected-items sets
@@ -432,12 +463,16 @@ angular.module('autoForceLayout', [])
             
             // Broadcast event
             this.callEventListeners('filter');
+
+            return this;
         };
 
-        //---------------------------------------------------
-        // onFilterOuside
-        // API: some elements were filtered out
-        //---------------------------------------------------
+        /**
+         * @ngdoc method
+         * @name autoForceLayout.factory:AutoForceLayoutFactory#onFilterOutside
+         * @description API: some elements were filtered out, update the graph
+         * @returns {AutoForceLayoutFactory} current instance
+         */
         proto.onFilterOutside = function () {
             var myInstance = this;
             // Give the filtered elements the approprite CSS class
@@ -469,6 +504,8 @@ angular.module('autoForceLayout', [])
             // Update visual selection mode
             myInstance.svg.classed("selectionMode",
                 myInstance.selectedItems[constants.NODES].size + myInstance.selectedItems[constants.EDGES].size);
+
+            return this;
         };
 
         //---------------------------------------------------
