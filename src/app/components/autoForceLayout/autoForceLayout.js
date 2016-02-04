@@ -46,7 +46,10 @@ angular.module('autoForceLayout', [])
     /**
      * @ngdoc directive
      * @name autoForceLayout.directive:autoForceLayout
-     * @description HTML directive definition of the autoForceLayout component
+     * @restrict EA
+     * @scope
+     * @priority 100
+     * @description Directive definition for the autoForceLayout component
      */
     .directive('autoForceLayout', ['$compile', 'AutoForceLayoutFactory', 'AutoForceLayoutHelper', function ($compile, AutoForceLayoutFactory, helper) {
         return {
@@ -99,8 +102,10 @@ angular.module('autoForceLayout', [])
     .factory('AutoForceLayoutFactory', ['AutoForceLayoutConstants', 'AutoForceLayoutHelper', function (constants, helper) {
         /**
          * @ngdoc method
-         * @name autoForceLayout.factory:AutoForceLayoutFactory#AutoForceLayoutFactory
-         * @description constructor; initializes the eventListeners object
+         * @name AutoForceLayoutFactory
+         * @methodOf autoForceLayout.factory:AutoForceLayoutFactory
+         * @constructor
+         * @description Constructor; initializes the eventListeners object
          * @param element A JSLite reference to the HTML container for this component
          * @param options An external options object
          */
@@ -407,7 +412,7 @@ angular.module('autoForceLayout', [])
          * @ngdoc method
          * @name autoForceLayout.factory:AutoForceLayoutFactory#getNodeIconArea
          * @description Calculates the desired node icon area (with or without showing weight)
-         * @returns {number} the node icon area
+         * @returns {number}
          */
         proto.getNodeIconArea = function (nodeData) {
             var myInstance = this;
@@ -419,7 +424,7 @@ angular.module('autoForceLayout', [])
          * @ngdoc method
          * @name autoForceLayout.factory:AutoForceLayoutFactory#getEdgeWidth
          * @description Calculates the desired edge width (with or without showing weight)
-         * @returns {number} the edge width
+         * @returns {number}
          */
         proto.getEdgeWidth = function (edgeData) {
             return constants.DEFAULT_EDGE_WIDTH + (edgeData.weight / 3) + 'px';
@@ -589,14 +594,14 @@ angular.module('autoForceLayout', [])
         /**
          * @ngdoc method
          * @name autoForceLayout.factory:AutoForceLayoutFactory#onForceStart
-         * @description Called when a force-simulation is about to start.
+         * @description Called when a force-simulation is supposed to start.
          * @returns {AutoForceLayoutFactory} current instance
          */
         proto.onForceStart = function () {
             // Prevent simulation when dragging a node
             if (this.isDragging) {
                 this.force.stop();
-                return this; // TODO: chain & check
+                return this;
             }
             // Proceed with simulation
             this.calcFixAspectRatio();
@@ -611,7 +616,9 @@ angular.module('autoForceLayout', [])
         /**
          * @ngdoc method
          * @name autoForceLayout.factory:AutoForceLayoutFactory#runSimulation
-         * @description Run the force-simulation with control. The DOM is not updated for every tick.
+         * @description
+         * Run the force-simulation with control.
+         * The DOM is not updated for every tick.
          * @returns {AutoForceLayoutFactory} current instance
          */
         proto.runSimulation = function () {
@@ -645,7 +652,9 @@ angular.module('autoForceLayout', [])
         /**
          * @ngdoc method
          * @name autoForceLayout.factory:AutoForceLayoutFactory#runHeavySimulation
-         * @description Heavy graphs version: run the force-simulation with control. The DOM is not updated for every tick.
+         * @description
+         * Heavy graphs version: run the force-simulation with control.
+         * The DOM is not updated for every tick.
          * @returns {AutoForceLayoutFactory} current instance
          */
         proto.runHeavySimulation = function () {
