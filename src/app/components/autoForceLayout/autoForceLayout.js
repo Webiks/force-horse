@@ -113,7 +113,7 @@ angular.module('autoForceLayout', [])
             this.element = element[0];
             this.options = options;
             // Set a variable to hold references to registered event listeners
-            this.eventListeners = {hover:[], select:[], filter:[], dblclick:[]};
+            this.eventListeners = {hover: [], select: [], filter: [], dblclick: []};
         }
 
         var proto = AutoForceLayoutFactory.prototype;
@@ -465,7 +465,7 @@ angular.module('autoForceLayout', [])
 
             // Cancel selection mode
             this.svg.classed("selectionMode", false);
-            
+
             // Broadcast event
             this.callEventListeners('filter');
 
@@ -487,10 +487,10 @@ angular.module('autoForceLayout', [])
                     return item.filtered;
                 }).classed('filtered', true)
                     .classed('selected', false)
-                .each(function(d) {
-                    let type = (d.class === constants.CLASS_NODE ? constants.NODES : constants.EDGES);
-                    myInstance.selectedItems[type].delete(d.id);
-                });
+                    .each(function (d) {
+                        let type = (d.class === constants.CLASS_NODE ? constants.NODES : constants.EDGES);
+                        myInstance.selectedItems[type].delete(d.id);
+                    });
             }
 
             // Remove the labels of filtered nodes
@@ -586,9 +586,8 @@ angular.module('autoForceLayout', [])
          * @returns {AutoForceLayoutFactory} current instance
          */
         proto.onWindowResize = function () {
-            this.calcFixAspectRatio(); // TODO: chain & check
-            this.updateGraphInDOM();
-            return this;
+            return this.calcFixAspectRatio()
+                .updateGraphInDOM();
         };
 
         /**
@@ -604,13 +603,10 @@ angular.module('autoForceLayout', [])
                 return this;
             }
             // Proceed with simulation
-            this.calcFixAspectRatio();
-            if (this.numOfNodes < constants.HEAVY_SIMULATION_NUM_OF_NODES) {
-                this.runSimulation();
-            } else {
-                this.runHeavySimulation();
-            }
-            return this; // TODO: chain ([]) & check;
+            return this.calcFixAspectRatio()
+                [this.numOfNodes < constants.HEAVY_SIMULATION_NUM_OF_NODES ?
+                "runSimulation" : "runHeavySimulation"]();
+
         };
 
         /**
@@ -699,9 +695,9 @@ angular.module('autoForceLayout', [])
 
             // Update nodes
             this.elements[constants.NODES]
-                //.each(function (d) {
-                //    myInstance.preventNodesOverlap(1.0)(d);
-                //})
+            //.each(function (d) {
+            //    myInstance.preventNodesOverlap(1.0)(d);
+            //})
                 .attr('transform', function (d) {
                     //if (myInstance.isBoundedGraphMode) {
                     //    // Force the nodes inside the visible area
@@ -811,11 +807,11 @@ angular.module('autoForceLayout', [])
                 // If the graph, without the current zoom/pan, is within the view boundaries,
                 // then simply reset the zoom/pan extent.
                 scale = 1;
-                translate = [0,0];
+                translate = [0, 0];
             }
             this.svg.transition()
-                   .duration(constants.ANIMATION_DURATION)
-                   .call(this.zoom.translate(translate).scale(scale).event);
+                .duration(constants.ANIMATION_DURATION)
+                .call(this.zoom.translate(translate).scale(scale).event);
             return this;
         };
 
@@ -994,11 +990,12 @@ angular.module('autoForceLayout', [])
          * @returns {AutoForceLayoutFactory} current instance
          */
         proto.onSelectOutside = function () {
+            var myInstance = this;
             // Update the "selected" css class, and the selected-items sets
             for (var itemType = constants.NODES; itemType <= constants.EDGES; itemType++) {
                 (function (mySet) {
                     mySet.clear();
-                    this.elements[itemType]
+                    myInstance.elements[itemType]
                         .classed('selected', function (d) {
                             if (d.selected) {
                                 mySet.add(d.id);
@@ -1007,7 +1004,7 @@ angular.module('autoForceLayout', [])
                                 return false;
                             }
                         });
-                } (this.selectedItems[itemType]))
+                }(this.selectedItems[itemType]))
             }
 
             // Update the labels
@@ -1186,7 +1183,7 @@ angular.module('autoForceLayout', [])
          * @returns {AutoForceLayoutFactory} current instance
          */
         proto.callEventListeners = function (type, ...args) {
-            this.eventListeners[type].forEach(function(callback) {
+            this.eventListeners[type].forEach(function (callback) {
                 callback(...args);
             });
             return this;
