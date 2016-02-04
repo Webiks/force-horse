@@ -417,7 +417,7 @@ angular.module('autoForceLayout', [])
         proto.getNodeIconArea = function (nodeData) {
             var myInstance = this;
             return myInstance.nodeIconAreaDefault
-                + (myInstance.config.showNodeWeight ? nodeData.weight * constants.NODE_SIZE_ADDITION_PER_WEIGHT_UNIT : 0);
+                + (myInstance.config.showNodeWeight ? nodeData.weight * constants.node_size_addition_per_weight_unit : 0);
         };
 
         /**
@@ -687,10 +687,13 @@ angular.module('autoForceLayout', [])
             return this;
         };
 
-        //---------------------------------------------------
-        // updateGraphInDOM
-        // Update the force simulation in the DOM
-        //---------------------------------------------------
+        /**
+         * @ngdoc method
+         * @name autoForceLayout.factory:AutoForceLayoutFactory#updateGraphInDOM
+         * @description
+         * Update the force simulation in the DOM
+         * @returns {AutoForceLayoutFactory} current instance
+         */
         proto.updateGraphInDOM = function () {
             var myInstance = this;
 
@@ -742,22 +745,27 @@ angular.module('autoForceLayout', [])
             return this;
         };
 
-        //---------------------------------------------------
-        // updateProgressBar
-        //---------------------------------------------------
+        /**
+         * @ngdoc method
+         * @name autoForceLayout.factory:AutoForceLayoutFactory#updateProgressBar
+         * @returns {AutoForceLayoutFactory} current instance
+         */
         proto.updateProgressBar = function () {
             // Do not update progress bar in fixed nodes mode
             if (!this.fixedNodesMode) {
                 this.progressBar.attr('x2',
                     constants.INNER_SVG_WIDTH * (1 - this.force.alpha() / constants.MAX_ALPHA));
             }
+            return this;
         };
 
-        //---------------------------------------------------
-        // onForceEnd
-        // Event handler, called whenever the d3 force-simulation
-        // comes to a halt.
-        //---------------------------------------------------
+        /**
+         * @ngdoc method
+         * @name autoForceLayout.factory:AutoForceLayoutFactory#onForceEnd
+         * @description
+         * Called whenever the d3 force-simulation comes to a halt.
+         * @returns {AutoForceLayoutFactory} current instance
+         */
         proto.onForceEnd = function () {
             // Zoom out the graph, if needed, so that it is fully visible.
             // This is done only on the first time after component start.
@@ -767,12 +775,16 @@ angular.module('autoForceLayout', [])
                 // Also make the graph fixed, after the first force-simulation
                 this.toggleFixedNodesMode();
             }
+            return this;
         };
 
-        //---------------------------------------------------
-        // zoomToViewport
-        // Zoom out the graph, if needed, so that it is fully visible.
-        //---------------------------------------------------
+        /**
+         * @ngdoc method
+         * @name autoForceLayout.factory:AutoForceLayoutFactory#zoomToViewport
+         * @description
+         * Zoom out the graph, if needed, so that it is fully visible.
+         * @returns {AutoForceLayoutFactory} current instance
+         */
         proto.zoomToViewport = function () {
             var scale, translate,
                 width = constants.INNER_SVG_WIDTH,
@@ -804,6 +816,7 @@ angular.module('autoForceLayout', [])
             this.svg.transition()
                    .duration(constants.ANIMATION_DURATION)
                    .call(this.zoom.translate(translate).scale(scale).event);
+            return this;
         };
 
         //---------------------------------------------------
@@ -840,10 +853,13 @@ angular.module('autoForceLayout', [])
         //    };
         //};
 
-        //---------------------------------------------------
-        // onClick
-        // Event handler. Manage element selection
-        //---------------------------------------------------
+        /**
+         * @ngdoc method
+         * @name autoForceLayout.factory:AutoForceLayoutFactory#onClick
+         * @description
+         * Event handler. called when an element is clicked on
+         * @returns {AutoForceLayoutFactory} current instance
+         */
         proto.onClick = function (item, element) {
             // Ignore the click event at the end of a drag
             if (!d3.event.defaultPrevented) {
@@ -865,39 +881,48 @@ angular.module('autoForceLayout', [])
             }
             // Prevent bubbling, so that we can separately detect a click on the container
             d3.event.stopPropagation();
+            return this;
         };
 
-        //---------------------------------------------------
-        // onContainerClick
-        // Event handler. on a click not on a node or edge
-        // Cancel current selection
-        //---------------------------------------------------
+        /**
+         * @ngdoc method
+         * @name autoForceLayout.factory:AutoForceLayoutFactory#onContainerClick
+         * @description
+         * Event handler. on a click not on a node or edge
+         * Cancel current selection
+         * @returns {AutoForceLayoutFactory} current instance
+         */
         proto.onContainerClick = function () {
             //console.log("Container was clicked");
             if (this.selectedItems[constants.NODES].size + this.selectedItems[constants.EDGES].size > 0) {
                 this.onSelectInside(null, null, null, true);
             }
+            return this;
         };
 
-        //---------------------------------------------------
-        // onHoverInside
-        // An element was hovered inside this component.
-        // Params: item: a data object
-        // element: the corresponding DOM element
-        // on: boolean
-        //---------------------------------------------------
+        /**
+         * @ngdoc method
+         * @name autoForceLayout.factory:AutoForceLayoutFactory#onHoverInside
+         * @description
+         * An element was hovered inside this component.
+         * @param item A data object
+         * @param element The corresponding DOM element
+         * @param {boolean} on
+         * @returns {AutoForceLayoutFactory} current instance
+         */
         proto.onHoverInside = function (element, item, on) {
-            var myInstance = this;
             d3.select(element).classed("hovered", item.hovered = on);
-            myInstance.callEventListeners('hover', item);
-            //myInstance.externalEventHandlers.onHover(item);
+            return this.callEventListeners('hover', item);
         };
 
-        //---------------------------------------------------
-        // onHoverOutside
-        // An element was hovered outside this component.
-        // Params: item: data of the hovered element
-        //---------------------------------------------------
+        /**
+         * @ngdoc method
+         * @name autoForceLayout.factory:AutoForceLayoutFactory#onHoverOutside
+         * @description
+         * An element was hovered outside this component.
+         * @param item data object of the hovered element
+         * @returns {AutoForceLayoutFactory} current instance
+         */
         proto.onHoverOutside = function (item) {
             var itemType = (item.class === constants.CLASS_NODE ?
                 constants.NODES : constants.EDGES);
@@ -905,16 +930,20 @@ angular.module('autoForceLayout', [])
                     return d.id === item.id;
                 })
                 .classed("hovered", item.hovered);
+            return this;
         };
 
-        //---------------------------------------------------
-        // onSelectInside
-        // When an element was selected inside this component.
-        // Params: item: the data object bound to the selected element
-        // element: the DOM element
-        // on: boolean
-        // clearOldSelection: whether to clear first the current selection
-        //---------------------------------------------------
+        /**
+         * @ngdoc method
+         * @name autoForceLayout.factory:AutoForceLayoutFactory#onSelectInside
+         * @description
+         * Called when an element is meant to be selected inside this component.
+         * @param item The data object bound to the selected element
+         * @param element The DOM element
+         * @param {boolean} on Select or Unselect
+         * @param {boolean} clearOldSelection whether to clear first the current selection
+         * @returns {AutoForceLayoutFactory} current instance
+         */
         proto.onSelectInside = function (element, item, on, clearOldSelection) {
             var myInstance = this;
             var itemType;
@@ -936,7 +965,7 @@ angular.module('autoForceLayout', [])
             }
 
             // Update the labels
-            myInstance.labels.classed("selected", function (d) {
+            this.labels.classed("selected", function (d) {
                 return d.selected;
             });
 
@@ -944,54 +973,61 @@ angular.module('autoForceLayout', [])
             if (item) {
                 itemType = (item.class === constants.CLASS_NODE ? constants.NODES : constants.EDGES);
                 if (item.selected) {
-                    myInstance.selectedItems[itemType].add(item.id);
+                    this.selectedItems[itemType].add(item.id);
                 } else {
-                    myInstance.selectedItems[itemType].delete(item.id);
+                    this.selectedItems[itemType].delete(item.id);
                 }
             }
 
             // In "selectionMode" the unselected nodes are visually marked
-            myInstance.svg.classed("selectionMode",
-                myInstance.selectedItems[constants.NODES].size + myInstance.selectedItems[constants.EDGES].size);
+            this.svg.classed("selectionMode",
+                this.selectedItems[constants.NODES].size + myInstance.selectedItems[constants.EDGES].size);
 
-            myInstance.callEventListeners('select');
-            //myInstance.externalEventHandlers.onSelect();
+            return this.callEventListeners('select');
         };
 
-        //---------------------------------------------------
-        // onSelectOutside
-        // Elements were selected and/or unselected outside this component.
-        //---------------------------------------------------
+        /**
+         * @ngdoc method
+         * @name autoForceLayout.factory:AutoForceLayoutFactory#onSelectOutside
+         * @description
+         * API: Called when elements were selected and/or unselected outside this component.
+         * @returns {AutoForceLayoutFactory} current instance
+         */
         proto.onSelectOutside = function () {
-            var myInstance = this, mySet;
-
+            // Update the "selected" css class, and the selected-items sets
             for (var itemType = constants.NODES; itemType <= constants.EDGES; itemType++) {
-                (mySet = this.selectedItems[itemType]).clear();
-                this.elements[itemType]
-                    .classed('selected', function (d) {
-                        if (d.selected) {
-                            mySet.add(d.id);
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    });
+                (function (mySet) {
+                    mySet.clear();
+                    this.elements[itemType]
+                        .classed('selected', function (d) {
+                            if (d.selected) {
+                                mySet.add(d.id);
+                                return true;
+                            } else {
+                                return false;
+                            }
+                        });
+                } (this.selectedItems[itemType]))
             }
 
             // Update the labels
-            myInstance.labels.classed("selected", function (d) {
+            this.labels.classed("selected", function (d) {
                 return d.selected;
             });
 
             // In "selectionMode" the unselected nodes are visually marked
-            myInstance.svg.classed("selectionMode",
-                myInstance.selectedItems[constants.NODES].size + myInstance.selectedItems[constants.EDGES].size);
+            this.svg.classed("selectionMode",
+                this.selectedItems[constants.NODES].size + myInstance.selectedItems[constants.EDGES].size);
+            return this;
         };
 
-        //---------------------------------------------------
-        // onZoom
-        // Perform pan/zoom
-        //---------------------------------------------------
+        /**
+         * @ngdoc method
+         * @name autoForceLayout.factory:AutoForceLayoutFactory#onZoom
+         * @description
+         * Perform pan/zoom
+         * @returns {AutoForceLayoutFactory} current instance
+         */
         proto.onZoom = function () {
             var trans = d3.event.translate,
                 scale = d3.event.scale;
@@ -1001,40 +1037,50 @@ angular.module('autoForceLayout', [])
                     "translate(" + trans + ")"
                     + " scale(" + scale + ")");
             }
+            return this;
         };
 
-        //---------------------------------------------------
-        // onDrag
-        // Node-dragging event handler
-        //---------------------------------------------------
+        /**
+         * @ngdoc method
+         * @name autoForceLayout.factory:AutoForceLayoutFactory#onDrag
+         * @description
+         * Node-dragging event handler
+         * @param d The data item bound to the dragged node
+         * @returns {AutoForceLayoutFactory} current instance
+         */
         proto.onDrag = function (d) {
             // Make the dragged node fixed (not moved by the simulation)
             this.elements[constants.NODES].filter(function (nodeData) {
                 return nodeData.id === d.id;
             }).classed("fixed", d.fixed = true);
 
-            //if (!this.fixedNodesMode) this.fixedNodesMode = true;
-
             if (!this.isDragging) {
                 this.isDragging = true;
-                //console.log("Now dragging");
             }
+            return this;
         };
 
-        //---------------------------------------------------
-        // onDragEnd
-        //---------------------------------------------------
+        /**
+         * @ngdoc method
+         * @name autoForceLayout.factory:AutoForceLayoutFactory#onDragEnd
+         * @description
+         * Event handler, called when a node-dragging ends
+         * @returns {AutoForceLayoutFactory} current instance
+         */
         proto.onDragEnd = function () {
             this.isDragging = false;
-            //console.log("Dragging ended");
+            return this;
         };
 
-        //---------------------------------------------------
-        // toggleFixedNodesMode
-        // Called from Pause/Play button
-        // Pause fixes all the nodes
-        // Play unfixes all the nodes
-        //---------------------------------------------------
+        /**
+         * @ngdoc method
+         * @name autoForceLayout.factory:AutoForceLayoutFactory#toggleFixedNodesMode
+         * @description
+         * Called from Pause/Play button
+         * Pause fixes all the nodes
+         * Play unfixes all the nodes
+         * @returns {AutoForceLayoutFactory} current instance
+         */
         proto.toggleFixedNodesMode = function () {
             if (this.fixedNodesMode) {
                 this.elements[constants.NODES].classed('fixed', function (d) {
@@ -1048,12 +1094,17 @@ angular.module('autoForceLayout', [])
                 });
                 this.fixedNodesMode = true;
             }
+            return this;
         };
 
-        //---------------------------------------------------
-        // onLabelsShowHideBtnClick
-        // Hide or show labels
-        //---------------------------------------------------
+        /**
+         * @ngdoc method
+         * @name autoForceLayout.factory:AutoForceLayoutFactory#onLabelsShowHideBtnClick
+         * @description
+         * Show or hide labels
+         * Called when the labels button is clicked on
+         * @returns {AutoForceLayoutFactory} current instance
+         */
         proto.onLabelsShowHideBtnClick = function () {
             //var myInstance = this;
             if (this.config.showLabels = !this.config.showLabels) {
@@ -1068,12 +1119,17 @@ angular.module('autoForceLayout', [])
                 //    myInstance.labelGroup.transition().attr("opacity", "1");
                 //}, constants.ANIMATION_DELAY);
             }
+            return this;
         };
 
-        //---------------------------------------------------
-        // onNodeWeightShowHideBtnClick
-        // Show or hide node weights
-        //---------------------------------------------------
+        /**
+         * @ngdoc method
+         * @name autoForceLayout.factory:AutoForceLayoutFactory#onNodeWeightShowHideBtnClick
+         * @description
+         * Show or hide node weights
+         * Called when the node weight button is clicked on
+         * @returns {AutoForceLayoutFactory} current instance
+         */
         proto.onNodeWeightShowHideBtnClick = function () {
             var myInstance = this;
             this.config.showNodeWeight = !this.config.showNodeWeight;
@@ -1085,12 +1141,17 @@ angular.module('autoForceLayout', [])
                     .size(function (d) {
                         return myInstance.getNodeIconArea(d);
                     }));
+            return this;
         };
 
-        //---------------------------------------------------
-        // onEdgeWeightShowHideBtnClick
-        // Show or hide edge weights
-        //---------------------------------------------------
+        /**
+         * @ngdoc method
+         * @name autoForceLayout.factory:AutoForceLayoutFactory#onEdgeWeightShowHideBtnClick
+         * @description
+         * Show or hide edge weights
+         * Called when the edge weight button is clicked on
+         * @returns {AutoForceLayoutFactory} current instance
+         */
         proto.onEdgeWeightShowHideBtnClick = function () {
             var myInstance = this;
             this.config.showEdgeWeight = !this.config.showEdgeWeight;
@@ -1098,25 +1159,37 @@ angular.module('autoForceLayout', [])
                 .attr("stroke-width", (!this.config.showEdgeWeight ? null : function (d) {
                     return myInstance.getEdgeWidth(d);
                 }));
+            return this;
         };
 
-        //---------------------------------------------------
-        // addEventListener
-        // An API for the user app, to register event callbacks
-        //---------------------------------------------------
+        /**
+         * @ngdoc method
+         * @name autoForceLayout.factory:AutoForceLayoutFactory#addEventListener
+         * @description
+         * API: Register event callbacks with this component
+         * @param type The event type
+         * @param callback The event listener to register
+         * @returns {AutoForceLayoutFactory} current instance
+         */
         proto.addEventListener = function (type, callback) {
             this.eventListeners[type].push(callback);
             return this;
         };
 
-        //---------------------------------------------------
-        // callEventListeners
-        // Call the registered event listeners, for an event type
-        //---------------------------------------------------
+        /**
+         * @ngdoc method
+         * @name autoForceLayout.factory:AutoForceLayoutFactory#callEventListeners
+         * @description
+         * Call the registered event listeners, for an event type
+         * @param type The event type (hover, select, ...)
+         * @param args Arguments for the event listener
+         * @returns {AutoForceLayoutFactory} current instance
+         */
         proto.callEventListeners = function (type, ...args) {
             this.eventListeners[type].forEach(function(callback) {
                 callback(...args);
             });
+            return this;
         };
 
         //---------------------------------------------------
@@ -1124,7 +1197,11 @@ angular.module('autoForceLayout', [])
     }])
 
 
-    //---------------------------------------------------------------//
+    /**
+     * @ngdoc constant
+     * @name autoForceLayout.constant:AutoForceLayoutConstants
+     * @description A constants object for the autoForceLayout component
+     */
     .constant('AutoForceLayoutConstants', {
         INNER_SVG_WIDTH: 540,
         INNER_SVG_HEIGHT: 480,
@@ -1151,53 +1228,46 @@ angular.module('autoForceLayout', [])
         HEAVY_SIMULATION_NUM_OF_NODES: 420,
         DEFAULT_CHARGE_LIGHT: -350,
         DEFAULT_CHARGE_HEAVY: -15000,
-        get NODE_SIZE_ADDITION_PER_WEIGHT_UNIT() {
+        get node_size_addition_per_weight_unit() {
             return this.INNER_SVG_WIDTH * this.INNER_SVG_HEIGHT / (54 * 48 * 3);
         }
     })
 
 
+    /**
+     * @ngdoc service
+     * @name autoForceLayout.service:AutoForceLayoutHelper
+     * @description A helper object with methods for the autoForceLayout component
+     */
     //---------------------------------------------------------------//
     .service('AutoForceLayoutHelper', ['AutoForceLayoutConstants', '$templateCache', '$compile', function (constants, templates, $compile) {
         return {
 
-            //---------------------------------------------------
-            // addButtons
-            // Add a buttons bar, at the top of thw container
-            //---------------------------------------------------
+            /**
+             * @ngdoc method
+             * @name autoForceLayout.service:AutoForceLayoutHelper#addButtons
+             * @description
+             * Add a buttons bar, at the top of the container
+             * @returns {AutoForceLayoutHelper} current object
+             */
             addButtons: function (scope, container) {
                 var template = templates.get('autoForceLayout/buttons');
                 var element = angular.element(template);
                 var compiledElement = $compile(element)(scope);
                 container.prepend(compiledElement);
+                return this;
             },
 
-            //---------------------------------------------------
-            // applyScopeToEventHandlers
-            // apply Angular's scope.$apply (set $watch) to user's event handlers
-            //---------------------------------------------------
-            //applyScopeToEventHandlers: function (ctrl, scope) {
-            //    return {
-            //
-            //        onHover: function (d, on) {
-            //            scope.$apply(function () {
-            //                ctrl.onHover({item: d, on: on});
-            //            });
-            //        },
-            //
-            //        onSelect: function (d, on, clearOldSelection) {
-            //            scope.$apply(function () {
-            //                ctrl.onSelect({item: d, on: on, clearOldSelection: clearOldSelection});
-            //            });
-            //        }
-            //
-            //    }; // return {
-            //},
-
-            //---------------------------------------------------
-            // calcRightAngledOffset
-            // Calculate where to display edges, for the case of multiple edges between two nodes
-            //---------------------------------------------------
+            /**
+             * @ngdoc method
+             * @name autoForceLayout.service:AutoForceLayoutHelper#calcRightAngledOffset
+             * @description
+             * Calculate where to display edges, for the case of multiple edges between two nodes
+             * @param basicOffset The desired distance from the parallel edge to the first edge
+             * @param origDx The x-difference between the two end points of the first edge
+             * @param origDy The y-difference between the two end points of the first edge
+             * @returns {Object} <tt>{dx:dx, dy:dy}</tt> The calculated offset of the parallel edge from the first edge
+             */
             calcRightAngledOffset: function (basicOffset, origDx, origDy) {
                 var dx, dy;
                 if (basicOffset === 0) {
@@ -1215,10 +1285,16 @@ angular.module('autoForceLayout', [])
                 return {dx: dx, dy: dy};
             },
 
-            //---------------------------------------------------
-            // computeFrictionParameter
-            // For the force-simulation, a mysterious formula supplied by Omer.
-            //---------------------------------------------------
+            /**
+             * @ngdoc method
+             * @name autoForceLayout.service:AutoForceLayoutHelper#computeFrictionParameter
+             * @description
+             * Compute the friction parameter for the force-simulation, with a mysterious formula supplied by Omer.
+             * @param {number} width_in_pixels Width of the simulation area
+             * @param {number} height_in_pixels Height of the simulation area
+             * @param {number} number_of_nodes No. of nodes in the graph
+             * @returns {number}
+             */
             computeFrictionParameter: function (width_in_pixels, height_in_pixels, number_of_nodes) {
                 var A = 0.0356,
                     B = 1.162,
@@ -1227,10 +1303,14 @@ angular.module('autoForceLayout', [])
                 return A * Math.pow(x, -B);
             },
 
-            //---------------------------------------------------
-            // isHebrewString
-            // (Does the string s start with a hebrew letter?)
-            //---------------------------------------------------
+            /**
+             * @ngdoc method
+             * @name autoForceLayout.service:AutoForceLayoutHelper#isHebrewString
+             * @description
+             * Does the given string start with a hebrew letter?
+             * @param {string} s
+             * @returns {boolean}
+             */
             isHebrewString: function (s) {
                 var c = s.charAt(0);
                 return (c >= 'א' && c <= 'ת');
@@ -1255,16 +1335,4 @@ angular.module('autoForceLayout', [])
 
         }; // return {
     }]) // .service
-
-
-    /*
-     //---------------------------------------------------------------//
-     .service('AutoForceLayoutNodeState', ['AutoForceLayoutConstants', function (constants) {
-     return {
-     setNodeHovered: function(node, source) {
-
-     }
-     };
-     }]) // .service
-     */
 ;
