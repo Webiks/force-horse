@@ -4,7 +4,6 @@ module.exports = function (config) {
         basePath: './',
 
         files: [
-            'src/bower_components/jquery/dist/jquery.min.js',
             'src/bower_components/angular/angular.js',
             'src/bower_components/angular-ui-router/release/angular-ui-router.min.js',
             'src/bower_components/angular-mocks/angular-mocks.js',
