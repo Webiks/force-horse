@@ -99,7 +99,8 @@ angular.module('autoForceLayout', [])
      * @name autoForceLayout.factory:AutoForceLayoutFactory
      * @description Produces a class-instance for each instance of AutoForceLayout on a page
      */
-    .factory('AutoForceLayoutFactory', ['AutoForceLayoutConstants', 'AutoForceLayoutHelper', function (constants, helper) {
+    .factory('AutoForceLayoutFactory', ['$http', '$log', 'AutoForceLayoutConstants', 'AutoForceLayoutHelper',
+        function ($http, $log, constants, helper) {
         /**
          * @ngdoc method
          * @name AutoForceLayoutFactory
@@ -126,15 +127,28 @@ angular.module('autoForceLayout', [])
          */
         proto.redraw = function () {
             var myInstance = this;
-            d3.json("autoForceLayout.json", function (error, json) {
-                if (error) {
-                    console.warn(error);
-                    json = {};
-                }
+            var configFileName = 'autoForceLayout.json';
+            var proceed = function (json) {
                 myInstance.initLayout(json);
                 myInstance.draw();
                 myInstance.startForceSimulation();
+            };
+            $http.get(configFileName)
+            .then(function (response) {
+                proceed(response.data);
+            }, function (response) {
+                $log.warn(configFileName + ' ' + response.statusText);
+                proceed({});
             });
+            //d3.json("autoForceLayout.json", function (error, json) {
+            //    if (error) {
+            //        console.warn(error);
+            //        json = {};
+            //    }
+            //    myInstance.initLayout(json);
+            //    myInstance.draw();
+            //    myInstance.startForceSimulation();
+            //});
             return this;
         };
 
