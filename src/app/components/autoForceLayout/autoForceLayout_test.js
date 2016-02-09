@@ -101,25 +101,34 @@ describe('autoForceLayout module', function () {
         });
 
         describe('initLayout()', function () {
-            beforeEach(function () {
-                myInstance.initLayout({});
+
+            function _callInitLayout(...args){
+                myInstance.initLayout(...args);
+            }
+
+            describe('', function() {
+                beforeEach(function () {
+                    _callInitLayout({});
+                });
+
+                it('Should assign the property instanceName', function () {
+                    expect(typeof myInstance.instanceName).toBeDefined();
+                });
+
+                it('Should assign properties nodeDataArray and edgeDataArray', function () {
+                    expect(myInstance.nodeDataArray).toBe(options.data[0].data);
+                    expect(myInstance.edgeDataArray).toBe(options.data[1].data);
+                });
+
             });
 
-            it('Should assign a non-empty string to property instanceName', function () {
-                expect(typeof myInstance.instanceName).toBe('string');
-                expect(myInstance.instanceName).not.toBe("");
+            describe('', function() {
+                it('Should call method processNodes', function () {
+                    spyOn(proto, 'processNodes');
+                    _callInitLayout({});
+                    expect(proto.processNodes).toHaveBeenCalled();
+                });
             });
-
-            it('Should assign properties nodeDataArray and edgeDataArray', function () {
-                expect(myInstance.nodeDataArray).toBe(options.data[0].data);
-                expect(myInstance.edgeDataArray).toBe(options.data[1].data);
-            });
-
-            it ('Should call method processNodes', function () {
-                //spyOn(myInstance, 'processNodes');
-                spyOn(proto, 'processNodes');
-                expect(proto.processNodes).toHaveBeenCalled();
-            })
         });
 
     });
