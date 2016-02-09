@@ -66,7 +66,7 @@ describe('autoForceLayout module', function () {
     });
 
     describe('autoForceLayout factory', function () {
-        var myInstance, options, AutoForceLayoutFactory, proto;
+        var aflInstance, options, AutoForceLayoutFactory, aflPrototype;
 
         function _getInstance() {
             inject(function (_AutoForceLayoutFactory_) {
@@ -87,8 +87,8 @@ describe('autoForceLayout module', function () {
                     ]
                 };
                 element = angular.element('<div></div>');
-                myInstance = new AutoForceLayoutFactory(element, options);
-                proto = Object.getPrototypeOf(myInstance);
+                aflInstance = new AutoForceLayoutFactory(element, options);
+                aflPrototype = Object.getPrototypeOf(aflInstance);
             });
         }
 
@@ -103,7 +103,7 @@ describe('autoForceLayout module', function () {
         describe('initLayout()', function () {
 
             function _callInitLayout(...arg){
-                myInstance.initLayout(...arg);
+                aflInstance.initLayout(...arg);
             }
 
             describe('', function() {
@@ -112,21 +112,21 @@ describe('autoForceLayout module', function () {
                 });
 
                 it('Should assign the property instanceName', function () {
-                    expect(typeof myInstance.instanceName).toBeDefined();
+                    expect(typeof aflInstance.instanceName).toBeDefined();
                 });
 
                 it('Should assign properties nodeDataArray and edgeDataArray', function () {
-                    expect(myInstance.nodeDataArray).toBe(options.data[0].data);
-                    expect(myInstance.edgeDataArray).toBe(options.data[1].data);
+                    expect(aflInstance.nodeDataArray).toBe(options.data[0].data);
+                    expect(aflInstance.edgeDataArray).toBe(options.data[1].data);
                 });
 
             });
 
             describe('', function() {
                 it('Should call method processNodes', function () {
-                    spyOn(proto, 'processNodes');
+                    spyOn(aflPrototype, 'processNodes').and.callThrough();
                     _callInitLayout({});
-                    expect(proto.processNodes).toHaveBeenCalled();
+                    expect(aflPrototype.processNodes).toHaveBeenCalled();
                 });
             });
         });
