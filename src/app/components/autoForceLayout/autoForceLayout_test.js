@@ -102,8 +102,8 @@ describe('autoForceLayout module', function () {
 
         describe('initLayout()', function () {
 
-            function _callInitLayout(...args){
-                myInstance.initLayout(...args);
+            function _callInitLayout(...arg){
+                myInstance.initLayout(...arg);
             }
 
             describe('', function() {
