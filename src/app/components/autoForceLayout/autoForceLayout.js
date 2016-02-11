@@ -127,17 +127,16 @@ angular.module('autoForceLayout', [])
          */
         proto.redraw = function () {
             var myInstance = this;
-            var configFileName = 'autoForceLayout.json';
             var proceed = function (json) {
                 myInstance.initLayout(json);
                 myInstance.draw();
                 myInstance.startForceSimulation();
             };
-            $http.get(configFileName)
+            $http.get('./' + constants.CONFIG_FILE_NAME)
             .then(function (response) {
                 proceed(response.data);
             }, function (response) {
-                $log.warn(configFileName + ' ' + response.statusText);
+                $log.warn(constants.CONFIG_FILE_NAME + ' ' + response.statusText);
                 proceed({});
             });
             //d3.json("autoForceLayout.json", function (error, json) {
@@ -1239,6 +1238,7 @@ angular.module('autoForceLayout', [])
         HEAVY_SIMULATION_NUM_OF_NODES: 420,
         DEFAULT_CHARGE_LIGHT: -350,
         DEFAULT_CHARGE_HEAVY: -15000,
+        CONFIG_FILE_NAME: 'autoForceLayout.json',
         get node_size_addition_per_weight_unit() {
             return this.INNER_SVG_WIDTH * this.INNER_SVG_HEIGHT / (54 * 48 * 3);
         }
