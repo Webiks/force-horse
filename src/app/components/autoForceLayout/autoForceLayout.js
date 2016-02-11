@@ -132,7 +132,7 @@ angular.module('autoForceLayout', [])
                 myInstance.draw();
                 myInstance.startForceSimulation();
             };
-            $http.get('./' + constants.CONFIG_FILE_NAME)
+            $http.get(helper.getCurrentDirectory() + constants.CONFIG_FILE_NAME)
             .then(function (response) {
                 proceed(response.data);
             }, function (response) {
@@ -1325,24 +1325,25 @@ angular.module('autoForceLayout', [])
             isHebrewString: function (s) {
                 var c = s.charAt(0);
                 return (c >= 'א' && c <= 'ת');
+            },
+
+            /**
+             * @ngdoc method
+             * @name autoForceLayout.service:AutoForceLayoutHelper#getCurrentDirectory
+             * @description
+             * See http://stackoverflow.com/a/21103831/4402222
+             * @returns {string}
+             */
+            getCurrentDirectory: () => {
+                var scripts = document.getElementsByTagName("script");
+                var currentScriptPath = scripts[scripts.length-1].src;
+                return currentScriptPath.substring(0,currentScriptPath.lastIndexOf("/")+1 );
             }
 
             //---------------------------------------------------
             // confirmFilterButton
             //---------------------------------------------------
-            //confirmFilterButton: function (ev, myInstance) {
-            //    var confirm = $mdDialog.confirm()
-            //        .title('Please confirm')
-            //        .content('Remove selected elements - are you sure?')
-            //        .ariaLabel('Remove selected elements - Please confirm')
-            //        .targetEvent(ev)
-            //        .ok('Remove')
-            //        .cancel('Cancel');
-            //
-            //    $mdDialog.show(confirm).then(function () {
-            //        myInstance.onFilterInside();
-            //    });
-            //}
+
 
         }; // return {
     }]) // .service
