@@ -1,0 +1,134 @@
+
+.force-horse {
+}
+
+.force-horse .display_none {
+    display: none;
+}
+
+.force-horse .opacity_none {
+    opacity: 0;
+}
+
+.force-horse .svgWrapper {
+    height: 90%;
+    position: relative;
+    flex-grow: 1;
+}
+
+.force-horse svg.graph-svg {
+    box-sizing: border-box;
+    position: absolute;
+    max-width: 100%;
+    max-height: 100%;
+    /* margin-top: 5px; */
+    border: 1px solid #e8e8e8;
+    stroke-width: 1;
+    fill: none;
+    stroke: black;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    font-weight: normal;
+    overflow: auto;
+}
+
+.force-horse svg.graph-svg .edge {
+    /*stroke: lightgray;*/
+    /*stroke-width: 1.5px;*/
+}
+
+.force-horse svg.graph-svg .edge.hovered {
+    stroke: black;
+    /*stroke-dasharray: 1,1;*/
+}
+
+.force-horse svg.graph-svg .node {
+    /*cursor: move;*/
+    /*fill: #ccc;*/
+    stroke: none;
+}
+
+.force-horse svg.graph-svg .node.fixed {
+    /*stroke-dasharray: 1,1;*/
+}
+
+.force-horse svg.graph-svg .node.hovered {
+    stroke: #000;
+    stroke-width: 1.5px;
+}
+
+.force-horse svg.graph-svg .labels text {
+    stroke: black;
+    stroke-width: 0.3px;
+    font-size: 11px;
+    pointer-events: none;
+}
+
+.force-horse svg.graph-svg.selectionMode .node,
+.force-horse svg.graph-svg.selectionMode .edge,
+.force-horse svg.graph-svg.selectionMode .labels text {
+    opacity: 0.3;
+}
+
+.force-horse svg.graph-svg.selectionMode .node.selected,
+.force-horse svg.graph-svg.selectionMode .edge.selected,
+.force-horse svg.graph-svg.selectionMode .labels text.selected {
+    opacity: 1;
+}
+
+.force-horse svg.graph-svg .node.filtered,
+.force-horse svg.graph-svg .edge.filtered,
+.force-horse svg.graph-svg .labels text.filtered {
+    display: none;
+}
+
+.force-horse svg.graph-svg line.progress {
+    stroke: black;
+    stroke-width: 2;
+}
+
+.force-horse .buttonsWrapper {
+    height: 10%;
+    color: lightgray;
+}
+
+.force-horse .buttonsWrapper i {
+    font-size: 6vh;
+    cursor: pointer;
+}
+
+.force-horse .buttonsWrapper i:hover {
+    color: black;
+}
+
+.force-horse .buttonsWrapper i:active {
+    color: red;
+}
+
+.force-horse .buttonsWrapper i.img {
+    background-color: lightgray;
+    display: inline-block;
+    width: 5.5vh;
+    height: 6vh;
+    margin: 0 1.5vh;
+    mask-size: contain;
+    -webkit-mask-size: contain;
+}
+
+.force-horse .buttonsWrapper i.img:hover {
+    background-color: black;
+}
+
+.force-horse .buttonsWrapper i.img:active {
+    background-color: red;;
+}
+
+.force-horse .buttonsWrapper i.img.img-node-weight {
+    mask-image: url(img/node_weight.png);
+    -webkit-mask-image: url(img/node_weight.png);
+}
+
+.force-horse .buttonsWrapper i.img.img-link-weight {
+    mask-image: url(img/link_weight.png);
+    -webkit-mask-image: url(img/link_weight.png);
+}

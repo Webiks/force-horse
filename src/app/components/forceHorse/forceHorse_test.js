@@ -1,10 +1,10 @@
 'use strict';
 
-describe('autoForceLayout module', function () {
+describe('forceHorse module', function () {
 
     var $compile, $rootScope, constants, parentScope, element;
 
-    beforeEach(module('autoForceLayout'));
+    beforeEach(module('forceHorse'));
 
     function _mock() {
         module(function ($provide) {
@@ -21,10 +21,10 @@ describe('autoForceLayout module', function () {
     }
 
     function _setInDom() {
-        inject(function (_$compile_, _$rootScope_, AutoForceLayoutConstants) {
+        inject(function (_$compile_, _$rootScope_, ForceHorseConstants) {
             $compile = _$compile_;
             $rootScope = _$rootScope_;
-            constants = AutoForceLayoutConstants;
+            constants = ForceHorseConstants;
             parentScope = $rootScope.$new();
             parentScope.aflOptions = {
                 data: [
@@ -41,7 +41,7 @@ describe('autoForceLayout module', function () {
                     }
                 ]
             };
-            element = $compile(angular.element('<div auto-force-layout options="aflOptions"></div>'))(parentScope);
+            element = $compile(angular.element('<div force-horse options="aflOptions"></div>'))(parentScope);
         });
     }
 
@@ -56,21 +56,21 @@ describe('autoForceLayout module', function () {
 
     function getInstance(element) {
         var isoScope = element.scope().$$childHead;
-        return isoScope.autoForceLayoutCtrl.options.autoForceLayoutInstance;
+        return isoScope.forceHorseCtrl.options.forceHorseInstance;
     }
 
-    describe('autoForceLayout directive', function () {
-        it('should create an autoForceLayout instance', function () {
+    describe('forceHorse directive', function () {
+        it('should create an forceHorse instance', function () {
             expect(getInstance(element)).toBeDefined();
         });
     });
 
-    describe('autoForceLayout factory', function () {
-        var aflInstance, options, AutoForceLayoutFactory, aflPrototype;
+    describe('forceHorse factory', function () {
+        var aflInstance, options, ForceHorseFactory, aflPrototype;
 
         function _getInstance() {
-            inject(function (_AutoForceLayoutFactory_) {
-                AutoForceLayoutFactory = _AutoForceLayoutFactory_;
+            inject(function (_ForceHorseFactory_) {
+                ForceHorseFactory = _ForceHorseFactory_;
                 options = {
                     data: [
                         {
@@ -87,7 +87,7 @@ describe('autoForceLayout module', function () {
                     ]
                 };
                 element = angular.element('<div></div>');
-                aflInstance = new AutoForceLayoutFactory(element, options);
+                aflInstance = new ForceHorseFactory(element, options);
                 aflPrototype = Object.getPrototypeOf(aflInstance);
             });
         }

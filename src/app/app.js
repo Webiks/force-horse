@@ -3,12 +3,12 @@
 // Declare app level module which depends on views, and components
 angular.module('myApp', [
     'ui.router',
-    'viewAutoForceLayout',
-    'autoForceLayout',
+    'viewForceHorse',
+    'forceHorse',
     'ngMaterial'
 ]).
     config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
-        $urlRouterProvider.otherwise('/home/viewAutoForceLayout');
+        $urlRouterProvider.otherwise('/home/viewForceHorse');
 
         $stateProvider.state('index', {
             url: "/home",
@@ -21,13 +21,13 @@ angular.module('myApp', [
 
     }])
 
-    .controller('mainCtrl', ['$rootScope', '$state', '$stateParams', function ($rootScope, $state, $stateParams) {
+    .controller('mainCtrl', ['$rootScope', '$state', '$stateParams', function ($rootScope, $state /*, $stateParams*/) {
         var vm = this;
         vm.viewName = $state.current.data.title;
         vm.menuItems = $state.get();
 
         $rootScope.$on('$stateChangeSuccess',
-            function (event, toState, toParams, fromState, fromParams) {
+            function (event, toState /*, toParams, fromState, fromParams*/) {
                 vm.viewName = toState.data.title;
             }
         )

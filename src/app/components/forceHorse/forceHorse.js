@@ -1,60 +1,60 @@
 "use strict";
 /**
  * @ngdoc overview
- * @name autoForceLayout
+ * @name forceHorse
  * @description A graph visualizer using a "force layout" engine (d3.js)
  */
-angular.module('autoForceLayout', [])
+angular.module('forceHorse', [])
 
     //---------------------------------------------------------------//
     .run(function ($templateCache) {
         // cache our buttons template
-        $templateCache.put('autoForceLayout/buttons',
+        $templateCache.put('forceHorse/buttons',
             '<div class="buttonsWrapper" layout="row" layout-align="start center">\
               <span flex="10"></span>\
               <span flex="40">\
                 <i class="mdi mdi-filter"\
                    title="Remove selected elements"\
-                   ng-if="autoForceLayoutInstance.config.showFilterButton" \
-                   ng-click="autoForceLayoutInstance.onFilterInside()"></i>\
+                   ng-if="forceHorseInstance.config.showFilterButton" \
+                   ng-click="forceHorseInstance.onFilterInside()"></i>\
                 <i class="mdi"\
                    title="Fix/release all nodes"\
-                   ng-class="autoForceLayoutInstance.fixedNodesMode ? \'mdi-play-circle-outline\' : \'mdi-pause-circle-outline\'" \
-                   ng-click="autoForceLayoutInstance.toggleFixedNodesMode()"></i>\
+                   ng-class="forceHorseInstance.fixedNodesMode ? \'mdi-play-circle-outline\' : \'mdi-pause-circle-outline\'" \
+                   ng-click="forceHorseInstance.toggleFixedNodesMode()"></i>\
                 <i class="mdi mdi-home"\
                    title="Zoom to viewport"\
-                   ng-click="autoForceLayoutInstance.zoomToViewport()"></i>\
+                   ng-click="forceHorseInstance.zoomToViewport()"></i>\
               </span>\
               <span flex>\
                 <i class="mdi"\
                    title="Show/hide labels"\
-                   ng-if="autoForceLayoutInstance.config.showLabelsButton" \
-                   ng-class="autoForceLayoutInstance.config.showLabels ? \'mdi-label-outline\' : \'mdi-label\'" \
-                   ng-click="autoForceLayoutInstance.onLabelsShowHideBtnClick()"></i>\
+                   ng-if="forceHorseInstance.config.showLabelsButton" \
+                   ng-class="forceHorseInstance.config.showLabels ? \'mdi-label-outline\' : \'mdi-label\'" \
+                   ng-click="forceHorseInstance.onLabelsShowHideBtnClick()"></i>\
                 <i class="img img-link-weight"\
                    title="Show/hide edge weight"\
-                   ng-if="autoForceLayoutInstance.config.showEdgeWeightButton" \
-                   ng-click="autoForceLayoutInstance.onEdgeWeightShowHideBtnClick()"></i>\
+                   ng-if="forceHorseInstance.config.showEdgeWeightButton" \
+                   ng-click="forceHorseInstance.onEdgeWeightShowHideBtnClick()"></i>\
                 <i class="img img-node-weight"\
                    title="Show/hide node weight"\
-                   ng-if="autoForceLayoutInstance.config.showNodeWeightButton" \
-                   ng-click="autoForceLayoutInstance.onNodeWeightShowHideBtnClick()"></i>\
+                   ng-if="forceHorseInstance.config.showNodeWeightButton" \
+                   ng-click="forceHorseInstance.onNodeWeightShowHideBtnClick()"></i>\
               </span>\
             </div>');
     })
 
     /**
      * @ngdoc directive
-     * @name autoForceLayout.directive:autoForceLayout
+     * @name forceHorse.directive:forceHorse
      * @restrict EA
      * @scope
      * @priority 100
-     * @description Directive definition for the autoForceLayout component
+     * @description Directive definition for the forceHorse component
      */
-    .directive('autoForceLayout', ['$compile', 'AutoForceLayoutFactory', 'AutoForceLayoutHelper', function ($compile, AutoForceLayoutFactory, helper) {
+    .directive('forceHorse', ['$compile', 'ForceHorseFactory', 'ForceHorseHelper', function ($compile, ForceHorseFactory, helper) {
         return {
             restrict: "EA",
-            controllerAs: "autoForceLayoutCtrl",
+            controllerAs: "forceHorseCtrl",
             priority: 100,
             scope: {
                 options: "="
@@ -68,23 +68,23 @@ angular.module('autoForceLayout', [])
                 var vm = this;
                 // Create my instance
                 // Also provide the caller with a reference to my instance, for API
-                this.options.autoForceLayoutInstance =
-                    $scope.autoForceLayoutInstance = new AutoForceLayoutFactory($element, this.options)
+                this.options.forceHorseInstance =
+                    $scope.forceHorseInstance = new ForceHorseFactory($element, this.options)
                         .redraw();
 
                 // Clear the instance reference on destruction, to prevent memory leak
                 $scope.$on("$destroy", function () {
-                    console.log("Destroying autoForceLayout instance");
-                    vm.options.autoForceLayoutInstance =
-                        $scope.autoForceLayoutInstance = null;
+                    console.log("Destroying forceHorse instance");
+                    vm.options.forceHorseInstance =
+                        $scope.forceHorseInstance = null;
                 });
             },
 
             link: function (scope, element) { //, attr, ctrl) {
-                //console.log('In autoForceLayout link');
+                //console.log('In forceHorse link');
 
                 // Add CSS class to set a CSS "namespace"
-                element.addClass("auto-force-layout");
+                element.addClass("force-horse");
                 // Add flex-box properties
                 element.attr("layout", "column");
                 element.attr("flex", "");
@@ -96,34 +96,34 @@ angular.module('autoForceLayout', [])
 
     /**
      * @ngdoc factory
-     * @name autoForceLayout.factory:AutoForceLayoutFactory
-     * @description Produces a class-instance for each instance of AutoForceLayout on a page
+     * @name forceHorse.factory:ForceHorseFactory
+     * @description Produces a class-instance for each instance of ForceHorse on a page
      */
-    .factory('AutoForceLayoutFactory', ['$http', '$log', 'AutoForceLayoutConstants', 'AutoForceLayoutHelper',
+    .factory('ForceHorseFactory', ['$http', '$log', 'ForceHorseConstants', 'ForceHorseHelper',
         function ($http, $log, constants, helper) {
         /**
          * @ngdoc method
-         * @name AutoForceLayoutFactory
-         * @methodOf autoForceLayout.factory:AutoForceLayoutFactory
+         * @name ForceHorseFactory
+         * @methodOf forceHorse.factory:ForceHorseFactory
          * @constructor
          * @description Constructor; initializes the eventListeners object
          * @param element A JSLite reference to the HTML container for this component
          * @param options An external options object
          */
-        function AutoForceLayoutFactory(element, options) {
+        function ForceHorseFactory(element, options) {
             this.element = element[0];
             this.options = options;
             // Set a variable to hold references to registered event listeners
             this.eventListeners = {hover: [], select: [], filter: [], dblclick: []};
         }
 
-        var proto = AutoForceLayoutFactory.prototype;
+        var proto = ForceHorseFactory.prototype;
 
         /**
          * @ngdoc method
-         * @name autoForceLayout.factory:AutoForceLayoutFactory#redraw
+         * @name forceHorse.factory:ForceHorseFactory#redraw
          * @description Draws a new graph, based on the input data
-         * @returns {AutoForceLayoutFactory} current instance
+         * @returns {ForceHorseFactory} current instance
          */
         proto.redraw = function () {
             var myInstance = this;
@@ -139,7 +139,7 @@ angular.module('autoForceLayout', [])
                 $log.warn(constants.CONFIG_FILE_NAME + ' ' + response.statusText);
                 proceed({});
             });
-            //d3.json("autoForceLayout.json", function (error, json) {
+            //d3.json("forceHorse.json", function (error, json) {
             //    if (error) {
             //        console.warn(error);
             //        json = {};
@@ -153,10 +153,10 @@ angular.module('autoForceLayout', [])
 
         /**
          * @ngdoc method
-         * @name autoForceLayout.factory:AutoForceLayoutFactory#initLayout
+         * @name forceHorse.factory:ForceHorseFactory#initLayout
          * @description Init force layout & SVG
          * @param config an external configration object (typically from a json file)
-         * @returns {AutoForceLayoutFactory} current instance
+         * @returns {ForceHorseFactory} current instance
          */
         proto.initLayout = function (config) {
             var myInstance = this;
@@ -290,9 +290,9 @@ angular.module('autoForceLayout', [])
 
         /**
          * @ngdoc method
-         * @name autoForceLayout.factory:AutoForceLayoutFactory#draw
+         * @name forceHorse.factory:ForceHorseFactory#draw
          * @description Set the graph in the DOM: nodes, edges, labels, progress bar
-         * @returns {AutoForceLayoutFactory} current instance
+         * @returns {ForceHorseFactory} current instance
          */
         proto.draw = function () {
             var myInstance = this;
@@ -398,9 +398,9 @@ angular.module('autoForceLayout', [])
 
         /**
          * @ngdoc method
-         * @name autoForceLayout.factory:AutoForceLayoutFactory#startForceSimulation
+         * @name forceHorse.factory:ForceHorseFactory#startForceSimulation
          * @description Restart the force simulation
-         * @returns {AutoForceLayoutFactory} current instance
+         * @returns {ForceHorseFactory} current instance
          */
         proto.startForceSimulation = function () {
             this.force.start();
@@ -409,9 +409,9 @@ angular.module('autoForceLayout', [])
 
         /**
          * @ngdoc method
-         * @name autoForceLayout.factory:AutoForceLayoutFactory#calcFixAspectRatio
+         * @name forceHorse.factory:ForceHorseFactory#calcFixAspectRatio
          * @description Returns a number to be multiplied by an element's width, to fix aspect ratio deformation, due to the svg fixAspectRatio="none"
-         * @returns {AutoForceLayoutFactory} current instance
+         * @returns {ForceHorseFactory} current instance
          */
         proto.calcFixAspectRatio = function () {
             var currentRect = this.svg[0][0].getBoundingClientRect(),
@@ -423,7 +423,7 @@ angular.module('autoForceLayout', [])
 
         /**
          * @ngdoc method
-         * @name autoForceLayout.factory:AutoForceLayoutFactory#getNodeIconArea
+         * @name forceHorse.factory:ForceHorseFactory#getNodeIconArea
          * @description Calculates the desired node icon area (with or without showing weight)
          * @returns {number}
          */
@@ -435,7 +435,7 @@ angular.module('autoForceLayout', [])
 
         /**
          * @ngdoc method
-         * @name autoForceLayout.factory:AutoForceLayoutFactory#getEdgeWidth
+         * @name forceHorse.factory:ForceHorseFactory#getEdgeWidth
          * @description Calculates the desired edge width (with or without showing weight)
          * @returns {number}
          */
@@ -445,9 +445,9 @@ angular.module('autoForceLayout', [])
 
         /**
          * @ngdoc method
-         * @name autoForceLayout.factory:AutoForceLayoutFactory#onFilterInside
+         * @name forceHorse.factory:ForceHorseFactory#onFilterInside
          * @description Filter button action: remove selected elements
-         * @returns {AutoForceLayoutFactory} current instance
+         * @returns {ForceHorseFactory} current instance
          */
         proto.onFilterInside = function () {
             // Mark the selected items as filtered, and unselect them
@@ -487,9 +487,9 @@ angular.module('autoForceLayout', [])
 
         /**
          * @ngdoc method
-         * @name autoForceLayout.factory:AutoForceLayoutFactory#onFilterOutside
+         * @name forceHorse.factory:ForceHorseFactory#onFilterOutside
          * @description API: some elements were filtered out, update the graph
-         * @returns {AutoForceLayoutFactory} current instance
+         * @returns {ForceHorseFactory} current instance
          */
         proto.onFilterOutside = function () {
             var myInstance = this;
@@ -528,9 +528,9 @@ angular.module('autoForceLayout', [])
 
         /**
          * @ngdoc method
-         * @name autoForceLayout.factory:AutoForceLayoutFactory#processNodes
+         * @name forceHorse.factory:ForceHorseFactory#processNodes
          * @description Graph initialization: add auxiliary properties and variables to the nodes array
-         * @returns {AutoForceLayoutFactory} current instance
+         * @returns {ForceHorseFactory} current instance
          */
         proto.processNodes = function () {
             var myInstance = this;
@@ -550,9 +550,9 @@ angular.module('autoForceLayout', [])
 
         /**
          * @ngdoc method
-         * @name autoForceLayout.factory:AutoForceLayoutFactory#processEdges
+         * @name forceHorse.factory:ForceHorseFactory#processEdges
          * @description Graph initialization: add auxiliary properties and variables to the edges array
-         * @returns {AutoForceLayoutFactory} current instance
+         * @returns {ForceHorseFactory} current instance
          */
         proto.processEdges = function () {
             var myInstance = this, sid, tid, key;
@@ -594,9 +594,9 @@ angular.module('autoForceLayout', [])
 
         /**
          * @ngdoc method
-         * @name autoForceLayout.factory:AutoForceLayoutFactory#onWindowResize
+         * @name forceHorse.factory:ForceHorseFactory#onWindowResize
          * @description Fix aspect ratios, when the window resizes
-         * @returns {AutoForceLayoutFactory} current instance
+         * @returns {ForceHorseFactory} current instance
          */
         proto.onWindowResize = function () {
             return this.calcFixAspectRatio()
@@ -605,9 +605,9 @@ angular.module('autoForceLayout', [])
 
         /**
          * @ngdoc method
-         * @name autoForceLayout.factory:AutoForceLayoutFactory#onForceStart
+         * @name forceHorse.factory:ForceHorseFactory#onForceStart
          * @description Called when a force-simulation is supposed to start.
-         * @returns {AutoForceLayoutFactory} current instance
+         * @returns {ForceHorseFactory} current instance
          */
         proto.onForceStart = function () {
             // Prevent simulation when dragging a node
@@ -624,11 +624,11 @@ angular.module('autoForceLayout', [])
 
         /**
          * @ngdoc method
-         * @name autoForceLayout.factory:AutoForceLayoutFactory#runSimulation
+         * @name forceHorse.factory:ForceHorseFactory#runSimulation
          * @description
          * Run the force-simulation with control.
          * The DOM is not updated for every tick.
-         * @returns {AutoForceLayoutFactory} current instance
+         * @returns {ForceHorseFactory} current instance
          */
         proto.runSimulation = function () {
             var myInstance = this;
@@ -660,11 +660,11 @@ angular.module('autoForceLayout', [])
 
         /**
          * @ngdoc method
-         * @name autoForceLayout.factory:AutoForceLayoutFactory#runHeavySimulation
+         * @name forceHorse.factory:ForceHorseFactory#runHeavySimulation
          * @description
          * Heavy graphs version: run the force-simulation with control.
          * The DOM is not updated for every tick.
-         * @returns {AutoForceLayoutFactory} current instance
+         * @returns {ForceHorseFactory} current instance
          */
         proto.runHeavySimulation = function () {
             var myInstance = this;
@@ -698,10 +698,10 @@ angular.module('autoForceLayout', [])
 
         /**
          * @ngdoc method
-         * @name autoForceLayout.factory:AutoForceLayoutFactory#updateGraphInDOM
+         * @name forceHorse.factory:ForceHorseFactory#updateGraphInDOM
          * @description
          * Update the force simulation in the DOM
-         * @returns {AutoForceLayoutFactory} current instance
+         * @returns {ForceHorseFactory} current instance
          */
         proto.updateGraphInDOM = function () {
             var myInstance = this;
@@ -756,8 +756,8 @@ angular.module('autoForceLayout', [])
 
         /**
          * @ngdoc method
-         * @name autoForceLayout.factory:AutoForceLayoutFactory#updateProgressBar
-         * @returns {AutoForceLayoutFactory} current instance
+         * @name forceHorse.factory:ForceHorseFactory#updateProgressBar
+         * @returns {ForceHorseFactory} current instance
          */
         proto.updateProgressBar = function () {
             // Do not update progress bar in fixed nodes mode
@@ -770,10 +770,10 @@ angular.module('autoForceLayout', [])
 
         /**
          * @ngdoc method
-         * @name autoForceLayout.factory:AutoForceLayoutFactory#onForceEnd
+         * @name forceHorse.factory:ForceHorseFactory#onForceEnd
          * @description
          * Called whenever the d3 force-simulation comes to a halt.
-         * @returns {AutoForceLayoutFactory} current instance
+         * @returns {ForceHorseFactory} current instance
          */
         proto.onForceEnd = function () {
             // Zoom out the graph, if needed, so that it is fully visible.
@@ -789,10 +789,10 @@ angular.module('autoForceLayout', [])
 
         /**
          * @ngdoc method
-         * @name autoForceLayout.factory:AutoForceLayoutFactory#zoomToViewport
+         * @name forceHorse.factory:ForceHorseFactory#zoomToViewport
          * @description
          * Zoom out the graph, if needed, so that it is fully visible.
-         * @returns {AutoForceLayoutFactory} current instance
+         * @returns {ForceHorseFactory} current instance
          */
         proto.zoomToViewport = function () {
             var scale, translate,
@@ -864,10 +864,10 @@ angular.module('autoForceLayout', [])
 
         /**
          * @ngdoc method
-         * @name autoForceLayout.factory:AutoForceLayoutFactory#onClick
+         * @name forceHorse.factory:ForceHorseFactory#onClick
          * @description
          * Event handler. called when an element is clicked on
-         * @returns {AutoForceLayoutFactory} current instance
+         * @returns {ForceHorseFactory} current instance
          */
         proto.onClick = function (item, element) {
             // Ignore the click event at the end of a drag
@@ -895,11 +895,11 @@ angular.module('autoForceLayout', [])
 
         /**
          * @ngdoc method
-         * @name autoForceLayout.factory:AutoForceLayoutFactory#onContainerClick
+         * @name forceHorse.factory:ForceHorseFactory#onContainerClick
          * @description
          * Event handler. on a click not on a node or edge
          * Cancel current selection
-         * @returns {AutoForceLayoutFactory} current instance
+         * @returns {ForceHorseFactory} current instance
          */
         proto.onContainerClick = function () {
             //console.log("Container was clicked");
@@ -911,13 +911,13 @@ angular.module('autoForceLayout', [])
 
         /**
          * @ngdoc method
-         * @name autoForceLayout.factory:AutoForceLayoutFactory#onHoverInside
+         * @name forceHorse.factory:ForceHorseFactory#onHoverInside
          * @description
          * An element was hovered inside this component.
          * @param item A data object
          * @param element The corresponding DOM element
          * @param {boolean} on
-         * @returns {AutoForceLayoutFactory} current instance
+         * @returns {ForceHorseFactory} current instance
          */
         proto.onHoverInside = function (element, item, on) {
             d3.select(element).classed("hovered", item.hovered = on);
@@ -926,11 +926,11 @@ angular.module('autoForceLayout', [])
 
         /**
          * @ngdoc method
-         * @name autoForceLayout.factory:AutoForceLayoutFactory#onHoverOutside
+         * @name forceHorse.factory:ForceHorseFactory#onHoverOutside
          * @description
          * An element was hovered outside this component.
          * @param item data object of the hovered element
-         * @returns {AutoForceLayoutFactory} current instance
+         * @returns {ForceHorseFactory} current instance
          */
         proto.onHoverOutside = function (item) {
             var itemType = (item.class === constants.CLASS_NODE ?
@@ -944,14 +944,14 @@ angular.module('autoForceLayout', [])
 
         /**
          * @ngdoc method
-         * @name autoForceLayout.factory:AutoForceLayoutFactory#onSelectInside
+         * @name forceHorse.factory:ForceHorseFactory#onSelectInside
          * @description
          * Called when an element is meant to be selected inside this component.
          * @param item The data object bound to the selected element
          * @param element The DOM element
          * @param {boolean} on Select or Unselect
          * @param {boolean} clearOldSelection whether to clear first the current selection
-         * @returns {AutoForceLayoutFactory} current instance
+         * @returns {ForceHorseFactory} current instance
          */
         proto.onSelectInside = function (element, item, on, clearOldSelection) {
             var myInstance = this;
@@ -997,10 +997,10 @@ angular.module('autoForceLayout', [])
 
         /**
          * @ngdoc method
-         * @name autoForceLayout.factory:AutoForceLayoutFactory#onSelectOutside
+         * @name forceHorse.factory:ForceHorseFactory#onSelectOutside
          * @description
          * API: Called when elements were selected and/or unselected outside this component.
-         * @returns {AutoForceLayoutFactory} current instance
+         * @returns {ForceHorseFactory} current instance
          */
         proto.onSelectOutside = function () {
             var myInstance = this;
@@ -1033,10 +1033,10 @@ angular.module('autoForceLayout', [])
 
         /**
          * @ngdoc method
-         * @name autoForceLayout.factory:AutoForceLayoutFactory#onZoom
+         * @name forceHorse.factory:ForceHorseFactory#onZoom
          * @description
          * Perform pan/zoom
-         * @returns {AutoForceLayoutFactory} current instance
+         * @returns {ForceHorseFactory} current instance
          */
         proto.onZoom = function () {
             var trans = d3.event.translate,
@@ -1052,11 +1052,11 @@ angular.module('autoForceLayout', [])
 
         /**
          * @ngdoc method
-         * @name autoForceLayout.factory:AutoForceLayoutFactory#onDrag
+         * @name forceHorse.factory:ForceHorseFactory#onDrag
          * @description
          * Node-dragging event handler
          * @param d The data item bound to the dragged node
-         * @returns {AutoForceLayoutFactory} current instance
+         * @returns {ForceHorseFactory} current instance
          */
         proto.onDrag = function (d) {
             // Make the dragged node fixed (not moved by the simulation)
@@ -1072,10 +1072,10 @@ angular.module('autoForceLayout', [])
 
         /**
          * @ngdoc method
-         * @name autoForceLayout.factory:AutoForceLayoutFactory#onDragEnd
+         * @name forceHorse.factory:ForceHorseFactory#onDragEnd
          * @description
          * Event handler, called when a node-dragging ends
-         * @returns {AutoForceLayoutFactory} current instance
+         * @returns {ForceHorseFactory} current instance
          */
         proto.onDragEnd = function () {
             this.isDragging = false;
@@ -1084,12 +1084,12 @@ angular.module('autoForceLayout', [])
 
         /**
          * @ngdoc method
-         * @name autoForceLayout.factory:AutoForceLayoutFactory#toggleFixedNodesMode
+         * @name forceHorse.factory:ForceHorseFactory#toggleFixedNodesMode
          * @description
          * Called from Pause/Play button
          * Pause fixes all the nodes
          * Play unfixes all the nodes
-         * @returns {AutoForceLayoutFactory} current instance
+         * @returns {ForceHorseFactory} current instance
          */
         proto.toggleFixedNodesMode = function () {
             if (this.fixedNodesMode) {
@@ -1109,11 +1109,11 @@ angular.module('autoForceLayout', [])
 
         /**
          * @ngdoc method
-         * @name autoForceLayout.factory:AutoForceLayoutFactory#onLabelsShowHideBtnClick
+         * @name forceHorse.factory:ForceHorseFactory#onLabelsShowHideBtnClick
          * @description
          * Show or hide labels
          * Called when the labels button is clicked on
-         * @returns {AutoForceLayoutFactory} current instance
+         * @returns {ForceHorseFactory} current instance
          */
         proto.onLabelsShowHideBtnClick = function () {
             //var myInstance = this;
@@ -1134,11 +1134,11 @@ angular.module('autoForceLayout', [])
 
         /**
          * @ngdoc method
-         * @name autoForceLayout.factory:AutoForceLayoutFactory#onNodeWeightShowHideBtnClick
+         * @name forceHorse.factory:ForceHorseFactory#onNodeWeightShowHideBtnClick
          * @description
          * Show or hide node weights
          * Called when the node weight button is clicked on
-         * @returns {AutoForceLayoutFactory} current instance
+         * @returns {ForceHorseFactory} current instance
          */
         proto.onNodeWeightShowHideBtnClick = function () {
             var myInstance = this;
@@ -1156,11 +1156,11 @@ angular.module('autoForceLayout', [])
 
         /**
          * @ngdoc method
-         * @name autoForceLayout.factory:AutoForceLayoutFactory#onEdgeWeightShowHideBtnClick
+         * @name forceHorse.factory:ForceHorseFactory#onEdgeWeightShowHideBtnClick
          * @description
          * Show or hide edge weights
          * Called when the edge weight button is clicked on
-         * @returns {AutoForceLayoutFactory} current instance
+         * @returns {ForceHorseFactory} current instance
          */
         proto.onEdgeWeightShowHideBtnClick = function () {
             var myInstance = this;
@@ -1174,12 +1174,12 @@ angular.module('autoForceLayout', [])
 
         /**
          * @ngdoc method
-         * @name autoForceLayout.factory:AutoForceLayoutFactory#addEventListener
+         * @name forceHorse.factory:ForceHorseFactory#addEventListener
          * @description
          * API: Register event callbacks with this component
          * @param type The event type
          * @param callback The event listener to register
-         * @returns {AutoForceLayoutFactory} current instance
+         * @returns {ForceHorseFactory} current instance
          */
         proto.addEventListener = function (type, callback) {
             this.eventListeners[type].push(callback);
@@ -1188,12 +1188,12 @@ angular.module('autoForceLayout', [])
 
         /**
          * @ngdoc method
-         * @name autoForceLayout.factory:AutoForceLayoutFactory#callEventListeners
+         * @name forceHorse.factory:ForceHorseFactory#callEventListeners
          * @description
          * Call the registered event listeners, for an event type
          * @param type The event type (hover, select, ...)
          * @param args Arguments for the event listener
-         * @returns {AutoForceLayoutFactory} current instance
+         * @returns {ForceHorseFactory} current instance
          */
         proto.callEventListeners = function (type, ...args) {
             this.eventListeners[type].forEach(function (callback) {
@@ -1203,16 +1203,16 @@ angular.module('autoForceLayout', [])
         };
 
         //---------------------------------------------------
-        return AutoForceLayoutFactory;
+        return ForceHorseFactory;
     }])
 
 
     /**
      * @ngdoc constant
-     * @name autoForceLayout.constant:AutoForceLayoutConstants
-     * @description A constants object for the autoForceLayout component
+     * @name forceHorse.constant:ForceHorseConstants
+     * @description A constants object for the forceHorse component
      */
-    .constant('AutoForceLayoutConstants', {
+    .constant('ForceHorseConstants', {
         INNER_SVG_WIDTH: 540,
         INNER_SVG_HEIGHT: 480,
         NODES: 0,
@@ -1238,7 +1238,7 @@ angular.module('autoForceLayout', [])
         HEAVY_SIMULATION_NUM_OF_NODES: 420,
         DEFAULT_CHARGE_LIGHT: -350,
         DEFAULT_CHARGE_HEAVY: -15000,
-        CONFIG_FILE_NAME: 'autoForceLayout.json',
+        CONFIG_FILE_NAME: 'forceHorse.json',
         get node_size_addition_per_weight_unit() {
             return this.INNER_SVG_WIDTH * this.INNER_SVG_HEIGHT / (54 * 48 * 3);
         }
@@ -1247,22 +1247,22 @@ angular.module('autoForceLayout', [])
 
     /**
      * @ngdoc service
-     * @name autoForceLayout.service:AutoForceLayoutHelper
-     * @description A helper object with methods for the autoForceLayout component
+     * @name forceHorse.service:ForceHorseHelper
+     * @description A helper object with methods for the forceHorse component
      */
     //---------------------------------------------------------------//
-    .service('AutoForceLayoutHelper', ['AutoForceLayoutConstants', '$templateCache', '$compile', function (constants, templates, $compile) {
+    .service('ForceHorseHelper', ['ForceHorseConstants', '$templateCache', '$compile', function (constants, templates, $compile) {
         return {
 
             /**
              * @ngdoc method
-             * @name autoForceLayout.service:AutoForceLayoutHelper#addButtons
+             * @name forceHorse.service:ForceHorseHelper#addButtons
              * @description
              * Add a buttons bar, at the top of the container
-             * @returns {AutoForceLayoutHelper} current object
+             * @returns {ForceHorseHelper} current object
              */
             addButtons: function (scope, container) {
-                var template = templates.get('autoForceLayout/buttons');
+                var template = templates.get('forceHorse/buttons');
                 var element = angular.element(template);
                 var compiledElement = $compile(element)(scope);
                 container.prepend(compiledElement);
@@ -1271,7 +1271,7 @@ angular.module('autoForceLayout', [])
 
             /**
              * @ngdoc method
-             * @name autoForceLayout.service:AutoForceLayoutHelper#calcRightAngledOffset
+             * @name forceHorse.service:ForceHorseHelper#calcRightAngledOffset
              * @description
              * Calculate where to display edges, for the case of multiple edges between two nodes
              * @param basicOffset The desired distance from the parallel edge to the first edge
@@ -1298,7 +1298,7 @@ angular.module('autoForceLayout', [])
 
             /**
              * @ngdoc method
-             * @name autoForceLayout.service:AutoForceLayoutHelper#computeFrictionParameter
+             * @name forceHorse.service:ForceHorseHelper#computeFrictionParameter
              * @description
              * Compute the friction parameter for the force-simulation, with a mysterious formula supplied by Omer.
              * @param {number} width_in_pixels Width of the simulation area
@@ -1316,7 +1316,7 @@ angular.module('autoForceLayout', [])
 
             /**
              * @ngdoc method
-             * @name autoForceLayout.service:AutoForceLayoutHelper#isHebrewString
+             * @name forceHorse.service:ForceHorseHelper#isHebrewString
              * @description
              * Does the given string start with a hebrew letter?
              * @param {string} s
@@ -1329,7 +1329,7 @@ angular.module('autoForceLayout', [])
 
             /**
              * @ngdoc method
-             * @name autoForceLayout.service:AutoForceLayoutHelper#getCurrentDirectory
+             * @name forceHorse.service:ForceHorseHelper#getCurrentDirectory
              * @description
              * See http://stackoverflow.com/a/21103831/4402222
              * @returns {string}

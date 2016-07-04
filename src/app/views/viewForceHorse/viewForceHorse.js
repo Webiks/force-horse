@@ -1,22 +1,22 @@
 'use strict';
 
-angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
+angular.module('viewForceHorse', ['ui.router', 'forceHorse'])
 
     //---------------------------------------------------------------//
     .config(['$stateProvider', function ($stateProvider) {
         //.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
-        $stateProvider.state('index.viewAutoForceLayout', {
-            url: '/viewAutoForceLayout',
-            templateUrl: 'app/views/viewAutoForceLayout/viewAutoForceLayout.html',
+        $stateProvider.state('index.viewForceHorse', {
+            url: '/viewForceHorse',
+            templateUrl: 'app/views/viewForceHorse/viewForceHorse.html',
             controller: 'view3Ctrl as ctrl',
             data: {
-                title: 'Auto Force Layout'
+                title: 'Force Horse'
             }
         });
     }])
 
     //---------------------------------------------------------------//
-    .controller('view3Ctrl', ['$scope','$http', 'graphData', 'ViewAutoForceLayoutConstants', function ($scope, $http, graphData, constants) {
+    .controller('view3Ctrl', ['$scope','$http', 'graphData', 'ViewForceHorseConstants', function ($scope, $http, graphData, constants) {
         //console.log('In view3Ctrl');
         var vm = this;
         
@@ -30,7 +30,7 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
         // Watch the variable where the directive will reference its instance.
         // Register my event handlers when the directive is ready
         $scope.$watch(function () {
-            return vm.options.autoForceLayoutInstance;
+            return vm.options.forceHorseInstance;
         }, function(newValue) {
             newValue.addEventListener.call(newValue, 'hover', vm.onHoverOutside)
                 .addEventListener.call(newValue, 'select', vm.onSelectOutside)
@@ -56,7 +56,7 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
         vm.createRandomGraph = function () {
             vm.options.data = graphData.getRandomData(vm.numOfNodes);
             vm.setArrays();
-            vm.options.autoForceLayoutInstance.redraw();
+            vm.options.forceHorseInstance.redraw();
         };
 
         vm.createGraphFromFile = function () {
@@ -68,7 +68,7 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
                     vm.options.data = graphData.getDataFromFile(data);
                     vm.setArrays();
                     vm.numOfNodes = vm.data[constants.NODES].length; // show no. of nodes on screen
-                    vm.options.autoForceLayoutInstance.redraw();
+                    vm.options.forceHorseInstance.redraw();
                 };
                 r.readAsText(f);
             } else {
@@ -82,7 +82,7 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
                   vm.options.data = graphData.getDataFromFile(response.data);
                   vm.setArrays();
                   vm.numOfNodes = vm.data[constants.NODES].length; // show no. of nodes on screen
-                  vm.options.autoForceLayoutInstance.redraw();
+                  vm.options.forceHorseInstance.redraw();
               })
               .catch(function (response) {
                   console.warn('File read error: ' + response.status + " " + response.statusText);
@@ -97,8 +97,8 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
         vm.onHoverInside = function (item, on) {
             item.hovered = on;
             vm.setHoverState(item);
-            if (angular.isDefined(vm.options.autoForceLayoutInstance)) {
-                vm.options.autoForceLayoutInstance.onHoverOutside(item);
+            if (angular.isDefined(vm.options.forceHorseInstance)) {
+                vm.options.forceHorseInstance.onHoverOutside(item);
             }
         };
 
@@ -160,8 +160,8 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
                 vm.selectedItems[itemType].delete(item.id);
             }
 
-            if (angular.isDefined(vm.options.autoForceLayoutInstance)) {
-                vm.options.autoForceLayoutInstance.onSelectOutside();
+            if (angular.isDefined(vm.options.forceHorseInstance)) {
+                vm.options.forceHorseInstance.onSelectOutside();
             }
         };
 
@@ -201,8 +201,8 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
             });
 
             // Broadcast event
-            if (angular.isDefined(vm.options.autoForceLayoutInstance)) {
-                vm.options.autoForceLayoutInstance.onFilterOutside();
+            if (angular.isDefined(vm.options.forceHorseInstance)) {
+                vm.options.forceHorseInstance.onFilterOutside();
             }
         };
 
@@ -230,7 +230,7 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
 
 
     //---------------------------------------------------------------//
-    .service('graphData', ['ViewAutoForceLayoutConstants', function (constants) {
+    .service('graphData', ['ViewForceHorseConstants', function (constants) {
         return {
             //---------------------------------------------------
             // get
@@ -359,7 +359,7 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
 
 
     //---------------------------------------------------------------//
-    .constant('ViewAutoForceLayoutConstants', {
+    .constant('ViewForceHorseConstants', {
         INITIAL_NUM_OF_NODES: 20,
         MAX_COLOR: parseInt("0xffffff"),
         NODES: 0,
