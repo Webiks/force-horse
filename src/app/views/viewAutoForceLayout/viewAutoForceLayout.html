@@ -17,7 +17,14 @@
                 <button flex="" ng-click="ctrl.createRandomGraph()">Create random graph</button>
             </div>
             <div layout="row" layout-margin="" layout-align="start center">
-                <label flex="20" for="graph-data-file-read">Create graph from file:</label>
+                <label flex="20" for="predefined-file-read">Predefined demo files:</label>
+                <select flex="" id="predefined-file-read" ng-model="ctrl.predefinedFile" ng-change="ctrl.createGraphFromPredefinedFile()">
+                    <option ng-repeat="fileName in ctrl.constants.PREDEFINED_FILES" value="{{fileName}}">{{fileName}}</option>
+                </select>
+                <!--<button flex="20" ng-click="ctrl.createGraphFromPredefinedFile()">Load file</button>-->
+            </div>
+            <div layout="row" layout-margin="" layout-align="start center">
+                <label flex="20" for="graph-data-file-read">Create graph from local file:</label>
                 <input flex="" type="file" id="graph-data-file-read" file-input-on-change="ctrl.createGraphFromFile">
             </div>
         </div>

@@ -19,6 +19,8 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
     .controller('view3Ctrl', ['$scope','$http', 'graphData', 'ViewAutoForceLayoutConstants', function ($scope, $http, graphData, constants) {
         //console.log('In view3Ctrl');
         var vm = this;
+        
+        vm.constants = constants;
 
         // Set the options, which are passed as a parameter to the directive
         vm.options = {};
@@ -42,7 +44,7 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
             vm.data[constants.NODES] = vm.options.data[constants.NODES].data;
             vm.data[constants.EDGES] = vm.options.data[constants.EDGES].data;
             vm.nodeById = {};
-            vm.data[constants.NODES].forEach(function (item, idx) {
+            vm.data[constants.NODES].forEach(function (item) {
                 vm.nodeById[item.id] = item;
             });
         };
@@ -70,24 +72,23 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
                 };
                 r.readAsText(f);
             } else {
-                console.warn(`File read error`);
+                console.warn('File read error');
             }
         };
 
-        //vm.graphDataFileName = "";
-        //vm.createGraphFromFile = function () {
-        //    $http.get(vm.graphDataFileName)
-        //        .then(function (response) {
-        //            vm.options.data = graphData.getDataFromFile(response.data);
-        //            vm.setArrays();
-        //            vm.numOfNodes = vm.data[constants.NODES].length; // show no. of nodes on screen
-        //            vm.options.autoForceLayoutInstance.redraw();
-        //        },
-        //        function(response) {
-        //            console.warn(`File read error: status = ${response.status}, message = ${response.statusText}`);
-        //        });
-        //};
-
+        vm.createGraphFromPredefinedFile = function () {
+          $http.get(constants.FILES_SERVER_ADDR + vm.predefinedFile + ".json")
+              .then(function (response) {
+                  vm.options.data = graphData.getDataFromFile(response.data);
+                  vm.setArrays();
+                  vm.numOfNodes = vm.data[constants.NODES].length; // show no. of nodes on screen
+                  vm.options.autoForceLayoutInstance.redraw();
+              })
+              .catch(function (response) {
+                  console.warn('File read error: ' + response.status + " " + response.statusText);
+              })
+        };
+        
         vm.selectedItems = [new Set(), new Set()]; // selected nodes, edges
 
         //----- Event handlers -----//
@@ -369,7 +370,9 @@ angular.module('viewAutoForceLayout', ['ui.router', 'autoForceLayout'])
         CLASS_EDGE: 'Edge',
         MIN_WEIGHT: 0,
         MAX_WEIGHT: 4,
-        LABEL_LENGTH: 5
+        LABEL_LENGTH: 5,
+        PREDEFINED_FILES: ['footballBarcelona', 'Les Miserables', 'FSQ 100', 'FSQ 1000'],
+        FILES_SERVER_ADDR: 'https://dl.dropboxusercontent.com/u/28910567/'
     })
 
 
