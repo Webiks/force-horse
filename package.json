@@ -1,7 +1,7 @@
 {
-  "name": "ngEcho",
+  "name": "forceHorse",
   "version": "1.0.0",
-  "description": "Angular wrapper for Echo configuration",
+  "description": "Angular wrapper for d3.js force layout",
   "main": "src/index.js",
   "scripts": {
     "postinstall": "bower install",
@@ -24,7 +24,7 @@
     "angularjs",
     "d3js"
   ],
-  "author": "Ram Tobolski <ramtob@gmail.com> (http://yonatankra.com)",
+  "author": "Ram Tobolski <ram@webiks.com>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/ramtob/ngEcho/issues"
