@@ -1202,6 +1202,18 @@ angular.module('forceHorse', [])
             return this;
         };
 
+
+            /**
+             * @ngdoc method
+             * @name forceHorse.factory:ForceHorseFactory#convertFileDataFormat
+             * @description api. See the method in helper.
+             * @param fileData
+             * @returns {*|*[]}
+             */
+        proto.convertFileDataFormat = function (fileData) {
+            return helper.convertFileDataFormat(fileData);  
+        };
+
         //---------------------------------------------------
         return ForceHorseFactory;
     }])
@@ -1338,11 +1350,63 @@ angular.module('forceHorse', [])
                 var scripts = document.getElementsByTagName("script");
                 var currentScriptPath = scripts[scripts.length-1].src;
                 return currentScriptPath.substring(0,currentScriptPath.lastIndexOf("/")+1 );
-            }
+            },
 
-            //---------------------------------------------------
-            // confirmFilterButton
-            //---------------------------------------------------
+            /**
+             * @ngdoc method
+             * @name forceHorse.service:ForceHorseHelper#convertFileDataFormat
+             * @param fileData
+             * @returns {*[]}
+             * @description
+             * fileData is supposed to be in the format
+             * {nodes: [nodeData, nodeData, ...] links: [linkData, linkData, ...]}
+             * "edges" are also allowed, in place of "links".
+             * If nodeData does not contain an id property, its id is set to its index in the array.
+             * If nodeData does not contain a label property, it gets a default label.
+             * A "class" property (node class) is also added to each nodeData.
+             * If linkData does not contain an id property, its id is set to its index in the array.
+             * If linkData does not contain an sourceID property, sourceID is set to source.
+             * If linkData does not contain an targetID property, targetID is set to target.
+             * A "class" property (link class) is also added to each linkData.
+             * Also sourceLabel, targetLabel.
+             * The resulting data is returned restructured like:
+             * [ {id: constants.NODES_ID, data: nodesArray}, {id: constants.LINKS_ID, data: linksArray} ]
+             ]
+             */
+            convertFileDataFormat: function (fileData) {
+                // Process nodes
+                var nodes = fileData.nodes;
+                nodes.forEach(function (node, idx) {
+                    if (angular.isUndefined(node.id)) {
+                        node.id = idx;
+                    }
+                    if (angular.isUndefined(node.label)) {
+                        node.label = "" + node.id;
+                    }
+                    node.class = constants.CLASS_NODE;
+                });
+                // Process edges
+                var edges = (fileData.edges ? fileData.edges : fileData.links);
+                edges.forEach( function(edge, idx) {
+                    if (angular.isUndefined(edge.id)) {
+                        edge.id = idx;
+                    }
+                    if (angular.isUndefined(edge.sourceID)) {
+                        edge.sourceID = edge.source;
+                    }
+                    if (angular.isUndefined(edge.targetID)) {
+                        edge.targetID = edge.target;
+                    }
+                    edge.sourceLabel = edge.sourceID;
+                    edge.targetLabel = edge.targetID;
+                    edge.class = constants.CLASS_EDGE;
+                });
+                // Return the (processed) data
+                return    [
+                    {id: constants.NODES_ID, data: nodes},
+                    {id: constants.EDGES_ID, data: edges}
+                ];
+            }
 
 
         }; // return {

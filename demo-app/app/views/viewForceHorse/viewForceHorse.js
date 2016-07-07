@@ -65,7 +65,7 @@ angular.module('viewForceHorse', ['ui.router', 'forceHorse'])
                 var r = new FileReader();
                 r.onload = function(evt2) {
                     var data = JSON.parse(evt2.target.result);
-                    vm.options.data = graphData.convertFileDataFormat(data);
+                    vm.options.data = vm.options.forceHorseInstance.convertFileDataFormat(data);
                     vm.setArrays();
                     vm.numOfNodes = vm.data[constants.NODES].length; // show no. of nodes on screen
                     vm.options.forceHorseInstance.redraw();
@@ -79,7 +79,7 @@ angular.module('viewForceHorse', ['ui.router', 'forceHorse'])
         vm.createGraphFromPredefinedFile = function () {
           $http.get(constants.FILES_SERVER_ADDR + vm.predefinedFile + ".json")
               .then(function (response) {
-                  vm.options.data = graphData.convertFileDataFormat(response.data);
+                  vm.options.data = vm.options.forceHorseInstance.convertFileDataFormat(response.data);
                   vm.setArrays();
                   vm.numOfNodes = vm.data[constants.NODES].length; // show no. of nodes on screen
                   vm.options.forceHorseInstance.redraw();
@@ -275,104 +275,11 @@ angular.module('viewForceHorse', ['ui.router', 'forceHorse'])
                 }
 
                 return graphData;
-            },
-
-
-            /**
-             * @name convertFileDataFormat
-             * @param fileData
-             * @returns {*[]}
-             * @description
-             * fileData is supposed to be in the format
-             * {nodes: [nodeData, nodeData, ...] links: [linkData, linkData, ...]}
-             * "edges" are also allowed, in place of "links".
-             * If nodeData does not contain an id property, its id is set to its index in the array.
-             * If nodeData does not contain a label property, it gets a default label.
-             * A "class" property (node class) is also added to each nodeData.
-             * If linkData does not contain an id property, its id is set to its index in the array.
-             * If linkData does not contain an sourceID property, sourceID is set to source.
-             * If linkData does not contain an targetID property, targetID is set to target.
-             * A "class" property (link class) is also added to each linkData.
-             * Also sourceLabel, targetLabel.
-             * The resulting data is returned restructured like:
-             * [ {id: constants.NODES_ID, data: nodesArray}, {id: constants.LINKS_ID, data: linksArray} ]
-             ]
-             */
-            convertFileDataFormat: function (fileData) {
-                // Process nodes
-                var nodes = fileData.nodes;
-                nodes.forEach(function (node, idx) {
-                    if (angular.isUndefined(node.id)) {
-                        node.id = idx;
-                    }
-                    if (angular.isUndefined(node.label)) {
-                        node.label = "" + node.id;
-                    }
-                    node.class = constants.CLASS_NODE;
-                });
-                // Process edges
-                var edges = (fileData.edges ? fileData.edges : fileData.links);
-                edges.forEach( function(edge, idx) {
-                    if (angular.isUndefined(edge.id)) {
-                        edge.id = idx;
-                    }
-                    if (angular.isUndefined(edge.sourceID)) {
-                        edge.sourceID = edge.source;
-                    }
-                    if (angular.isUndefined(edge.targetID)) {
-                        edge.targetID = edge.target;
-                    }
-                    edge.sourceLabel = edge.sourceID;
-                    edge.targetLabel = edge.targetID;
-                    edge.class = constants.CLASS_EDGE;
-                });
-                // Return the (processed) data
-                return    [
-                    {id: constants.NODES_ID, data: nodes},
-                    {id: constants.EDGES_ID, data: edges}
-                ];
             }
+
 
         }; // return
     }])
-    /*
-     "nodes": [
-     {id: 0, label: 'aaa'},
-     {id: 1, label: 'bbb'},
-     {id: 2, label: 'ccc'},
-     {id: 3, label: 'ddd'},
-     {id: 4, label: 'eee'},
-     {id: 5, label: 'fff'},
-     {id: 6, label: 'ggg'},
-     {id: 7, label: 'hhh'},
-     {id: 8, label: 'iii'},
-     {id: 9, label: 'jjj'},
-     {id: 10, label: 'kkk'},
-     {id: 11, label: 'lll'},
-     {id: 12, label: 'mmm'}
-     ],
-     "edges": [
-     {id: 0, "sourceID": 0, "targetID": 1},
-     {id: 1, "sourceID": 1, "targetID": 2},
-     {id: 2, "sourceID": 2, "targetID": 0},
-     {id: 3, "sourceID": 1, "targetID": 3},
-     {id: 4, "sourceID": 3, "targetID": 2},
-     {id: 5, "sourceID": 3, "targetID": 4},
-     {id: 6, "sourceID": 4, "targetID": 5},
-     {id: 7, "sourceID": 5, "targetID": 6},
-     {id: 8, "sourceID": 5, "targetID": 7},
-     {id: 9, "sourceID": 6, "targetID": 7},
-     {id: 10, "sourceID": 6, "targetID": 8},
-     {id: 11, "sourceID": 7, "targetID": 8},
-     {id: 12, "sourceID": 9, "targetID": 4},
-     {id: 13, "sourceID": 9, "targetID": 11},
-     {id: 14, "sourceID": 9, "targetID": 10},
-     {id: 15, "sourceID": 10, "targetID": 11},
-     {id: 16, "sourceID": 11, "targetID": 12},
-     {id: 17, "sourceID": 12, "targetID": 10}
-     ]
-     };
-     */
 
 
     //---------------------------------------------------------------//
