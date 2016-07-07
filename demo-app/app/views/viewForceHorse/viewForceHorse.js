@@ -278,9 +278,26 @@ angular.module('viewForceHorse', ['ui.router', 'forceHorse'])
             },
 
 
-            //---------------------------------------------------
-            // getDataFromFile
-            //---------------------------------------------------
+            /**
+             * @name getDataFromFile
+             * @param fileData
+             * @returns {*[]}
+             * @description
+             * fileData is supposed to be in the format
+             * {nodes: [nodeData, nodeData, ...] links: [linkData, linkData, ...]}
+             * "edges" are also allowed, in place of "links".
+             * If nodeData does not contain an id property, its id is set to its index in the array.
+             * If nodeData does not contain a label property, it gets a default label.
+             * A "class" property (node class) is also added to each nodeData.
+             * If linkData does not contain an id property, its id is set to its index in the array.
+             * If linkData does not contain an sourceID property, sourceID is set to source.
+             * If linkData does not contain an targetID property, targetID is set to target.
+             * A "class" property (link class) is also added to each linkData.
+             * Also sourceLabel, targetLabel.
+             * The resulting data is returned restructured like:
+             * [ {id: constants.NODES_ID, data: nodesArray}, {id: constants.LINKS_ID, data: linksArray} ]
+             ]
+             */
             getDataFromFile: function (fileData) {
                 // Process nodes
                 var nodes = fileData.nodes;
