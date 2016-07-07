@@ -166,8 +166,12 @@ angular.module('forceHorse', [])
             }).join('');
 
             // Process input data
-            this.nodeDataArray = this.options.data[constants.NODES].data;
-            this.edgeDataArray = this.options.data[constants.EDGES].data;
+            var data = this.options.data;
+            if (!(data instanceof Array)) {
+                data = helper.convertFileDataFormat(data);
+            }
+            this.nodeDataArray = data[constants.NODES].data;
+            this.edgeDataArray = data[constants.EDGES].data;
             this.processNodes();
             this.processEdges();
 
