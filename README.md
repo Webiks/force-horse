@@ -3,6 +3,7 @@
 An angular.js wrapper for a d3.js force layout
 
 
+
 #### USE
  
 
@@ -10,7 +11,7 @@ Force Horse is implemented as an angular.js 1.4 directive. It can be used either
 
  
 
-&lt;**force-horse** options=”ctrl.options”&gt;&lt;/force-horse&gt;
+&lt;force-horse options=”ctrl.options”&gt;&lt;/force-horse&gt;
 
  
 
