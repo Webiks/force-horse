@@ -65,7 +65,7 @@ angular.module('viewForceHorse', ['ui.router', 'forceHorse'])
                 var r = new FileReader();
                 r.onload = function(evt2) {
                     var data = JSON.parse(evt2.target.result);
-                    vm.options.data = graphData.getDataFromFile(data);
+                    vm.options.data = graphData.convertFileDataFormat(data);
                     vm.setArrays();
                     vm.numOfNodes = vm.data[constants.NODES].length; // show no. of nodes on screen
                     vm.options.forceHorseInstance.redraw();
@@ -79,7 +79,7 @@ angular.module('viewForceHorse', ['ui.router', 'forceHorse'])
         vm.createGraphFromPredefinedFile = function () {
           $http.get(constants.FILES_SERVER_ADDR + vm.predefinedFile + ".json")
               .then(function (response) {
-                  vm.options.data = graphData.getDataFromFile(response.data);
+                  vm.options.data = graphData.convertFileDataFormat(response.data);
                   vm.setArrays();
                   vm.numOfNodes = vm.data[constants.NODES].length; // show no. of nodes on screen
                   vm.options.forceHorseInstance.redraw();
@@ -279,7 +279,7 @@ angular.module('viewForceHorse', ['ui.router', 'forceHorse'])
 
 
             /**
-             * @name getDataFromFile
+             * @name convertFileDataFormat
              * @param fileData
              * @returns {*[]}
              * @description
@@ -298,7 +298,7 @@ angular.module('viewForceHorse', ['ui.router', 'forceHorse'])
              * [ {id: constants.NODES_ID, data: nodesArray}, {id: constants.LINKS_ID, data: linksArray} ]
              ]
              */
-            getDataFromFile: function (fileData) {
+            convertFileDataFormat: function (fileData) {
                 // Process nodes
                 var nodes = fileData.nodes;
                 nodes.forEach(function (node, idx) {
