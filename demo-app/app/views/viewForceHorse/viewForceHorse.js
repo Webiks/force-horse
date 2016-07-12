@@ -10,7 +10,7 @@ angular.module('viewForceHorse', ['ui.router', 'forceHorse'])
             templateUrl: 'app/views/viewForceHorse/viewForceHorse.html',
             controller: 'view3Ctrl as ctrl',
             data: {
-                title: 'Force Horse'
+                title: 'force-horse'
             }
         });
     }])
@@ -25,7 +25,9 @@ angular.module('viewForceHorse', ['ui.router', 'forceHorse'])
         // Set the options, which are passed as a parameter to the directive
         vm.options = {};
 
-        vm.options.data = graphData.getRandomData(vm.numOfNodes = constants.INITIAL_NUM_OF_NODES);
+        vm.predefinedFile = 'footballBarcelona';
+        vm.createGraphFromPredefinedFile();
+        // vm.options.data = graphData.getRandomData(vm.numOfNodes = constants.INITIAL_NUM_OF_NODES);
 
         // Watch the variable where the directive will reference its instance.
         // Register my event handlers when the directive is ready
@@ -76,7 +78,7 @@ angular.module('viewForceHorse', ['ui.router', 'forceHorse'])
             }
         };
 
-        vm.createGraphFromPredefinedFile = function () {
+        vm.createGraphFromPredefinedFile = function createGraphFromPredefinedFile() {
           $http.get(constants.FILES_SERVER_ADDR + vm.predefinedFile + ".json")
               .then(function (response) {
                   vm.options.data = vm.options.forceHorseInstance.convertFileDataFormat(response.data);
