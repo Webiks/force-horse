@@ -1,6 +1,6 @@
 # force-horse
 
-An angular.js wrapper for a d3.js Force Layout
+An angular.js wrapper for a d3.js force fayout
 
 
 
