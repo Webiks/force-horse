@@ -23,10 +23,19 @@ angular.module('viewForceHorse', ['ui.router', 'forceHorse'])
         vm.constants = constants;
 
         // Set the options, which are passed as a parameter to the directive
-        vm.options = {};
+        vm.options = {
+            data:[
+                {
+                    data:[]
+                },
+                {
+                    data:[]
+                }
+            ]
+        };
 
         vm.predefinedFile = 'footballBarcelona';
-        vm.createGraphFromPredefinedFile();
+        createGraphFromPredefinedFile();
         // vm.options.data = graphData.getRandomData(vm.numOfNodes = constants.INITIAL_NUM_OF_NODES);
 
         // Watch the variable where the directive will reference its instance.
@@ -78,7 +87,7 @@ angular.module('viewForceHorse', ['ui.router', 'forceHorse'])
             }
         };
 
-        vm.createGraphFromPredefinedFile = function createGraphFromPredefinedFile() {
+        function createGraphFromPredefinedFile() {
           $http.get(constants.FILES_SERVER_ADDR + vm.predefinedFile + ".json")
               .then(function (response) {
                   vm.options.data = vm.options.forceHorseInstance.convertFileDataFormat(response.data);
@@ -89,8 +98,10 @@ angular.module('viewForceHorse', ['ui.router', 'forceHorse'])
               .catch(function (response) {
                   console.warn('File read error: ' + response.status + " " + response.statusText);
               })
-        };
-        
+        }
+
+        vm.createGraphFromPredefinedFile = createGraphFromPredefinedFile;
+
         vm.selectedItems = [new Set(), new Set()]; // selected nodes, edges
 
         //----- Event handlers -----//
