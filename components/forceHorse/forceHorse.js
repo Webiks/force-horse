@@ -114,7 +114,7 @@ angular.module('forceHorse', [])
             this.element = element[0];
             this.options = options;
             // Set a variable to hold references to registered event listeners
-            this.eventListeners = {hover: [], select: [], filter: [], dblclick: []};
+            this.eventListeners = {f};
         }
 
         var proto = ForceHorseFactory.prototype;
@@ -1186,6 +1186,9 @@ angular.module('forceHorse', [])
          * @returns {ForceHorseFactory} current instance
          */
         proto.addEventListener = function (type, callback) {
+            if (typeof this.eventListeners[type] === 'undefined'){
+                this.eventListeners[type] = [];
+            }
             this.eventListeners[type].push(callback);
             return this;
         };
@@ -1200,6 +1203,9 @@ angular.module('forceHorse', [])
          * @returns {ForceHorseFactory} current instance
          */
         proto.callEventListeners = function (type, ...args) {
+            if (typeof this.eventListeners[type] === 'undefined'){
+                return;
+            }
             this.eventListeners[type].forEach(function (callback) {
                 callback(...args);
             });
@@ -1215,7 +1221,7 @@ angular.module('forceHorse', [])
              * @returns {*|*[]}
              */
         proto.convertFileDataFormat = function (fileData) {
-            return helper.convertFileDataFormat(fileData);  
+            return helper.convertFileDataFormat(fileData);
         };
 
         //---------------------------------------------------

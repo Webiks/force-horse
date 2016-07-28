@@ -131,5 +131,14 @@ describe('forceHorse module', function () {
             });
         });
 
+        describe('addEventListener()', function(){
+            it('Should add an event listener', function(){
+                var eventName = 'someEvent';
+
+                aflInstance.addEventListener(eventName, angular.noop);
+                expect(afInstance.eventListeners.eventName.length).toEqual(1);
+            })
+        })
+
     });
 });
