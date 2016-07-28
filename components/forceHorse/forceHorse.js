@@ -114,7 +114,7 @@ angular.module('forceHorse', [])
             this.element = element[0];
             this.options = options;
             // Set a variable to hold references to registered event listeners
-            this.eventListeners = {f};
+            this.eventListeners = {};
         }
 
         var proto = ForceHorseFactory.prototype;
