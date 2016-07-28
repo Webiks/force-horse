@@ -14,7 +14,7 @@ or:
 
 A force-horse element does not have an intrincsic size. It adapts itself to the size that is set by its parent. force-horse is implementing CSS **flex-box** display logic.
 
-#H1 Options parameters
+# H1 Options parameters
 
 Parameters are passed through the options attribute. Currently, this object contains only the data property, which holds the graph's data in the following format:
 
@@ -26,13 +26,13 @@ Parameters are passed through the options attribute. Currently, this object co
   }
 ```
 
-#H1 API
+# H1 API
 After initializing the directive, force-horse inserts an object into the `options` object sent to it.  This **`forceHorseInstance`** holds inside the force horse API methods. There is one **`forceHorseInstance`** per directive initialized:
 
 **addEventListener** - accepts an event name (String) and a callback (function). For a list of events see **Events** section below.
 
 
-#H1 Events
+# H1 Events
 
 These are the current events. PR's and suggestiong for more are welcome:
 **hover**: a node/link is hovered upon
@@ -43,7 +43,7 @@ These are the current events. PR's and suggestiong for more are welcome:
 
 **filter**: remove the selected nodes/links from the graph
 
-#H1 External Config file
+# H1 External Config file
 force-horse supports an external json file, **forceHorse.json**. In this file one can set whether each of the buttons (see below) is displayed or not. Also, force layout parameters can be set, and thus to override the parameters that force-horse computes automatically, for a specific implementation.
 
 The forceHorse project contains a complete **demo application**. The demo application is also available on the [plunker](http://embed.plnkr.co/SYmehtaAnQVyMpLJJY2B/?show=preview) site.
