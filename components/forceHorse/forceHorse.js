@@ -196,6 +196,7 @@ angular.module('forceHorse', [])
                 showLabelsButton: true,
                 showNodeWeightButton: true,
                 showEdgeWeightButton: true,
+                useEdgesWeights: false,
                 forceParameters: {
                     //charge: -350,
                     linkStrength: 1,
@@ -434,7 +435,7 @@ angular.module('forceHorse', [])
         proto.getNodeIconArea = function (nodeData) {
             var myInstance = this;
             return myInstance.nodeIconAreaDefault
-                + (myInstance.config.showNodeWeight ? nodeData.weight * constants.node_size_addition_per_weight_unit : 0);
+                + (myInstance.config.showNodeWeight ? (myInstance.config.useEdgesWeights?nodeData.edgesWeight:nodeData.weight) * constants.node_size_addition_per_weight_unit : 0);
         };
 
         /**
@@ -559,9 +560,26 @@ angular.module('forceHorse', [])
          * @returns {ForceHorseFactory} current instance
          */
         proto.processEdges = function () {
+            function calculateEdgesWeightsForNodes(edge){
+                // calculate edges weights
+                edge.source.edgesWeights?edge.source.edgesWeights = edge.weight:edge.source.edgesWeights += edge.weight;
+                edge.target.edgesWeights?edge.target.edgesWeights = edge.weight:edge.target.edgesWeights += edge.weight;
+
+                // protect in case undefined
+                if (!edge.source.edgesWeights){
+                    edge.source.edgesWeights = 0;
+                }
+
+                if (!edge.target.edgesWeights){
+                    edge.source.edgesWeights = 0;
+                }
+            }
+
             var myInstance = this, sid, tid, key;
             this.edgesFromNodes = {};
             this.edgeDataArray.forEach(function (val, idx) {
+
+                calculateEdgesWeightsForNodes(val);
                 if (angular.isUndefined(val.id)) {
                     val.id = idx;
                     // console.warn(`Undefined [id] in edge ${val.sourceID} - ${val.targetID}`);
