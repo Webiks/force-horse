@@ -1,10 +1,11 @@
 {
   "name": "angular-seed",
   "description": "A starter project for AngularJS",
-  "version": "0.0.0",
+  "main": "./components/force-horse/forceHorse.js",
+  "version": "1.0.0",
   "homepage": "https://github.com/angular/angular-seed",
   "license": "MIT",
-  "private": true,
+  "private": false,
   "dependencies": {
     "angular": "~1.4.0",
     "angular-animate": "~1.4.5",
