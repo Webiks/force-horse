@@ -114,7 +114,7 @@ angular.module('forceHorse', [])
             this.element = element[0];
             this.options = options;
             // Set a variable to hold references to registered event listeners
-            this.eventListeners = {hover: [], select: [], filter: [], dblclick: []};
+            this.eventListeners = {};
         }
 
         var proto = ForceHorseFactory.prototype;
@@ -196,6 +196,7 @@ angular.module('forceHorse', [])
                 showLabelsButton: true,
                 showNodeWeightButton: true,
                 showEdgeWeightButton: true,
+                useEdgesWeights: false,
                 forceParameters: {
                     //charge: -350,
                     linkStrength: 1,
@@ -434,7 +435,7 @@ angular.module('forceHorse', [])
         proto.getNodeIconArea = function (nodeData) {
             var myInstance = this;
             return myInstance.nodeIconAreaDefault
-                + (myInstance.config.showNodeWeight ? nodeData.weight * constants.node_size_addition_per_weight_unit : 0);
+                + (myInstance.config.showNodeWeight ? (myInstance.config.useEdgesWeights?nodeData.edgesWeight:nodeData.weight) * constants.node_size_addition_per_weight_unit : 0);
         };
 
         /**
@@ -559,9 +560,26 @@ angular.module('forceHorse', [])
          * @returns {ForceHorseFactory} current instance
          */
         proto.processEdges = function () {
+            function calculateEdgesWeightsForNodes(edge){
+                // calculate edges weights
+                edge.source.edgesWeights?edge.source.edgesWeights = edge.weight:edge.source.edgesWeights += edge.weight;
+                edge.target.edgesWeights?edge.target.edgesWeights = edge.weight:edge.target.edgesWeights += edge.weight;
+
+                // protect in case undefined
+                if (!edge.source.edgesWeights){
+                    edge.source.edgesWeights = 0;
+                }
+
+                if (!edge.target.edgesWeights){
+                    edge.source.edgesWeights = 0;
+                }
+            }
+
             var myInstance = this, sid, tid, key;
             this.edgesFromNodes = {};
             this.edgeDataArray.forEach(function (val, idx) {
+
+                calculateEdgesWeightsForNodes(val);
                 if (angular.isUndefined(val.id)) {
                     val.id = idx;
                     // console.warn(`Undefined [id] in edge ${val.sourceID} - ${val.targetID}`);
@@ -1186,6 +1204,9 @@ angular.module('forceHorse', [])
          * @returns {ForceHorseFactory} current instance
          */
         proto.addEventListener = function (type, callback) {
+            if (typeof this.eventListeners[type] === 'undefined'){
+                this.eventListeners[type] = [];
+            }
             this.eventListeners[type].push(callback);
             return this;
         };
@@ -1200,6 +1221,9 @@ angular.module('forceHorse', [])
          * @returns {ForceHorseFactory} current instance
          */
         proto.callEventListeners = function (type, ...args) {
+            if (typeof this.eventListeners[type] === 'undefined'){
+                return;
+            }
             this.eventListeners[type].forEach(function (callback) {
                 callback(...args);
             });
@@ -1215,7 +1239,7 @@ angular.module('forceHorse', [])
              * @returns {*|*[]}
              */
         proto.convertFileDataFormat = function (fileData) {
-            return helper.convertFileDataFormat(fileData);  
+            return helper.convertFileDataFormat(fileData);
         };
 
         //---------------------------------------------------
