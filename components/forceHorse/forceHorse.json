@@ -6,6 +6,7 @@
   "showLabelsButton": true,
   "showNodeWeightButton": true,
   "showEdgeWeightButton": true,
+  "useEdgesWeights": false,
   "forceParameters": {
     "#charge": -350,
     "#linkStrength": 1,
