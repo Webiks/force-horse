@@ -943,7 +943,7 @@ angular.module('forceHorse', [])
          */
         proto.onHoverInside = function (element, item, on) {
             d3.select(element).classed("hovered", item.hovered = on);
-            return this.callEventListeners('hover', item);
+            return this.callEventListeners('hover', item, on);
         };
 
         /**
