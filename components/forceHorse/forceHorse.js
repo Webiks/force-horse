@@ -212,7 +212,7 @@ angular.module('forceHorse', [])
                 .on("start", function () {
                     myInstance.onForceStart();
                 });
-            let p;
+            var p;
             if (angular.isDefined(p = myInstance.config.forceParameters.linkDistance)) myInstance.force.linkDistance(p);
             if (angular.isDefined(p = myInstance.config.forceParameters.linkStrength)) myInstance.force.linkStrength(p);
             //if (angular.isDefined(p = myInstance.config.forceParameters.charge)) myInstance.force.charge(p);
@@ -560,26 +560,34 @@ angular.module('forceHorse', [])
          * @returns {ForceHorseFactory} current instance
          */
         proto.processEdges = function () {
+            //----------
             function calculateEdgesWeightsForNodes(edge){
-                // calculate edges weights
-                edge.source.edgesWeights?edge.source.edgesWeights = edge.weight:edge.source.edgesWeights += edge.weight;
-                edge.target.edgesWeights?edge.target.edgesWeights = edge.weight:edge.target.edgesWeights += edge.weight;
+                // calculate edges weight
+                var sourceNode = myInstance.nodeDataArray[edge.source],
+                    targetNode = myInstance.nodeDataArray[edge.target];
 
                 // protect in case undefined
-                if (!edge.source.edgesWeights){
-                    edge.source.edgesWeights = 0;
+                if (!sourceNode.edgesWeights){
+                    sourceNode.edgesWeights = 0;
                 }
 
-                if (!edge.target.edgesWeights){
-                    edge.source.edgesWeights = 0;
+                if (!targetNode.edgesWeights){
+                    targetNode.edgesWeights = 0;
                 }
+
+                if (!edge.weight) {
+                    edge.weight = 1;
+                }
+
+                sourceNode.edgesWeights += edge.weight;
+                targetNode.edgesWeights += edge.weight;
             }
+            //----------
 
             var myInstance = this, sid, tid, key;
             this.edgesFromNodes = {};
             this.edgeDataArray.forEach(function (val, idx) {
 
-                calculateEdgesWeightsForNodes(val);
                 if (angular.isUndefined(val.id)) {
                     val.id = idx;
                     // console.warn(`Undefined [id] in edge ${val.sourceID} - ${val.targetID}`);
@@ -595,6 +603,9 @@ angular.module('forceHorse', [])
                     //console.error("Undefined [targetID] in edges #" + val.id);
                 }
                 val.target = myInstance.nodesById[val.targetID];
+
+                calculateEdgesWeightsForNodes(val);
+
                 // Build an index to help handle the case of multiple edges between two nodes
                 if (angular.isDefined(val.sourceID) && angular.isDefined(val.targetID)) {
                     sid = val.sourceID;
