@@ -7,28 +7,28 @@
     <!--on-hover="ctrl.onHoverOutside(item)"-->
     <!--on-select="ctrl.onSelectOutside()"-->
 
-    <div class="external-console" flex="30" layout="column">
-        <div>
+    <div class="external-console" flex-gt-sm="30" layout="column">
+        <div flex="" layout="column">
             <!--<div layout="row" layout-padding="">Last hovered node = {{lastHoveredNode.label}}</div>-->
-            <div layout="row" layout-margin="" layout-align="space-between center">
+            <div flex layout="row" layout-margin="" layout-align="space-between center">
                 <label flex="30" for="numOfNodes">Number of nodes:</label>
                 <input flex="15" type="text" pattern="\d+" ng-model="ctrl.numOfNodes" size="4" title="number of nodes to generate">
                 <input flex="15" type="range" id="numOfNodes" ng-model="ctrl.numOfNodes" min="10" max="1000">
-                <button flex="40" ng-click="ctrl.createRandomGraph()">Create random graph</button>
+                <button flex="" ng-click="ctrl.createRandomGraph()">Create random graph</button>
             </div>
-            <div layout="row" layout-margin="" layout-align="start center">
+            <div flex layout="row" layout-margin="" layout-align="start center">
                 <label flex="30" for="predefined-file-read">Predefined demo files:</label>
                 <select flex="" id="predefined-file-read" ng-model="ctrl.predefinedFile" ng-change="ctrl.createGraphFromPredefinedFile()">
                     <option ng-repeat="fileName in ctrl.constants.PREDEFINED_FILES" value="{{fileName}}">{{fileName}}</option>
                 </select>
                 <!--<button flex="20" ng-click="ctrl.createGraphFromPredefinedFile()">Load file</button>-->
             </div>
-            <div layout="row" layout-margin="" layout-align="start center">
+            <div flex layout="row" layout-margin="" layout-align="start center" hide-sm>
                 <label flex="30" for="graph-data-file-read">Create graph from local file:</label>
                 <input flex="" type="file" id="graph-data-file-read" file-input-on-change="ctrl.createGraphFromFile">
             </div>
         </div>
-        <div flex layout="row">
+        <div flex layout="row" hide-sm>
             <div flex layout="column">
                 <h3>Nodes</h3>
                 <md-virtual-repeat-container flex="">
