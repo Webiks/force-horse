@@ -9,7 +9,6 @@
   "dependencies": {
     "angular": "~1.4.0",
     "angular-aria": "~1.4.5",
-    "angular-loader": "~1.4.0",
     "angular-material": "~0.10.1",
     "angular-mocks": "~1.4.0",
     "angular-route": "~1.4.0",
