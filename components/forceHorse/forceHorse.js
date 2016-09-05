@@ -436,8 +436,15 @@ angular.module('forceHorse', [])
          */
         proto.getNodeIconArea = function (nodeData) {
             var myInstance = this;
-            return myInstance.nodeIconAreaDefault
-                + (myInstance.config.showNodeWeight ? (myInstance.config.useEdgesWeights?nodeData.edgesWeight:nodeData.weight) * constants.node_size_addition_per_weight_unit : 0);
+            return myInstance.nodeIconAreaDefault +
+                (myInstance.config.showNodeWeight
+                    ? (myInstance.config.useEdgesWeights
+                        ? nodeData.edgesWeight
+                        : angular.isDefined(nodeData.weight)
+                            ? nodeData.weight
+                            : 1)
+                        * constants.node_size_addition_per_weight_unit
+                    : 0);
         };
 
         /**

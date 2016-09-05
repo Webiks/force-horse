@@ -1,6 +1,6 @@
 {
   "showLabels": true,
-  "showNodeWeight": false,
+  "showNodeWeight": true,
   "showEdgeWeight": false,
   "showFilterButton": true,
   "showLabelsButton": true,
