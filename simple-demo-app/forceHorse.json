@@ -1,5 +1,5 @@
 {
-  "showLabels": false,
+  "showLabels": true,
   "showNodeWeight": false,
   "showEdgeWeight": false,
   "showFilterButton": true,

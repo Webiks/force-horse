@@ -132,7 +132,9 @@ angular.module('forceHorse', [])
                 myInstance.draw();
                 myInstance.startForceSimulation();
             };
-            $http.get(helper.getCurrentDirectory() + constants.CONFIG_FILE_NAME)
+            // $http.get(helper.getCurrentDirectory() + constants.CONFIG_FILE_NAME)
+            // Get init (forceHorse.json) file from app root dir
+            $http.get(constants.CONFIG_FILE_NAME)
             .then(function (response) {
                 proceed(response.data);
             }, function (response) {
