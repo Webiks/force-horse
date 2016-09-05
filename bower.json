@@ -2,7 +2,7 @@
   "name": "angular-seed",
   "description": "A starter project for AngularJS",
   "main": "./components/force-horse/forceHorse.js",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "homepage": "https://github.com/angular/angular-seed",
   "license": "MIT",
   "private": false,
