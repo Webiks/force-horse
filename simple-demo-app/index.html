@@ -1,0 +1,18 @@
+<html ng-app="demo">
+<head>
+    <title>force-horse simple demo</title>
+    <link rel="stylesheet" href="../bower_components/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="../components/forceHorse/forceHorse.css">
+    <link rel="stylesheet" href="demo.css">
+    <script src="../bower_components/angular/angular.js"></script>
+    <script src="../bower_components/d3/d3.min.js"></script>
+</head>
+<body ng-controller="demoCtrl as demoCtrl">
+<div id="wrapper">
+    <div force-horse options="demoCtrl.options" id="fh1"></div>
+</div>
+<!-- -->
+<script src="../components/forceHorse/forceHorse.js"></script>
+<script src="demo.js"></script>
+</body>
+</html>
