@@ -10,9 +10,8 @@ angular.module('forceHorse', [])
     .run(function ($templateCache) {
         // cache our buttons template
         $templateCache.put('forceHorse/buttons',
-            '<div class="buttonsWrapper" layout="row" layout-align="start center">\
-              <span flex="10"></span>\
-              <span flex="40">\
+            '<div class="buttonsWrapper">\
+               <span>\
                 <i class="mdi mdi-filter"\
                    title="Remove selected elements"\
                    ng-if="forceHorseInstance.config.showFilterButton" \
@@ -24,8 +23,8 @@ angular.module('forceHorse', [])
                 <i class="mdi mdi-home"\
                    title="Zoom to viewport"\
                    ng-click="forceHorseInstance.zoomToViewport()"></i>\
-              </span>\
-              <span flex>\
+                   </span>\
+               <span>\
                 <i class="mdi"\
                    title="Show/hide labels"\
                    ng-if="forceHorseInstance.config.showLabelsButton" \
@@ -39,7 +38,7 @@ angular.module('forceHorse', [])
                    title="Show/hide node weight"\
                    ng-if="forceHorseInstance.config.showNodeWeightButton" \
                    ng-click="forceHorseInstance.onNodeWeightShowHideBtnClick()"></i>\
-              </span>\
+               </span>\
             </div>');
     })
 
@@ -85,9 +84,9 @@ angular.module('forceHorse', [])
 
                 // Add CSS class to set a CSS "namespace"
                 element.addClass("force-horse");
-                // Add flex-box properties
-                element.attr("layout", "column");
-                element.attr("flex", "");
+                // Add flex-box properties (moved to css)
+                // element.attr("layout", "column");
+                // element.attr("flex", "");
                 // Add button bar
                 helper.addButtons(scope, element);
             }

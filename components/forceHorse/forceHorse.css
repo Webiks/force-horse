@@ -1,5 +1,8 @@
 
 .force-horse {
+    /*flex: 1;*/
+    display: flex;
+    flex-direction: column;
 }
 
 .force-horse .display_none {
@@ -92,6 +95,18 @@
 .force-horse .buttonsWrapper {
     height: 10%;
     color: lightgray;
+    display: flex;
+}
+
+.force-horse .buttonsWrapper span {
+    flex-basis: 50%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.force-horse .buttonsWrapper span:nth-of-type(1) {
+    padding-left: 10%;
 }
 
 .force-horse .buttonsWrapper i {
