@@ -12,23 +12,23 @@ angular.module('forceHorse', [])
         $templateCache.put('forceHorse/buttons',
             '<div class="buttonsWrapper">\
                <span>\
-                <i class="mdi mdi-filter"\
+                <i class="img img-filter"\
                    title="Remove selected elements"\
                    ng-if="forceHorseInstance.config.showFilterButton" \
                    ng-click="forceHorseInstance.onFilterInside()"></i>\
-                <i class="mdi"\
+                <i class="img"\
                    title="Fix/release all nodes"\
-                   ng-class="forceHorseInstance.fixedNodesMode ? \'mdi-play-circle-outline\' : \'mdi-pause-circle-outline\'" \
+                   ng-class="forceHorseInstance.fixedNodesMode ? \'img-play-circle-outline\' : \'img-pause-circle-outline\'" \
                    ng-click="forceHorseInstance.toggleFixedNodesMode()"></i>\
-                <i class="mdi mdi-home"\
+                <i class="img img-home"\
                    title="Zoom to viewport"\
                    ng-click="forceHorseInstance.zoomToViewport()"></i>\
                    </span>\
                <span>\
-                <i class="mdi"\
+                <i class="img"\
                    title="Show/hide labels"\
                    ng-if="forceHorseInstance.config.showLabelsButton" \
-                   ng-class="forceHorseInstance.config.showLabels ? \'mdi-label-outline\' : \'mdi-label\'" \
+                   ng-class="forceHorseInstance.config.showLabels ? \'img-label-outline\' : \'img-label\'" \
                    ng-click="forceHorseInstance.onLabelsShowHideBtnClick()"></i>\
                 <i class="img img-link-weight"\
                    title="Show/hide edge weight"\
@@ -68,7 +68,7 @@ angular.module('forceHorse', [])
                 // Create my instance
                 // Also provide the caller with a reference to my instance, for API
                 this.options.forceHorseInstance =
-                    $scope.forceHorseInstance = new ForceHorseFactory($element, this.options)
+                    $scope.forceHorseInstance = new ForceHorseFactory($element, this.options, $scope)
                         .redraw();
 
                 // Clear the instance reference on destruction, to prevent memory leak
@@ -108,10 +108,12 @@ angular.module('forceHorse', [])
          * @description Constructor; initializes the eventListeners object
          * @param element A JSLite reference to the HTML container for this component
          * @param options An external options object
+         * @param scope element's angular scope
          */
-        function ForceHorseFactory(element, options) {
+        function ForceHorseFactory(element, options, scope) {
             this.element = element[0];
             this.options = options;
+            this.scope = scope;
             // Set a variable to hold references to registered event listeners
             this.eventListeners = {};
         }
@@ -826,6 +828,7 @@ angular.module('forceHorse', [])
                 this.isFirstZoomDone = true;
                 // Also make the graph fixed, after the first force-simulation
                 this.toggleFixedNodesMode();
+                this.scope.$digest(); // To update the related button's display
             }
             return this;
         };
@@ -1327,6 +1330,7 @@ angular.module('forceHorse', [])
                 var element = angular.element(template);
                 var compiledElement = $compile(element)(scope);
                 container.prepend(compiledElement);
+                console.log('Added buttons');
                 return this;
             },
 

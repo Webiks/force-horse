@@ -149,3 +149,33 @@
     mask-image: url(img/link_weight.png);
     -webkit-mask-image: url(img/link_weight.png);
 }
+
+.force-horse .buttonsWrapper i.img.img-filter {
+    mask-image: url(img/filter.png);
+    -webkit-mask-image: url(img/filter.png);
+}
+
+.force-horse .buttonsWrapper i.img.img-home {
+    mask-image: url(img/home.png);
+    -webkit-mask-image: url(img/home.png);
+}
+
+.force-horse .buttonsWrapper i.img.img-play-circle-outline {
+    mask-image: url(img/play-circle-outline.png);
+    -webkit-mask-image: url(img/play-circle-outline.png);
+}
+
+.force-horse .buttonsWrapper i.img.img-pause-circle-outline {
+    mask-image: url(img/pause-circle-outline.png);
+    -webkit-mask-image: url(img/pause-circle-outline.png);
+}
+
+.force-horse .buttonsWrapper i.img.img-label-outline {
+    mask-image: url(img/label-outline.png);
+    -webkit-mask-image: url(img/label-outline.png);
+}
+
+.force-horse .buttonsWrapper i.img.img-label {
+    mask-image: url(img/label.png);
+    -webkit-mask-image: url(img/label.png);
+}
