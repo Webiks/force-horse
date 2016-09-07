@@ -57,18 +57,21 @@ angular.module('forceHorse', [])
             priority: 100,
             scope: {
                 options: "="
-                //onHover: '&',
-                //onSelect: '&'
             },
             bindToController: true,
 
             controller: function ($scope, $element) {
-                //this.externalEventHandlers = helper.applyScopeToEventHandlers(this, $scope);
                 var vm = this;
                 // Create my instance
                 // Also provide the caller with a reference to my instance, for API
+                this.requestDigest = function () {
+                    try {
+                        $scope.$digest();
+                    } catch (e){}
+                };
+
                 this.options.forceHorseInstance =
-                    $scope.forceHorseInstance = new ForceHorseFactory($element, this.options, $scope)
+                    $scope.forceHorseInstance = new ForceHorseFactory($element, this.options, this.requestDigest)
                         .redraw();
 
                 // Clear the instance reference on destruction, to prevent memory leak
@@ -108,12 +111,12 @@ angular.module('forceHorse', [])
          * @description Constructor; initializes the eventListeners object
          * @param element A JSLite reference to the HTML container for this component
          * @param options An external options object
-         * @param scope element's angular scope
+         * @param requestDigest callback function: request an angular digest on the element's scope
          */
-        function ForceHorseFactory(element, options, scope) {
+        function ForceHorseFactory(element, options, requestDigest) {
             this.element = element[0];
             this.options = options;
-            this.scope = scope;
+            this.requestDigest = requestDigest;
             // Set a variable to hold references to registered event listeners
             this.eventListeners = {};
         }
@@ -828,7 +831,7 @@ angular.module('forceHorse', [])
                 this.isFirstZoomDone = true;
                 // Also make the graph fixed, after the first force-simulation
                 this.toggleFixedNodesMode();
-                this.scope.$digest(); // To update the related button's display
+                this.requestDigest(); // To update the related button's display
             }
             return this;
         };
@@ -1399,11 +1402,13 @@ angular.module('forceHorse', [])
              * See http://stackoverflow.com/a/21103831/4402222
              * @returns {string}
              */
+/*
             getCurrentDirectory: () => {
                 var scripts = document.getElementsByTagName("script");
                 var currentScriptPath = scripts[scripts.length-1].src;
                 return currentScriptPath.substring(0,currentScriptPath.lastIndexOf("/")+1 );
             },
+*/
 
             /**
              * @ngdoc method
