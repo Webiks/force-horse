@@ -1333,7 +1333,7 @@ angular.module('forceHorse', [])
                 var element = angular.element(template);
                 var compiledElement = $compile(element)(scope);
                 container.prepend(compiledElement);
-                console.log('Added buttons');
+                // console.log('Added buttons');
                 return this;
             },
 
