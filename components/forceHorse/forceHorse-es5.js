@@ -220,10 +220,6 @@ angular.module('forceHorse', [])
 
         var p;
 
-        var linkForce = myInstance.force.force("link", d3.forceLink(myInstance.edgeDataArray));
-        if (angular.isDefined(p = myInstance.config.forceParameters.linkDistance)) linkForce.distance(p);
-        if (angular.isDefined(p = myInstance.config.forceParameters.linkStrength)) linkForce.strength(p);
-
         myInstance.force.force("center", d3.forceCenter());
         // Todo: add center coordinates?
         // Todo: a gravity measure replacement?
@@ -257,7 +253,11 @@ angular.module('forceHorse', [])
         // .links(this.edgeDataArray);
         //.start();
 
-        myInstance.zoom = d3.behavior.zoom().scaleExtent([constants.MAX_ZOOM, constants.MIN_ZOOM]).on("zoom", function () {
+        var linkForce = myInstance.force.force("link", d3.forceLink(myInstance.edgeDataArray));
+        if (angular.isDefined(p = myInstance.config.forceParameters.linkDistance)) linkForce.distance(p);
+        if (angular.isDefined(p = myInstance.config.forceParameters.linkStrength)) linkForce.strength(p);
+
+        myInstance.zoom = d3.zoom().scaleExtent([constants.MAX_ZOOM, constants.MIN_ZOOM]).on("zoom", function () {
             myInstance.onZoom();
         });
 
@@ -267,7 +267,9 @@ angular.module('forceHorse', [])
         d3.select(myInstance.element).select("div.svgWrapper").remove();
         myInstance.svg = d3.select(myInstance.element).append("div").attr("class", "svgWrapper").append("svg").attr("class", "graph-svg").attr("viewBox", "0 0 " + constants.INNER_SVG_WIDTH + " " + constants.INNER_SVG_HEIGHT).attr("preserveAspectRatio", "none").on("click", function () {
             myInstance.onContainerClick();
-        }).call(myInstance.zoom).call(myInstance.zoom.event) // Used in zoomToViewport()
+        }).call(myInstance.zoom)
+        // .call(myInstance.zoom.event) // Used in zoomToViewport()
+        // Todo: zoom.event replacement?
         ;
 
         // Set wrapper group, to use for pan & zoom transforms
@@ -313,7 +315,7 @@ angular.module('forceHorse', [])
         // draw nodes
         this.elements[constants.NODES] = this.nodeGroup.selectAll("." + constants.CSS_CLASS_NODE).data(this.nodeDataArray).enter().append("path")
         // Set node shape & size
-        .attr("d", d3.svg.symbol().type(function (d) {
+        .attr("d", d3.symbol().type(function (d) {
             return d.shape;
         }).size(function (d) {
             return myInstance.getNodeIconArea(d);
@@ -362,7 +364,8 @@ angular.module('forceHorse', [])
      * @returns {ForceHorseFactory} current instance
      */
     proto.startForceSimulation = function () {
-        this.force.start();
+        this.onForceStart();
+        // this.force.restart();
         return this;
     };
 
@@ -373,7 +376,7 @@ angular.module('forceHorse', [])
      * @returns {ForceHorseFactory} current instance
      */
     proto.calcFixAspectRatio = function () {
-        var currentRect = this.svg[0][0].getBoundingClientRect(),
+        var currentRect = this.svg._groups[0][0].getBoundingClientRect(),
             currentHeight = currentRect.height,
             currentWidth = currentRect.width;
         this.fixAspectRatio = constants.INNER_SVG_WIDTH / constants.INNER_SVG_HEIGHT * (currentHeight / currentWidth);
@@ -1113,7 +1116,7 @@ angular.module('forceHorse', [])
     proto.onNodeWeightShowHideBtnClick = function () {
         var myInstance = this;
         this.config.showNodeWeight = !this.config.showNodeWeight;
-        this.elements[constants.NODES].attr("d", d3.svg.symbol().type(function (d) {
+        this.elements[constants.NODES].attr("d", d3.symbol().type(function (d) {
             return d.shape;
         }).size(function (d) {
             return myInstance.getNodeIconArea(d);
@@ -1340,6 +1343,7 @@ angular.module('forceHorse', [])
          * If nodeData does not contain an id property, its id is set to its index in the array.
          * If nodeData does not contain a label property, it gets a default label.
          * A "class" property (node class) is also added to each nodeData.
+         * Set node shape
          * If linkData does not contain an id property, its id is set to its index in the array.
          * If linkData does not contain an sourceID property, sourceID is set to source.
          * If linkData does not contain an targetID property, targetID is set to target.
@@ -1360,6 +1364,35 @@ angular.module('forceHorse', [])
                     node.label = "" + node.id;
                 }
                 node.class = constants.CLASS_NODE;
+
+                switch (node.shape) {
+                    case undefined:
+                    case "":
+                    case "circle":
+                        node.shape = d3.symbolCircle;
+                        break;
+                    case "cross":
+                        node.shape = d3.symbolCross;
+                        break;
+                    case "diamond":
+                        node.shape = d3.symbolDiamond;
+                        break;
+                    case "square":
+                        node.shape = d3.symbolSquare;
+                        break;
+                    case "triangle-up":
+                    case "triangle-down":
+                        node.shape = d3.symbolTriangle;
+                        break;
+                    case "star":
+                        node.shape = d3.symbolStar;
+                        break;
+                    case "wye":
+                        node.shape = d3.symbolWye;
+                        break;
+                    default:
+                        node.shape = d3.symbolCircle;
+                }
             });
             // Process edges
             var edges = fileData.edges ? fileData.edges : fileData.links;
