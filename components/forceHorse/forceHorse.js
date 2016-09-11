@@ -215,43 +215,54 @@ angular.module('forceHorse', [])
             Object.assign(this.config, config);
 
             // Create a forceLayout instance
-            myInstance.force = d3.layout.force()
-                .size([constants.INNER_SVG_WIDTH, constants.INNER_SVG_HEIGHT])
-                .on("start", function () {
-                    myInstance.onForceStart();
-                });
+            myInstance.force = d3.forceSimulation();
+                // .size([constants.INNER_SVG_WIDTH, constants.INNER_SVG_HEIGHT])
+                // .on("start", function () {
+                //     myInstance.onForceStart();
+                // });
+            // todo: start event replacement?
+
             var p;
-            if (angular.isDefined(p = myInstance.config.forceParameters.linkDistance)) myInstance.force.linkDistance(p);
-            if (angular.isDefined(p = myInstance.config.forceParameters.linkStrength)) myInstance.force.linkStrength(p);
-            //if (angular.isDefined(p = myInstance.config.forceParameters.charge)) myInstance.force.charge(p);
-            if (angular.isDefined(p = myInstance.config.forceParameters.gravity)) myInstance.force.gravity(p);
+
+            var linkForce = myInstance.force.force("link", d3.forceLink(myInstance.edgeDataArray));
+            if (angular.isDefined(p = myInstance.config.forceParameters.linkDistance)) linkForce.distance(p);
+            if (angular.isDefined(p = myInstance.config.forceParameters.linkStrength)) linkForce.strength(p);
+
+            myInstance.force.force("center", d3.forceCenter());
+            // Todo: add center coordinates?
+            // Todo: a gravity measure replacement?
+            // if (angular.isDefined(p = myInstance.config.forceParameters.gravity)) myInstance.force.gravity(p);
+
             if (angular.isDefined(p = myInstance.config.forceParameters.charge)) {
-                myInstance.force.charge(p);
             } else {
                 if (myInstance.numOfNodes < constants.HEAVY_SIMULATION_NUM_OF_NODES) {
-                    myInstance.force.charge(function (d) {
+                    p = function (d) {
                         return d.weight * constants.DEFAULT_CHARGE_LIGHT;
-                    });
+                    };
                 } else {
-                    myInstance.force.charge(constants.DEFAULT_CHARGE_HEAVY);
+                    p = constants.DEFAULT_CHARGE_HEAVY;
                 }
             }
-            if (angular.isDefined(p = myInstance.config.forceParameters.friction)) {
-                myInstance.force.friction(p);
-            } else {
-                myInstance.force.friction(helper.computeFrictionParameter(constants.INNER_SVG_WIDTH, constants.INNER_SVG_HEIGHT, this.nodeDataArray.length))
-            }
+            myInstance.force.force("charge", d3.forceManyBody().strength(p));
+            // myInstance.force.charge(p);
 
-            myInstance.drag = myInstance.force.drag()
+            if (angular.isDefined(p = myInstance.config.forceParameters.friction)) {
+            } else {
+                p = helper.computeFrictionParameter(constants.INNER_SVG_WIDTH, constants.INNER_SVG_HEIGHT, this.nodeDataArray.length)
+            }
+            myInstance.force.velocityDecay(p);
+            // myInstance.force.friction(p);
+
+            myInstance.drag = d3.drag()
                 .on("drag", function (d) {
                     myInstance.onDrag(d);
                 })
-                .on("dragend", function () {
+                .on("end", function () {
                     myInstance.onDragEnd();
                 });
 
-            myInstance.force.nodes(myInstance.nodeDataArray)
-                .links(this.edgeDataArray);
+            myInstance.force.nodes(myInstance.nodeDataArray);
+                // .links(this.edgeDataArray);
             //.start();
 
             myInstance.zoom = d3.behavior.zoom()
