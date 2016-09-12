@@ -244,14 +244,6 @@ angular.module('forceHorse', [])
         myInstance.force.velocityDecay(p);
         // myInstance.force.friction(p);
 
-        myInstance.drag = d3.drag().on("drag", function (d) {
-            myInstance.onDrag(d);
-        }).on("start", function () {
-            myInstance.onDragStart();
-        }).on("end", function () {
-            myInstance.onDragEnd();
-        });
-
         myInstance.force.nodes(myInstance.nodeDataArray);
         // .links(this.edgeDataArray);
         //.start();
@@ -286,6 +278,14 @@ angular.module('forceHorse', [])
         myInstance.edgeGroup = myInstance.inSvgWrapper.append("g").attr("class", "edges").attr("stroke", constants.DEFAULT_EDGE_COLOR).attr("stroke-width", constants.DEFAULT_EDGE_WIDTH + 'px');
         myInstance.nodeGroup = myInstance.inSvgWrapper.append("g").attr("class", "nodes").attr("fill", constants.DEFAULT_NODE_COLOR);
         myInstance.labelGroup = myInstance.inSvgWrapper.append("g").attr("class", "labels").attr("fill", constants.DEFAULT_NODE_COLOR).classed("display_none", !myInstance.config.showLabels);
+
+        myInstance.drag = d3.drag().container(myInstance.svg._groups[0][0]).on("drag", function (d) {
+            myInstance.onDrag(d);
+        }).on("start", function () {
+            myInstance.onDragStart();
+        }).on("end", function () {
+            myInstance.onDragEnd();
+        });
 
         return myInstance;
     }; // initLayout()
