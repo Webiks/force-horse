@@ -220,7 +220,8 @@ angular.module('forceHorse', [])
 
         var p;
 
-        myInstance.force.force("center", d3.forceCenter());
+        var forceCenter = d3.forceCenter(constants.INNER_SVG_WIDTH / 2, constants.INNER_SVG_HEIGHT / 2);
+        myInstance.force.force("center", forceCenter);
         // Todo: add center coordinates?
         // Todo: a gravity measure replacement?
         // if (angular.isDefined(p = myInstance.config.forceParameters.gravity)) myInstance.force.gravity(p);
@@ -245,6 +246,8 @@ angular.module('forceHorse', [])
 
         myInstance.drag = d3.drag().on("drag", function (d) {
             myInstance.onDrag(d);
+        }).on("start", function () {
+            myInstance.onDragStart();
         }).on("end", function () {
             myInstance.onDragEnd();
         });
@@ -253,7 +256,9 @@ angular.module('forceHorse', [])
         // .links(this.edgeDataArray);
         //.start();
 
-        var linkForce = myInstance.force.force("link", d3.forceLink(myInstance.edgeDataArray));
+        var linkForce = myInstance.force.force("link", d3.forceLink(myInstance.edgeDataArray).id(function (d) {
+            return d.id;
+        }));
         if (angular.isDefined(p = myInstance.config.forceParameters.linkDistance)) linkForce.distance(p);
         if (angular.isDefined(p = myInstance.config.forceParameters.linkStrength)) linkForce.strength(p);
 
@@ -626,14 +631,14 @@ angular.module('forceHorse', [])
             // Do not accelerate the simulation during dragging, so as not to slow the dragging.
             ticksPerRender = myInstance.isDragging ? 1 : myInstance.numOfNodes / 7;
             calculationStart = performance.now();
-            for (var i = 0; i < ticksPerRender && myInstance.force.alpha() > 0; i++) {
+            for (var i = 0; i < ticksPerRender && myInstance.force.alpha() > myInstance.force.alphaMin(); i++) {
                 myInstance.force.tick();
                 ticks++;
             }
             calculationDuration += performance.now() - calculationStart;
             myInstance.updateGraphInDOM().updateProgressBar();
 
-            if (myInstance.force.alpha() > 0) {
+            if (myInstance.force.alpha() > myInstance.force.alphaMin()) {
                 requestAnimationFrame(render);
             } else {
                 simulationDuration = performance.now() - simulationStart;
@@ -803,7 +808,8 @@ angular.module('forceHorse', [])
             scale = 1;
             translate = [0, 0];
         }
-        this.svg.transition().duration(constants.ANIMATION_DURATION).call(this.zoom.translate(translate).scale(scale).event);
+        this.svg.transition().duration(constants.ANIMATION_DURATION).call(this.zoom.transform, d3.zoomIdentity.translate(translate[0], translate[1]).scale(scale));
+        // .call(this.zoom.translate(translate).scale(scale).event);
         return this;
     };
 
@@ -1013,11 +1019,10 @@ angular.module('forceHorse', [])
      * @returns {ForceHorseFactory} current instance
      */
     proto.onZoom = function () {
-        var trans = d3.event.translate,
-            scale = d3.event.scale;
+        var trans = d3.event.transform;
 
         if (this.inSvgWrapper) {
-            this.inSvgWrapper.attr("transform", "translate(" + trans + ")" + " scale(" + scale + ")");
+            this.inSvgWrapper.attr("transform", 'translate(' + trans.x + ', ' + trans.y + ') scale(' + trans.k + ')');
         }
         return this;
     };
@@ -1027,17 +1032,36 @@ angular.module('forceHorse', [])
      * @name forceHorse.factory:ForceHorseFactory#onDrag
      * @description
      * Node-dragging event handler
-     * @param d The data item bound to the dragged node
+     * (param d The data item bound to the dragged node)
      * @returns {ForceHorseFactory} current instance
      */
-    proto.onDrag = function (d) {
+    proto.onDrag = function () /*d*/{
         // Make the dragged node fixed (not moved by the simulation)
-        this.elements[constants.NODES].filter(function (nodeData) {
-            return nodeData.id === d.id;
-        }).classed("fixed", d.fixed = true);
+        // this.elements[constants.NODES].filter(function (nodeData) {
+        //     return nodeData.id === d.id;
+        // }).classed("fixed", d.fixed = true);
+        d3.event.subject.fx = d3.event.x;
+        d3.event.subject.fy = d3.event.y;
+        return this;
+    };
 
-        if (!this.isDragging) {
-            this.isDragging = true;
+    /**
+     * @ngdoc method
+     * @name forceHorse.factory:ForceHorseFactory#onDragStart
+     * @description
+     * Event handler, called when a node-dragging starts
+     * @returns {ForceHorseFactory} current instance
+     */
+    proto.onDragStart = function () {
+        var myInstance = this;
+        this.isDragging = true;
+        d3.event.subject.fx = d3.event.subject.x;
+        d3.event.subject.fy = d3.event.subject.y;
+        if (!d3.event.active) {
+            this.force.alphaTarget(0.3);
+            setTimeout(function () {
+                myInstance.onForceStart();
+            }, 0);
         }
         return this;
     };
@@ -1051,6 +1075,9 @@ angular.module('forceHorse', [])
      */
     proto.onDragEnd = function () {
         this.isDragging = false;
+        if (!d3.event.active) this.force.alphaTarget(0);
+        d3.event.subject.fx = null;
+        d3.event.subject.fy = null;
         return this;
     };
 
