@@ -254,7 +254,8 @@ angular.module('forceHorse', [])
                 // .links(this.edgeDataArray);
             //.start();
 
-            var linkForce = myInstance.force.force("link", d3.forceLink(myInstance.edgeDataArray).id(function(d) { return d.id; }));
+            var linkForce = myInstance.force.force("link",
+                d3.forceLink(myInstance.edgeDataArray).id(function(d, i) { return i; }));
             if (angular.isDefined(p = myInstance.config.forceParameters.linkDistance)) linkForce.distance(p);
             if (angular.isDefined(p = myInstance.config.forceParameters.linkStrength)) linkForce.strength(p);
 
@@ -308,11 +309,11 @@ angular.module('forceHorse', [])
                 .on("drag", function (d) {
                     myInstance.onDrag(d);
                 })
-                .on("start", function () {
-                    myInstance.onDragStart();
+                .on("start", function (d) {
+                    myInstance.onDragStart(d);
                 })
-                .on("end", function () {
-                    myInstance.onDragEnd();
+                .on("end", function (d) {
+                    myInstance.onDragEnd(d);
                 });
 
             return myInstance;
@@ -350,9 +351,9 @@ angular.module('forceHorse', [])
                     myInstance.onClick(d, this);
                 })
                 // Prevent panning when dragging a node
-                .on("mousedown", function () {
-                    d3.event.stopPropagation();
-                })
+                // .on("mousedown", function () {
+                //     d3.event.stopPropagation();
+                // })
             ;
 
             // draw nodes
@@ -385,9 +386,9 @@ angular.module('forceHorse', [])
                     myInstance.callEventListeners("dblclick", d);
                 })
                 // Prevent panning when dragging a node
-                .on("mousedown", function () {
-                    d3.event.stopPropagation();
-                })
+                // .on("mousedown", function () {
+                //     d3.event.stopPropagation();
+                // })
                 .call(this.drag);
 
             // draw node labels
@@ -677,10 +678,10 @@ angular.module('forceHorse', [])
          */
         proto.onForceStart = function () {
             // Prevent simulation when dragging a node
-            if (this.isDragging) {
-                this.force.stop();
-                return this;
-            }
+            // if (this.isDragging) {
+            //     this.force.stop();
+            //     return this;
+            // }
             // Proceed with simulation
             return this.calcFixAspectRatio()
                 [this.numOfNodes < constants.HEAVY_SIMULATION_NUM_OF_NODES ?
@@ -829,7 +830,7 @@ angular.module('forceHorse', [])
             // Do not update progress bar in fixed nodes mode
             if (!this.fixedNodesMode) {
                 this.progressBar.attr('x2',
-                    constants.INNER_SVG_WIDTH * (1 - this.force.alpha() / constants.MAX_ALPHA));
+                    constants.INNER_SVG_WIDTH * (1 - (this.force.alpha() - this.force.alphaMin()) / constants.MAX_ALPHA));
             }
             return this;
         };
@@ -1116,24 +1117,6 @@ angular.module('forceHorse', [])
             return this;
         };
 
-        /**
-         * @ngdoc method
-         * @name forceHorse.factory:ForceHorseFactory#onDrag
-         * @description
-         * Node-dragging event handler
-         * (param d The data item bound to the dragged node)
-         * @returns {ForceHorseFactory} current instance
-         */
-        proto.onDrag = function (/*d*/) {
-            // Make the dragged node fixed (not moved by the simulation)
-            // this.elements[constants.NODES].filter(function (nodeData) {
-            //     return nodeData.id === d.id;
-            // }).classed("fixed", d.fixed = true);
-            d3.event.subject.fx = d3.event.x;
-            d3.event.subject.fy = d3.event.y;
-            return this;
-        };
-
             /**
              * @ngdoc method
              * @name forceHorse.factory:ForceHorseFactory#onDragStart
@@ -1141,19 +1124,37 @@ angular.module('forceHorse', [])
              * Event handler, called when a node-dragging starts
              * @returns {ForceHorseFactory} current instance
              */
-            proto.onDragStart = function () {
+            proto.onDragStart = function (d) {
                 var myInstance = this;
                 this.isDragging = true;
-                d3.event.subject.fx = d3.event.subject.x;
-                d3.event.subject.fy = d3.event.subject.y;
+                d.fx = d.x;
+                d.fy = d.y;
                 if (!d3.event.active) {
-                    this.force.alphaTarget(0.3);
+                    this.force.alpha(constants.MAX_ALPHA);
                     setTimeout( function () {
                         myInstance.onForceStart();
                     }, 0);
                 }
                 return this;
             };
+
+        /**
+         * @ngdoc method
+         * @name forceHorse.factory:ForceHorseFactory#onDrag
+         * @description
+         * Node-dragging event handler
+         * @param d The data item bound to the dragged node
+         * @returns {ForceHorseFactory} current instance
+         */
+        proto.onDrag = function (d) {
+            // Make the dragged node fixed (not moved by the simulation)
+            // this.elements[constants.NODES].filter(function (nodeData) {
+            //     return nodeData.id === d.id;
+            // }).classed("fixed", d.fixed = true);
+            d.fx = d3.event.x;
+            d.fy = d3.event.y;
+            return this;
+        };
 
             /**
              * @ngdoc method
@@ -1162,11 +1163,11 @@ angular.module('forceHorse', [])
              * Event handler, called when a node-dragging ends
              * @returns {ForceHorseFactory} current instance
              */
-            proto.onDragEnd = function () {
+            proto.onDragEnd = function (d) {
                 this.isDragging = false;
-                if (!d3.event.active) this.force.alphaTarget(0);
-                d3.event.subject.fx = null;
-                d3.event.subject.fy = null;
+                if (!d3.event.active) this.force.alpha(this.force.alphaMin());
+                d.fx = null;
+                d.fy = null;
                 return this;
             };
 
