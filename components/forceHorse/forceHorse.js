@@ -1123,6 +1123,7 @@ angular.module('forceHorse', [])
              * @name forceHorse.factory:ForceHorseFactory#onDragStart
              * @description
              * Event handler, called when a node-dragging starts
+             * *UPDATE* I avoid using it, because it is triggered by a normal mouse-down
              * @returns {ForceHorseFactory} current instance
              */
             proto.onDragStart = function (/*d*/) {
