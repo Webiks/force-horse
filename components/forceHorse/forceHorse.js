@@ -135,7 +135,7 @@ angular.module('forceHorse', [])
                 myInstance.initLayout(json);
                 // The force simulation has to started before drawing nodes and links,
                 // because it computes some drawing-relevant properties (node weight)
-                myInstance.startForceSimulation();
+                myInstance.restartForceSimulation();
                 myInstance.draw();
             };
             // $http.get(helper.getCurrentDirectory() + constants.CONFIG_FILE_NAME)
@@ -154,7 +154,7 @@ angular.module('forceHorse', [])
             //    }
             //    myInstance.initLayout(json);
             //    myInstance.draw();
-            //    myInstance.startForceSimulation();
+            //    myInstance.restartForceSimulation();
             //});
             return this;
         };
@@ -215,46 +215,51 @@ angular.module('forceHorse', [])
             Object.assign(this.config, config);
 
             // Create a forceLayout instance
-            myInstance.force = d3.layout.force()
-                .size([constants.INNER_SVG_WIDTH, constants.INNER_SVG_HEIGHT])
-                .on("start", function () {
-                    myInstance.onForceStart();
-                });
+            myInstance.force = d3.forceSimulation();
+                // .size([constants.INNER_SVG_WIDTH, constants.INNER_SVG_HEIGHT])
+                // .on("start", function () {
+                //     myInstance.onForceStart();
+                // });
+            // todo: start event replacement?
+
             var p;
-            if (angular.isDefined(p = myInstance.config.forceParameters.linkDistance)) myInstance.force.linkDistance(p);
-            if (angular.isDefined(p = myInstance.config.forceParameters.linkStrength)) myInstance.force.linkStrength(p);
-            //if (angular.isDefined(p = myInstance.config.forceParameters.charge)) myInstance.force.charge(p);
-            if (angular.isDefined(p = myInstance.config.forceParameters.gravity)) myInstance.force.gravity(p);
+
+            var forceCenter = d3.forceCenter(constants.INNER_SVG_WIDTH / 2, constants.INNER_SVG_HEIGHT / 2);
+            myInstance.force.force("center", forceCenter);
+            // Todo: add center coordinates?
+            // Todo: a gravity measure replacement?
+            // if (angular.isDefined(p = myInstance.config.forceParameters.gravity)) myInstance.force.gravity(p);
+
             if (angular.isDefined(p = myInstance.config.forceParameters.charge)) {
-                myInstance.force.charge(p);
             } else {
                 if (myInstance.numOfNodes < constants.HEAVY_SIMULATION_NUM_OF_NODES) {
-                    myInstance.force.charge(function (d) {
+                    p = function (d) {
                         return d.weight * constants.DEFAULT_CHARGE_LIGHT;
-                    });
+                    };
                 } else {
-                    myInstance.force.charge(constants.DEFAULT_CHARGE_HEAVY);
+                    p = constants.DEFAULT_CHARGE_HEAVY;
                 }
             }
+            myInstance.force.force("charge", d3.forceManyBody().strength(p));
+            // myInstance.force.charge(p);
+
             if (angular.isDefined(p = myInstance.config.forceParameters.friction)) {
-                myInstance.force.friction(p);
             } else {
-                myInstance.force.friction(helper.computeFrictionParameter(constants.INNER_SVG_WIDTH, constants.INNER_SVG_HEIGHT, this.nodeDataArray.length))
+                p = helper.computeFrictionParameter(constants.INNER_SVG_WIDTH, constants.INNER_SVG_HEIGHT, this.nodeDataArray.length)
             }
+            myInstance.force.velocityDecay(p);
+            // myInstance.force.friction(p);
 
-            myInstance.drag = myInstance.force.drag()
-                .on("drag", function (d) {
-                    myInstance.onDrag(d);
-                })
-                .on("dragend", function () {
-                    myInstance.onDragEnd();
-                });
-
-            myInstance.force.nodes(myInstance.nodeDataArray)
-                .links(this.edgeDataArray);
+            myInstance.force.nodes(myInstance.nodeDataArray);
+                // .links(this.edgeDataArray);
             //.start();
 
-            myInstance.zoom = d3.behavior.zoom()
+            var linkForce = myInstance.force.force("link",
+                d3.forceLink(myInstance.edgeDataArray).id(function(d, i) { return i; }));
+            if (angular.isDefined(p = myInstance.config.forceParameters.linkDistance)) linkForce.distance(p);
+            if (angular.isDefined(p = myInstance.config.forceParameters.linkStrength)) linkForce.strength(p);
+
+            myInstance.zoom = d3.zoom()
                 .scaleExtent([constants.MAX_ZOOM, constants.MIN_ZOOM])
                 .on("zoom", function () {
                     myInstance.onZoom();
@@ -277,7 +282,8 @@ angular.module('forceHorse', [])
                     myInstance.onContainerClick()
                 })
                 .call(myInstance.zoom)
-                .call(myInstance.zoom.event) // Used in zoomToViewport()
+                // .call(myInstance.zoom.event) // Used in zoomToViewport()
+                // Todo: zoom.event replacement?
             ;
 
             // Set wrapper group, to use for pan & zoom transforms
@@ -297,6 +303,18 @@ angular.module('forceHorse', [])
                 .attr("class", "labels")
                 .attr("fill", constants.DEFAULT_NODE_COLOR)
                 .classed("display_none", !myInstance.config.showLabels);
+
+            myInstance.drag = d3.drag()
+                // .container(myInstance.svg._groups[0][0])
+                .on("drag", function (d) {
+                    myInstance.onDrag(d);
+                })
+                .on("start", function (d) {
+                    myInstance.onDragStart(d);
+                })
+                .on("end", function (d) {
+                    myInstance.onDragEnd(d);
+                });
 
             return myInstance;
         }; // initLayout()
@@ -344,7 +362,7 @@ angular.module('forceHorse', [])
                 .enter()
                 .append("path")
                 // Set node shape & size
-                .attr("d", d3.svg.symbol()
+                .attr("d", d3.symbol()
                     .type(function (d) {
                         return d.shape;
                     })
@@ -411,12 +429,14 @@ angular.module('forceHorse', [])
 
         /**
          * @ngdoc method
-         * @name forceHorse.factory:ForceHorseFactory#startForceSimulation
+         * @name forceHorse.factory:ForceHorseFactory#restartForceSimulation
          * @description Restart the force simulation
          * @returns {ForceHorseFactory} current instance
          */
-        proto.startForceSimulation = function () {
-            this.force.start();
+        proto.restartForceSimulation = function () {
+            this.force.alpha(constants.MAX_ALPHA);
+            this.onForceStart();
+            // this.force.restart();
             return this;
         };
 
@@ -427,7 +447,7 @@ angular.module('forceHorse', [])
          * @returns {ForceHorseFactory} current instance
          */
         proto.calcFixAspectRatio = function () {
-            var currentRect = this.svg[0][0].getBoundingClientRect(),
+            var currentRect = this.svg._groups[0][0].getBoundingClientRect(),
                 currentHeight = currentRect.height,
                 currentWidth = currentRect.width;
             this.fixAspectRatio = (constants.INNER_SVG_WIDTH / constants.INNER_SVG_HEIGHT) * (currentHeight / currentWidth);
@@ -659,10 +679,10 @@ angular.module('forceHorse', [])
          */
         proto.onForceStart = function () {
             // Prevent simulation when dragging a node
-            if (this.isDragging) {
-                this.force.stop();
-                return this;
-            }
+            // if (this.isDragging) {
+            //     this.force.stop();
+            //     return this;
+            // }
             // Proceed with simulation
             return this.calcFixAspectRatio()
                 [this.numOfNodes < constants.HEAVY_SIMULATION_NUM_OF_NODES ?
@@ -688,14 +708,14 @@ angular.module('forceHorse', [])
                 // Do not accelerate the simulation during dragging, so as not to slow the dragging.
                 ticksPerRender = (myInstance.isDragging ? 1 : myInstance.numOfNodes / 7);
                 calculationStart = performance.now();
-                for (let i = 0; i < ticksPerRender && myInstance.force.alpha() > 0; i++) {
+                for (let i = 0; i < ticksPerRender && myInstance.force.alpha() > myInstance.force.alphaMin(); i++) {
                     myInstance.force.tick();
                     ticks++;
                 }
                 calculationDuration += (performance.now() - calculationStart);
                 myInstance.updateGraphInDOM().updateProgressBar();
 
-                if (myInstance.force.alpha() > 0) {
+                if (myInstance.force.alpha() > myInstance.force.alphaMin()) {
                     requestAnimationFrame(render);
                 } else {
                     simulationDuration = performance.now() - simulationStart;
@@ -811,7 +831,7 @@ angular.module('forceHorse', [])
             // Do not update progress bar in fixed nodes mode
             if (!this.fixedNodesMode) {
                 this.progressBar.attr('x2',
-                    constants.INNER_SVG_WIDTH * (1 - this.force.alpha() / constants.MAX_ALPHA));
+                    constants.INNER_SVG_WIDTH * (1 - (this.force.alpha() - this.force.alphaMin()) / constants.MAX_ALPHA));
             }
             return this;
         };
@@ -873,7 +893,8 @@ angular.module('forceHorse', [])
             }
             this.svg.transition()
                 .duration(constants.ANIMATION_DURATION)
-                .call(this.zoom.translate(translate).scale(scale).event);
+                .call(this.zoom.transform, d3.zoomIdentity.translate(translate[0], translate[1]).scale(scale));
+                // .call(this.zoom.translate(translate).scale(scale).event);
             return this;
         };
 
@@ -1088,16 +1109,30 @@ angular.module('forceHorse', [])
          * @returns {ForceHorseFactory} current instance
          */
         proto.onZoom = function () {
-            var trans = d3.event.translate,
-                scale = d3.event.scale;
+            var trans = d3.event.transform;
 
             if (this.inSvgWrapper) {
                 this.inSvgWrapper.attr("transform",
-                    "translate(" + trans + ")"
-                    + " scale(" + scale + ")");
+                    `translate(${trans.x}, ${trans.y}) scale(${trans.k})`);
             }
             return this;
         };
+
+            /**
+             * @ngdoc method
+             * @name forceHorse.factory:ForceHorseFactory#onDragStart
+             * @description
+             * Event handler, called when a node-dragging starts
+             * *UPDATE* I avoid using it, because it is triggered by a normal mouse-down
+             * @returns {ForceHorseFactory} current instance
+             */
+            proto.onDragStart = function (/*d*/) {
+                // Fix the dragged node (not moved by the simulation)
+                // d.fx = d.x;
+                // d.fy = d.y;
+                // Start the simulation
+                return this;
+            };
 
         /**
          * @ngdoc method
@@ -1108,28 +1143,34 @@ angular.module('forceHorse', [])
          * @returns {ForceHorseFactory} current instance
          */
         proto.onDrag = function (d) {
-            // Make the dragged node fixed (not moved by the simulation)
-            this.elements[constants.NODES].filter(function (nodeData) {
-                return nodeData.id === d.id;
-            }).classed("fixed", d.fixed = true);
-
+            // Fix the dragged node (not moved by the simulation)
+            d.fx = d3.event.x;
+            d.fy = d3.event.y;
             if (!this.isDragging) {
                 this.isDragging = true;
+                this.restartForceSimulation();
             }
             return this;
         };
 
-        /**
-         * @ngdoc method
-         * @name forceHorse.factory:ForceHorseFactory#onDragEnd
-         * @description
-         * Event handler, called when a node-dragging ends
-         * @returns {ForceHorseFactory} current instance
-         */
-        proto.onDragEnd = function () {
-            this.isDragging = false;
-            return this;
-        };
+            /**
+             * @ngdoc method
+             * @name forceHorse.factory:ForceHorseFactory#onDragEnd
+             * @description
+             * Event handler, called when a node-dragging ends
+             * @returns {ForceHorseFactory} current instance
+             */
+            proto.onDragEnd = function (d) {
+                this.isDragging = false;
+                // Cool the simulation
+                this.force.alpha(this.force.alphaMin());
+                // Unfix the dragged node
+                if (!this.fixedNodesMode) {
+                    d.fx = null;
+                    d.fy = null;
+                }
+                return this;
+            };
 
         /**
          * @ngdoc method
@@ -1143,12 +1184,17 @@ angular.module('forceHorse', [])
         proto.toggleFixedNodesMode = function () {
             if (this.fixedNodesMode) {
                 this.elements[constants.NODES].classed('fixed', function (d) {
+                    d.fx = null;
+                    d.fy = null;
                     return d.fixed = false;
                 });
                 this.fixedNodesMode = false;
-                this.force.start();
+                this.restartForceSimulation();
+//                this.force.start();
             } else {
                 this.elements[constants.NODES].classed('fixed', function (d) {
+                    d.fx = d.x;
+                    d.fy = d.y;
                     return d.fixed = true;
                 });
                 this.fixedNodesMode = true;
@@ -1193,7 +1239,7 @@ angular.module('forceHorse', [])
             var myInstance = this;
             this.config.showNodeWeight = !this.config.showNodeWeight;
             this.elements[constants.NODES]
-                .attr("d", d3.svg.symbol()
+                .attr("d", d3.symbol()
                     .type(function (d) {
                         return d.shape;
                     })
@@ -1422,6 +1468,7 @@ angular.module('forceHorse', [])
              * If nodeData does not contain an id property, its id is set to its index in the array.
              * If nodeData does not contain a label property, it gets a default label.
              * A "class" property (node class) is also added to each nodeData.
+             * Set node shape
              * If linkData does not contain an id property, its id is set to its index in the array.
              * If linkData does not contain an sourceID property, sourceID is set to source.
              * If linkData does not contain an targetID property, targetID is set to target.
@@ -1442,6 +1489,35 @@ angular.module('forceHorse', [])
                         node.label = "" + node.id;
                     }
                     node.class = constants.CLASS_NODE;
+
+                    switch (node.shape) {
+                        case undefined:
+                        case "":
+                        case "circle":
+                            node.shape = d3.symbolCircle;
+                            break;
+                        case "cross":
+                            node.shape = d3.symbolCross;
+                            break;
+                        case "diamond":
+                            node.shape = d3.symbolDiamond;
+                            break;
+                        case "square":
+                            node.shape = d3.symbolSquare;
+                            break;
+                        case "triangle-up":
+                        case "triangle-down":
+                            node.shape = d3.symbolTriangle;
+                            break;
+                        case "star":
+                            node.shape = d3.symbolStar;
+                            break;
+                        case "wye":
+                            node.shape = d3.symbolWye;
+                            break;
+                        default:
+                            node.shape = d3.symbolCircle;
+                    }
                 });
                 // Process edges
                 var edges = (fileData.edges ? fileData.edges : fileData.links);
