@@ -132,7 +132,7 @@ angular.module('forceHorse', [])
             myInstance.initLayout(json);
             // The force simulation has to started before drawing nodes and links,
             // because it computes some drawing-relevant properties (node weight)
-            myInstance.startForceSimulation();
+            myInstance.restartForceSimulation();
             myInstance.draw();
         };
         // $http.get(helper.getCurrentDirectory() + constants.CONFIG_FILE_NAME)
@@ -150,7 +150,7 @@ angular.module('forceHorse', [])
         //    }
         //    myInstance.initLayout(json);
         //    myInstance.draw();
-        //    myInstance.startForceSimulation();
+        //    myInstance.restartForceSimulation();
         //});
         return this;
     };
@@ -279,7 +279,9 @@ angular.module('forceHorse', [])
         myInstance.nodeGroup = myInstance.inSvgWrapper.append("g").attr("class", "nodes").attr("fill", constants.DEFAULT_NODE_COLOR);
         myInstance.labelGroup = myInstance.inSvgWrapper.append("g").attr("class", "labels").attr("fill", constants.DEFAULT_NODE_COLOR).classed("display_none", !myInstance.config.showLabels);
 
-        myInstance.drag = d3.drag().container(myInstance.svg._groups[0][0]).on("drag", function (d) {
+        myInstance.drag = d3.drag()
+        // .container(myInstance.svg._groups[0][0])
+        .on("drag", function (d) {
             myInstance.onDrag(d);
         }).on("start", function (d) {
             myInstance.onDragStart(d);
@@ -366,11 +368,12 @@ angular.module('forceHorse', [])
 
     /**
      * @ngdoc method
-     * @name forceHorse.factory:ForceHorseFactory#startForceSimulation
+     * @name forceHorse.factory:ForceHorseFactory#restartForceSimulation
      * @description Restart the force simulation
      * @returns {ForceHorseFactory} current instance
      */
-    proto.startForceSimulation = function () {
+    proto.restartForceSimulation = function () {
+        this.force.alpha(constants.MAX_ALPHA);
         this.onForceStart();
         // this.force.restart();
         return this;
@@ -1039,13 +1042,14 @@ angular.module('forceHorse', [])
     proto.onDragStart = function (d) {
         var myInstance = this;
         this.isDragging = true;
+        // Fix the dragged node (not moved by the simulation)
         d.fx = d.x;
         d.fy = d.y;
+        // Start the simulation
         if (!d3.event.active) {
-            this.force.alpha(constants.MAX_ALPHA);
-            setTimeout(function () {
-                myInstance.onForceStart();
-            }, 0);
+            // setTimeout( function () {
+            myInstance.restartForceSimulation();
+            // }, 0);
         }
         return this;
     };
@@ -1059,10 +1063,7 @@ angular.module('forceHorse', [])
      * @returns {ForceHorseFactory} current instance
      */
     proto.onDrag = function (d) {
-        // Make the dragged node fixed (not moved by the simulation)
-        // this.elements[constants.NODES].filter(function (nodeData) {
-        //     return nodeData.id === d.id;
-        // }).classed("fixed", d.fixed = true);
+        // Fix the dragged node (not moved by the simulation)
         d.fx = d3.event.x;
         d.fy = d3.event.y;
         return this;
@@ -1077,9 +1078,13 @@ angular.module('forceHorse', [])
      */
     proto.onDragEnd = function (d) {
         this.isDragging = false;
+        // Cool the simulation
         if (!d3.event.active) this.force.alpha(this.force.alphaMin());
-        d.fx = null;
-        d.fy = null;
+        // Unfix the dragged node
+        if (!this.fixedNodesMode) {
+            d.fx = null;
+            d.fy = null;
+        }
         return this;
     };
 
@@ -1095,12 +1100,17 @@ angular.module('forceHorse', [])
     proto.toggleFixedNodesMode = function () {
         if (this.fixedNodesMode) {
             this.elements[constants.NODES].classed('fixed', function (d) {
+                d.fx = null;
+                d.fy = null;
                 return d.fixed = false;
             });
             this.fixedNodesMode = false;
-            this.force.start();
+            this.restartForceSimulation();
+            //                this.force.start();
         } else {
             this.elements[constants.NODES].classed('fixed', function (d) {
+                d.fx = d.x;
+                d.fy = d.y;
                 return d.fixed = true;
             });
             this.fixedNodesMode = true;
