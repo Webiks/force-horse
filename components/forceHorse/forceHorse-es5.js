@@ -129,11 +129,10 @@ angular.module('forceHorse', [])
     proto.redraw = function () {
         var myInstance = this;
         var proceed = function proceed(json) {
-            myInstance.initLayout(json);
+            myInstance.initLayout(json)
             // The force simulation has to started before drawing nodes and links,
             // because it computes some drawing-relevant properties (node weight)
-            myInstance.restartForceSimulation();
-            myInstance.draw();
+            .restartForceSimulation().setChargeForce().draw();
         };
         // $http.get(helper.getCurrentDirectory() + constants.CONFIG_FILE_NAME)
         // Get init (forceHorse.json) file from app root dir
@@ -200,7 +199,7 @@ angular.module('forceHorse', [])
             showLabelsButton: true,
             showNodeWeightButton: true,
             showEdgeWeightButton: true,
-            useEdgesWeights: false,
+            useEdgesWeights: true,
             forceParameters: {
                 //charge: -350,
                 linkStrength: 1,
@@ -226,33 +225,23 @@ angular.module('forceHorse', [])
         // Todo: a gravity measure replacement?
         // if (angular.isDefined(p = myInstance.config.forceParameters.gravity)) myInstance.force.gravity(p);
 
-        if (angular.isDefined(p = myInstance.config.forceParameters.charge)) {} else {
-            if (myInstance.numOfNodes < constants.HEAVY_SIMULATION_NUM_OF_NODES) {
-                p = function p(d) {
-                    return d.weight * constants.DEFAULT_CHARGE_LIGHT;
-                };
-            } else {
-                p = constants.DEFAULT_CHARGE_HEAVY;
-            }
-        }
-        myInstance.force.force("charge", d3.forceManyBody().strength(p));
-        // myInstance.force.charge(p);
-
         if (angular.isDefined(p = myInstance.config.forceParameters.friction)) {} else {
             p = helper.computeFrictionParameter(constants.INNER_SVG_WIDTH, constants.INNER_SVG_HEIGHT, this.nodeDataArray.length);
         }
         myInstance.force.velocityDecay(p);
         // myInstance.force.friction(p);
 
+        // Add nodes to the simulation
         myInstance.force.nodes(myInstance.nodeDataArray);
-        // .links(this.edgeDataArray);
-        //.start();
+        // .restart();
 
-        var linkForce = myInstance.force.force("link", d3.forceLink(myInstance.edgeDataArray).id(function (d, i) {
+        // Add links (with link force) to the simulation
+        var linkForce = d3.forceLink(myInstance.edgeDataArray).id(function (d, i) {
             return i;
-        }));
+        });
         if (angular.isDefined(p = myInstance.config.forceParameters.linkDistance)) linkForce.distance(p);
         if (angular.isDefined(p = myInstance.config.forceParameters.linkStrength)) linkForce.strength(p);
+        myInstance.force.force("link", linkForce);
 
         myInstance.zoom = d3.zoom().scaleExtent([constants.MAX_ZOOM, constants.MIN_ZOOM]).on("zoom", function () {
             myInstance.onZoom();
@@ -291,6 +280,30 @@ angular.module('forceHorse', [])
 
         return myInstance;
     }; // initLayout()
+
+    /**
+     * @ngdoc method
+     * @name forceHorse.factory:ForceHorseFactory#setChargeForce
+     * @description Add charge (repelling force) to the simulation
+     * @returns {ForceHorseFactory} current instance
+     */
+    proto.setChargeForce = function () {
+        var p,
+            myInstance = this;
+        // Add charge (repelling force) to the simulation
+        if (angular.isDefined(p = myInstance.config.forceParameters.charge)) {} else {
+            if (myInstance.numOfNodes < constants.HEAVY_SIMULATION_NUM_OF_NODES) {
+                p = function p(d) {
+                    return d.edgesWeights * constants.DEFAULT_CHARGE_LIGHT;
+                    // return d.weight * constants.DEFAULT_CHARGE_LIGHT;
+                };
+            } else {
+                p = constants.DEFAULT_CHARGE_HEAVY;
+            }
+        }
+        myInstance.force.force("charge", d3.forceManyBody().strength(p));
+        return myInstance;
+    };
 
     /**
      * @ngdoc method
