@@ -592,12 +592,13 @@ angular.module('forceHorse', [])
             this.nodeDataArray.forEach(function (val, idx) {
                 if (angular.isUndefined(val.id)) {
                     val.id = idx;
-                    //console.error("Undefined [id] in nodes array");
                 }
                 myInstance.nodesById[val.id] = idx;
                 if (angular.isUndefined(val.label)) {
                     val.label = "" + val.id;
                 }
+                // Init node edgesWeight
+                val.edgesWeight = 0;
             });
             return this;
         };
@@ -614,15 +615,6 @@ angular.module('forceHorse', [])
                 // calculate edges weight
                 var sourceNode = myInstance.nodeDataArray[edge.source],
                     targetNode = myInstance.nodeDataArray[edge.target];
-
-                // protect in case undefined
-                if (!sourceNode.edgesWeight){
-                    sourceNode.edgesWeight = 0;
-                }
-
-                if (!targetNode.edgesWeight){
-                    targetNode.edgesWeight = 0;
-                }
 
                 if (!edge.weight) {
                     edge.weight = 1;
