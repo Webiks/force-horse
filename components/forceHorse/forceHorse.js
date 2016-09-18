@@ -205,7 +205,7 @@ angular.module('forceHorse', [])
                 showLabelsButton: true,
                 showNodeWeightButton: true,
                 showEdgeWeightButton: true,
-                useEdgesWeights: true,
+                useedgesWeight: true,
                 forceParameters: {
                     //charge: -350,
                     linkStrength: 1,
@@ -322,7 +322,7 @@ angular.module('forceHorse', [])
             } else {
                 if (myInstance.numOfNodes < constants.HEAVY_SIMULATION_NUM_OF_NODES) {
                     p = function (d) {
-                        return d.edgesWeights * constants.DEFAULT_CHARGE_LIGHT;
+                        return d.edgesWeight * constants.DEFAULT_CHARGE_LIGHT;
                         // return d.weight * constants.DEFAULT_CHARGE_LIGHT;
                     };
                 } else {
@@ -478,7 +478,7 @@ angular.module('forceHorse', [])
             var myInstance = this;
             return myInstance.nodeIconAreaDefault +
                 (myInstance.config.showNodeWeight
-                    ? (myInstance.config.useEdgesWeights
+                    ? (myInstance.config.useedgesWeight
                         ? nodeData.edgesWeight
                         : angular.isDefined(nodeData.weight)
                             ? nodeData.weight
@@ -610,26 +610,26 @@ angular.module('forceHorse', [])
          */
         proto.processEdges = function () {
             //----------
-            function calculateEdgesWeightsForNodes(edge){
+            function calculateedgesWeightForNodes(edge){
                 // calculate edges weight
                 var sourceNode = myInstance.nodeDataArray[edge.source],
                     targetNode = myInstance.nodeDataArray[edge.target];
 
                 // protect in case undefined
-                if (!sourceNode.edgesWeights){
-                    sourceNode.edgesWeights = 0;
+                if (!sourceNode.edgesWeight){
+                    sourceNode.edgesWeight = 0;
                 }
 
-                if (!targetNode.edgesWeights){
-                    targetNode.edgesWeights = 0;
+                if (!targetNode.edgesWeight){
+                    targetNode.edgesWeight = 0;
                 }
 
                 if (!edge.weight) {
                     edge.weight = 1;
                 }
 
-                sourceNode.edgesWeights += edge.weight;
-                targetNode.edgesWeights += edge.weight;
+                sourceNode.edgesWeight += edge.weight;
+                targetNode.edgesWeight += edge.weight;
             }
             //----------
 
@@ -653,7 +653,7 @@ angular.module('forceHorse', [])
                 }
                 val.target = myInstance.nodesById[val.targetID];
 
-                calculateEdgesWeightsForNodes(val);
+                calculateedgesWeightForNodes(val);
 
                 // Build an index to help handle the case of multiple edges between two nodes
                 if (angular.isDefined(val.sourceID) && angular.isDefined(val.targetID)) {
