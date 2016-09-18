@@ -1364,7 +1364,8 @@ angular.module('forceHorse', [])
         MAX_ALPHA: 0.1,
         HEAVY_SIMULATION_NUM_OF_NODES: 420,
         DEFAULT_CHARGE_LIGHT: -350,
-        DEFAULT_CHARGE_HEAVY: -15000,
+        DEFAULT_CHARGE_HEAVY: -800,
+        // DEFAULT_CHARGE_HEAVY: -15000,
         CONFIG_FILE_NAME: 'forceHorse.json',
         get node_size_addition_per_weight_unit() {
             return this.INNER_SVG_WIDTH * this.INNER_SVG_HEIGHT / (54 * 48 * 3);

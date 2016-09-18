@@ -1,0 +1,1 @@
+In order to use the ini file, copy forceHorse.json to your application root directory
