@@ -684,7 +684,7 @@ angular.module('forceHorse', [])
             // Do not accelerate the simulation during dragging, so as not to slow the dragging.
             ticksPerRender = myInstance.isDragging ? 1 : 30;
             calculationStart = performance.now();
-            for (var i = 0; i < ticksPerRender && myInstance.force.alpha() > 0; i++) {
+            for (var i = 0; i < ticksPerRender && myInstance.force.alpha() > myInstance.force.alphaMin(); i++) {
                 myInstance.force.tick();
                 ticks++;
             }
@@ -694,7 +694,7 @@ angular.module('forceHorse', [])
                 myInstance.updateGraphInDOM();
             }
 
-            if (myInstance.force.alpha() > 0) {
+            if (myInstance.force.alpha() > myInstance.force.alphaMin()) {
                 requestAnimationFrame(render);
             } else {
                 console.log('Calculation time =  ' + (calculationDuration / 1000).toFixed(2) + 's, ' + ticks + ' ticks');
