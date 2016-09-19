@@ -2,7 +2,7 @@
   "name": "force-horse",
   "description": "An angular.js wrapper for d3.js force layout",
   "main": "components/forceHorse/forceHorse-es5.js",
-  "version": "0.4.6",
+  "version": "0.4.7",
   "homepage": "https://github.com/webiks/force-horse",
   "license": "MIT",
   "private": false,
