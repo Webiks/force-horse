@@ -293,17 +293,20 @@ angular.module('forceHorse', [])
                 .attr("fill", constants.DEFAULT_NODE_COLOR)
                 .classed("display_none", !myInstance.config.showLabels);
 
+            // Set dragging behavior
             myInstance.drag = d3.drag()
-                // .container(myInstance.svg._groups[0][0])
                 .on("drag", function (d) {
                     myInstance.onDrag(d);
-                })
-                .on("start", function (d) {
-                    myInstance.onDragStart(d);
                 })
                 .on("end", function (d) {
                     myInstance.onDragEnd(d);
                 });
+            // var defaultDragFilter = myInstance.drag.filter();
+            // console.log(defaultDragFilter);
+            // myInstance.drag.filter(function () {
+            //     console.log("event = ", d3.event);
+            //     return defaultDragFilter();
+            // });
 
             return myInstance;
         }; // initLayout()
@@ -946,6 +949,7 @@ angular.module('forceHorse', [])
          * @returns {ForceHorseFactory} current instance
          */
         proto.onClick = function (item, element) {
+            console.log('click detected');
             // Ignore the click event at the end of a drag
             if (!d3.event.defaultPrevented) {
                 // If the Ctrl key was pressed during the click ..
@@ -978,7 +982,7 @@ angular.module('forceHorse', [])
          * @returns {ForceHorseFactory} current instance
          */
         proto.onContainerClick = function () {
-            //console.log("Container was clicked");
+            console.log("Container click detected");
             if (this.selectedItems[constants.NODES].size + this.selectedItems[constants.EDGES].size > 0) {
                 this.onSelectInside(null, null, null, true);
             }
@@ -1124,22 +1128,6 @@ angular.module('forceHorse', [])
             return this;
         };
 
-            /**
-             * @ngdoc method
-             * @name forceHorse.factory:ForceHorseFactory#onDragStart
-             * @description
-             * Event handler, called when a node-dragging starts
-             * *UPDATE* I avoid using it, because it is triggered by a normal mouse-down
-             * @returns {ForceHorseFactory} current instance
-             */
-            proto.onDragStart = function (/*d*/) {
-                // Fix the dragged node (not moved by the simulation)
-                // d.fx = d.x;
-                // d.fy = d.y;
-                // Start the simulation
-                return this;
-            };
-
         /**
          * @ngdoc method
          * @name forceHorse.factory:ForceHorseFactory#onDrag
@@ -1153,6 +1141,7 @@ angular.module('forceHorse', [])
             d.fx = d3.event.x;
             d.fy = d3.event.y;
             if (!this.isDragging) {
+                console.log('drag detected');
                 this.isDragging = true;
                 this.restartForceSimulation();
             }
