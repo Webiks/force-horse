@@ -876,7 +876,7 @@ angular.module('forceHorse', [])
             var scale, translate,
                 width = constants.INNER_SVG_WIDTH,
                 height = constants.INNER_SVG_HEIGHT,
-                radius = this.nodeIconRadius,
+                radius = this.nodeIconRadius * 3, // a factor for some added margin
                 maxMarginX = d3.max(this.nodeDataArray, function (d) {
                     return Math.max(-d.x + radius, d.x + radius - width, 0);
                 }),
