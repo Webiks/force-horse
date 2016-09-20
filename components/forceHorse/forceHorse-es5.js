@@ -201,10 +201,10 @@ angular.module('forceHorse', [])
             showEdgeWeightButton: true,
             useedgesWeight: true,
             forceParameters: {
-                //charge: -350,
-                linkStrength: 1,
-                gravity: 0.3,
-                linkDistance: 10
+                //charge: -100,
+                // linkStrength: 1,
+                // gravity: 0.3,
+                // linkDistance: 10
             }
         };
         Object.assign(this.config, config);
@@ -1257,7 +1257,7 @@ angular.module('forceHorse', [])
     INSTANCE_NAME_LENGTH: 5,
     MAX_ALPHA: 0.1,
     HEAVY_SIMULATION_NUM_OF_NODES: 420,
-    DEFAULT_CHARGE_LIGHT: -350,
+    DEFAULT_CHARGE_LIGHT: -100,
     DEFAULT_CHARGE_HEAVY: -800,
     // DEFAULT_CHARGE_HEAVY: -15000,
     CONFIG_FILE_NAME: 'forceHorse.json',
