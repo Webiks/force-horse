@@ -133,11 +133,10 @@ angular.module('forceHorse', [])
             var myInstance = this;
             var proceed = function (json) {
                 myInstance.initLayout(json)
-                // The force simulation has to started before drawing nodes and links,
-                // because it computes some drawing-relevant properties (node weight)
-                    .restartForceSimulation()
                     .setChargeForce()
-                    .draw();
+                    .draw()
+                    .restartForceSimulation()
+                ;
             };
             // $http.get(helper.getCurrentDirectory() + constants.CONFIG_FILE_NAME)
             // Get init (forceHorse.json) file from app root dir

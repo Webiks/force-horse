@@ -129,10 +129,7 @@ angular.module('forceHorse', [])
     proto.redraw = function () {
         var myInstance = this;
         var proceed = function proceed(json) {
-            myInstance.initLayout(json)
-            // The force simulation has to started before drawing nodes and links,
-            // because it computes some drawing-relevant properties (node weight)
-            .restartForceSimulation().setChargeForce().draw();
+            myInstance.initLayout(json).setChargeForce().draw().restartForceSimulation();
         };
         // $http.get(helper.getCurrentDirectory() + constants.CONFIG_FILE_NAME)
         // Get init (forceHorse.json) file from app root dir
