@@ -211,32 +211,31 @@ angular.module('forceHorse', [])
 
         // Create a forceLayout instance
         myInstance.force = d3.forceSimulation();
-        // .size([constants.INNER_SVG_WIDTH, constants.INNER_SVG_HEIGHT])
-        // .on("start", function () {
-        //     myInstance.onForceStart();
-        // });
 
         var p;
 
-        // Centering force
+        // Center-around force
         var forceCenter = d3.forceCenter(constants.INNER_SVG_WIDTH / 2, constants.INNER_SVG_HEIGHT / 2);
         myInstance.force.force("center", forceCenter);
 
-        // (Center) positioning forces
-        // Todo: a gravity measure replacement?
-        myInstance.force.force("forceX", d3.forceX(constants.INNER_SVG_WIDTH / 2));
-        myInstance.force.force("forceY", d3.forceY(constants.INNER_SVG_HEIGHT / 2));
-        // if (angular.isDefined(p = myInstance.config.forceParameters.gravity)) myInstance.force.gravity(p);
+        // (Center-towards) positioning forces
+        var forceX = d3.forceX(constants.INNER_SVG_WIDTH / 2),
+            forceY = d3.forceY(constants.INNER_SVG_HEIGHT / 2);
+        if (angular.isDefined(p = myInstance.config.forceParameters.gravity)) {
+            forceX.strength(p);
+            forceY.strength(p);
+        }
+        myInstance.force.force("forceX", forceX);
+        myInstance.force.force("forceY", forceY);
 
+        // Friction
         if (angular.isDefined(p = myInstance.config.forceParameters.friction)) {} else {
             p = helper.computeFrictionParameter(constants.INNER_SVG_WIDTH, constants.INNER_SVG_HEIGHT, this.nodeDataArray.length);
         }
         myInstance.force.velocityDecay(p);
-        // myInstance.force.friction(p);
 
         // Add nodes to the simulation
         myInstance.force.nodes(myInstance.nodeDataArray);
-        // .restart();
 
         // Add links (with link force) to the simulation
         var linkForce = d3.forceLink(myInstance.edgeDataArray).id(function (d, i) {
