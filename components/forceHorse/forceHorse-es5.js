@@ -290,20 +290,24 @@ angular.module('forceHorse', [])
      * @returns {ForceHorseFactory} current instance
      */
     proto.setChargeForce = function () {
-        var p,
+        var charge,
+            distanceMax,
+            chargeForce,
             myInstance = this;
-        // Add charge (repelling force) to the simulation
-        if (angular.isDefined(p = myInstance.config.forceParameters.charge)) {} else {
-            if (myInstance.numOfNodes < constants.HEAVY_SIMULATION_NUM_OF_NODES) {
-                p = function p(d) {
-                    return d.edgesWeight * constants.DEFAULT_CHARGE_LIGHT;
-                    // return d.weight * constants.DEFAULT_CHARGE_LIGHT;
-                };
-            } else {
-                p = constants.DEFAULT_CHARGE_HEAVY;
-            }
+        // if (angular.isDefined(charge = myInstance.config.forceParameters.charge)) {
+        // } else {
+        if (myInstance.numOfNodes < constants.HEAVY_SIMULATION_NUM_OF_NODES) {
+            charge = function charge(d) {
+                return (myInstance.config.useedgesWeight ? d.edgesWeight : d.weight) * constants.DEFAULT_CHARGE_LIGHT;
+            };
+            distanceMax = constants.CHARGE_DISTANCE_MAX_LIGHT;
+        } else {
+            charge = constants.DEFAULT_CHARGE_HEAVY;
         }
-        myInstance.force.force("charge", d3.forceManyBody().strength(p));
+        // }
+        chargeForce = d3.forceManyBody().strength(charge);
+        if (distanceMax) chargeForce.distanceMax(distanceMax);
+        myInstance.force.force("charge", chargeForce);
         return myInstance;
     };
 
@@ -1257,6 +1261,7 @@ angular.module('forceHorse', [])
     DEFAULT_CHARGE_LIGHT: -30,
     DEFAULT_CHARGE_HEAVY: -800,
     // DEFAULT_CHARGE_HEAVY: -15000,
+    CHARGE_DISTANCE_MAX_LIGHT: 200,
     CONFIG_FILE_NAME: 'forceHorse.json',
     get node_size_addition_per_weight_unit() {
         return this.INNER_SVG_WIDTH * this.INNER_SVG_HEIGHT / (54 * 48 * 3);
