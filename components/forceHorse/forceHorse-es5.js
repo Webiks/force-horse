@@ -1255,7 +1255,7 @@ angular.module('forceHorse', [])
     ANIMATION_DELAY: 200,
     ALEPHBET: 'abcdefghijklmnopqrstuvwxyz',
     INSTANCE_NAME_LENGTH: 5,
-    MAX_ALPHA: 0.1,
+    MAX_ALPHA: 1.0,
     HEAVY_SIMULATION_NUM_OF_NODES: 420,
     DEFAULT_CHARGE_LIGHT: -350,
     DEFAULT_CHARGE_HEAVY: -800,
