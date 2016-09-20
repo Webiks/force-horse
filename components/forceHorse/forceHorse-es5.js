@@ -215,14 +215,17 @@ angular.module('forceHorse', [])
         // .on("start", function () {
         //     myInstance.onForceStart();
         // });
-        // todo: start event replacement?
 
         var p;
 
+        // Centering force
         var forceCenter = d3.forceCenter(constants.INNER_SVG_WIDTH / 2, constants.INNER_SVG_HEIGHT / 2);
         myInstance.force.force("center", forceCenter);
-        // Todo: add center coordinates?
+
+        // (Center) positioning forces
         // Todo: a gravity measure replacement?
+        myInstance.force.force("forceX", d3.forceX(constants.INNER_SVG_WIDTH / 2));
+        myInstance.force.force("forceY", d3.forceY(constants.INNER_SVG_HEIGHT / 2));
         // if (angular.isDefined(p = myInstance.config.forceParameters.gravity)) myInstance.force.gravity(p);
 
         if (angular.isDefined(p = myInstance.config.forceParameters.friction)) {} else {
