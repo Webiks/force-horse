@@ -81,6 +81,13 @@
     opacity: 1;
 }
 
+.force-horse svg.graph-svg.selectionMode .node.selected,
+.force-horse svg.graph-svg.selectionMode .edge.selected {
+    /*stroke: url(#force-horse-select-color);*/
+    stroke: orange;
+    stroke-width: 20px;
+}
+
 .force-horse svg.graph-svg .node.filtered,
 .force-horse svg.graph-svg .edge.filtered,
 .force-horse svg.graph-svg .labels text.filtered {

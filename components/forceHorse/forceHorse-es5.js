@@ -257,6 +257,17 @@ angular.module('forceHorse', [])
         // Todo: zoom.event replacement?
         ;
 
+        // Set a gradient color for selection
+        // var selectColor = myInstance.svg.append("defs")
+        //     .append("linearGradient")
+        //     .attr("id", "force-horse-select-color");
+        // selectColor.append("stop")
+        //     .attr("offset", "0%")
+        //     .attr("stop-color", "red");
+        // selectColor.append("stop")
+        //     .attr("offset", "100%")
+        //     .attr("stop-color", "yellow");
+
         // Set wrapper group, to use for pan & zoom transforms
         myInstance.inSvgWrapper = myInstance.svg.append("g");
 
