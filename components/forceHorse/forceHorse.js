@@ -733,6 +733,9 @@ angular.module('forceHorse', [])
                 simulationStart = performance.now(), simulationDuration, calculationStart, calculationDuration = 0,
                 ticks = 0;
 
+            // Set no. of ticks, through alpha decay factor
+            this.force.alphaDecay(constants.alpha_decay_light);
+
             requestAnimationFrame(function render() {
                 // Do not accelerate the simulation during dragging, so as not to slow the dragging.
                 ticksPerRender = (myInstance.isDragging ? 1 : myInstance.numOfNodes / 7);
@@ -768,6 +771,9 @@ angular.module('forceHorse', [])
             var ticksPerRender,
                 calculationStart, calculationDuration = 0,
                 ticks = 0;
+
+            // Set no. of ticks, through alpha decay factor
+            this.force.alphaDecay(constants.alpha_decay_heavy);
 
             requestAnimationFrame(function render() {
                 // Do not accelerate the simulation during dragging, so as not to slow the dragging.
@@ -1363,11 +1369,20 @@ angular.module('forceHorse', [])
         ALEPHBET: 'abcdefghijklmnopqrstuvwxyz',
         INSTANCE_NAME_LENGTH: 5,
         MAX_ALPHA: 1.0,
+        MIN_ALPHA: 0.001,
         HEAVY_SIMULATION_NUM_OF_NODES: 420,
         DEFAULT_CHARGE_LIGHT: -30,
         DEFAULT_CHARGE_HEAVY: -800,
         // DEFAULT_CHARGE_HEAVY: -15000,
         CHARGE_DISTANCE_MAX_LIGHT: 200,
+        NUM_TICKS_LIGHT: 600,
+        NUM_TICKS_HEAVY: 300,
+        get alpha_decay_light() {
+            return 1 - Math.pow(this.MIN_ALPHA, 1 / this.NUM_TICKS_LIGHT)
+        },
+        get alpha_decay_heavy() {
+            return 1 - Math.pow(this.MIN_ALPHA, 1 / this.NUM_TICKS_HEAVY)
+        },
         CONFIG_FILE_NAME: 'forceHorse.json',
         get node_size_addition_per_weight_unit() {
             return this.INNER_SVG_WIDTH * this.INNER_SVG_HEIGHT / (54 * 48 * 3);
