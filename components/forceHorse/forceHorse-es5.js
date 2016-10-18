@@ -207,7 +207,7 @@ angular.module('forceHorse', [])
         Object.assign(this.config, config);
 
         // Create a forceLayout instance
-        myInstance.force = d3.forceSimulation();
+        myInstance.force = d3.forceSimulation().stop();
 
         var p;
 
