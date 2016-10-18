@@ -299,7 +299,8 @@ angular.module('forceHorse', [])
                 .attr("stroke-width", constants.DEFAULT_EDGE_WIDTH + 'px');
             myInstance.nodeGroup = myInstance.inSvgWrapper.append("g")
                 .attr("class", "nodes")
-                .attr("fill", constants.DEFAULT_NODE_COLOR);
+                .attr("fill", constants.DEFAULT_NODE_COLOR)
+                .attr("stroke", constants.DEFAULT_NODE_COLOR);
             myInstance.labelGroup = myInstance.inSvgWrapper.append("g")
                 .attr("class", "labels")
                 .attr("fill", constants.DEFAULT_NODE_COLOR)
@@ -403,6 +404,9 @@ angular.module('forceHorse', [])
                         return myInstance.getNodeIconArea(d);
                     }))
                 .attr("fill", function (d) {
+                    return d.color;
+                })
+                .attr("stroke", function (d) {
                     return d.color;
                 })
                 .attr("class", constants.CSS_CLASS_NODE)

@@ -275,7 +275,7 @@ angular.module('forceHorse', [])
         // for nodes and edges (note: the edge group has to be inserted first, so that the nodes
         // will render above the edges).
         myInstance.edgeGroup = myInstance.inSvgWrapper.append("g").attr("class", "edges").attr("stroke", constants.DEFAULT_EDGE_COLOR).attr("stroke-width", constants.DEFAULT_EDGE_WIDTH + 'px');
-        myInstance.nodeGroup = myInstance.inSvgWrapper.append("g").attr("class", "nodes").attr("fill", constants.DEFAULT_NODE_COLOR);
+        myInstance.nodeGroup = myInstance.inSvgWrapper.append("g").attr("class", "nodes").attr("fill", constants.DEFAULT_NODE_COLOR).attr("stroke", constants.DEFAULT_NODE_COLOR);
         myInstance.labelGroup = myInstance.inSvgWrapper.append("g").attr("class", "labels").attr("fill", constants.DEFAULT_NODE_COLOR).classed("display_none", !myInstance.config.showLabels);
 
         // Set dragging behavior
@@ -357,6 +357,8 @@ angular.module('forceHorse', [])
         }).size(function (d) {
             return myInstance.getNodeIconArea(d);
         })).attr("fill", function (d) {
+            return d.color;
+        }).attr("stroke", function (d) {
             return d.color;
         }).attr("class", constants.CSS_CLASS_NODE).on("mouseenter", function (d) {
             myInstance.onHoverInside(this, d, true);

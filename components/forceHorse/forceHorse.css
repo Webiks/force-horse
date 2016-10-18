@@ -50,7 +50,7 @@
 .force-horse svg.graph-svg .node {
     /*cursor: move;*/
     /*fill: #ccc;*/
-    stroke: none;
+    /*stroke: none;*/
 }
 
 .force-horse svg.graph-svg .node.fixed {
@@ -83,13 +83,11 @@
 
 .force-horse svg.graph-svg.selectionMode .node.selected {
     /*stroke: url(#force-horse-select-color);*/
-    stroke: orange;
     stroke-width: 20px;
 }
 
 .force-horse svg.graph-svg.selectionMode .edge.selected {
     /*stroke: url(#force-horse-select-color);*/
-    stroke: orange;
     stroke-width: 10px;
 }
 
