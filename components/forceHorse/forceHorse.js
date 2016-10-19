@@ -249,11 +249,11 @@ angular.module('forceHorse', [])
             if (angular.isDefined(p = myInstance.config.forceParameters.linkStrength)) linkForce.strength(p);
             myInstance.force.force("link", linkForce);
 
-            myInstance.zoom = d3.zoom()
+            this.zoom = d3.zoom()
                 .scaleExtent([constants.MAX_ZOOM, constants.MIN_ZOOM])
-                .on("zoom", function () {
-                    myInstance.onZoom();
-                });
+                .on("zoom", ()=>this.onZoom())
+                .on("end", ()=>this.onZoomEnd())
+            ;
 
             // Create the main SVG (canvas).
             // If that element exists, remove it first.
@@ -1149,6 +1149,18 @@ angular.module('forceHorse', [])
             }
             return this;
         };
+
+        /**
+             * @ngdoc method
+             * @name forceHorse.factory:ForceHorseFactory#onZoomEnd
+             * @description
+             * end of pan/zoom gesture
+             * @returns {ForceHorseFactory} current instance
+             */
+        proto.onZoomEnd = function () {
+                console.log('zoom/pan ended');
+                return this;
+            };
 
         /**
          * @ngdoc method

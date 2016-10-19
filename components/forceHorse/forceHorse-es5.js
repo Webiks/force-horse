@@ -159,6 +159,8 @@ angular.module('forceHorse', [])
      * @returns {ForceHorseFactory} current instance
      */
     proto.initLayout = function (config) {
+        var _this = this;
+
         var myInstance = this;
         // Generate a random instance name, for a "namespace"
         this.instanceName = new Array(constants.INSTANCE_NAME_LENGTH).fill(null).map(function () {
@@ -242,8 +244,10 @@ angular.module('forceHorse', [])
         if (angular.isDefined(p = myInstance.config.forceParameters.linkStrength)) linkForce.strength(p);
         myInstance.force.force("link", linkForce);
 
-        myInstance.zoom = d3.zoom().scaleExtent([constants.MAX_ZOOM, constants.MIN_ZOOM]).on("zoom", function () {
-            myInstance.onZoom();
+        this.zoom = d3.zoom().scaleExtent([constants.MAX_ZOOM, constants.MIN_ZOOM]).on("zoom", function () {
+            return _this.onZoom();
+        }).on("end", function () {
+            return _this.onZoomEnd();
         });
 
         // Create the main SVG (canvas).
@@ -1055,6 +1059,18 @@ angular.module('forceHorse', [])
         if (this.inSvgWrapper) {
             this.inSvgWrapper.attr("transform", 'translate(' + trans.x + ', ' + trans.y + ') scale(' + trans.k + ')');
         }
+        return this;
+    };
+
+    /**
+         * @ngdoc method
+         * @name forceHorse.factory:ForceHorseFactory#onZoomEnd
+         * @description
+         * end of pan/zoom gesture
+         * @returns {ForceHorseFactory} current instance
+         */
+    proto.onZoomEnd = function () {
+        console.log('zoom/pan ended');
         return this;
     };
 
