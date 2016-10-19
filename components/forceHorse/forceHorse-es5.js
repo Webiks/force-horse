@@ -1487,6 +1487,19 @@ angular.module('forceHorse', [])
             });
             // Return the (processed) data
             return [{ id: constants.NODES_ID, data: nodes }, { id: constants.EDGES_ID, data: edges }];
+        },
+
+        /**
+         * @ngdoc method
+         * @name forceHorse.service:ForceHorseHelper#rectContained
+         * @description
+         * Is rectangle rect1 contained in rectangle rect2?
+         * @param {rect} rect1
+         * @param {rect} rect2
+         * @returns {boolean}
+         */
+        rectContained: function rectContained(rect1, rect2) {
+            return rect1.left >= rect2.left && rect1.right <= rect2.right && rect1.top >= rect2.top && rect1.bottom <= rect2.bottom;
         }
 
     }; // return {
