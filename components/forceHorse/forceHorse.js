@@ -484,7 +484,7 @@ angular.module('forceHorse', [])
          * @returns {ForceHorseFactory} current instance
          */
         proto.calcFixAspectRatio = function () {
-            var currentRect = this.svg._groups[0][0].getBoundingClientRect(),
+            var currentRect = this.svg._groups[0][0].getBoundingClientRect(), // Todo: use selection.node()
                 currentHeight = currentRect.height,
                 currentWidth = currentRect.width;
             this.fixAspectRatio = (constants.INNER_SVG_WIDTH / constants.INNER_SVG_HEIGHT) * (currentHeight / currentWidth);
@@ -1159,6 +1159,33 @@ angular.module('forceHorse', [])
              */
         proto.onZoomEnd = function () {
                 console.log('zoom/pan ended');
+                this.levelOfDetails();
+                return this;
+            };
+
+            /**
+             * @ngdoc method
+             * @name forceHorse.factory:ForceHorseFactory#levelOfDetails
+             * @description
+             * Update level of details (after pan/zoom)
+             * @returns {ForceHorseFactory} current instance
+             */
+            proto.levelOfDetails = function () {
+                let view = this.svg.node().getBoundingClientRect(),
+                    count = 0,
+                    nodesInView = [];
+                // Find which nodes are contained in current view
+                this.elements[constants.NODES]
+                    .each(function(d){
+                        if (d.inView = helper.rectContained(this.getBoundingClientRect(), view)) {
+                            nodesInView[count++] = d;
+                        }
+                    })
+                ;
+                console.log(`Found ${count} nodes in view`);
+                // Sort the contained nodes, according to node weight
+                nodesInView.sort((node1, node2) => node1.edgesWeight - node2.edgesWeight);
+                console.log(nodesInView.map(node=>node.edgesWeight));
                 return this;
             };
 
