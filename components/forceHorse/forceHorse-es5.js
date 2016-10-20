@@ -1085,23 +1085,28 @@ angular.module('forceHorse', [])
      * @returns {ForceHorseFactory} current instance
      */
     proto.levelOfDetails = function () {
+        var _this2 = this;
+
         var view = this.svg.node().getBoundingClientRect(),
             count = 0,
             nodesInView = [];
         // Find which nodes are contained in current view
         this.elements[constants.NODES].each(function (d) {
-            if (d.inView = helper.rectContained(this.getBoundingClientRect(), view)) {
+            if (helper.rectContained(this.getBoundingClientRect(), view)) {
                 nodesInView[count++] = d;
             }
         });
-        console.log('Found ' + count + ' nodes in view');
         // Sort the contained nodes, according to node weight
+        // Set hide-on-current-level flag, for each node in view
         nodesInView.sort(function (node1, node2) {
             return node1.edgesWeight - node2.edgesWeight;
+        }).forEach(function (node, i) {
+            node.hideOnCurrentLevel = i < count - _this2.config.numOfLabelsToShow;
         });
-        console.log(nodesInView.map(function (node) {
-            return node.edgesWeight;
-        }));
+        // Set label elements classes, according to these flags
+        this.labels.classed('hide-on-current-level', function (d) {
+            return d.hideOnCurrentLevel;
+        });
         return this;
     };
 

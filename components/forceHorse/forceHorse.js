@@ -1178,15 +1178,21 @@ angular.module('forceHorse', [])
                 // Find which nodes are contained in current view
                 this.elements[constants.NODES]
                     .each(function(d){
-                        if (d.inView = helper.rectContained(this.getBoundingClientRect(), view)) {
+                        if (helper.rectContained(this.getBoundingClientRect(), view)) {
                             nodesInView[count++] = d;
                         }
                     })
                 ;
-                console.log(`Found ${count} nodes in view`);
                 // Sort the contained nodes, according to node weight
-                nodesInView.sort((node1, node2) => node1.edgesWeight - node2.edgesWeight);
-                console.log(nodesInView.map(node=>node.edgesWeight));
+                // Set hide-on-current-level flag, for each node in view
+                nodesInView.sort((node1, node2) => node1.edgesWeight - node2.edgesWeight)
+                    .forEach((node, i) => {
+                        node.hideOnCurrentLevel = i < (count - this.config.numOfLabelsToShow);
+                    })
+                ;
+                // Set label elements classes, according to these flags
+                this.labels
+                    .classed('hide-on-current-level', function(d) {return d.hideOnCurrentLevel});
                 return this;
             };
 
