@@ -1098,7 +1098,7 @@ angular.module('forceHorse', [])
             }
         });
         // Experiment: show labels for 1/4 of the nodes in view
-        numOfLabelsToShow = count < 4 ? 1 : Math.round(count / 4);
+        numOfLabelsToShow = count < 2 * this.config.numOfLabelsToShow ? this.config.numOfLabelsToShow : Math.round(count / 4);
         // Sort the contained nodes, according to node weight
         // Set hide-on-current-level flag, for each node in view
         nodesInView.sort(function (node1, node2) {
@@ -1323,7 +1323,7 @@ angular.module('forceHorse', [])
     DEFAULT_NODE_COLOR: '#6060a0',
     NODE_MARGIN: 10,
     LABEL_DISPLACEMENT: 10,
-    DEFAULT_NUM_OF_LABELS_TO_SHOW: 2,
+    DEFAULT_NUM_OF_LABELS_TO_SHOW: 10,
     MAX_ZOOM: 0.25,
     MIN_ZOOM: 4,
     ANIMATION_DURATION: 1000,
