@@ -97,6 +97,10 @@
     display: none;
 }
 
+.force-horse svg.graph-svg .labels text.hide-on-current-level {
+    display: none;
+}
+
 .force-horse svg.graph-svg line.progress {
     stroke: black;
     stroke-width: 2;
