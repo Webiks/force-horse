@@ -6,10 +6,10 @@ angular.module("demo", ['forceHorse'])
     vm.options = {
         data: {
             nodes: [
-                {},
-                {},
-                {},
-                {}
+                {label: 'Captain Sisko'},
+                {label: 'Major Kira'},
+                {label: 'Dr Bashir'},
+                {label: 'Gol Dookat'}
             ],
             links: [
                 {source: 0, target: 1},
