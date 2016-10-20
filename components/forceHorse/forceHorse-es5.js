@@ -1069,10 +1069,10 @@ angular.module('forceHorse', [])
          * @name forceHorse.factory:ForceHorseFactory#onZoomEnd
          * @description
          * end of pan/zoom gesture
-         * @returns {ForceHorseFactory} current instance
+         * @returns current instance
          */
     proto.onZoomEnd = function () {
-        console.log('zoom/pan ended');
+        // console.log('zoom/pan ended');
         this.levelOfDetails();
         return this;
     };
@@ -1089,7 +1089,9 @@ angular.module('forceHorse', [])
 
         var view = this.svg.node().getBoundingClientRect(),
             count = 0,
-            nodesInView = [];
+            nodesInView = [],
+            startTime = performance.now(),
+            duration = void 0;
         // Find which nodes are contained in current view
         this.elements[constants.NODES].each(function (d) {
             if (helper.rectContained(this.getBoundingClientRect(), view)) {
@@ -1107,6 +1109,9 @@ angular.module('forceHorse', [])
         this.labels.classed('hide-on-current-level', function (d) {
             return d.hideOnCurrentLevel;
         });
+        // Wrap up
+        duration = performance.now() - startTime;
+        console.log('levelOfDetails duration = ' + (duration / 1000).toFixed(2));
         return this;
     };
 
