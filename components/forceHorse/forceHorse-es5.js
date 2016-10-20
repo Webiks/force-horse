@@ -1085,11 +1085,10 @@ angular.module('forceHorse', [])
      * @returns {ForceHorseFactory} current instance
      */
     proto.levelOfDetails = function () {
-        var _this2 = this;
-
         var view = this.svg.node().getBoundingClientRect(),
             count = 0,
             nodesInView = [],
+            numOfLabelsToShow = this.config.numOfLabelsToShow,
             startTime = performance.now(),
             duration = void 0;
         // Find which nodes are contained in current view
@@ -1098,12 +1097,14 @@ angular.module('forceHorse', [])
                 nodesInView[count++] = d;
             }
         });
+        // Experiment: show labels for 1/4 of the nodes in view
+        numOfLabelsToShow = count < 4 ? 1 : count / 4;
         // Sort the contained nodes, according to node weight
         // Set hide-on-current-level flag, for each node in view
         nodesInView.sort(function (node1, node2) {
             return node1.edgesWeight - node2.edgesWeight;
         }).forEach(function (node, i) {
-            node.hideOnCurrentLevel = i < count - _this2.config.numOfLabelsToShow;
+            node.hideOnCurrentLevel = i < count - numOfLabelsToShow;
         });
         // Set label elements classes, according to these flags
         this.labels.classed('hide-on-current-level', function (d) {
