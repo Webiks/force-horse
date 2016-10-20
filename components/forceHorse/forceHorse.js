@@ -198,6 +198,7 @@ angular.module('forceHorse', [])
             // (that is, in fact, by an external json file)
             this.config = {
                 showLabels: false,
+                numOfLabelsToShow: constants.DEFAULT_NUM_OF_LABELS_TO_SHOW,
                 showNodeWeight: false,
                 showEdgeWeight: false,
                 showFilterButton: true,
@@ -1397,6 +1398,7 @@ angular.module('forceHorse', [])
         DEFAULT_NODE_COLOR: '#6060a0',
         NODE_MARGIN: 10,
         LABEL_DISPLACEMENT: 10,
+        DEFAULT_NUM_OF_LABELS_TO_SHOW: 2,
         MAX_ZOOM: 0.5,
         MIN_ZOOM: 2,
         ANIMATION_DURATION: 1000,
