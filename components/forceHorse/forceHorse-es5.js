@@ -1098,7 +1098,7 @@ angular.module('forceHorse', [])
             }
         });
         // Experiment: show labels for 1/4 of the nodes in view
-        numOfLabelsToShow = count < 4 ? 1 : count / 4;
+        numOfLabelsToShow = count < 4 ? 1 : Math.round(count / 4);
         // Sort the contained nodes, according to node weight
         // Set hide-on-current-level flag, for each node in view
         nodesInView.sort(function (node1, node2) {
