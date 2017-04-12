@@ -1214,6 +1214,7 @@ angular.module('forceHorse', [])
          */
         proto.onDrag = function (d) {
             // Fix the dragged node (not moved by the simulation)
+            // d3 v4 style: node properties d.fx, d.fy instead of d.fixed in v3
             d.fx = d3.event.x;
             d.fy = d3.event.y;
             if (!this.isDragging) {
@@ -1231,15 +1232,10 @@ angular.module('forceHorse', [])
              * Event handler, called when a node-dragging ends
              * @returns {ForceHorseFactory} current instance
              */
-            proto.onDragEnd = function (d) {
+            proto.onDragEnd = function () {
                 this.isDragging = false;
                 // Cool the simulation
                 this.force.alpha(this.force.alphaMin());
-                // Unfix the dragged node
-                if (!this.fixedNodesMode) {
-                    d.fx = null;
-                    d.fy = null;
-                }
                 return this;
             };
 
@@ -1257,7 +1253,7 @@ angular.module('forceHorse', [])
                 this.elements[constants.NODES].classed('fixed', function (d) {
                     d.fx = null;
                     d.fy = null;
-                    return d.fixed = false;
+                    return false;
                 });
                 this.fixedNodesMode = false;
                 this.restartForceSimulation();
@@ -1266,7 +1262,7 @@ angular.module('forceHorse', [])
                 this.elements[constants.NODES].classed('fixed', function (d) {
                     d.fx = d.x;
                     d.fy = d.y;
-                    return d.fixed = true;
+                    return true;
                 });
                 this.fixedNodesMode = true;
             }
