@@ -102,8 +102,8 @@ angular.module('forceHorse', [])
      * @name forceHorse.factory:ForceHorseFactory
      * @description Produces a class-instance for each instance of ForceHorse on a page
      */
-    .factory('ForceHorseFactory', ['$http', '$log', 'ForceHorseConstants', 'ForceHorseHelper',
-        function ($http, $log, constants, helper) {
+    .factory('ForceHorseFactory', ['$http', '$log', '$timeout', 'ForceHorseConstants', 'ForceHorseHelper',
+        function ($http, $log, $timeout, constants, helper) {
             /**
              * @ngdoc method
              * @name ForceHorseFactory
@@ -115,6 +115,7 @@ angular.module('forceHorse', [])
              * @param requestDigest callback function: request an angular digest on the element's scope
              */
             function ForceHorseFactory(element, options, requestDigest) {
+				this.$timeout = $timeout;
                 this.element = element[0];
                 this.options = options;
                 this.requestDigest = requestDigest;
@@ -256,8 +257,8 @@ angular.module('forceHorse', [])
 
                 this.zoom = d3.zoom()
                     .scaleExtent([constants.MAX_ZOOM, constants.MIN_ZOOM])
-                    .on("zoom", ()=>this.onZoom())
-                    .on("end", ()=>this.onZoomEnd())
+                    .on("zoom", () => {this.onZoom()} )
+                    .on("end", () => {this.onZoomEnd()} )
                 ;
 
                 // Create the main SVG (canvas).
@@ -1017,6 +1018,19 @@ angular.module('forceHorse', [])
                 return this;
             };
 
+			/**
+			 * @ngdoc method
+			 * @name forceHorse.factory:ForceHorseFactory#cancelDblClickTimer
+			 * @description
+			 * cancel Timeout Click counter
+			 * @returns void
+			 */
+			proto.cancelDblClickTimer = function () {
+			  var myInstance = this;
+			  myInstance.$timeout.cancel(myInstance.dblClickTimer);
+			  myInstance.dblClickTimer = undefined;
+			};
+			
             /**
              * @ngdoc method
              * @name forceHorse.factory:ForceHorseFactory#onHoverInside
@@ -1285,18 +1299,10 @@ angular.module('forceHorse', [])
              * @returns {ForceHorseFactory} current instance
              */
             proto.onLabelsShowHideBtnClick = function () {
-                //var myInstance = this;
                 if (this.config.showLabels = !this.config.showLabels) {
                     this.labelGroup.classed('display_none', false);
-                    //this.labelGroup.transition().attr("opacity", "0");
-                    //setTimeout(function () {
-                    //    myInstance.labelGroup.classed('display_none', true);
-                    //}, constants.ANIMATION_DELAY);
                 } else { // show labels
                     this.labelGroup.classed('display_none', true);
-                    //setTimeout(function () {
-                    //    myInstance.labelGroup.transition().attr("opacity", "1");
-                    //}, constants.ANIMATION_DELAY);
                 }
                 return this;
             };
@@ -1431,6 +1437,7 @@ angular.module('forceHorse', [])
         CONFIG_FILE_NAME: 'forceHorse.json',
         LOGGING_KEY_NAME: 'forceHorse',
         LOGGING_ON_VALUE: 'on',
+        DBL_CLICK_DELAY_IN_MS: 200,
         get node_size_addition_per_weight_unit() {
             return this.INNER_SVG_WIDTH * this.INNER_SVG_HEIGHT / (54 * 48 * 3);
         }
