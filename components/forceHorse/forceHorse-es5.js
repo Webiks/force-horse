@@ -74,14 +74,14 @@ angular.module('forceHorse', [])
 
             // Clear the instance reference on destruction, to prevent memory leak
             $scope.$on("$destroy", function () {
-                console.log("Destroying forceHorse instance");
+                helper.log("Destroying forceHorse instance");
                 vm.options.forceHorseInstance = $scope.forceHorseInstance = null;
             });
         },
 
         link: function link(scope, element) {
             //, attr, ctrl) {
-            //console.log('In forceHorse link');
+            //helper.log('In forceHorse link');
 
             // Add CSS class to set a CSS "namespace"
             element.addClass("force-horse");
@@ -290,9 +290,9 @@ angular.module('forceHorse', [])
             myInstance.onDragEnd(d);
         });
         // var defaultDragFilter = myInstance.drag.filter();
-        // console.log(defaultDragFilter);
+        // helper.log(defaultDragFilter);
         // myInstance.drag.filter(function () {
-        //     console.log("event = ", d3.event);
+        //     helper.log("event = ", d3.event);
         //     return defaultDragFilter();
         // });
 
@@ -571,6 +571,7 @@ angular.module('forceHorse', [])
             sourceNode.edgesWeight += edge.weight;
             targetNode.edgesWeight += edge.weight;
         }
+
         //----------
 
         var myInstance = this,
@@ -677,7 +678,7 @@ angular.module('forceHorse', [])
                 requestAnimationFrame(render);
             } else {
                 simulationDuration = performance.now() - simulationStart;
-                console.log('Force Simulation time = ' + (simulationDuration / 1000).toFixed(2) + 's, Calculation time =  ' + (calculationDuration / 1000).toFixed(2) + 's, ' + ticks + ' ticks');
+                helper.log('Force Simulation time = ' + (simulationDuration / 1000).toFixed(2) + 's, Calculation time =  ' + (calculationDuration / 1000).toFixed(2) + 's, ' + ticks + ' ticks');
                 myInstance.onForceEnd();
             }
         }); // render
@@ -716,7 +717,7 @@ angular.module('forceHorse', [])
             if (myInstance.force.alpha() > myInstance.force.alphaMin()) {
                 requestAnimationFrame(render);
             } else {
-                console.log('Calculation time =  ' + (calculationDuration / 1000).toFixed(2) + 's, ' + ticks + ' ticks');
+                helper.log('Calculation time =  ' + (calculationDuration / 1000).toFixed(2) + 's, ' + ticks + ' ticks');
                 myInstance.updateGraphInDOM().onForceEnd();
             }
         }); // render
@@ -891,7 +892,7 @@ angular.module('forceHorse', [])
      * @returns {ForceHorseFactory} current instance
      */
     proto.onClick = function (item, element) {
-        console.log('click detected');
+        helper.log('click detected');
         // Ignore the click event at the end of a drag
         if (!d3.event.defaultPrevented) {
             // If the Ctrl key was pressed during the click ..
@@ -924,7 +925,7 @@ angular.module('forceHorse', [])
      * @returns {ForceHorseFactory} current instance
      */
     proto.onContainerClick = function () {
-        console.log("Container click detected");
+        helper.log("Container click detected");
         if (this.selectedItems[constants.NODES].size + this.selectedItems[constants.EDGES].size > 0) {
             this.onSelectInside(null, null, null, true);
         }
@@ -1065,14 +1066,14 @@ angular.module('forceHorse', [])
     };
 
     /**
-         * @ngdoc method
-         * @name forceHorse.factory:ForceHorseFactory#onZoomEnd
-         * @description
-         * end of pan/zoom gesture
-         * @returns current instance
-         */
+     * @ngdoc method
+     * @name forceHorse.factory:ForceHorseFactory#onZoomEnd
+     * @description
+     * end of pan/zoom gesture
+     * @returns current instance
+     */
     proto.onZoomEnd = function () {
-        // console.log('zoom/pan ended');
+        // helper.log('zoom/pan ended');
         this.levelOfDetails();
         return this;
     };
@@ -1112,7 +1113,7 @@ angular.module('forceHorse', [])
         });
         // Wrap up
         duration = performance.now() - startTime;
-        console.log('levelOfDetails duration = ' + (duration / 1000).toFixed(2));
+        helper.log('levelOfDetails duration = ' + (duration / 1000).toFixed(2));
         return this;
     };
 
@@ -1130,7 +1131,7 @@ angular.module('forceHorse', [])
         d.fx = d3.event.x;
         d.fy = d3.event.y;
         if (!this.isDragging) {
-            console.log('drag detected');
+            helper.log('drag detected');
             this.isDragging = true;
             this.restartForceSimulation();
         }
@@ -1327,21 +1328,14 @@ angular.module('forceHorse', [])
     ALEPHBET: 'abcdefghijklmnopqrstuvwxyz',
     INSTANCE_NAME_LENGTH: 5,
     MAX_ALPHA: 1.0,
-    // MIN_ALPHA: 0.001,
     HEAVY_SIMULATION_NUM_OF_NODES: 420,
     DEFAULT_CHARGE_LIGHT: -30,
     DEFAULT_CHARGE_HEAVY: -800,
     CHARGE_DISTANCE_MAX_LIGHT: 200,
     VELOCITY_DECAY_LIGHT: 0.1, // d3 default is 0.4
-    // NUM_TICKS_LIGHT: 600,
-    // NUM_TICKS_HEAVY: 300,
-    // get alpha_decay_light() {
-    //     return 1 - Math.pow(this.MIN_ALPHA, 1 / this.NUM_TICKS_LIGHT)
-    // },
-    // get alpha_decay_heavy() {
-    //     return 1 - Math.pow(this.MIN_ALPHA, 1 / this.NUM_TICKS_HEAVY)
-    // },
     CONFIG_FILE_NAME: 'forceHorse.json',
+    LOGGING_KEY_NAME: 'forceHorse',
+    LOGGING_ON_VALUE: 'on',
     get node_size_addition_per_weight_unit() {
         return this.INNER_SVG_WIDTH * this.INNER_SVG_HEIGHT / (54 * 48 * 3);
     }
@@ -1353,7 +1347,7 @@ angular.module('forceHorse', [])
  * @description A helper object with methods for the forceHorse component
  */
 //---------------------------------------------------------------//
-.service('ForceHorseHelper', ['ForceHorseConstants', '$templateCache', '$compile', function (constants, templates, $compile) {
+.service('ForceHorseHelper', ['$templateCache', '$compile', '$log', '$window', 'ForceHorseConstants', function ($templateCache, $compile, $log, $window, constants) {
     return {
 
         /**
@@ -1364,11 +1358,11 @@ angular.module('forceHorse', [])
          * @returns {ForceHorseHelper} current object
          */
         addButtons: function addButtons(scope, container) {
-            var template = templates.get('forceHorse/buttons');
+            var template = $templateCache.get('forceHorse/buttons');
             var element = angular.element(template);
             var compiledElement = $compile(element)(scope);
             container.prepend(compiledElement);
-            // console.log('Added buttons');
+            // helper.log('Added buttons');
             return this;
         },
 
@@ -1438,12 +1432,12 @@ angular.module('forceHorse', [])
          * @returns {string}
          */
         /*
-                    getCurrentDirectory: () => {
-                        var scripts = document.getElementsByTagName("script");
-                        var currentScriptPath = scripts[scripts.length-1].src;
-                        return currentScriptPath.substring(0,currentScriptPath.lastIndexOf("/")+1 );
-                    },
-        */
+         getCurrentDirectory: () => {
+         var scripts = document.getElementsByTagName("script");
+         var currentScriptPath = scripts[scripts.length-1].src;
+         return currentScriptPath.substring(0,currentScriptPath.lastIndexOf("/")+1 );
+         },
+         */
 
         /**
          * @ngdoc method
@@ -1539,6 +1533,18 @@ angular.module('forceHorse', [])
          */
         rectContained: function rectContained(rect1, rect2) {
             return rect1.left >= rect2.left && rect1.right <= rect2.right && rect1.top >= rect2.top && rect1.bottom <= rect2.bottom;
+        },
+
+        /**
+         * @ngdoc method
+         * @name forceHorse.service:ForceHorseHelper#log
+         * @description
+         * Logs message(s) to the console, if localStorage.getItem('forceHorse') === 'on'
+         */
+        log: function log() {
+            if ($window.localStorage.getItem(constants.LOGGING_KEY_NAME) === constants.LOGGING_ON_VALUE) {
+                $log.debug.apply($log, arguments);
+            }
         }
 
     }; // return {

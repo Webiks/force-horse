@@ -100,3 +100,7 @@ force-horse was designed for high performance. Some of the measures in use are:
 #### MULTIPLE LINKS BETWEEN TWO NODES
 
 The ability to compute multiple, parallel link between two nodes is not currently supported intrinsically by d3.js. It was also not yet developed by the users community. Therefore, we developed this ability especially for force-horse. For the mathematical and implementation details, see [here](http://webiks.com/d3-js-force-layout-straight-parallel-links/).
+
+#### CONSOLE MESSAGES
+
+Set localStorage.setItem('forceHorse', 'on') to get informative console messages from force-horse.
