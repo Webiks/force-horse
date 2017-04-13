@@ -129,7 +129,7 @@ angular.module('forceHorse', [])
     proto.redraw = function () {
         var myInstance = this;
         var proceed = function proceed(json) {
-            myInstance.initLayout(json).setChargeForce().draw().restartForceSimulation();
+            myInstance.initLayout(json).setChargeForce().draw().onSelectOutside().restartForceSimulation();
         };
         // $http.get(helper.getCurrentDirectory() + constants.CONFIG_FILE_NAME)
         // Get init (forceHorse.json) file from app root dir

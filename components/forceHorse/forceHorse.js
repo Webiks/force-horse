@@ -136,6 +136,7 @@ angular.module('forceHorse', [])
                     myInstance.initLayout(json)
                         .setChargeForce()
                         .draw()
+						.onSelectOutside()
                         .restartForceSimulation()
                     ;
                 };
