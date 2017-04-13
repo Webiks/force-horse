@@ -115,7 +115,7 @@ angular.module('forceHorse', [])
              * @param requestDigest callback function: request an angular digest on the element's scope
              */
             function ForceHorseFactory(element, options, requestDigest) {
-				this.$timeout = $timeout;
+                this.$timeout = $timeout;
                 this.element = element[0];
                 this.options = options;
                 this.requestDigest = requestDigest;
@@ -137,7 +137,7 @@ angular.module('forceHorse', [])
                     myInstance.initLayout(json)
                         .setChargeForce()
                         .draw()
-						.onSelectOutside()
+                        .onSelectOutside()
                         .restartForceSimulation()
                     ;
                 };
@@ -257,8 +257,12 @@ angular.module('forceHorse', [])
 
                 this.zoom = d3.zoom()
                     .scaleExtent([constants.MAX_ZOOM, constants.MIN_ZOOM])
-                    .on("zoom", () => {this.onZoom()} )
-                    .on("end", () => {this.onZoomEnd()} )
+                    .on("zoom", () => {
+                        this.onZoom()
+                    })
+                    .on("end", () => {
+                        this.onZoomEnd()
+                    })
                 ;
 
                 // Create the main SVG (canvas).
@@ -1018,19 +1022,19 @@ angular.module('forceHorse', [])
                 return this;
             };
 
-			/**
-			 * @ngdoc method
-			 * @name forceHorse.factory:ForceHorseFactory#cancelDblClickTimer
-			 * @description
-			 * cancel Timeout Click counter
-			 * @returns void
-			 */
-			proto.cancelDblClickTimer = function () {
-			  var myInstance = this;
-			  myInstance.$timeout.cancel(myInstance.dblClickTimer);
-			  myInstance.dblClickTimer = undefined;
-			};
-			
+            /**
+             * @ngdoc method
+             * @name forceHorse.factory:ForceHorseFactory#cancelDblClickTimer
+             * @description
+             * cancel Timeout Click counter
+             * @returns void
+             */
+            proto.cancelDblClickTimer = function () {
+                var myInstance = this;
+                myInstance.$timeout.cancel(myInstance.dblClickTimer);
+                myInstance.dblClickTimer = undefined;
+            };
+
             /**
              * @ngdoc method
              * @name forceHorse.factory:ForceHorseFactory#onHoverInside
@@ -1568,7 +1572,7 @@ angular.module('forceHorse', [])
                 convertFileDataFormat: function (fileData) {
                     // Process nodes
                     var nodes = fileData.nodes;
-                    nodes.forEach(function (node, idx) {
+                    nodes.forEach((node, idx) => {
                         if (angular.isUndefined(node.id)) {
                             node.id = idx;
                         }
@@ -1576,35 +1580,7 @@ angular.module('forceHorse', [])
                             node.label = "" + node.id;
                         }
                         node.class = constants.CLASS_NODE;
-
-                        switch (node.shape) {
-                            case undefined:
-                            case "":
-                            case "circle":
-                                node.shape = d3.symbolCircle;
-                                break;
-                            case "cross":
-                                node.shape = d3.symbolCross;
-                                break;
-                            case "diamond":
-                                node.shape = d3.symbolDiamond;
-                                break;
-                            case "square":
-                                node.shape = d3.symbolSquare;
-                                break;
-                            case "triangle-up":
-                            case "triangle-down":
-                                node.shape = d3.symbolTriangle;
-                                break;
-                            case "star":
-                                node.shape = d3.symbolStar;
-                                break;
-                            case "wye":
-                                node.shape = d3.symbolWye;
-                                break;
-                            default:
-                                node.shape = d3.symbolCircle;
-                        }
+                        node.shape = this.getShape(node.shape);
                     });
                     // Process edges
                     var edges = (fileData.edges ? fileData.edges : fileData.links);
@@ -1627,6 +1603,42 @@ angular.module('forceHorse', [])
                         {id: constants.NODES_ID, data: nodes},
                         {id: constants.EDGES_ID, data: edges}
                     ];
+                },
+
+                getShape: function (shape) {
+                    if (typeof(shape) === "string" || typeof (shape) === "undefined") {
+                        switch (shape) {
+                            case undefined:
+                            case "":
+                            case "circle":
+                                return d3.symbolCircle;
+                                break;
+                            case "cross":
+                                return d3.symbolCross;
+                                break;
+                            case "diamond":
+                                return d3.symbolDiamond;
+                                break;
+                            case "square":
+                                return d3.symbolSquare;
+                                break;
+                            case "triangle":
+                            case "triangle-up":
+                            case "triangle-down":
+                                return d3.symbolTriangle;
+                                break;
+                            case "star":
+                                return d3.symbolStar;
+                                break;
+                            case "wye":
+                                return d3.symbolWye;
+                                break;
+                            default:
+                                return d3.symbolCircle;
+                        }
+                    } else {
+                        return shape;
+                    }
                 },
 
                 /**

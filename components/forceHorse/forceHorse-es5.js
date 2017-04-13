@@ -1469,6 +1469,8 @@ angular.module('forceHorse', [])
          ]
          */
         convertFileDataFormat: function convertFileDataFormat(fileData) {
+            var _this2 = this;
+
             // Process nodes
             var nodes = fileData.nodes;
             nodes.forEach(function (node, idx) {
@@ -1479,35 +1481,7 @@ angular.module('forceHorse', [])
                     node.label = "" + node.id;
                 }
                 node.class = constants.CLASS_NODE;
-
-                switch (node.shape) {
-                    case undefined:
-                    case "":
-                    case "circle":
-                        node.shape = d3.symbolCircle;
-                        break;
-                    case "cross":
-                        node.shape = d3.symbolCross;
-                        break;
-                    case "diamond":
-                        node.shape = d3.symbolDiamond;
-                        break;
-                    case "square":
-                        node.shape = d3.symbolSquare;
-                        break;
-                    case "triangle-up":
-                    case "triangle-down":
-                        node.shape = d3.symbolTriangle;
-                        break;
-                    case "star":
-                        node.shape = d3.symbolStar;
-                        break;
-                    case "wye":
-                        node.shape = d3.symbolWye;
-                        break;
-                    default:
-                        node.shape = d3.symbolCircle;
-                }
+                node.shape = _this2.getShape(node.shape);
             });
             // Process edges
             var edges = fileData.edges ? fileData.edges : fileData.links;
@@ -1527,6 +1501,42 @@ angular.module('forceHorse', [])
             });
             // Return the (processed) data
             return [{ id: constants.NODES_ID, data: nodes }, { id: constants.EDGES_ID, data: edges }];
+        },
+
+        getShape: function getShape(shape) {
+            if (typeof shape === "string" || typeof shape === "undefined") {
+                switch (shape) {
+                    case undefined:
+                    case "":
+                    case "circle":
+                        return d3.symbolCircle;
+                        break;
+                    case "cross":
+                        return d3.symbolCross;
+                        break;
+                    case "diamond":
+                        return d3.symbolDiamond;
+                        break;
+                    case "square":
+                        return d3.symbolSquare;
+                        break;
+                    case "triangle":
+                    case "triangle-up":
+                    case "triangle-down":
+                        return d3.symbolTriangle;
+                        break;
+                    case "star":
+                        return d3.symbolStar;
+                        break;
+                    case "wye":
+                        return d3.symbolWye;
+                        break;
+                    default:
+                        return d3.symbolCircle;
+                }
+            } else {
+                return shape;
+            }
         },
 
         /**
