@@ -136,7 +136,7 @@ describe('forceHorse module', function () {
                 var eventName = 'someEvent';
 
                 aflInstance.addEventListener(eventName, angular.noop);
-                expect(afInstance.eventListeners.eventName.length).toEqual(1);
+                expect(aflInstance.eventListeners[eventName].length).toEqual(1);
             })
         })
 
