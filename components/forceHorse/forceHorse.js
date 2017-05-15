@@ -37,7 +37,8 @@ angular.module('forceHorse', [])
                    ng-click="forceHorseInstance.onNodeWeightShowHideBtnClick()"></i>\
                 <input type="range"\
                     title="Filter edges by weight"\
-                    ng-model="forceHorseInstance.edgesFilteredByWeight.currentWeightLevel" \
+                    ng-model="forceHorseInstance.edgesFilteredByWeight.selectedWeightLevel" \
+                    ng-change="forceHorseInstance.onEdgesSelectedWeightLevelChange()" \
                     ng-if="forceHorseInstance.edgesFilteredByWeight.minEdgeWeight < forceHorseInstance.edgesFilteredByWeight.maxEdgeWeight"\
                     min="{{forceHorseInstance.edgesFilteredByWeight.minEdgeWeight}}"\
                     max="{{forceHorseInstance.edgesFilteredByWeight.maxEdgeWeight}}">\
@@ -189,7 +190,7 @@ angular.module('forceHorse', [])
                 this.edgesFilteredByWeight = {
                     filteredEdges: [],
                     currentWeightLevel: 1,
-                    minEdgeWeight: 1,
+                    selectedWeightLevel: 1,
                     maxEdgeWeight: 1
                 };
                 this.processEdges();
@@ -661,10 +662,7 @@ angular.module('forceHorse', [])
                         edge.weight = 1;
                     }
 
-                    // Calc min/max edge weight
-                    if (edge.weight < myInstance.edgesFilteredByWeight.minEdgeWeight) {
-                        myInstance.edgesFilteredByWeight.minEdgeWeight = edge.weight;
-                    }
+                    // Calc max edge weight
                     if (edge.weight > myInstance.edgesFilteredByWeight.maxEdgeWeight) {
                         myInstance.edgesFilteredByWeight.maxEdgeWeight = edge.weight;
                     }
@@ -1364,6 +1362,26 @@ angular.module('forceHorse', [])
                     .attr("stroke-width", (!this.config.showEdgeWeight ? null : function (d) {
                         return myInstance.getEdgeWidth(d);
                     }));
+                return this;
+            };
+
+            /**
+             * @ngdoc method
+             * @name forceHorse.factory:ForceHorseFactory#onEdgesSelectedWeightLevelChange
+             * @description
+             * Filter or unfilter edges according to the selected weight level (slider)
+             * @returns {ForceHorseFactory} current instance
+             */
+            proto.onEdgesSelectedWeightLevelChange = function () {
+                if (this.edgesFilteredByWeight.currentWeightLevel < this.edgesFilteredByWeight.selectedWeightLevel) {
+                    // move edges from main array to temporary storage
+                    this.elements[constants.EDGES]
+                        .filter(edge => edge.weight < this.edgesFilteredByWeight.selectedWeightLevel)
+                        .forEach(edge => {
+
+                        });
+                }
+                this.edgesFilteredByWeight.currentWeightLevel = this.edgesFilteredByWeight.selectedWeightLevel;
                 return this;
             };
 

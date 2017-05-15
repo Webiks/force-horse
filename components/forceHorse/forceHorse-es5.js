@@ -37,7 +37,8 @@ angular.module('forceHorse', [])
                    ng-click="forceHorseInstance.onNodeWeightShowHideBtnClick()"></i>\
                 <input type="range"\
                     title="Filter edges by weight"\
-                    ng-model="forceHorseInstance.edgesFilteredByWeight.currentWeightLevel" \
+                    ng-model="forceHorseInstance.edgesFilteredByWeight.selectedWeightLevel" \
+                    ng-change="forceHorseInstance.onEdgesSelectedWeightLevelChange()" \
                     ng-if="forceHorseInstance.edgesFilteredByWeight.minEdgeWeight < forceHorseInstance.edgesFilteredByWeight.maxEdgeWeight"\
                     min="{{forceHorseInstance.edgesFilteredByWeight.minEdgeWeight}}"\
                     max="{{forceHorseInstance.edgesFilteredByWeight.maxEdgeWeight}}">\
@@ -181,7 +182,7 @@ angular.module('forceHorse', [])
         this.edgesFilteredByWeight = {
             filteredEdges: [],
             currentWeightLevel: 1,
-            minEdgeWeight: 1,
+            selectedWeightLevel: 1,
             maxEdgeWeight: 1
         };
         this.processEdges();
@@ -577,10 +578,7 @@ angular.module('forceHorse', [])
                 edge.weight = 1;
             }
 
-            // Calc min/max edge weight
-            if (edge.weight < myInstance.edgesFilteredByWeight.minEdgeWeight) {
-                myInstance.edgesFilteredByWeight.minEdgeWeight = edge.weight;
-            }
+            // Calc max edge weight
             if (edge.weight > myInstance.edgesFilteredByWeight.maxEdgeWeight) {
                 myInstance.edgesFilteredByWeight.maxEdgeWeight = edge.weight;
             }
@@ -1268,6 +1266,26 @@ angular.module('forceHorse', [])
 
     /**
      * @ngdoc method
+     * @name forceHorse.factory:ForceHorseFactory#onEdgesSelectedWeightLevelChange
+     * @description
+     * Filter or unfilter edges according to the selected weight level (slider)
+     * @returns {ForceHorseFactory} current instance
+     */
+    proto.onEdgesSelectedWeightLevelChange = function () {
+        var _this2 = this;
+
+        if (this.edgesFilteredByWeight.currentWeightLevel < this.edgesFilteredByWeight.selectedWeightLevel) {
+            // move edges from main array to temporary storage
+            this.elements[constants.EDGES].filter(function (edge) {
+                return edge.weight < _this2.edgesFilteredByWeight.selectedWeightLevel;
+            }).forEach(function (edge) {});
+        }
+        this.edgesFilteredByWeight.currentWeightLevel = this.edgesFilteredByWeight.selectedWeightLevel;
+        return this;
+    };
+
+    /**
+     * @ngdoc method
      * @name forceHorse.factory:ForceHorseFactory#addEventListener
      * @description
      * API: Register event callbacks with this component
@@ -1485,7 +1503,7 @@ angular.module('forceHorse', [])
          ]
          */
         convertFileDataFormat: function convertFileDataFormat(fileData) {
-            var _this2 = this;
+            var _this3 = this;
 
             // Process nodes
             var nodes = fileData.nodes;
@@ -1497,7 +1515,7 @@ angular.module('forceHorse', [])
                     node.label = "" + node.id;
                 }
                 node.class = constants.CLASS_NODE;
-                node.shape = _this2.getShape(node.shape);
+                node.shape = _this3.getShape(node.shape);
             });
             // Process edges
             var edges = fileData.edges ? fileData.edges : fileData.links;
