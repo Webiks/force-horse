@@ -184,6 +184,12 @@ angular.module('forceHorse', [])
                 this.nodeDataArray = data[constants.NODES].data;
                 this.edgeDataArray = data[constants.EDGES].data;
                 this.processNodes();
+                this.edgesFilteredByWeight = {
+                    filteredEdges: [],
+                    currentWeightLevel: 1,
+                    minEdgeWeight: 1,
+                    maxEdgeWeight: 1
+                };
                 this.processEdges();
 
                 // Some nodes-related fields
@@ -651,6 +657,14 @@ angular.module('forceHorse', [])
 
                     if (!edge.weight) {
                         edge.weight = 1;
+                    }
+
+                    // Calc min/max edge weight
+                    if (edge.weight < myInstance.edgesFilteredByWeight.minEdgeWeight) {
+                        myInstance.edgesFilteredByWeight.minEdgeWeight = edge.weight;
+                    }
+                    if (edge.weight > myInstance.edgesFilteredByWeight.maxEdgeWeight) {
+                        myInstance.edgesFilteredByWeight.maxEdgeWeight = edge.weight;
                     }
 
                     sourceNode.edgesWeight += edge.weight;
