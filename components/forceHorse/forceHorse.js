@@ -11,7 +11,6 @@ angular.module('forceHorse', [])
         // cache our buttons template
         $templateCache.put('forceHorse/buttons',
             '<div class="buttonsWrapper">\
-               <span>\
                 <i class="img img-filter"\
                    title="Remove selected elements"\
                    ng-if="forceHorseInstance.config.showFilterButton" \
@@ -23,9 +22,7 @@ angular.module('forceHorse', [])
                 <i class="img img-home"\
                    title="Zoom to viewport"\
                    ng-click="forceHorseInstance.zoomToViewport()"></i>\
-                   </span>\
-               <span>\
-                <i class="img"\
+                <i class="img img-labels"\
                    title="Show/hide labels"\
                    ng-if="forceHorseInstance.config.showLabelsButton" \
                    ng-class="forceHorseInstance.config.showLabels ? \'img-label-outline\' : \'img-label\'" \
@@ -38,7 +35,6 @@ angular.module('forceHorse', [])
                    title="Show/hide node weight"\
                    ng-if="forceHorseInstance.config.showNodeWeightButton" \
                    ng-click="forceHorseInstance.onNodeWeightShowHideBtnClick()"></i>\
-               </span>\
             </div>');
     })
 
