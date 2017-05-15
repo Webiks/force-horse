@@ -35,6 +35,12 @@ angular.module('forceHorse', [])
                    title="Show/hide node weight"\
                    ng-if="forceHorseInstance.config.showNodeWeightButton" \
                    ng-click="forceHorseInstance.onNodeWeightShowHideBtnClick()"></i>\
+                <input type="range"\
+                    title="Filter edges by weight"\
+                    ng-model="forceHorseInstance.edgesFilteredByWeight.currentWeightLevel" \
+                    ng-if="forceHorseInstance.edgesFilteredByWeight.minEdgeWeight < forceHorseInstance.edgesFilteredByWeight.maxEdgeWeight"\
+                    min="{{forceHorseInstance.edgesFilteredByWeight.minEdgeWeight}}"\
+                    max="{{forceHorseInstance.edgesFilteredByWeight.maxEdgeWeight}}">\
             </div>');
     })
 

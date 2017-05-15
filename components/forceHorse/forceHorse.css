@@ -115,6 +115,10 @@
     align-items: center;
 }
 
+.force-horse .buttonsWrapper input {
+    width: 15%;
+}
+
 .force-horse .buttonsWrapper i {
     font-size: 6vh;
     cursor: pointer;
