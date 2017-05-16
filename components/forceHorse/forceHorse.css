@@ -108,7 +108,7 @@
 }
 
 .force-horse .buttonsWrapper {
-    height: 10%;
+    height: 10vh;
     padding: 0 10px;
     color: lightgray;
     display: flex;
@@ -118,6 +118,7 @@
 
 .force-horse .buttonsWrapper input {
     width: 15%;
+    margin: 0 1.5vh;
 }
 
 .force-horse .buttonsWrapper i {
@@ -136,8 +137,8 @@
 .force-horse .buttonsWrapper i.img {
     background-color: lightgray;
     display: inline-block;
-    width: 9%;
-    height: 60%;
+    width: 5.5vh;
+    height: 6vh;
     margin: 0 1.5vh;
     mask-size: contain;
     -webkit-mask-size: contain;
