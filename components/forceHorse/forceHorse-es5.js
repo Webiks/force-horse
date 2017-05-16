@@ -39,8 +39,8 @@ angular.module('forceHorse', [])
                     title="Filter edges by weight"\
                     ng-model="forceHorseInstance.edgesFilteredByWeight.selectedWeightLevel" \
                     ng-change="forceHorseInstance.onEdgesSelectedWeightLevelChange()" \
-                    ng-if="forceHorseInstance.edgesFilteredByWeight.minEdgeWeight < forceHorseInstance.edgesFilteredByWeight.maxEdgeWeight"\
-                    min="{{forceHorseInstance.edgesFilteredByWeight.minEdgeWeight}}"\
+                    ng-if="forceHorseInstance.edgesFilteredByWeight.maxEdgeWeight > 1"\
+                    min="1"\
                     max="{{forceHorseInstance.edgesFilteredByWeight.maxEdgeWeight}}">\
             </div>');
 })
@@ -1275,10 +1275,15 @@ angular.module('forceHorse', [])
         var _this2 = this;
 
         if (this.edgesFilteredByWeight.currentWeightLevel < this.edgesFilteredByWeight.selectedWeightLevel) {
-            // move edges from main array to temporary storage
+            // filter some edges
             this.elements[constants.EDGES].filter(function (edge) {
-                return edge.weight < _this2.edgesFilteredByWeight.selectedWeightLevel;
-            }).forEach(function (edge) {});
+                return edge.weight >= _this2.edgesFilteredByWeight.currentWeightLevel && edge.weight < _this2.edgesFilteredByWeight.selectedWeightLevel;
+            }).classed("filtered-low-weight", true);
+        } else {
+            // un-filter some edges
+            this.elements[constants.EDGES].filter(function (edge) {
+                return edge.weight >= _this2.edgesFilteredByWeight.selectedWeightLevel && edge.weight < _this2.edgesFilteredByWeight.currentWeightLevel;
+            }).classed("filtered-low-weight", false);
         }
         this.edgesFilteredByWeight.currentWeightLevel = this.edgesFilteredByWeight.selectedWeightLevel;
         return this;

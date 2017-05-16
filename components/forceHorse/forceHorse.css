@@ -93,6 +93,7 @@
 
 .force-horse svg.graph-svg .node.filtered,
 .force-horse svg.graph-svg .edge.filtered,
+.force-horse svg.graph-svg .edge.filtered-low-weight,
 .force-horse svg.graph-svg .labels text.filtered {
     display: none;
 }

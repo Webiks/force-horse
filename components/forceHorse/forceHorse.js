@@ -39,8 +39,8 @@ angular.module('forceHorse', [])
                     title="Filter edges by weight"\
                     ng-model="forceHorseInstance.edgesFilteredByWeight.selectedWeightLevel" \
                     ng-change="forceHorseInstance.onEdgesSelectedWeightLevelChange()" \
-                    ng-if="forceHorseInstance.edgesFilteredByWeight.minEdgeWeight < forceHorseInstance.edgesFilteredByWeight.maxEdgeWeight"\
-                    min="{{forceHorseInstance.edgesFilteredByWeight.minEdgeWeight}}"\
+                    ng-if="forceHorseInstance.edgesFilteredByWeight.maxEdgeWeight > 1"\
+                    min="1"\
                     max="{{forceHorseInstance.edgesFilteredByWeight.maxEdgeWeight}}">\
             </div>');
     })
@@ -1374,12 +1374,17 @@ angular.module('forceHorse', [])
              */
             proto.onEdgesSelectedWeightLevelChange = function () {
                 if (this.edgesFilteredByWeight.currentWeightLevel < this.edgesFilteredByWeight.selectedWeightLevel) {
-                    // move edges from main array to temporary storage
+                    // filter some edges
                     this.elements[constants.EDGES]
-                        .filter(edge => edge.weight < this.edgesFilteredByWeight.selectedWeightLevel)
-                        .forEach(edge => {
-
-                        });
+                        .filter(edge => edge.weight >= this.edgesFilteredByWeight.currentWeightLevel
+                            && edge.weight < this.edgesFilteredByWeight.selectedWeightLevel)
+                        .classed("filtered-low-weight", true);
+                } else {
+                    // un-filter some edges
+                    this.elements[constants.EDGES]
+                        .filter(edge => edge.weight >= this.edgesFilteredByWeight.selectedWeightLevel
+                        && edge.weight < this.edgesFilteredByWeight.currentWeightLevel)
+                        .classed("filtered-low-weight", false);
                 }
                 this.edgesFilteredByWeight.currentWeightLevel = this.edgesFilteredByWeight.selectedWeightLevel;
                 return this;
