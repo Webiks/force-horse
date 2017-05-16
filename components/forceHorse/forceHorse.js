@@ -11,7 +11,6 @@ angular.module('forceHorse', [])
         // cache our buttons template
         $templateCache.put('forceHorse/buttons',
             '<div class="buttonsWrapper">\
-               <span>\
                 <i class="img img-filter"\
                    title="Remove selected elements"\
                    ng-if="forceHorseInstance.config.showFilterButton" \
@@ -23,9 +22,7 @@ angular.module('forceHorse', [])
                 <i class="img img-home"\
                    title="Zoom to viewport"\
                    ng-click="forceHorseInstance.zoomToViewport()"></i>\
-                   </span>\
-               <span>\
-                <i class="img"\
+                <i class="img img-labels"\
                    title="Show/hide labels"\
                    ng-if="forceHorseInstance.config.showLabelsButton" \
                    ng-class="forceHorseInstance.config.showLabels ? \'img-label-outline\' : \'img-label\'" \
@@ -38,7 +35,13 @@ angular.module('forceHorse', [])
                    title="Show/hide node weight"\
                    ng-if="forceHorseInstance.config.showNodeWeightButton" \
                    ng-click="forceHorseInstance.onNodeWeightShowHideBtnClick()"></i>\
-               </span>\
+                <input type="range"\
+                    title="Filter edges by weight"\
+                    ng-model="forceHorseInstance.edgesFilteredByWeight.selectedWeightLevel" \
+                    ng-change="forceHorseInstance.onEdgesSelectedWeightLevelChange()" \
+                    ng-if="forceHorseInstance.edgesFilteredByWeight.maxEdgeWeight > 1"\
+                    min="1"\
+                    max="{{forceHorseInstance.edgesFilteredByWeight.maxEdgeWeight}}">\
             </div>');
     })
 
@@ -184,6 +187,12 @@ angular.module('forceHorse', [])
                 this.nodeDataArray = data[constants.NODES].data;
                 this.edgeDataArray = data[constants.EDGES].data;
                 this.processNodes();
+                this.edgesFilteredByWeight = {
+                    filteredEdges: [],
+                    currentWeightLevel: 1,
+                    selectedWeightLevel: 1,
+                    maxEdgeWeight: 1
+                };
                 this.processEdges();
 
                 // Some nodes-related fields
@@ -651,6 +660,11 @@ angular.module('forceHorse', [])
 
                     if (!edge.weight) {
                         edge.weight = 1;
+                    }
+
+                    // Calc max edge weight
+                    if (edge.weight > myInstance.edgesFilteredByWeight.maxEdgeWeight) {
+                        myInstance.edgesFilteredByWeight.maxEdgeWeight = edge.weight;
                     }
 
                     sourceNode.edgesWeight += edge.weight;
@@ -1348,6 +1362,31 @@ angular.module('forceHorse', [])
                     .attr("stroke-width", (!this.config.showEdgeWeight ? null : function (d) {
                         return myInstance.getEdgeWidth(d);
                     }));
+                return this;
+            };
+
+            /**
+             * @ngdoc method
+             * @name forceHorse.factory:ForceHorseFactory#onEdgesSelectedWeightLevelChange
+             * @description
+             * Filter or unfilter edges according to the selected weight level (slider)
+             * @returns {ForceHorseFactory} current instance
+             */
+            proto.onEdgesSelectedWeightLevelChange = function () {
+                if (this.edgesFilteredByWeight.currentWeightLevel < this.edgesFilteredByWeight.selectedWeightLevel) {
+                    // filter some edges
+                    this.elements[constants.EDGES]
+                        .filter(edge => edge.weight >= this.edgesFilteredByWeight.currentWeightLevel
+                            && edge.weight < this.edgesFilteredByWeight.selectedWeightLevel)
+                        .classed("filtered-low-weight", true);
+                } else {
+                    // un-filter some edges
+                    this.elements[constants.EDGES]
+                        .filter(edge => edge.weight >= this.edgesFilteredByWeight.selectedWeightLevel
+                        && edge.weight < this.edgesFilteredByWeight.currentWeightLevel)
+                        .classed("filtered-low-weight", false);
+                }
+                this.edgesFilteredByWeight.currentWeightLevel = this.edgesFilteredByWeight.selectedWeightLevel;
                 return this;
             };
 

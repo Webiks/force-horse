@@ -93,6 +93,7 @@
 
 .force-horse svg.graph-svg .node.filtered,
 .force-horse svg.graph-svg .edge.filtered,
+.force-horse svg.graph-svg .edge.filtered-low-weight,
 .force-horse svg.graph-svg .labels text.filtered {
     display: none;
 }
@@ -108,19 +109,15 @@
 
 .force-horse .buttonsWrapper {
     height: 10%;
+    padding: 0 10px;
     color: lightgray;
-    display: flex;
-}
-
-.force-horse .buttonsWrapper span {
-    flex-basis: 50%;
     display: flex;
     justify-content: flex-start;
     align-items: center;
 }
 
-.force-horse .buttonsWrapper span:nth-of-type(1) {
-    padding-left: 10%;
+.force-horse .buttonsWrapper input {
+    width: 15%;
 }
 
 .force-horse .buttonsWrapper i {
@@ -139,8 +136,8 @@
 .force-horse .buttonsWrapper i.img {
     background-color: lightgray;
     display: inline-block;
-    width: 5.5vh;
-    height: 6vh;
+    width: 9%;
+    height: 60%;
     margin: 0 1.5vh;
     mask-size: contain;
     -webkit-mask-size: contain;
@@ -152,6 +149,10 @@
 
 .force-horse .buttonsWrapper i.img:active {
     background-color: red;;
+}
+
+.force-horse .buttonsWrapper i.img.img-labels {
+    margin-left: auto;
 }
 
 .force-horse .buttonsWrapper i.img.img-node-weight {
