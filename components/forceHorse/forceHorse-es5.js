@@ -318,17 +318,17 @@ angular.module('forceHorse', [])
     proto.initChargeForce = function () {
         var myInstance = this;
         myInstance.force.force("charge", d3.forceManyBody());
-        myInstance.recalcChargeForce();
+        myInstance.recalcChargeForces();
         return myInstance;
     };
 
     /**
      * @ngdoc method
-     * @name forceHorse.factory:ForceHorseFactory#recalcChargeForce
+     * @name forceHorse.factory:ForceHorseFactory#recalcChargeForces
      * @description Recalculate (repelling) charge forces to the simulation
      * @returns {ForceHorseFactory} current instance
      */
-    proto.recalcChargeForce = function () {
+    proto.recalcChargeForces = function () {
         var charge,
             distanceMax,
             myInstance = this,
@@ -379,7 +379,7 @@ angular.module('forceHorse', [])
         .attr("d", d3.symbol().type(function (d) {
             return d.shape;
         }).size(function (d) {
-            return myInstance.getNodeIconArea(d);
+            return myInstance.getRequiredNodeIconSize(d);
         })).attr("fill", function (d) {
             return d.color;
         }).attr("stroke", function (d) {
@@ -450,11 +450,11 @@ angular.module('forceHorse', [])
 
     /**
      * @ngdoc method
-     * @name forceHorse.factory:ForceHorseFactory#getNodeIconArea
+     * @name forceHorse.factory:ForceHorseFactory#getRequiredNodeIconSize
      * @description Calculates the desired node icon area (with or without showing weight)
      * @returns {number}
      */
-    proto.getNodeIconArea = function (nodeData) {
+    proto.getRequiredNodeIconSize = function (nodeData) {
         var myInstance = this;
         return myInstance.nodeIconAreaDefault + (myInstance.config.showNodeWeight ? nodeData.edgesWeight * constants.node_size_addition_per_weight_unit : 0);
     };
@@ -1246,12 +1246,25 @@ angular.module('forceHorse', [])
      * @returns {ForceHorseFactory} current instance
      */
     proto.onNodeWeightShowHideBtnClick = function () {
-        var myInstance = this;
         this.config.showNodeWeight = !this.config.showNodeWeight;
+        this.recalcNodeIconSizes();
+        return this;
+    };
+
+    /**
+     * @ngdoc method
+     * @name forceHorse.factory:ForceHorseFactory#recalcNodeIconSizes
+     * @description
+     * Recalculate node icon sizes (e.g. when edges are deleted, or when
+     * the node weight button is toggled)
+     * @returns {ForceHorseFactory} current instance
+     */
+    proto.recalcNodeIconSizes = function () {
+        var myInstance = this;
         this.elements[constants.NODES].attr("d", d3.symbol().type(function (d) {
             return d.shape;
         }).size(function (d) {
-            return myInstance.getNodeIconArea(d);
+            return myInstance.getRequiredNodeIconSize(d);
         }));
         return this;
     };
