@@ -133,7 +133,7 @@ angular.module('forceHorse', [])
     proto.redraw = function () {
         var myInstance = this;
         var proceed = function proceed(json) {
-            myInstance.initLayout(json).setChargeForce().draw().onSelectOutside().restartForceSimulation();
+            myInstance.initLayout(json).initChargeForce().draw().onSelectOutside().restartForceSimulation();
         };
         // $http.get(helper.getCurrentDirectory() + constants.CONFIG_FILE_NAME)
         // Get init (forceHorse.json) file from app root dir
@@ -311,17 +311,28 @@ angular.module('forceHorse', [])
 
     /**
      * @ngdoc method
-     * @name forceHorse.factory:ForceHorseFactory#setChargeForce
-     * @description Add charge (repelling force) to the simulation
+     * @name forceHorse.factory:ForceHorseFactory#initChargeForce
+     * @description Add (repelling) charge forces to the simulation
      * @returns {ForceHorseFactory} current instance
      */
-    proto.setChargeForce = function () {
+    proto.initChargeForce = function () {
+        var myInstance = this;
+        myInstance.force.force("charge", d3.forceManyBody());
+        myInstance.recalcChargeForce();
+        return myInstance;
+    };
+
+    /**
+     * @ngdoc method
+     * @name forceHorse.factory:ForceHorseFactory#recalcChargeForce
+     * @description Recalculate (repelling) charge forces to the simulation
+     * @returns {ForceHorseFactory} current instance
+     */
+    proto.recalcChargeForce = function () {
         var charge,
             distanceMax,
-            chargeForce,
-            myInstance = this;
-        // if (angular.isDefined(charge = myInstance.config.forceParameters.charge)) {
-        // } else {
+            myInstance = this,
+            chargeForce = myInstance.force.force("charge");
         if (myInstance.numOfNodes < constants.HEAVY_SIMULATION_NUM_OF_NODES) {
             charge = function charge(d) {
                 return d.edgesWeight * constants.DEFAULT_CHARGE_LIGHT;
@@ -330,10 +341,8 @@ angular.module('forceHorse', [])
         } else {
             charge = constants.DEFAULT_CHARGE_HEAVY;
         }
-        // }
-        chargeForce = d3.forceManyBody().strength(charge);
+        chargeForce.strength(charge);
         if (distanceMax) chargeForce.distanceMax(distanceMax);
-        myInstance.force.force("charge", chargeForce);
         return myInstance;
     };
 
