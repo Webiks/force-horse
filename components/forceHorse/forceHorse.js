@@ -521,7 +521,7 @@ angular.module('forceHorse', [])
             /**
              * @ngdoc method
              * @name forceHorse.factory:ForceHorseFactory#getRequiredNodeIconSize
-             * @description Calculates the desired node icon area (with or without showing weight)
+             * @description Calculates the required node icon area
              * @returns {number}
              */
             proto.getRequiredNodeIconSize = function (nodeData) {
@@ -552,28 +552,32 @@ angular.module('forceHorse', [])
                 // Mark the selected items as filtered, and unselect them
                 // Also clear the selected-items sets
                 for (var itemType = constants.NODES; itemType <= constants.EDGES; itemType++) {
-                    this.elements[itemType].filter(function (item) {
-                        return item.selected;
-                    }).classed('filtered', function (d) {
-                        return d.filtered = true;
-                    }).classed('selected', function (d) {
-                        return d.selected = false;
-                    });
+                    this.elements[itemType]
+                        .filter(item => item.selected)
+                        .each(item => {
+                            item.filtered = true;
+                            item.selected = false;
+                            if (itemType == constants.EDGES) {
+                                this.decrementNodesWeightsForFilteredEdge(item);
+                            }
+                        })
+                        .classed('filtered', true)
+                        .classed('selected', false);
                     this.selectedItems[itemType].clear();
                 }
 
                 // Remove the labels of filtered nodes
                 this.labels.classed("selected", "false")
-                    .classed("filtered", function (d) {
-                        return d.filtered;
-                    });
+                    .classed("filtered", associatedNode => associatedNode.filtered);
 
                 // Remove edges connected to filtered nodes
-                this.elements[constants.EDGES].filter(function (d) {
-                    return d.source.filtered || d.target.filtered;
-                }).classed("filtered", function (d) {
-                    return d.filtered = true;
-                });
+                this.elements[constants.EDGES]
+                    .filter(edge => edge.source.filtered || edge.target.filtered)
+                    .each(edge => {
+                        edge.filtered = true;
+                        this.decrementNodesWeightsForFilteredEdge(edge);
+                    })
+                    .classed("filtered", true);
 
                 // Cancel selection mode
                 this.svg.classed("selectionMode", false);
@@ -595,28 +599,33 @@ angular.module('forceHorse', [])
                 // Give the filtered elements the approprite CSS class
                 // If a filtered element was selected, mark it as unselected
                 for (var itemType = constants.NODES; itemType <= constants.EDGES; itemType++) {
-                    this.elements[itemType].filter(function (item) {
-                        return item.filtered;
-                    }).classed('filtered', true)
+                    this.elements[itemType]
+                        .filter(item => item.filtered)
+                        .classed('filtered', true)
                         .classed('selected', false)
-                        .each(function (d) {
-                            let type = (d.class === constants.CLASS_NODE ? constants.NODES : constants.EDGES);
-                            myInstance.selectedItems[type].delete(d.id);
+                        .each(item => {
+                            let type = (item.class === constants.CLASS_NODE ? constants.NODES : constants.EDGES);
+                            myInstance.selectedItems[type].delete(item.id);
+                            if (type === constants.EDGES) {
+                                this.decrementNodesWeightsForFilteredEdge(item)
+                            }
                         });
                 }
 
                 // Remove the labels of filtered nodes
-                this.labels.filter(function (item) {
-                    return item.filtered;
-                }).classed('filtered', true)
+                this.labels
+                    .filter(item => item.filtered)
+                    .classed('filtered', true)
                     .classed('selected', false);
 
                 // Remove edges connected to filtered nodes
-                this.elements[constants.EDGES].filter(function (d) {
-                    return d.source.filtered || d.target.filtered;
-                }).classed("filtered", function (d) {
-                    return d.filtered = true;
-                });
+                this.elements[constants.EDGES]
+                    .filter(edge => edge.source.filtered || edge.target.filtered)
+                    .each(edge => {
+                        edge.filtered = true;
+                        this.decrementNodesWeightsForFilteredEdge(edge);
+                    })
+                    .classed("filtered", true);
 
                 // Update visual selection mode
                 myInstance.svg.classed("selectionMode",
@@ -642,7 +651,7 @@ angular.module('forceHorse', [])
                     if (angular.isUndefined(val.label)) {
                         val.label = "" + val.id;
                     }
-                    // Init node edgesWeight
+                    // Init node edgesWeight (will be further calculated in processEdges())
                     val.edgesWeight = 0;
                 });
                 return this;
@@ -656,64 +665,87 @@ angular.module('forceHorse', [])
              */
             proto.processEdges = function () {
                 //----------
-                function calculateedgesWeightForNodes(edge) {
-                    // calculate edges weight
-                    var sourceNode = myInstance.nodeDataArray[edge.source],
-                        targetNode = myInstance.nodeDataArray[edge.target];
-
+                function initEdgeWeight(edge) {
                     if (!edge.weight) {
                         edge.weight = 1;
                     }
-
-                    // Calc max edge weight
+                    // also update max weight for edges
                     if (edge.weight > myInstance.edgesFilteredByWeight.maxEdgeWeight) {
                         myInstance.edgesFilteredByWeight.maxEdgeWeight = edge.weight;
                     }
-
-                    sourceNode.edgesWeight += edge.weight;
-                    targetNode.edgesWeight += edge.weight;
                 }
 
                 //----------
 
                 var myInstance = this, sid, tid, key;
                 this.edgesFromNodes = {};
-                this.edgeDataArray.forEach(function (val, idx) {
+                this.edgeDataArray.forEach(function (edge, idx) {
 
-                    if (angular.isUndefined(val.id)) {
-                        val.id = idx;
+                    if (angular.isUndefined(edge.id)) {
+                        edge.id = idx;
                         // console.warn(`Undefined [id] in edge ${val.sourceID} - ${val.targetID}`);
                     }
                     // Get nodes data from nodes id's
-                    if (angular.isUndefined(val.sourceID)) {
-                        val.sourceID = val.source;
+                    if (angular.isUndefined(edge.sourceID)) {
+                        edge.sourceID = edge.source;
                         //console.error("Undefined [sourceID] in edge #" + val.id);
                     }
-                    val.source = myInstance.nodesById[val.sourceID];
-                    if (angular.isUndefined(val.targetID)) {
-                        val.targetID = val.target;
+                    edge.source = myInstance.nodesById[edge.sourceID];
+                    if (angular.isUndefined(edge.targetID)) {
+                        edge.targetID = edge.target;
                         //console.error("Undefined [targetID] in edges #" + val.id);
                     }
-                    val.target = myInstance.nodesById[val.targetID];
+                    edge.target = myInstance.nodesById[edge.targetID];
 
-                    calculateedgesWeightForNodes(val);
+                    initEdgeWeight(edge);
+                    myInstance.incrementNodesWeightsForEdge(edge);
 
                     // Build an index to help handle the case of multiple edges between two nodes
-                    if (angular.isDefined(val.sourceID) && angular.isDefined(val.targetID)) {
-                        sid = val.sourceID;
-                        tid = val.targetID;
+                    if (angular.isDefined(edge.sourceID) && angular.isDefined(edge.targetID)) {
+                        sid = edge.sourceID;
+                        tid = edge.targetID;
                         key = (sid < tid ? sid + "," + tid : tid + "," + sid);
                         if (angular.isUndefined(myInstance.edgesFromNodes[key])) {
                             myInstance.edgesFromNodes[key] = [idx];
-                            val.multiIdx = 1;
+                            edge.multiIdx = 1;
                         } else {
-                            val.multiIdx = myInstance.edgesFromNodes[key].push(idx);
+                            edge.multiIdx = myInstance.edgesFromNodes[key].push(idx);
                         }
                         // Calculate base edge offset, from the index in the multiple-edges array:
                         // 1 -> 0, 2 -> 2, 3-> -2, 4 -> 4, 5 -> -4, ...
-                        val.basicOffset = (val.multiIdx % 2 === 0 ? val.multiIdx * constants.DEFAULT_EDGE_WIDTH : (-val.multiIdx + 1) * constants.DEFAULT_EDGE_WIDTH);
+                        edge.basicOffset = (edge.multiIdx % 2 === 0 ? edge.multiIdx * constants.DEFAULT_EDGE_WIDTH : (-edge.multiIdx + 1) * constants.DEFAULT_EDGE_WIDTH);
                     }
                 });
+                return this;
+            };
+
+            /**
+             * @ngdoc method
+             * @name forceHorse.factory:ForceHorseFactory#incrementNodesWeightsForEdge
+             * @description increment the weights of the nodes, that are attached to the given edge.
+             * Called when adding an edge to the graph.
+             * @returns {ForceHorseFactory} current instance
+             */
+            proto.incrementNodesWeightsForEdge = function (edge) {
+                var sourceNode = this.nodeDataArray[edge.source],
+                    targetNode = this.nodeDataArray[edge.target];
+                sourceNode.edgesWeight += edge.weight;
+                targetNode.edgesWeight += edge.weight;
+                return this;
+            };
+
+            /**
+             * @ngdoc method
+             * @name forceHorse.factory:ForceHorseFactory#decrementNodesWeightsForFilteredEdge
+             * @description decrement the weights of the nodes, that are attached to the given edge.
+             * Called when filtering an edge from the graph.
+             * @returns {ForceHorseFactory} current instance
+             */
+            proto.decrementNodesWeightsForFilteredEdge = function (edge) {
+                var sourceNode = this.nodeDataArray[edge.source],
+                    targetNode = this.nodeDataArray[edge.target];
+                sourceNode.edgesWeight -= edge.weight;
+                targetNode.edgesWeight -= edge.weight;
                 return this;
             };
 
@@ -1393,13 +1425,21 @@ angular.module('forceHorse', [])
                     // filter some edges
                     this.elements[constants.EDGES]
                         .filter(edge => edge.weight >= this.edgesFilteredByWeight.currentWeightLevel
-                            && edge.weight < this.edgesFilteredByWeight.selectedWeightLevel)
+                        && edge.weight < this.edgesFilteredByWeight.selectedWeightLevel)
+                        .each(edge => {
+                            edge.filteredByWeight = true;
+                            this.decrementNodesWeightsForFilteredEdge(edge);
+                        })
                         .classed("filtered-low-weight", true);
                 } else {
                     // un-filter some edges
                     this.elements[constants.EDGES]
                         .filter(edge => edge.weight >= this.edgesFilteredByWeight.selectedWeightLevel
                         && edge.weight < this.edgesFilteredByWeight.currentWeightLevel)
+                        .each(edge => {
+                            edge.filteredByWeight = false;
+                            this.incrementNodesWeightsForEdge(edge);
+                        })
                         .classed("filtered-low-weight", false);
                 }
                 this.edgesFilteredByWeight.currentWeightLevel = this.edgesFilteredByWeight.selectedWeightLevel;
