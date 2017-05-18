@@ -662,7 +662,9 @@ angular.module('forceHorse', [])
     proto.incrementNodesWeightsForEdge = function (edge) {
         var edgeNodes = this.getEdgeNodes(edge);
         edgeNodes.source.edgesWeight += edge.weight;
+        this.checkIncrementedNodeIfWasOrphan(edgeNodes.source);
         edgeNodes.target.edgesWeight += edge.weight;
+        this.checkIncrementedNodeIfWasOrphan(edgeNodes.target);
         return this;
     };
 
@@ -676,7 +678,9 @@ angular.module('forceHorse', [])
     proto.decrementNodesWeightsForFilteredEdge = function (edge) {
         var edgeNodes = this.getEdgeNodes(edge);
         edgeNodes.source.edgesWeight -= edge.weight;
+        this.checkNodeIfOrphan(edgeNodes.source);
         edgeNodes.target.edgesWeight -= edge.weight;
+        this.checkNodeIfOrphan(edgeNodes.target);
         return this;
     };
 
@@ -1326,6 +1330,46 @@ angular.module('forceHorse', [])
         this.labels.filter(function (node) {
             return node.edgesWeight === 0;
         }).classed('filtered-orphan', this.config.hideOrphanNodes);
+        return this;
+    };
+
+    /**
+     * @ngdoc method
+     * @name forceHorse.factory:ForceHorseFactory#checkNodeIfOrphan
+     * @description
+     * If the given node is orphan, then if the component is in
+     * orphan hiding state, then hide the node; else un-hide the node
+     * @returns {ForceHorseFactory} current instance
+     */
+    proto.checkNodeIfOrphan = function (nodeToCheck) {
+        if (nodeToCheck.edgesWeight === 0) {
+            this.elements[constants.NODES].filter(function (node) {
+                return node.id === nodeToCheck.id;
+            }).classed('filtered-orphan', this.config.hideOrphanNodes);
+            this.labels.filter(function (node) {
+                return node.id === nodeToCheck.id;
+            }).classed('filtered-orphan', this.config.hideOrphanNodes);
+        }
+        return this;
+    };
+
+    /**
+     * @ngdoc method
+     * @name forceHorse.factory:ForceHorseFactory#checkIncrementedNodeIfWasOrphan
+     * @description
+     * If the given node was orphan, and received a new edge,
+     * remove orphan class from the node
+     * @returns {ForceHorseFactory} current instance
+     */
+    proto.checkIncrementedNodeIfWasOrphan = function (nodeToCheck) {
+        if (nodeToCheck.edgesWeight === 1 && this.elements) {
+            this.elements[constants.NODES].filter(function (node) {
+                return node.id === nodeToCheck.id;
+            }).classed('filtered-orphan', false);
+            this.labels.filter(function (node) {
+                return node.id === nodeToCheck.id;
+            }).classed('filtered-orphan', false);
+        }
         return this;
     };
 
