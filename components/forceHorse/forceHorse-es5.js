@@ -661,10 +661,10 @@ angular.module('forceHorse', [])
      */
     proto.incrementNodesWeightsForEdge = function (edge) {
         var edgeNodes = this.getEdgeNodes(edge);
-        edgeNodes.source.edgesWeight += edge.weight;
         this.checkIncrementedNodeIfWasOrphan(edgeNodes.source);
-        edgeNodes.target.edgesWeight += edge.weight;
+        edgeNodes.source.edgesWeight += edge.weight;
         this.checkIncrementedNodeIfWasOrphan(edgeNodes.target);
+        edgeNodes.target.edgesWeight += edge.weight;
         return this;
     };
 
@@ -1362,7 +1362,7 @@ angular.module('forceHorse', [])
      * @returns {ForceHorseFactory} current instance
      */
     proto.checkIncrementedNodeIfWasOrphan = function (nodeToCheck) {
-        if (nodeToCheck.edgesWeight === 1 && this.elements) {
+        if (nodeToCheck.edgesWeight === 0 && this.elements) {
             this.elements[constants.NODES].filter(function (node) {
                 return node.id === nodeToCheck.id;
             }).classed('filtered-orphan', false);
