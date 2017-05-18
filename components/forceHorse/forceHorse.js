@@ -35,6 +35,10 @@ angular.module('forceHorse', [])
                    title="Show/hide node weight"\
                    ng-if="forceHorseInstance.config.showNodeWeightButton" \
                    ng-click="forceHorseInstance.onNodeWeightShowHideBtnClick()"></i>\
+                <i class="img img-orphan-nodes"\
+                   title="Show/hide orphan nodes"\
+                   ng-if="forceHorseInstance.config.showOrphanNodesButton" \
+                   ng-click="forceHorseInstance.onOrphanNodesShowHideBtnClick()"></i>\
                 <input type="range"\
                     title="Filter edges by weight"\
                     ng-model="forceHorseInstance.edgesFilteredByWeight.selectedWeightLevel" \
@@ -211,12 +215,14 @@ angular.module('forceHorse', [])
                 this.config = {
                     showLabels: false,
                     numOfLabelsToShow: constants.DEFAULT_NUM_OF_LABELS_TO_SHOW,
-                    showNodeWeight: false,
-                    showEdgeWeight: false,
+                    showNodeWeight: true,
+                    showEdgeWeight: true,
+                    hideOrphanNodes: false,
                     showFilterButton: true,
                     showLabelsButton: true,
                     showNodeWeightButton: true,
                     showEdgeWeightButton: true,
+                    showOrphanNodesButton: true,
                     // useedgesWeight: true,
                     forceParameters: {
                         //charge: -100,
@@ -1390,6 +1396,25 @@ angular.module('forceHorse', [])
             proto.onNodeWeightShowHideBtnClick = function () {
                 this.config.showNodeWeight = !this.config.showNodeWeight;
                 this.recalcNodeIconSizes();
+                return this;
+            };
+
+            /**
+             * @ngdoc method
+             * @name forceHorse.factory:ForceHorseFactory#onOrphanNodesShowHideBtnClick
+             * @description
+             * Show or hide orphan nodes
+             * Called when the orphan nodes button is clicked on
+             * @returns {ForceHorseFactory} current instance
+             */
+            proto.onOrphanNodesShowHideBtnClick = function () {
+                this.config.hideOrphanNodes = !this.config.hideOrphanNodes;
+                this.elements[constants.NODES]
+                    .filter(node => node.edgesWeight === 0)
+                    .classed('filtered-orphan', this.config.hideOrphanNodes);
+                this.labels
+                    .filter(node => node.edgesWeight === 0)
+                    .classed('filtered-orphan', this.config.hideOrphanNodes);
                 return this;
             };
 

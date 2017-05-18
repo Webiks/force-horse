@@ -92,9 +92,12 @@
 }
 
 .force-horse svg.graph-svg .node.filtered,
+.force-horse svg.graph-svg .node.filtered-orphan,
 .force-horse svg.graph-svg .edge.filtered,
 .force-horse svg.graph-svg .edge.filtered-low-weight,
-.force-horse svg.graph-svg .labels text.filtered {
+.force-horse svg.graph-svg .labels text.filtered,
+.force-horse svg.graph-svg .labels text.filtered-orphan
+{
     display: none;
 }
 
@@ -164,6 +167,11 @@
 .force-horse .buttonsWrapper i.img.img-link-weight {
     mask-image: url(img/link_weight.png);
     -webkit-mask-image: url(img/link_weight.png);
+}
+
+.force-horse .buttonsWrapper i.img.img-orphan-nodes {
+    mask-image: url(img/orphan_nodes.png);
+    -webkit-mask-image: url(img/orphan_nodes.png);
 }
 
 .force-horse .buttonsWrapper i.img.img-filter {
