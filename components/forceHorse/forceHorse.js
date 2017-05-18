@@ -35,6 +35,10 @@ angular.module('forceHorse', [])
                    title="Show/hide node weight"\
                    ng-if="forceHorseInstance.config.showNodeWeightButton" \
                    ng-click="forceHorseInstance.onNodeWeightShowHideBtnClick()"></i>\
+                <i class="img img-orphan-nodes"\
+                   title="Show/hide orphan nodes"\
+                   ng-if="forceHorseInstance.config.showOrphanNodesButton" \
+                   ng-click="forceHorseInstance.onOrphanNodesShowHideBtnClick()"></i>\
                 <input type="range"\
                     title="Filter edges by weight"\
                     ng-model="forceHorseInstance.edgesFilteredByWeight.selectedWeightLevel" \
@@ -138,7 +142,7 @@ angular.module('forceHorse', [])
                 var myInstance = this;
                 var proceed = function (json) {
                     myInstance.initLayout(json)
-                        .setChargeForce()
+                        .initChargeForce()
                         .draw()
                         .onSelectOutside()
                         .restartForceSimulation()
@@ -211,13 +215,15 @@ angular.module('forceHorse', [])
                 this.config = {
                     showLabels: false,
                     numOfLabelsToShow: constants.DEFAULT_NUM_OF_LABELS_TO_SHOW,
-                    showNodeWeight: false,
-                    showEdgeWeight: false,
+                    showNodeWeight: true,
+                    showEdgeWeight: true,
+                    hideOrphanNodes: false,
                     showFilterButton: true,
                     showLabelsButton: true,
                     showNodeWeightButton: true,
                     showEdgeWeightButton: true,
-                    useedgesWeight: true,
+                    showOrphanNodesButton: true,
+                    // useedgesWeight: true,
                     forceParameters: {
                         //charge: -100,
                         // linkStrength: 1,
@@ -345,30 +351,38 @@ angular.module('forceHorse', [])
 
             /**
              * @ngdoc method
-             * @name forceHorse.factory:ForceHorseFactory#setChargeForce
-             * @description Add charge (repelling force) to the simulation
+             * @name forceHorse.factory:ForceHorseFactory#initChargeForce
+             * @description Add (repelling) charge forces to the simulation
              * @returns {ForceHorseFactory} current instance
              */
-            proto.setChargeForce = function () {
+            proto.initChargeForce = function () {
+                var myInstance = this;
+                myInstance.force.force("charge", d3.forceManyBody());
+                myInstance.recalcChargeForces();
+                return myInstance;
+            };
+
+            /**
+             * @ngdoc method
+             * @name forceHorse.factory:ForceHorseFactory#recalcChargeForces
+             * @description Recalculate (repelling) charge forces to the simulation
+             * @returns {ForceHorseFactory} current instance
+             */
+            proto.recalcChargeForces = function () {
                 var charge,
                     distanceMax,
-                    chargeForce,
-                    myInstance = this;
-                // if (angular.isDefined(charge = myInstance.config.forceParameters.charge)) {
-                // } else {
+                    myInstance = this,
+                    chargeForce = myInstance.force.force("charge");
                 if (myInstance.numOfNodes < constants.HEAVY_SIMULATION_NUM_OF_NODES) {
                     charge = function (d) {
-                        return (myInstance.config.useedgesWeight ? d.edgesWeight : d.weight)
-                            * constants.DEFAULT_CHARGE_LIGHT;
+                        return d.edgesWeight * constants.DEFAULT_CHARGE_LIGHT;
                     };
                     distanceMax = constants.CHARGE_DISTANCE_MAX_LIGHT;
                 } else {
                     charge = constants.DEFAULT_CHARGE_HEAVY;
                 }
-                // }
-                chargeForce = d3.forceManyBody().strength(charge);
+                chargeForce.strength(charge);
                 if (distanceMax) chargeForce.distanceMax(distanceMax);
-                myInstance.force.force("charge", chargeForce);
                 return myInstance;
             };
 
@@ -420,7 +434,7 @@ angular.module('forceHorse', [])
                             return d.shape;
                         })
                         .size(function (d) {
-                            return myInstance.getNodeIconArea(d);
+                            return myInstance.getRequiredNodeIconSize(d);
                         }))
                     .attr("fill", function (d) {
                         return d.color;
@@ -512,20 +526,15 @@ angular.module('forceHorse', [])
 
             /**
              * @ngdoc method
-             * @name forceHorse.factory:ForceHorseFactory#getNodeIconArea
-             * @description Calculates the desired node icon area (with or without showing weight)
+             * @name forceHorse.factory:ForceHorseFactory#getRequiredNodeIconSize
+             * @description Calculates the required node icon area
              * @returns {number}
              */
-            proto.getNodeIconArea = function (nodeData) {
+            proto.getRequiredNodeIconSize = function (nodeData) {
                 var myInstance = this;
                 return myInstance.nodeIconAreaDefault +
                     (myInstance.config.showNodeWeight
-                        ? (myInstance.config.useedgesWeight
-                        ? nodeData.edgesWeight
-                        : angular.isDefined(nodeData.weight)
-                        ? nodeData.weight
-                        : 1)
-                    * constants.node_size_addition_per_weight_unit
+                        ? nodeData.edgesWeight * constants.node_size_addition_per_weight_unit
                         : 0);
             };
 
@@ -549,28 +558,32 @@ angular.module('forceHorse', [])
                 // Mark the selected items as filtered, and unselect them
                 // Also clear the selected-items sets
                 for (var itemType = constants.NODES; itemType <= constants.EDGES; itemType++) {
-                    this.elements[itemType].filter(function (item) {
-                        return item.selected;
-                    }).classed('filtered', function (d) {
-                        return d.filtered = true;
-                    }).classed('selected', function (d) {
-                        return d.selected = false;
-                    });
+                    this.elements[itemType]
+                        .filter(item => item.selected)
+                        .each(item => {
+                            item.filtered = true;
+                            item.selected = false;
+                            if (itemType == constants.EDGES) {
+                                this.decrementNodesWeightsForFilteredEdge(item);
+                            }
+                        })
+                        .classed('filtered', true)
+                        .classed('selected', false);
                     this.selectedItems[itemType].clear();
                 }
 
                 // Remove the labels of filtered nodes
                 this.labels.classed("selected", "false")
-                    .classed("filtered", function (d) {
-                        return d.filtered;
-                    });
+                    .classed("filtered", associatedNode => associatedNode.filtered);
 
                 // Remove edges connected to filtered nodes
-                this.elements[constants.EDGES].filter(function (d) {
-                    return d.source.filtered || d.target.filtered;
-                }).classed("filtered", function (d) {
-                    return d.filtered = true;
-                });
+                this.elements[constants.EDGES]
+                    .filter(edge => edge.source.filtered || edge.target.filtered)
+                    .each(edge => {
+                        edge.filtered = true;
+                        this.decrementNodesWeightsForFilteredEdge(edge);
+                    })
+                    .classed("filtered", true);
 
                 // Cancel selection mode
                 this.svg.classed("selectionMode", false);
@@ -592,28 +605,33 @@ angular.module('forceHorse', [])
                 // Give the filtered elements the approprite CSS class
                 // If a filtered element was selected, mark it as unselected
                 for (var itemType = constants.NODES; itemType <= constants.EDGES; itemType++) {
-                    this.elements[itemType].filter(function (item) {
-                        return item.filtered;
-                    }).classed('filtered', true)
+                    this.elements[itemType]
+                        .filter(item => item.filtered)
+                        .classed('filtered', true)
                         .classed('selected', false)
-                        .each(function (d) {
-                            let type = (d.class === constants.CLASS_NODE ? constants.NODES : constants.EDGES);
-                            myInstance.selectedItems[type].delete(d.id);
+                        .each(item => {
+                            let type = (item.class === constants.CLASS_NODE ? constants.NODES : constants.EDGES);
+                            myInstance.selectedItems[type].delete(item.id);
+                            if (type === constants.EDGES) {
+                                this.decrementNodesWeightsForFilteredEdge(item)
+                            }
                         });
                 }
 
                 // Remove the labels of filtered nodes
-                this.labels.filter(function (item) {
-                    return item.filtered;
-                }).classed('filtered', true)
+                this.labels
+                    .filter(item => item.filtered)
+                    .classed('filtered', true)
                     .classed('selected', false);
 
                 // Remove edges connected to filtered nodes
-                this.elements[constants.EDGES].filter(function (d) {
-                    return d.source.filtered || d.target.filtered;
-                }).classed("filtered", function (d) {
-                    return d.filtered = true;
-                });
+                this.elements[constants.EDGES]
+                    .filter(edge => edge.source.filtered || edge.target.filtered)
+                    .each(edge => {
+                        edge.filtered = true;
+                        this.decrementNodesWeightsForFilteredEdge(edge);
+                    })
+                    .classed("filtered", true);
 
                 // Update visual selection mode
                 myInstance.svg.classed("selectionMode",
@@ -639,7 +657,7 @@ angular.module('forceHorse', [])
                     if (angular.isUndefined(val.label)) {
                         val.label = "" + val.id;
                     }
-                    // Init node edgesWeight
+                    // Init node edgesWeight (will be further calculated in processEdges())
                     val.edgesWeight = 0;
                 });
                 return this;
@@ -653,65 +671,111 @@ angular.module('forceHorse', [])
              */
             proto.processEdges = function () {
                 //----------
-                function calculateedgesWeightForNodes(edge) {
-                    // calculate edges weight
-                    var sourceNode = myInstance.nodeDataArray[edge.source],
-                        targetNode = myInstance.nodeDataArray[edge.target];
-
+                function initEdgeWeight(edge) {
                     if (!edge.weight) {
                         edge.weight = 1;
                     }
-
-                    // Calc max edge weight
+                    // also update max weight for edges
                     if (edge.weight > myInstance.edgesFilteredByWeight.maxEdgeWeight) {
                         myInstance.edgesFilteredByWeight.maxEdgeWeight = edge.weight;
                     }
-
-                    sourceNode.edgesWeight += edge.weight;
-                    targetNode.edgesWeight += edge.weight;
                 }
 
                 //----------
 
                 var myInstance = this, sid, tid, key;
                 this.edgesFromNodes = {};
-                this.edgeDataArray.forEach(function (val, idx) {
+                this.edgeDataArray.forEach(function (edge, idx) {
 
-                    if (angular.isUndefined(val.id)) {
-                        val.id = idx;
+                    if (angular.isUndefined(edge.id)) {
+                        edge.id = idx;
                         // console.warn(`Undefined [id] in edge ${val.sourceID} - ${val.targetID}`);
                     }
                     // Get nodes data from nodes id's
-                    if (angular.isUndefined(val.sourceID)) {
-                        val.sourceID = val.source;
+                    if (angular.isUndefined(edge.sourceID)) {
+                        edge.sourceID = edge.source;
                         //console.error("Undefined [sourceID] in edge #" + val.id);
                     }
-                    val.source = myInstance.nodesById[val.sourceID];
-                    if (angular.isUndefined(val.targetID)) {
-                        val.targetID = val.target;
+                    edge.source = myInstance.nodesById[edge.sourceID];
+                    if (angular.isUndefined(edge.targetID)) {
+                        edge.targetID = edge.target;
                         //console.error("Undefined [targetID] in edges #" + val.id);
                     }
-                    val.target = myInstance.nodesById[val.targetID];
+                    edge.target = myInstance.nodesById[edge.targetID];
 
-                    calculateedgesWeightForNodes(val);
+                    initEdgeWeight(edge);
+                    myInstance.incrementNodesWeightsForEdge(edge);
 
                     // Build an index to help handle the case of multiple edges between two nodes
-                    if (angular.isDefined(val.sourceID) && angular.isDefined(val.targetID)) {
-                        sid = val.sourceID;
-                        tid = val.targetID;
+                    if (angular.isDefined(edge.sourceID) && angular.isDefined(edge.targetID)) {
+                        sid = edge.sourceID;
+                        tid = edge.targetID;
                         key = (sid < tid ? sid + "," + tid : tid + "," + sid);
                         if (angular.isUndefined(myInstance.edgesFromNodes[key])) {
                             myInstance.edgesFromNodes[key] = [idx];
-                            val.multiIdx = 1;
+                            edge.multiIdx = 1;
                         } else {
-                            val.multiIdx = myInstance.edgesFromNodes[key].push(idx);
+                            edge.multiIdx = myInstance.edgesFromNodes[key].push(idx);
                         }
                         // Calculate base edge offset, from the index in the multiple-edges array:
                         // 1 -> 0, 2 -> 2, 3-> -2, 4 -> 4, 5 -> -4, ...
-                        val.basicOffset = (val.multiIdx % 2 === 0 ? val.multiIdx * constants.DEFAULT_EDGE_WIDTH : (-val.multiIdx + 1) * constants.DEFAULT_EDGE_WIDTH);
+                        edge.basicOffset = (edge.multiIdx % 2 === 0 ? edge.multiIdx * constants.DEFAULT_EDGE_WIDTH : (-edge.multiIdx + 1) * constants.DEFAULT_EDGE_WIDTH);
                     }
                 });
                 return this;
+            };
+
+            /**
+             * @ngdoc method
+             * @name forceHorse.factory:ForceHorseFactory#incrementNodesWeightsForEdge
+             * @description increment the weights of the nodes, that are attached to the given edge.
+             * Called when adding an edge to the graph.
+             * @returns {ForceHorseFactory} current instance
+             */
+            proto.incrementNodesWeightsForEdge = function (edge) {
+                var edgeNodes = this.getEdgeNodes(edge);
+                edgeNodes.source.edgesWeight += edge.weight;
+                this.checkIncrementedNodeIfWasOrphan(edgeNodes.source);
+                edgeNodes.target.edgesWeight += edge.weight;
+                this.checkIncrementedNodeIfWasOrphan(edgeNodes.target);
+                return this;
+            };
+
+            /**
+             * @ngdoc method
+             * @name forceHorse.factory:ForceHorseFactory#decrementNodesWeightsForFilteredEdge
+             * @description decrement the weights of the nodes, that are attached to the given edge.
+             * Called when filtering an edge from the graph.
+             * @returns {ForceHorseFactory} current instance
+             */
+            proto.decrementNodesWeightsForFilteredEdge = function (edge) {
+                var edgeNodes = this.getEdgeNodes(edge);
+                edgeNodes.source.edgesWeight -= edge.weight;
+                this.checkNodeIfOrphan(edgeNodes.source);
+                edgeNodes.target.edgesWeight -= edge.weight;
+                this.checkNodeIfOrphan(edgeNodes.target);
+                return this;
+            };
+
+            /**
+             * @ngdoc method
+             * @name forceHorse.factory:ForceHorseFactory#getEdgeNodes
+             * @description return the nodes connected by the given edge {source: ..., target: ...}
+             * @returns nodes object
+             */
+            proto.getEdgeNodes = function (edge) {
+                var sourceNode, targetNode;
+                if (typeof edge.source === 'number') {
+                    sourceNode = this.nodeDataArray[edge.source];
+                    targetNode = this.nodeDataArray[edge.target];
+                } else {
+                    sourceNode = edge.source;
+                    targetNode = edge.target;
+                }
+                return {
+                    source: sourceNode,
+                    target: targetNode
+                }
             };
 
             /**
@@ -1334,15 +1398,87 @@ angular.module('forceHorse', [])
              * @returns {ForceHorseFactory} current instance
              */
             proto.onNodeWeightShowHideBtnClick = function () {
-                var myInstance = this;
                 this.config.showNodeWeight = !this.config.showNodeWeight;
+                this.recalcNodeIconSizes();
+                return this;
+            };
+
+            /**
+             * @ngdoc method
+             * @name forceHorse.factory:ForceHorseFactory#onOrphanNodesShowHideBtnClick
+             * @description
+             * Show or hide orphan nodes
+             * Called when the orphan nodes button is clicked on
+             * @returns {ForceHorseFactory} current instance
+             */
+            proto.onOrphanNodesShowHideBtnClick = function () {
+                this.config.hideOrphanNodes = !this.config.hideOrphanNodes;
+                this.elements[constants.NODES]
+                    .filter(node => node.edgesWeight === 0)
+                    .classed('filtered-orphan', this.config.hideOrphanNodes);
+                this.labels
+                    .filter(node => node.edgesWeight === 0)
+                    .classed('filtered-orphan', this.config.hideOrphanNodes);
+                return this;
+            };
+
+            /**
+             * @ngdoc method
+             * @name forceHorse.factory:ForceHorseFactory#checkNodeIfOrphan
+             * @description
+             * If the given node is orphan, then if the component is in
+             * orphan hiding state, then hide the node; else un-hide the node
+             * @returns {ForceHorseFactory} current instance
+             */
+            proto.checkNodeIfOrphan = function (nodeToCheck) {
+                if (nodeToCheck.edgesWeight === 0) {
+                    this.elements[constants.NODES]
+                        .filter(node => node.id === nodeToCheck.id)
+                        .classed('filtered-orphan', this.config.hideOrphanNodes);
+                    this.labels
+                        .filter(node => node.id === nodeToCheck.id)
+                        .classed('filtered-orphan', this.config.hideOrphanNodes);
+                }
+                return this;
+            };
+
+            /**
+             * @ngdoc method
+             * @name forceHorse.factory:ForceHorseFactory#checkIncrementedNodeIfWasOrphan
+             * @description
+             * If the given node was orphan, and received a new edge,
+             * remove orphan class from the node
+             * @returns {ForceHorseFactory} current instance
+             */
+            proto.checkIncrementedNodeIfWasOrphan = function (nodeToCheck) {
+                if (nodeToCheck.edgesWeight === 1 && this.elements) {
+                    this.elements[constants.NODES]
+                        .filter(node => node.id === nodeToCheck.id)
+                        .classed('filtered-orphan', false);
+                    this.labels
+                        .filter(node => node.id === nodeToCheck.id)
+                        .classed('filtered-orphan', false);
+                }
+                return this;
+            };
+
+            /**
+             * @ngdoc method
+             * @name forceHorse.factory:ForceHorseFactory#recalcNodeIconSizes
+             * @description
+             * Recalculate node icon sizes (e.g. when edges are deleted, or when
+             * the node weight button is toggled)
+             * @returns {ForceHorseFactory} current instance
+             */
+            proto.recalcNodeIconSizes = function () {
+                var myInstance = this;
                 this.elements[constants.NODES]
                     .attr("d", d3.symbol()
                         .type(function (d) {
                             return d.shape;
                         })
                         .size(function (d) {
-                            return myInstance.getNodeIconArea(d);
+                            return myInstance.getRequiredNodeIconSize(d);
                         }));
                 return this;
             };
@@ -1377,13 +1513,21 @@ angular.module('forceHorse', [])
                     // filter some edges
                     this.elements[constants.EDGES]
                         .filter(edge => edge.weight >= this.edgesFilteredByWeight.currentWeightLevel
-                            && edge.weight < this.edgesFilteredByWeight.selectedWeightLevel)
+                        && edge.weight < this.edgesFilteredByWeight.selectedWeightLevel)
+                        .each(edge => {
+                            edge.filteredByWeight = true;
+                            this.decrementNodesWeightsForFilteredEdge(edge);
+                        })
                         .classed("filtered-low-weight", true);
                 } else {
                     // un-filter some edges
                     this.elements[constants.EDGES]
                         .filter(edge => edge.weight >= this.edgesFilteredByWeight.selectedWeightLevel
                         && edge.weight < this.edgesFilteredByWeight.currentWeightLevel)
+                        .each(edge => {
+                            edge.filteredByWeight = false;
+                            this.incrementNodesWeightsForEdge(edge);
+                        })
                         .classed("filtered-low-weight", false);
                 }
                 this.edgesFilteredByWeight.currentWeightLevel = this.edgesFilteredByWeight.selectedWeightLevel;
