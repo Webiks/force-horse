@@ -209,7 +209,7 @@ angular.module('forceHorse', [])
             showLabelsButton: true,
             showNodeWeightButton: true,
             showEdgeWeightButton: true,
-            useedgesWeight: true,
+            // useedgesWeight: true,
             forceParameters: {
                 //charge: -100,
                 // linkStrength: 1,
@@ -324,7 +324,7 @@ angular.module('forceHorse', [])
         // } else {
         if (myInstance.numOfNodes < constants.HEAVY_SIMULATION_NUM_OF_NODES) {
             charge = function charge(d) {
-                return (myInstance.config.useedgesWeight ? d.edgesWeight : d.weight) * constants.DEFAULT_CHARGE_LIGHT;
+                return d.edgesWeight * constants.DEFAULT_CHARGE_LIGHT;
             };
             distanceMax = constants.CHARGE_DISTANCE_MAX_LIGHT;
         } else {
@@ -447,7 +447,7 @@ angular.module('forceHorse', [])
      */
     proto.getNodeIconArea = function (nodeData) {
         var myInstance = this;
-        return myInstance.nodeIconAreaDefault + (myInstance.config.showNodeWeight ? (myInstance.config.useedgesWeight ? nodeData.edgesWeight : angular.isDefined(nodeData.weight) ? nodeData.weight : 1) * constants.node_size_addition_per_weight_unit : 0);
+        return myInstance.nodeIconAreaDefault + (myInstance.config.showNodeWeight ? nodeData.edgesWeight * constants.node_size_addition_per_weight_unit : 0);
     };
 
     /**
