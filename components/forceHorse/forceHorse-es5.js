@@ -654,10 +654,9 @@ angular.module('forceHorse', [])
      * @returns {ForceHorseFactory} current instance
      */
     proto.incrementNodesWeightsForEdge = function (edge) {
-        var sourceNode = this.nodeDataArray[edge.source],
-            targetNode = this.nodeDataArray[edge.target];
-        sourceNode.edgesWeight += edge.weight;
-        targetNode.edgesWeight += edge.weight;
+        var edgeNodes = this.getEdgeNodes(edge);
+        edgeNodes.source.edgesWeight += edge.weight;
+        edgeNodes.target.edgesWeight += edge.weight;
         return this;
     };
 
@@ -669,11 +668,31 @@ angular.module('forceHorse', [])
      * @returns {ForceHorseFactory} current instance
      */
     proto.decrementNodesWeightsForFilteredEdge = function (edge) {
-        var sourceNode = this.nodeDataArray[edge.source],
-            targetNode = this.nodeDataArray[edge.target];
-        sourceNode.edgesWeight -= edge.weight;
-        targetNode.edgesWeight -= edge.weight;
+        var edgeNodes = this.getEdgeNodes(edge);
+        edgeNodes.source.edgesWeight -= edge.weight;
+        edgeNodes.target.edgesWeight -= edge.weight;
         return this;
+    };
+
+    /**
+     * @ngdoc method
+     * @name forceHorse.factory:ForceHorseFactory#getEdgeNodes
+     * @description return the nodes connected by the given edge {source: ..., target: ...}
+     * @returns nodes object
+     */
+    proto.getEdgeNodes = function (edge) {
+        var sourceNode, targetNode;
+        if (typeof edge.source === 'number') {
+            sourceNode = this.nodeDataArray[edge.source];
+            targetNode = this.nodeDataArray[edge.target];
+        } else {
+            sourceNode = edge.source;
+            targetNode = edge.target;
+        }
+        return {
+            source: sourceNode,
+            target: targetNode
+        };
     };
 
     /**
