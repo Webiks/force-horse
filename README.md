@@ -86,10 +86,9 @@ In addition, force-horse is providing the following buttons:
 
 #### DEPENDENCIES
 
-The main dependencies of force-horse are:
+The only dependencies of force-horse are:
 * **angular.js** v1.4
-* **d3.js** v3
-A complete list can be found in file **bower.json** at the project’s root.
+* **d3.js** v4
 
 #### PERFORMANCE
 
