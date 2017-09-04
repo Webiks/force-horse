@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Force Horse</title>
+  <script src="../dist/main.bundle.js"></script>
+  <link rel="stylesheet" href="../dist/style.bundle.css"/>
+  <style>
+    body {
+      margin: 0;
+    }
+
+    force-horse {
+      height: 100vh;
+      width: 100vw;
+    }
+  </style>
+</head>
+<body>
+<force-horse options='{
+  "data": {
+    "nodes": [
+      {"label": "Captain Sisko"},
+      {"label": "Major Kira"},
+      {"label": "Dr Bashir"},
+      {"label": "Gol Dookat"},
+      {"label": "Vedek Beriel"},
+      {"label": "Vedek X"},
+      {"label": "Garek"}
+    ],
+    "links": [
+      {"source": 0, "target": 1, "weight": 3},
+      {"source": 0, "target": 2, "weight": 3},
+      {"source": 0, "target": 3, "weight": 3},
+      {"source": 1, "target": 4},
+      {"source": 1, "target": 5},
+      {"source": 2, "target": 6},
+      {"source": 3, "target": 6}
+    ]
+  }
+}'></force-horse>
+</body>
+</html>

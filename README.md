@@ -1,20 +1,21 @@
 # force-horse
 
-An angular.js wrapper for a d3.js force fayout
-
 #### USAGE
 
-force-horse is implemented as an angular.js 1.4 directive. It can be used either as an HTML element or as an HTML element attribute.
+force-horse is implemented as a web component, so you can use it as an element:
 
-`<force-horse options=”ctrl.options”&gt;&lt;/force-horse>`
+`<force-horse></force-horse>`
 
-or:
+or from JS:
 
-`<div force-horse options=”ctrl.options”></div>`
+`document.createElement('force-horse')`
 
-A force-horse element does not have an intrincsic size. It adapts itself to the size that is set by its parent. force-horse is implementing CSS **flex-box** display logic.
+To be rendered, force-horse must first get `options`, which is an attribute.
 
-#  Options parameters
+A force-horse element does not have an intrinsic size. It adapts itself to the size that is set by its parent.
+force-horse is implementing CSS **flex-box** display logic.
+
+#  Options attribute
 
 Parameters are passed through the options attribute. Currently, this object contains only the data property, which holds the graph's data in the following format:
 
@@ -27,24 +28,31 @@ Parameters are passed through the options attribute. Currently, this object co
 ```
 
 # API
-After initializing the directive, force-horse inserts an object into the `options` object sent to it.  This **`forceHorseInstance`** holds inside the force horse API methods. There is one **`forceHorseInstance`** per directive initialized:
+After initializing the directive, force-horse inserts an object into the `options` object sent to it.
+This **`forceHorseInstance`** holds inside the force horse API methods. There is one **`forceHorseInstance`** per directive initialized:
 
-**addEventListener** - accepts an event name (String) and a callback (function). For a list of events see **Events** section below.
+To use it, simply find the instance of `force-horse`, and call `element.options.forceHorseInstance`
 
+# Outputs
 
-# Events
+Outputs are event emitters. You can subscribe and unsubscribe in the following way:
+```
+const instance = element.options.forceHorseInstance;
+const subscription = instance.hoverEvent.subscribe(() => { /* some callback */);
+subscription.unsubscribe();
+```
 
-These are the current events. PR's and suggestiong for more are welcome:
-**hover**: a node/link is hovered upon
+These are the current events. PR's and suggestions for more are welcome:
+**hover** (`hoverEvent`): a node/link is hovered upon
 
-**select**: a node/link is selected
+**select** (`selectEvent`): a node/link is selected
 
-**dblclick**: a node/link is double-clicked upon
+**dblclick** (`doubleClickEvent`): a node/link is double-clicked upon
 
-**filter**: remove the selected nodes/links from the graph
+**filter** (`filterEvent`): remove the selected nodes/links from the graph
 
 # External Config file
-force-horse supports an external json file, **forceHorse.json**. In this file one can set whether each of the buttons (see below) is displayed or not. 
+force-horse supports an external json file, **forceHorse.json**. In this file one can set whether each of the buttons (see below) is displayed or not.
 Also, force layout parameters can be set, and thus to override the parameters that force-horse computes automatically, for a specific implementation.
 
 The config parameters are:
@@ -86,14 +94,13 @@ In addition, force-horse is providing the following buttons:
 
 #### DEPENDENCIES
 
-The only dependencies of force-horse are:
-* **angular.js** v1.4
+The only dependency of force-horse is:
 * **d3.js** v4
 
 #### PERFORMANCE
 
 force-horse was designed for high performance. Some of the measures in use are:
-* minimal use of angular **$watch**’es
+* minimal use of DOM manipulations
 * large graphs are not rendered continuously, but only a few times during the force simulation. The screen rendering is controlled programmatically, implementing javascript**requestAnimationFrame**(). A thin **progress bar** is displayed, during a force simulation, so that even if rendering is held, the user can know the stage and the pace of the current force simulation.
 
 #### MULTIPLE LINKS BETWEEN TWO NODES
@@ -102,4 +109,5 @@ The ability to compute multiple, parallel link between two nodes is not currentl
 
 #### CONSOLE MESSAGES
 
-Set localStorage.setItem('forceHorse', 'on') to get informative console messages from force-horse.
+Set `localStorage.setItem('force-horse', true)` to get informative console messages from force-horse.
+To turn it off, remove that item by doing `localStorage.removeItem('force-horse')`
