@@ -1,4 +1,4 @@
-import {debugLog} from '../../helpers/debug-logger';
+import {debugLog} from '../../helpers/debug-logger/debug-logger';
 
 const buttonsDefinition = [
   {
@@ -52,8 +52,6 @@ export class FHButtons extends HTMLElement {
 
     // Add a class for the namespace
     this.classList.add('force-horse-buttons');
-
-    this.render();
   }
 
   disconnectedCallback() {

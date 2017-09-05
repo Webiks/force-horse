@@ -1,5 +1,5 @@
 import {ForceHorseProvider} from '../../providers/force-horse';
-import {debugLog} from '../../helpers/debug-logger';
+import {debugLog} from '../../helpers/debug-logger/debug-logger';
 
 
 export class ForceHorse extends HTMLElement {

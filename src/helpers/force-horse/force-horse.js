@@ -1,6 +1,6 @@
-import {FHConfig} from '../config';
+import {FHConfig} from '../../config';
 import * as d3 from 'd3';
-import {debugLog} from './debug-logger';
+import {debugLog} from '../debug-logger/debug-logger';
 
 export class ForceHorseHelper {
   static getShape(shape) {

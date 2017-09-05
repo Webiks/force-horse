@@ -1,9 +1,9 @@
-import {EventEmitter} from './event-emitter';
+import {EventEmitter} from '../helpers/event-emitter/event-emitter';
 import {FHConfig} from '../config';
-import {ForceHorseHelper} from '../helpers/force-horse';
+import {ForceHorseHelper} from '../helpers/force-horse/force-horse';
 import * as d3 from 'd3';
 import now from 'performance-now';
-import {debugLog} from '../helpers/debug-logger';
+import {debugLog} from '../helpers/debug-logger/debug-logger';
 
 /**
  * Produces a class-instance for each instance of ForceHorse on a page

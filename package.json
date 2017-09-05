@@ -5,8 +5,8 @@
   "main": "src/index.js",
   "scripts": {
     "start": "webpack --watch",
-    "serve": "http-server .",
-    "test": "karma start ./test-config/karma.conf.js",
+    "serve": "webpack-dev-serverwebpack -w",
+    "test": "karma start ./karma.conf.js",
     "test-ci": "karma start ./test-config/karma.conf.js --single-run"
   },
   "repository": {
