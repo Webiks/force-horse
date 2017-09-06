@@ -14,7 +14,8 @@ module.exports = {
   },
   output: {
     path: path.join(__dirname, 'dist'),
-    filename: '[name].bundle.js'
+    filename: '[name].bundle.js',
+    publicPath: '/dist/'
   },
   module: {
     rules: [
@@ -52,6 +53,5 @@ module.exports = {
   },
   plugins: [
     extractSASS
-  ],
-  target: 'node'
+  ]
 };

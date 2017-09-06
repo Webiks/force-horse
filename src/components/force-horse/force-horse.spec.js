@@ -1,4 +1,5 @@
 import './force-horse';
+import {ForceHorseProvider} from '../../providers/force-horse';
 
 describe('Force Horse Component', function () {
   let component;
@@ -41,7 +42,14 @@ describe('Force Horse Component', function () {
     expect(component.querySelectorAll('force-horse-buttons').length).toEqual(1);
   });
 
-  it('should have child svg.graph-svg', function () {
-    expect(component.querySelectorAll('svg.graph-svg').length).toEqual(1);
+  it('should create a forceHorse instance', function () {
+    const instance = component.options.forceHorseInstance;
+    expect(instance).toBeDefined();
+    expect(instance instanceof ForceHorseProvider).toBeTruthy();
   });
+
+  // TODO
+  // it('should have child svg.graph-svg', function () {
+  //   expect(component.querySelectorAll('svg.graph-svg').length).toEqual(1);
+  // });
 });

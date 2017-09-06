@@ -4,8 +4,8 @@
   "description": "A web component wrapper for d3.js force layout",
   "main": "src/index.js",
   "scripts": {
-    "start": "webpack --watch",
-    "serve": "webpack-dev-serverwebpack -w",
+    "preinstall": "npm i -g webpack webpack-dev-server karma",
+    "start": "webpack && webpack-dev-server --progress",
     "test": "karma start ./karma.conf.js",
     "test-ci": "karma start ./test-config/karma.conf.js --single-run"
   },
