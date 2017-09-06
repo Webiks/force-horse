@@ -86,8 +86,8 @@ export class FHButtons extends HTMLElement {
       input.setAttribute('min', '1');
       input.setAttribute('max', String(instance.edgesFilteredByWeight.maxEdgeWeight));
       input.setAttribute('value', String(instance.edgesFilteredByWeight.selectedWeightLevel));
-      input.addEventListener('change', (e) => {
-        instance.edgesFilteredByWeight.selectedWeightLevel = e.srcElement.value;
+      input.addEventListener('change', () => {
+        instance.edgesFilteredByWeight.selectedWeightLevel = input.value;
         instance.onEdgesSelectedWeightLevelChange();
       });
       elements.push(input);

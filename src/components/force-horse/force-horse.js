@@ -32,7 +32,7 @@ export class ForceHorse extends HTMLElement {
 
     switch (attributeName) {
       case 'options':
-        this.options = JSON.parse(newValue);
+        this.options = typeof newValue === 'string' ? JSON.parse(newValue) : newValue;
         this.options.forceHorseInstance = new ForceHorseProvider(this, this.options, this.render.bind(this));
         this.options.forceHorseInstance.redraw();
         break;

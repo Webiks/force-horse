@@ -1,4 +1,4 @@
-import "./buttons";
+import './buttons';
 
 describe('Buttons Component', function () {
   let component = document.createElement('force-horse-buttons');
@@ -42,21 +42,21 @@ describe('Buttons Component', function () {
     'img-labels': ['onLabelsShowHideBtnClick', 'showLabelsButton'],
     'img-link-weight': ['onEdgeWeightShowHideBtnClick', 'showEdgeWeightButton'],
     'img-node-weight': ['onNodeWeightShowHideBtnClick', 'showNodeWeightButton'],
-    'img-orphan-nodes': ['onOrphanNodesShowHideBtnClick', 'showOrphanNodesButton'],
+    'img-orphan-nodes': ['onOrphanNodesShowHideBtnClick', 'showOrphanNodesButton']
   };
 
   Object.keys(buttonRules).forEach(className => {
     it('should activate click action of ' + className + ' button', function () {
-      let a = false;
-      component.forceHorse.options.forceHorseInstance[buttonRules[className][0]] = () => a = true;
+      const spy = jasmine.createSpy('callback');
+      component.forceHorse.options.forceHorseInstance[buttonRules[className][0]] = spy;
       component.render();
 
       component.querySelector('i.' + className).click();
 
-      expect(a).toBeTruthy();
+      expect(spy).toHaveBeenCalled();
     });
 
-    if(buttonRules[className].length > 1) {
+    if (buttonRules[className].length > 1) {
       it('should hide just ' + className + ' button', function () {
         component.forceHorse.options.forceHorseInstance.config[buttonRules[className][1]] = false;
         component.render();
@@ -91,8 +91,25 @@ describe('Buttons Component', function () {
     component.forceHorse.options.forceHorseInstance.edgesFilteredByWeight.maxEdgeWeight = 2;
     component.render();
 
-    expect(component.querySelectorAll('input').length).toEqual(1);
+    expect(component.querySelectorAll('input[type="range"]').length).toEqual(1);
   });
 
-  // TODO test change event for input
+  it('change should call change method on the range input', function () {
+    component.forceHorse.options.forceHorseInstance.edgesFilteredByWeight.maxEdgeWeight = 2;
+    component.render();
+
+    const spy = jasmine.createSpy('callback');
+    component.forceHorse.options.forceHorseInstance.onEdgesSelectedWeightLevelChange = spy;
+
+    const newVal = 1;
+    const input = component.querySelector('input[type="range"]');
+    input.value = String(newVal);
+
+    const evt = document.createEvent('HTMLEvents');
+    evt.initEvent('change', false, true);
+    input.dispatchEvent(evt);
+
+    expect(spy).toHaveBeenCalled();
+    expect(Number(component.forceHorse.options.forceHorseInstance.edgesFilteredByWeight.selectedWeightLevel)).toEqual(newVal);
+  });
 });

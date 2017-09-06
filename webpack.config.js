@@ -28,13 +28,14 @@ module.exports = {
         ]
       },
       // Sass
+
       {
         test: /\.scss$/,
         use: extractSASS.extract({ // Instance 2
           use: [
             'css-loader',
+            'postcss-loader',
             'sass-loader',
-            'postcss-loader'
           ]
         })
       },

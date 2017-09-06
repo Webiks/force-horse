@@ -1,4 +1,4 @@
-import {EventEmitter} from "./event-emitter";
+import {EventEmitter} from './event-emitter';
 
 describe('Event Emitter Helper', function () {
   let emitter, spy;
