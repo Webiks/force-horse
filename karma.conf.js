@@ -1,3 +1,5 @@
+const path = require('path');
+
 module.exports = function (config) {
   config.set({
     frameworks: ['jasmine'],
@@ -36,8 +38,6 @@ module.exports = function (config) {
     },
 
     webpackMiddleware: {
-      // webpack-dev-middleware configuration
-      // i. e.
       stats: 'errors-only'
     },
 
@@ -46,6 +46,18 @@ module.exports = function (config) {
       format: '%b %T: %m',
       terminal: true
     },
+
+    coverageIstanbulReporter: {
+      reports: ['html', 'lcovonly', 'text-summary'],
+
+      // base output directory. If you include %browser% in the path it will be replaced with the karma browser name
+      dir: path.join(__dirname, 'coverage'),
+
+      // if using webpack and pre-loaders, work around webpack breaking the source path
+      fixWebpackSourcePaths: true,
+    },
+
+    reporters: config.coverage ? ['kjhtml', 'dots', 'coverage-istanbul'] : ['kjhtml', 'dots'],
 
     port: 9876,
     colors: true,

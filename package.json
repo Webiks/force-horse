@@ -7,7 +7,8 @@
     "preinstall": "npm i -g webpack webpack-dev-server karma",
     "start": "webpack && webpack-dev-server --progress",
     "test": "karma start ./karma.conf.js",
-    "test-ci": "karma start ./test-config/karma.conf.js --single-run"
+    "test-ci": "karma start ./test-config/karma.conf.js --single-run",
+    "test-coverage": "karma start ./karma.conf.js --coverage"
   },
   "repository": {
     "type": "git",
@@ -18,6 +19,9 @@
     "d3js"
   ],
   "author": "Ram Tobolski <ram@webiks.com>",
+  "contributors": [
+    "Amit Moryossef <amitmoryossef@gmail.com>"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/Webiks/force-horse/issues"
@@ -36,11 +40,15 @@
     "copy-webpack-plugin": "^4.0.1",
     "css-loader": "^0.28.7",
     "extract-text-webpack-plugin": "^3.0.0",
+    "istanbul-instrumenter-loader": "^3.0.0",
     "jasmine": "^2.5.3",
     "jasmine-core": "^2.8.0",
     "karma": "^1.5.0",
     "karma-chrome-launcher": "^2.0.0",
+    "karma-coverage": "^1.1.1",
+    "karma-coverage-istanbul-reporter": "^1.3.0",
     "karma-jasmine": "^1.1.0",
+    "karma-jasmine-html-reporter": "^0.2.2",
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^2.0.3",
     "node-sass": "^4.5.3",
