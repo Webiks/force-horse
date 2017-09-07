@@ -55,6 +55,16 @@ module.exports = function (config) {
 
       // if using webpack and pre-loaders, work around webpack breaking the source path
       fixWebpackSourcePaths: true,
+
+      'report-config': {
+
+        // all options available at: https://github.com/istanbuljs/istanbul-reports/blob/590e6b0089f67b723a1fdf57bc7ccc080ff189d7/lib/html/index.js#L135-L137
+        html: {
+          // outputs the report in ./coverage/html
+          subdir: 'html'
+        }
+
+      }
     },
 
     reporters: config.coverage ? ['kjhtml', 'dots', 'coverage-istanbul'] : ['kjhtml', 'dots'],
