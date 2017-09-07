@@ -10,7 +10,7 @@ module.exports = function (config) {
 
     preprocessors: {
       // add webpack as preprocessor
-      'src/**/*.spec.js': ['webpack', 'sourcemap']
+      'src/**/*.spec.js': ['webpack', 'sourcemap', 'coverage']
     },
 
     webpack: {
@@ -47,27 +47,12 @@ module.exports = function (config) {
       terminal: true
     },
 
-    coverageIstanbulReporter: {
-      reports: ['html', 'lcovonly', 'text-summary'],
-
-      // base output directory. If you include %browser% in the path it will be replaced with the karma browser name
-      dir: path.join(__dirname, 'coverage'),
-
-      // if using webpack and pre-loaders, work around webpack breaking the source path
-      fixWebpackSourcePaths: true,
-
-      'report-config': {
-
-        // all options available at: https://github.com/istanbuljs/istanbul-reports/blob/590e6b0089f67b723a1fdf57bc7ccc080ff189d7/lib/html/index.js#L135-L137
-        html: {
-          // outputs the report in ./coverage/html
-          subdir: 'html'
-        }
-
-      }
+    coverageReporter: {
+      type : 'html',
+      dir : 'coverage/'
     },
 
-    reporters: config.coverage ? ['kjhtml', 'dots', 'coverage-istanbul'] : ['kjhtml', 'dots'],
+    reporters: config.coverage ? ['kjhtml', 'dots', 'coverage'] : ['kjhtml', 'dots'],
 
     port: 9876,
     colors: true,

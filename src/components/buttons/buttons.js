@@ -56,6 +56,8 @@ export class FHButtons extends HTMLElement {
 
   disconnectedCallback() {
     debugLog('FHButtons:disconnectedCallback');
+
+    this.innerHTML = '';
   }
 
   render() {

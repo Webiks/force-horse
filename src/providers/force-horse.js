@@ -17,6 +17,7 @@ export class ForceHorseProvider {
     this.requestRender = requestRender;
 
     // Set up event listeners for all possible events
+    this.readyEvent = new EventEmitter();
     this.doubleClickEvent = new EventEmitter();
     this.hoverEvent = new EventEmitter();
     this.selectEvent = new EventEmitter();
@@ -26,24 +27,23 @@ export class ForceHorseProvider {
   /**
    * Draws a new graph, based on the input data
    */
-  async redraw() {
+  redraw() {
     debugLog('ForceHorseProvider:redraw');
 
-    let options;
-    try {
-      options = await fetch(FHConfig.CONFIG_FILE_NAME)
-        .then((response) => response.json());
-    } catch (e) {
-      options = {};
-    } finally {
+    const final = (options) => {
       this.initLayout(options);
       this.initChargeForce();
       this.draw();
       this.onSelectOutside();
       this.restartForceSimulation();
-    }
+      this.requestRender();
 
-    this.requestRender();
+      this.readyEvent.emit();
+    };
+
+    return fetch(FHConfig.CONFIG_FILE_NAME)
+      .then((response) => response.json()).then(final)
+      .catch(() => final({}));
   }
 
   /**
@@ -97,7 +97,7 @@ export class ForceHorseProvider {
     return {
       source: sourceNode,
       target: targetNode
-    }
+    };
   };
 
   /**
@@ -247,7 +247,6 @@ export class ForceHorseProvider {
       showNodeWeightButton: true,
       showEdgeWeightButton: true,
       showOrphanNodesButton: true,
-      // useedgesWeight: true,
       forceParameters: {
         // TODO comment these parameters
         friction: 0.5,
@@ -289,7 +288,7 @@ export class ForceHorseProvider {
 
     // Friction
     if ((p = this.config.forceParameters.friction) === undefined) {
-      p = ForceHorseHelper.computeFrictionParameter(FHConfig.INNER_SVG_WIDTH, FHConfig.INNER_SVG_HEIGHT, this.nodeDataArray.length)
+      p = ForceHorseHelper.computeFrictionParameter(FHConfig.INNER_SVG_WIDTH, FHConfig.INNER_SVG_HEIGHT, this.nodeDataArray.length);
     }
     this.force.velocityDecay(p);
 
@@ -628,13 +627,13 @@ export class ForceHorseProvider {
       .attr('stroke', (d) => d.color)
       .attr('stroke-width', (!this.config.showEdgeWeight ? null : (d) => this.getEdgeWidth(d)))
       .on('mouseenter', function (d) {
-        self.onHoverInside(this, d, true)
+        self.onHoverInside(this, d, true);
       })
       .on('mouseleave', function (d) {
-        self.onHoverInside(this, d, false)
+        self.onHoverInside(this, d, false);
       })
       .on('click', function (d) {
-        self.onClick(d, this)
+        self.onClick(d, this);
       })
       // Prevent panning when dragging a node
       .on('mousedown', () => d3.event.stopPropagation());
@@ -655,13 +654,13 @@ export class ForceHorseProvider {
       .attr('stroke', (d) => d.color)
       .attr('class', FHConfig.CSS_CLASS_NODE)
       .on('mouseenter', function (d) {
-        self.onHoverInside(this, d, true)
+        self.onHoverInside(this, d, true);
       })
       .on('mouseleave', function (d) {
-        self.onHoverInside(this, d, false)
+        self.onHoverInside(this, d, false);
       })
       .on('click', function (d) {
-        self.onClick(d, this)
+        self.onClick(d, this);
       })
       .on('dblclick', (d) => this.doubleClickEvent.emit(d))
       // Prevent panning when dragging a node
@@ -700,8 +699,12 @@ export class ForceHorseProvider {
   updateGraphInDOM() {
     debugLog('ForceHorseProvider:updateGraphInDOM');
 
+    if (isNaN(this.fixAspectRatio)) {
+      this.calcFixAspectRatio();
+    }
+
     // Update nodes
-    this.elements[FHConfig.NODES].attr('transform', (d) => `translate(${d.x},${d.y}) scale(${this.fixAspectRatio},1)`);
+    this.elements[FHConfig.NODES].attr('transform', (d) => `translate(${d.x}, ${d.y}) scale(${this.fixAspectRatio}, 1)`);
 
     // Update labels
     this.labels
@@ -717,9 +720,9 @@ export class ForceHorseProvider {
       // Add some translation, for the case of multiple edges between two nodes
       .attr('transform', (d) => {
         const offset = ForceHorseHelper.calcRightAngledOffset(d.basicOffset, d.target.x - d.source.x, d.target.y - d.source.y);
-        return 'translate(' + offset.dx + ',' + offset.dy + ')';
+        return 'translate(' + offset.dx + ', ' + offset.dy + ')';
       });
-  };
+  }
 
   /**
    * Fix aspect ratios, when the window resize
@@ -729,7 +732,7 @@ export class ForceHorseProvider {
 
     this.calcFixAspectRatio();
     this.updateGraphInDOM();
-  };
+  }
 
   /**
    * Set the graph in the DOM: nodes, edges, labels, progress bar
@@ -794,7 +797,7 @@ export class ForceHorseProvider {
 
     this.svg.transition()
       .duration(FHConfig.ANIMATION_DURATION)
-      .call(this.zoom.transform, d3.zoomIdentity.translate(translate[0], translate[1]).scale(scale));
+      .call(this.zoom.transform, d3.zoomIdentity.translate(...translate).scale(scale));
   }
 
   /**
@@ -1042,7 +1045,7 @@ export class ForceHorseProvider {
           let type = (item.class === FHConfig.CLASS_NODE ? FHConfig.NODES : FHConfig.EDGES);
           this.selectedItems[type].delete(item.id);
           if (type === FHConfig.EDGES) {
-            this.decrementNodesWeightsForFilteredEdge(item)
+            this.decrementNodesWeightsForFilteredEdge(item);
           }
         });
     }

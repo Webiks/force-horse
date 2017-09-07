@@ -43,6 +43,8 @@ subscription.unsubscribe();
 ```
 
 These are the current events. PR's and suggestions for more are welcome:
+**ready** (`readyEvent`): an SVG is drawn and ready
+
 **hover** (`hoverEvent`): a node/link is hovered upon
 
 **select** (`selectEvent`): a node/link is selected
@@ -65,7 +67,6 @@ The config parameters are:
   "showLabelsButton": true, // show the labels toggle button
   "showNodeWeightButton": true,  // show the nodes weights toggle button
   "showEdgeWeightButton": true, // show the edges weights toggle button
-  "useEdgesWeights": false, //weather to use edges weights or simple edge sum for node weights
   "forceParameters": {
     "charge": -350,
     "linkStrength": 1,

@@ -1,5 +1,4 @@
 import {ForceHorseProvider} from './force-horse';
-import {FHConfig} from '../config';
 
 describe('Force Horse Provider', function () {
   let instance, element;
@@ -22,7 +21,8 @@ describe('Force Horse Provider', function () {
 
   const recreateInstance = function () {
     element = document.createElement('div');
-    instance = new ForceHorseProvider(element, options, () => {});
+    instance = new ForceHorseProvider(element, options, () => {
+    });
   };
   beforeEach(recreateInstance);
 
@@ -83,7 +83,7 @@ describe('Force Horse Provider', function () {
   describe('setConfig', function () {
     beforeEach(() => instance.setConfig({}));
 
-    it("should set property config", function () {
+    it('should set property config', function () {
       expect(instance.config).toBeDefined();
     });
   });
@@ -95,7 +95,7 @@ describe('Force Horse Provider', function () {
       instance.setForce();
     });
 
-    it("should set property force", function () {
+    it('should set property force', function () {
       expect(instance.force).toBeDefined();
     });
   });
@@ -109,33 +109,38 @@ describe('Force Horse Provider', function () {
         instance[method] = jasmine.createSpy(method);
         try {
           instance.initLayout();
-        } catch(e) {
+        } catch (e) {
           // Overriding a method can cause another method to error
         }
         expect(instance[method]).toHaveBeenCalled();
       });
-    })
+    });
   });
 
-  // TODO events
-  // describe('Event Listeners', function(){
-  //   let spy;
-  //
-  //   beforeEach(function () {
-  //     spy = jasmine.createSpy('eventSpy');
-  //   });
-  //
-  //   it('should emit event doubleClickEvent', function(){
-  //     instance.doubleClickEvent.subscribe(spy);
-  //
-  //     const nodes = element.querySelectorAll("." + FHConfig.CSS_CLASS_NODE);
-  //     expect(nodes.length).toBeGreaterThan(0);
-  //
-  //     const evt = document.createEvent('HTMLEvents');
-  //     evt.initEvent('dblclick', false, true);
-  //     nodes[0].dispatchEvent(evt);
-  //
-  //     expect(spy).toHaveBeenCalled();
-  //   })
-  // })
+  describe('getRequiredNodeIconSize', function () {
+    it('should return a number', function () {
+      instance.processInputData();
+      instance.initNodeFields();
+      instance.setConfig({});
+      expect(typeof instance.getRequiredNodeIconSize({ edgesWeight: 2 })).toEqual("number");
+    });
+  });
+
+  describe('Event Listeners', function () {
+    let spy;
+
+    beforeEach(() => spy = jasmine.createSpy('eventSpy'));
+
+    describe('Asynchronous', function () {
+      beforeAll(function () {
+        jasmine.DEFAULT_TIMEOUT_INTERVAL = 120000;
+      });
+      // it('should emit event readyEvent', function (done) {
+      //   instance.readyEvent.subscribe(spy);
+      //   return instance.redraw()
+      //     .then(() => expect(spy).toHaveBeenCalled())
+      //     .then(done);
+      // });
+    });
+  });
 });

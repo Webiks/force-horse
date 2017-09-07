@@ -112,4 +112,9 @@ describe('Buttons Component', function () {
     expect(spy).toHaveBeenCalled();
     expect(Number(component.forceHorse.options.forceHorseInstance.edgesFilteredByWeight.selectedWeightLevel)).toEqual(newVal);
   });
+
+  it('disconnectedCallback should remove all of the DOM', function () {
+    component.disconnectedCallback();
+    expect(component.innerHTML).toBe('');
+  });
 });

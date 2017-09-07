@@ -2,18 +2,18 @@ import './force-horse';
 import {ForceHorseProvider} from '../../providers/force-horse';
 
 describe('Force Horse Component', function () {
-  let component;
+  let component, instance;
 
   let options = {
     data: {
       nodes: [
-        {label: "Captain Sisko"},
-        {label: "Major Kira"},
-        {label: "Dr Bashir"},
-        {label: "Gol Dookat"},
-        {label: "Vedek Beriel"},
-        {label: "Vedek X"},
-        {label: "Garek"}
+        {label: 'Captain Sisko'},
+        {label: 'Major Kira'},
+        {label: 'Dr Bashir'},
+        {label: 'Gol Dookat'},
+        {label: 'Vedek Beriel'},
+        {label: 'Vedek X'},
+        {label: 'Garek'}
       ],
       links: [
         {source: 0, target: 1, weight: 3},
@@ -32,6 +32,7 @@ describe('Force Horse Component', function () {
     component.connectedCallback();
     component.setAttribute('options', JSON.stringify(options));
     component.render();
+    instance = component.options.forceHorseInstance;
   });
 
   it('should have class force-horse', function () {
@@ -43,13 +44,18 @@ describe('Force Horse Component', function () {
   });
 
   it('should create a forceHorse instance', function () {
-    const instance = component.options.forceHorseInstance;
     expect(instance).toBeDefined();
     expect(instance instanceof ForceHorseProvider).toBeTruthy();
   });
 
-  // TODO
   // it('should have child svg.graph-svg', function () {
-  //   expect(component.querySelectorAll('svg.graph-svg').length).toEqual(1);
+  //   const spy = jasmine.createSpy('readySpy');
+  //   instance.readyEvent.subscribe(() => {
+  //     expect(component.querySelectorAll('svg.graph-svg').length).toEqual(1);
+  //     spy();
+  //   });
+  //   instance.redraw();
+  //
+  //   expect(spy).toHaveBeenCalled();
   // });
 });
