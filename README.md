@@ -1,12 +1,12 @@
 # force-horse
 
-## USAGE
+## Usage
 ### Loading:
 With a modules bundler (recommended):
 ```js
 import 'force-horse'; // Imports the web component, not compiled
 // OR
-import 'force-horse/dist/main.bundle.js'; // Not compiled, less recommended because can't dedupe
+import 'force-horse/dist/main.bundle.js'; // Compiled. Less recommended because can't dedupe
 ```
 ```scss
 @import 'force-horse/src/index.scss'; // Imports the SCSS index file, not compiled
@@ -44,18 +44,15 @@ force-horse is implementing CSS **flex-box** display logic.
 Parameters are passed through the options attribute. Currently, this object contains only the data property, which holds the graph's data in the following format:
 
 **data**: the graph data (nodes and links):
-```js
+```json
   {
-	  nodes: [],
-	  links: []
+	"nodes": [],
+	"links": []
   }
 ```
 
 # API
-After initializing the directive, force-horse inserts an object into the `options` object sent to it.
-This **`forceHorseInstance`** holds inside the force horse API methods. There is one **`forceHorseInstance`** per directive initialized:
-
-To use it, simply find the instance of `force-horse`, and call `element.instance`
+You can use the API by querying the `force-horse` element, and accessing `instance`.
 
 # Outputs
 
@@ -82,7 +79,7 @@ force-horse supports an external json file, **forceHorse.json**. In this file o
 Also, force layout parameters can be set, and thus to override the parameters that force-horse computes automatically, for a specific implementation.
 
 The config parameters are:
-```js
+```json
 {
   "showLabels": false, //show labels on start
   "showNodeWeight": false, // show each node weight or uniform size
