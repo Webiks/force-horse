@@ -8,6 +8,9 @@ export class ForceHorse extends HTMLElement {
     super();
 
     this.readyEvent = new EventEmitter();
+
+    this.instance = new ForceHorseProvider(this, this.render.bind(this));
+    this.instance.readyEvent.subscribe(() => this.readyEvent.emit(this.instance));
   }
 
   static get observedAttributes() {
@@ -24,9 +27,6 @@ export class ForceHorse extends HTMLElement {
     this.buttons = document.createElement('force-horse-buttons');
     this.buttons.setForceHorse(this);
     this.appendChild(this.buttons);
-
-    this.instance = new ForceHorseProvider(this, this.render.bind(this));
-    this.instance.readyEvent.subscribe(() => this.readyEvent.emit(this.instance));
   }
 
   disconnectedCallback() {
