@@ -79,7 +79,7 @@ force-horse supports an external json file, **forceHorse.json**. In this file o
 Also, force layout parameters can be set, and thus to override the parameters that force-horse computes automatically, for a specific implementation.
 
 The config parameters are:
-```json
+```js
 {
   "showLabels": false, //show labels on start
   "showNodeWeight": false, // show each node weight or uniform size
