@@ -1,2 +1,3 @@
 import './components/buttons/buttons';
-import './components/force-horse/force-horse';
+import {ForceHorse} from './components/force-horse/force-horse';
+export {ForceHorse};

@@ -63,11 +63,11 @@ export class FHButtons extends HTMLElement {
   render() {
     debugLog('FHButtons:render');
 
-    if (!this.forceHorse.options || !this.forceHorse.options.forceHorseInstance.config) {
+    if (!this.forceHorse.instance || !this.forceHorse.instance.config) {
       return;
     }
 
-    const instance = this.forceHorse.options.forceHorseInstance;
+    const instance = this.forceHorse.instance;
 
     let elements = [];
 

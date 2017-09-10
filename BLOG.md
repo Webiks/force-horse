@@ -29,7 +29,7 @@ Also, we moved from CSS to SCSS, for better style management and versatility.
 ### Loading:
 With a modules bundler (recommended):
 ```js
-import from 'force-horse'; // Imports the web component, not compiled
+import 'force-horse'; // Imports the web component, not compiled
 ```
 ```scss
 @import 'force-horse'; // Imports the SCSS index file

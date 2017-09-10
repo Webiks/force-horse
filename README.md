@@ -31,13 +31,13 @@ Parameters are passed through the options attribute. Currently, this object co
 After initializing the directive, force-horse inserts an object into the `options` object sent to it.
 This **`forceHorseInstance`** holds inside the force horse API methods. There is one **`forceHorseInstance`** per directive initialized:
 
-To use it, simply find the instance of `force-horse`, and call `element.options.forceHorseInstance`
+To use it, simply find the instance of `force-horse`, and call `element.instance`
 
 # Outputs
 
 Outputs are event emitters. You can subscribe and unsubscribe in the following way:
 ```
-const instance = element.options.forceHorseInstance;
+const instance = element.instance;
 const subscription = instance.hoverEvent.subscribe(() => { /* some callback */);
 subscription.unsubscribe();
 ```

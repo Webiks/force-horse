@@ -32,7 +32,7 @@ describe('Force Horse Component', function () {
     component.connectedCallback();
     component.setAttribute('options', JSON.stringify(options));
     component.render();
-    instance = component.options.forceHorseInstance;
+    instance = component.instance;
   });
 
   it('should have class force-horse', function () {

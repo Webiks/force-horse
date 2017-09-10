@@ -9,11 +9,10 @@ import {debugLog} from '../helpers/debug-logger/debug-logger';
  * Produces a class-instance for each instance of ForceHorse on a page
  */
 export class ForceHorseProvider {
-  constructor(element, options, requestRender) {
-    debugLog('ForceHorseProvider:constructor', element, options, requestRender);
+  constructor(element, requestRender) {
+    debugLog('ForceHorseProvider:constructor', element, requestRender);
 
     this.element = element;
-    this.options = options;
     this.requestRender = requestRender;
 
     // Set up event listeners for all possible events
@@ -22,6 +21,12 @@ export class ForceHorseProvider {
     this.hoverEvent = new EventEmitter();
     this.selectEvent = new EventEmitter();
     this.filterEvent = new EventEmitter();
+  }
+
+  setOptions(options) {
+    debugLog('ForceHorseProvider:setOptions', options);
+
+    this.options = options;
   }
 
   /**
@@ -47,7 +52,7 @@ export class ForceHorseProvider {
   }
 
   /**
-   * Creates a random instant name from the given alphabet
+   * Creates a random instance name from the given alphabet
    */
   createInstanceName() {
     debugLog('ForceHorseProvider:createInstanceName');
@@ -111,6 +116,7 @@ export class ForceHorseProvider {
       this.elements[FHConfig.NODES]
         .filter(node => node.id === nodeToCheck.id)
         .classed('filtered-orphan', false);
+
       this.labels
         .filter(node => node.id === nodeToCheck.id)
         .classed('filtered-orphan', false);
@@ -196,8 +202,10 @@ export class ForceHorseProvider {
     // Process input data
     let data = this.options.data;
     if (!(data instanceof Array)) {
-      data = ForceHorseHelper.convertFileDataFormat(data);
+      this.options.data = data = ForceHorseHelper.convertFileDataFormat(this.options.data);
     }
+
+    this.element.data = data;
 
     this.nodeDataArray = data[FHConfig.NODES].data;
     this.processNodes();
@@ -762,6 +770,9 @@ export class ForceHorseProvider {
       currentHeight = currentRect.height,
       currentWidth = currentRect.width;
     this.fixAspectRatio = (FHConfig.INNER_SVG_WIDTH / FHConfig.INNER_SVG_HEIGHT) * (currentHeight / currentWidth);
+    if (isNaN(this.fixAspectRatio)) {
+      this.fixAspectRatio = 1;
+    }
   }
 
   /**
@@ -897,7 +908,7 @@ export class ForceHorseProvider {
       calculationStart, calculationDuration = 0,
       ticks = 0;
 
-    requestAnimationFrame(() => {
+    let render = () => {
       // Do not accelerate the simulation during dragging, so as not to slow the dragging.
       ticksPerRender = (this.isDragging ? 1 : 30);
       calculationStart = now();
@@ -918,7 +929,9 @@ export class ForceHorseProvider {
         this.updateGraphInDOM();
         this.onForceEnd();
       }
-    });
+    };
+
+    requestAnimationFrame(render);
   }
 
   /**

@@ -1,8 +1,15 @@
 import {ForceHorseProvider} from '../../providers/force-horse';
 import {debugLog} from '../../helpers/debug-logger/debug-logger';
+import {EventEmitter} from '../../helpers/event-emitter/event-emitter';
 
 
 export class ForceHorse extends HTMLElement {
+  constructor() {
+    super();
+
+    this.readyEvent = new EventEmitter();
+  }
+
   static get observedAttributes() {
     return ['options'];
   }
@@ -17,13 +24,21 @@ export class ForceHorse extends HTMLElement {
     this.buttons = document.createElement('force-horse-buttons');
     this.buttons.setForceHorse(this);
     this.appendChild(this.buttons);
+
+    this.instance = new ForceHorseProvider(this, this.render.bind(this));
+    this.instance.readyEvent.subscribe(() => this.readyEvent.emit(this.instance));
   }
 
   disconnectedCallback() {
     debugLog('ForceHorse:disconnectedCallback');
 
     // Clear the instance reference on destruction, to prevent memory leak
-    this.options.forceHorseInstance = null;
+    delete this.instance;
+  }
+
+  setOptions(options) {
+    this.instance.setOptions(options);
+    this.instance.redraw();
   }
 
   // Fires when an attribute was added, removed, or updated.
@@ -32,9 +47,8 @@ export class ForceHorse extends HTMLElement {
 
     switch (attributeName) {
       case 'options':
-        this.options = typeof newValue === 'string' ? JSON.parse(newValue) : newValue;
-        this.options.forceHorseInstance = new ForceHorseProvider(this, this.options, this.render.bind(this));
-        this.options.forceHorseInstance.redraw();
+        const options = typeof newValue === 'string' ? JSON.parse(newValue) : newValue;
+        this.setOptions(options);
         break;
       default:
         console.warn('No attribute handler changed for', attributeName);

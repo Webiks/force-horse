@@ -21,8 +21,9 @@ describe('Force Horse Provider', function () {
 
   const recreateInstance = function () {
     element = document.createElement('div');
-    instance = new ForceHorseProvider(element, options, () => {
+    instance = new ForceHorseProvider(element, () => {
     });
+    instance.setOptions(options);
   };
   beforeEach(recreateInstance);
 

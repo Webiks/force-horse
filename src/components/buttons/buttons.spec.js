@@ -3,25 +3,23 @@ import './buttons';
 describe('Buttons Component', function () {
   let component = document.createElement('force-horse-buttons');
 
-  let forceHorse = {
-    options: {
-      forceHorseInstance: {
-        config: {
-          showFilterButton: true,
-          showLabelsButton: true,
-          showEdgeWeightButton: true,
-          showNodeWeightButton: true,
-          showOrphanNodesButton: true
-        },
-        edgesFilteredByWeight: {
-          maxEdgeWeight: 1
-        }
+  let forceHorse = JSON.stringify({
+    instance: {
+      config: {
+        showFilterButton: true,
+        showLabelsButton: true,
+        showEdgeWeightButton: true,
+        showNodeWeightButton: true,
+        showOrphanNodesButton: true
+      },
+      edgesFilteredByWeight: {
+        maxEdgeWeight: 1
       }
     }
-  };
+  });
 
   beforeEach(function () {
-    component.setForceHorse(JSON.parse(JSON.stringify(forceHorse)));
+    component.setForceHorse(JSON.parse(forceHorse)); // Copy to avoid changes being set every time
     component.connectedCallback();
     component.render();
   });
@@ -48,7 +46,7 @@ describe('Buttons Component', function () {
   Object.keys(buttonRules).forEach(className => {
     it('should activate click action of ' + className + ' button', function () {
       const spy = jasmine.createSpy('callback');
-      component.forceHorse.options.forceHorseInstance[buttonRules[className][0]] = spy;
+      component.forceHorse.instance[buttonRules[className][0]] = spy;
       component.render();
 
       component.querySelector('i.' + className).click();
@@ -58,7 +56,7 @@ describe('Buttons Component', function () {
 
     if (buttonRules[className].length > 1) {
       it('should hide just ' + className + ' button', function () {
-        component.forceHorse.options.forceHorseInstance.config[buttonRules[className][1]] = false;
+        component.forceHorse.instance.config[buttonRules[className][1]] = false;
         component.render();
 
         expect(component.querySelectorAll('i.img').length).toEqual(6);
@@ -68,7 +66,7 @@ describe('Buttons Component', function () {
   });
 
   it('should show img-pause-circle-outline and not img-play-circle-outline', function () {
-    component.forceHorse.options.forceHorseInstance.fixedNodesMode = false;
+    component.forceHorse.instance.fixedNodesMode = false;
     component.render();
 
     expect(component.querySelectorAll('.img-play-circle-outline').length).toEqual(0);
@@ -76,7 +74,7 @@ describe('Buttons Component', function () {
   });
 
   it('should show img-play-circle-outline and not img-pause-circle-outline', function () {
-    component.forceHorse.options.forceHorseInstance.fixedNodesMode = true;
+    component.forceHorse.instance.fixedNodesMode = true;
     component.render();
 
     expect(component.querySelectorAll('.img-play-circle-outline').length).toEqual(1);
@@ -88,18 +86,18 @@ describe('Buttons Component', function () {
   });
 
   it('should show range input', function () {
-    component.forceHorse.options.forceHorseInstance.edgesFilteredByWeight.maxEdgeWeight = 2;
+    component.forceHorse.instance.edgesFilteredByWeight.maxEdgeWeight = 2;
     component.render();
 
     expect(component.querySelectorAll('input[type="range"]').length).toEqual(1);
   });
 
   it('change should call change method on the range input', function () {
-    component.forceHorse.options.forceHorseInstance.edgesFilteredByWeight.maxEdgeWeight = 2;
+    component.forceHorse.instance.edgesFilteredByWeight.maxEdgeWeight = 2;
     component.render();
 
     const spy = jasmine.createSpy('callback');
-    component.forceHorse.options.forceHorseInstance.onEdgesSelectedWeightLevelChange = spy;
+    component.forceHorse.instance.onEdgesSelectedWeightLevelChange = spy;
 
     const newVal = 1;
     const input = component.querySelector('input[type="range"]');
@@ -110,7 +108,7 @@ describe('Buttons Component', function () {
     input.dispatchEvent(evt);
 
     expect(spy).toHaveBeenCalled();
-    expect(Number(component.forceHorse.options.forceHorseInstance.edgesFilteredByWeight.selectedWeightLevel)).toEqual(newVal);
+    expect(Number(component.forceHorse.instance.edgesFilteredByWeight.selectedWeightLevel)).toEqual(newVal);
   });
 
   it('disconnectedCallback should remove all of the DOM', function () {
