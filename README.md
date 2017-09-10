@@ -1,6 +1,8 @@
 # force-horse
 
 ## Usage
+### Installing
+`npm install --save force-horse`
 ### Loading:
 With a modules bundler (recommended):
 ```js
