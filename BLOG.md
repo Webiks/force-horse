@@ -30,5 +30,5 @@ Also, we moved from CSS to SCSS, for better style management and versatility.
 Using Force-Horse is now as simple as using any other element. The new usage guide can be found in the [README](https://github.com/Webiks/force-horse).
 
 ### Wanna Help?
-Working on something similar? [Contribute to our GitHub project](https://github.com/webiks/force-horse)
-Thinking there is something we can improve on? [Let us know](https://github.com/webiks/force-horse/issues)
+- Working on something similar? [Contribute to our GitHub project](https://github.com/webiks/force-horse)
+- Thinking there is something we can improve on? [Let us know](https://github.com/webiks/force-horse/issues)
