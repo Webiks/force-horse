@@ -1,5 +1,5 @@
 # Revisiting Force-Horse: Making a Legacy Plugin Agnostic and Usable
-For a long while, we at the company used our own AngularJS D3.js library for graphs visualizations of real-life data sets, called "[Force-Horse](https://github.com/Webiks/force-horse)".
+For a while, we at Webiks used our own AngularJS D3.js library for graphs visualizations of real-life data sets, called "[Force-Horse](https://github.com/Webiks/force-horse)".
 
 Force-Horse is an open source Javascript component wrapping a Force Layout and adding some functionalities we found very useful, like Adaptive tuning of forces and constraints parameters, Adaptive rendering cycle, Play/Pause the simulation, Multiple edges between two nodes, Weight the nodes and the edges, etc...
 
@@ -20,6 +20,7 @@ We also made the component much easier to integrate, now creating 2 bundles - on
 
 ##### Tests
 The original AngularJS component did not have many tests, so we could not ensure it was working for every user. Now, we added many unit tests for many use cases, to cover all of the grounds we need to be confidant in the stability of this awesome component.
+For continues integration we now use Travis-CI, to automatically test and deploy the package.
 
 ##### Standards
 It's 2017, so we ditched the old ES5 syntax, migrating the entire Javascript code base to ES6, taking advantage of the great things it offers.
