@@ -1,16 +1,40 @@
 # force-horse
 
-#### USAGE
+## USAGE
+### Loading:
+With a modules bundler (recommended):
+```js
+import 'force-horse'; // Imports the web component, not compiled
+// OR
+import 'force-horse/dist/main.bundle.js'; // Not compiled, less recommended because can't dedupe
+```
+```scss
+@import 'force-horse/src/index.scss'; // Imports the SCSS index file, not compiled
+// OR
+@import 'force-horse/dist/style.bundle.css'; // Imports the bundle as CSS, compiled
+```
+Directly from HTML:
+```html
+<link rel="stylesheet" type="text/css" href="node_modules/force-horse/dist/style.bundle.css" />
+<script type="application/javascript" src="node_modules/force-horse/dist/main.bundle.js"></script>
+```
+### Using:
+From the template
+```html
+<!-- Web component -->
+<force-horse options='{"json": "options"}'></force-horse>
+<!-- Angular -->
+<force-horse [attr.options]="options | json"></force-horse>
+```
+From Javascript:
+```js
+const forceHorse = document.createElement("force-horse");
+forceHorse.setOptions(options);
+someContainer.appendChild(forceHorse);
+```
 
-force-horse is implemented as a web component, so you can use it as an element:
 
-`<force-horse></force-horse>`
-
-or from JS:
-
-`document.createElement('force-horse')`
-
-To be rendered, force-horse must first get `options`, which is an attribute.
+To be rendered, force-horse must first get `options`, which can be passed as an attribute, or directly using `setOptions`
 
 A force-horse element does not have an intrinsic size. It adapts itself to the size that is set by its parent.
 force-horse is implementing CSS **flex-box** display logic.
@@ -20,10 +44,10 @@ force-horse is implementing CSS **flex-box** display logic.
 Parameters are passed through the options attribute. Currently, this object contains only the data property, which holds the graph's data in the following format:
 
 **data**: the graph data (nodes and links):
-```
+```js
   {
 	  nodes: [],
-	  edges: []
+	  links: []
   }
 ```
 
@@ -58,7 +82,7 @@ force-horse supports an external json file, **forceHorse.json**. In this file o
 Also, force layout parameters can be set, and thus to override the parameters that force-horse computes automatically, for a specific implementation.
 
 The config parameters are:
-```
+```js
 {
   "showLabels": false, //show labels on start
   "showNodeWeight": false, // show each node weight or uniform size

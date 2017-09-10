@@ -12,8 +12,8 @@ Having the library written using AngularJS, forces the user to use a deprecated 
 Therefore, we decided to remove the dependency for AngularJS, making the library framework agnostic.
 
 ##### Agnostification
-Therefore, we decided  to remove the dependency, migrating AngularJS out of the library, moving to a standard browser feature - [Custom Elements](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Custom_Elements), supported by most browsers, or being worked on at this time (In case it isn't supported, there is a tiny browser polyfill - [see support](https://caniuse.com/#search=custom%20elements%20v0))
-What’s good about using Custom Elements, is that all of the main frameworks - Angular, React, Vue, Polymer etc.. - support it for bindings of inputs and outputs, but you don't have to use a framework to use it.
+We migrated AngularJS out of the library, moving to a standard browser feature - [Custom Elements](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Custom_Elements), supported by most modern browsers, or being worked on at this time (In case it isn't supported, there is a tiny [browser polyfill](https://github.com/webcomponents/webcomponentsjs) - see [browsers support](https://caniuse.com/#search=custom%20elements%20v0))
+What we love about using Custom Elements, is that all of the main frameworks - Angular, React, Vue, Polymer etc.. - support it for bindings of inputs and outputs, but you don't have to use a framework to use it.
 
 ##### Integration
 We also made the component much easier to integrate, now creating 2 bundles - one for Javascript and one for CSS - and loading the images as a base64 mask directly inside the CSS, so there is no need when creating a distribution build to copy our assets anymore, just importing our CSS.
@@ -25,25 +25,9 @@ The original AngularJS component did not have many tests, so we could not ensure
 It's 2017, so we ditched the old ES5 syntax, migrating the entire Javascript code base to ES6, taking advantage of the great things it offers.
 Also, we moved from CSS to SCSS, for better style management and versatility.
 
-## New Usage
-### Loading:
-With a modules bundler (recommended):
-```js
-import 'force-horse'; // Imports the web component, not compiled
-```
-```scss
-@import 'force-horse'; // Imports the SCSS index file
-```
-Directly from HTML:
-```html
-<link rel="stylesheet" type="text/css" href="node_modules/force-horse/dist/style.bundle.css" />
-<script type="application/javascript" src="node_modules/force-horse/dist/main.bundle.js"></script>
-```
-### Using:
-```html
-<force-horse options='{"json": "options"}'></force-horse>
-```
+##### Usage
+Using Force-Horse is now as simple as using any other element. The new usage guide can be found in the [README](https://github.com/Webiks/force-horse).
 
 ### Wanna Help?
 Working on something similar? [Contribute to our GitHub project](https://github.com/webiks/force-horse)
-Thinking we can improve? [Let us know](https://github.com/webiks/force-horse/issues)
+Thinking there is something we can improve on? [Let us know](https://github.com/webiks/force-horse/issues)
