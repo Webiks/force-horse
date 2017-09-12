@@ -1,4 +1,4 @@
-import {ForceHorseProvider} from './force-horse';
+import {ForceHorseProvider} from './force-horse.provider';
 
 describe('Force Horse Provider', function () {
   let instance, element;

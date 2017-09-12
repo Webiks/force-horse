@@ -1,5 +1,5 @@
-import './force-horse';
-import {ForceHorseProvider} from '../../providers/force-horse';
+import './force-horse.component';
+import {ForceHorseProvider} from '../../providers/force-horse.provider';
 
 describe('Force Horse Component', function () {
   let component, instance;

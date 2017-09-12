@@ -1,5 +1,5 @@
 import * as d3 from 'd3';
-import {ForceHorseHelper} from './force-horse';
+import {ForceHorseHelper} from './force-horse.helper';
 
 describe('Force Horse Helper', function () {
   describe('getShape', function () {

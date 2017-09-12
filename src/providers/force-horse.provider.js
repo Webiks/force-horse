@@ -1,6 +1,6 @@
 import {EventEmitter} from '../helpers/event-emitter/event-emitter';
 import {FHConfig} from '../config';
-import {ForceHorseHelper} from '../helpers/force-horse/force-horse';
+import {ForceHorseHelper} from '../helpers/force-horse/force-horse.helper';
 import * as d3 from 'd3';
 import now from 'performance-now';
 import {debugLog} from '../helpers/debug-logger/debug-logger';

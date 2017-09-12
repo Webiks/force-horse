@@ -1,4 +1,4 @@
-import {ForceHorseProvider} from '../../providers/force-horse';
+import {ForceHorseProvider} from '../../providers/force-horse.provider';
 import {debugLog} from '../../helpers/debug-logger/debug-logger';
 import {EventEmitter} from '../../helpers/event-emitter/event-emitter';
 
