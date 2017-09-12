@@ -8,7 +8,7 @@ Force-Horse is an open source Javascript component wrapping a Force Layout and a
 While you can read all of the details on the library in Ram's [blog post](http://webiks.com/force-horse-force-layout-component/), the gist of it is having a library that adapts to many types of data, is easily modifiable for developers, supports large data sets, and easily allowing customization of the base SVG's design.
 
 ## So... What's New?
-Having the library written using AngularJS, forces the user to use a deprecated framework. Either the user thinks they can just include AngularJS in the bundle, increasing the bundle, or trying to implement the component for their used framework.
+Having the library written using AngularJS, forces the user to use a legacy framework. Either the user thinks they can just include AngularJS in the bundle, increasing the bundle, or trying to implement the component for their used framework.
 Therefore, we decided to remove the dependency for AngularJS, making the library framework agnostic.
 
 ##### Agnostification
