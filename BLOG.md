@@ -12,7 +12,7 @@ Having the library written using AngularJS, forces the user to use a legacy fram
 Therefore, we decided to remove the dependency for AngularJS, making the library framework agnostic.
 
 ##### Agnostification
-We migrated AngularJS out of the library, moving to a standard browser feature - [Custom Elements](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Custom_Elements), supported by most modern browsers, or being worked on at this time (In case it isn't supported, there is a tiny [browser polyfill](https://github.com/webcomponents/webcomponentsjs) - see [browsers support](https://caniuse.com/#search=custom%20elements%20v0))
+We migrated AngularJS out of the library, moving to a standard browser feature - [Custom Elements](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Custom_Elements), being adopted by most modern browsers. (In case it isn't supported att the moment, there is a tiny [browser polyfill](https://github.com/webcomponents/webcomponentsjs) - see [browsers support](https://caniuse.com/#search=custom%20elements%20v1))
 What we love about using Custom Elements, is that all of the main frameworks - Angular, React, Vue, Polymer etc.. - support it for bindings of inputs and outputs, but you don't have to use a framework to use it.
 
 ##### Integration
