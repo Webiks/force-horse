@@ -6,7 +6,7 @@ import now from 'performance-now';
 import {debugLog} from '../helpers/debug-logger/debug-logger';
 
 /**
- * Produces a class-instance for each instance of ForceHorse on a page
+ * Produces a class-viewer for each viewer of ForceHorse on a page
  */
 export class ForceHorseViewer {
   constructor(element, requestRender) {
@@ -48,7 +48,7 @@ export class ForceHorseViewer {
   }
 
   /**
-   * Creates a random instance name from the given alphabet
+   * Creates a random viewer name from the given alphabet
    */
   createInstanceName() {
     debugLog('ForceHorseViewer:createInstanceName');
@@ -269,7 +269,7 @@ export class ForceHorseViewer {
   setForce() {
     debugLog('ForceHorseViewer:setForce');
 
-    // Create a forceLayout instance
+    // Create a forceLayout viewer
     this.force = d3.forceSimulation().stop();
 
     let p;
@@ -1102,7 +1102,7 @@ export class ForceHorseViewer {
    * @name forceHorse.factory:ForceHorseFactory#onSelectOutside
    * @description
    * API: Called when elements were selected and/or unselected outside this component.
-   * @returns {ForceHorseFactory} current instance
+   * @returns {ForceHorseFactory} current viewer
    */
   onSelectOutside() {
     // Update the "selected" css class, and the selected-items sets

@@ -32,7 +32,7 @@ module.exports = {
 
       {
         test: /\.scss$/,
-        use: extractSASS.extract({ // Instance 2
+        use: extractSASS.extract({ // viewer 2
           use: [
             'css-loader',
             'postcss-loader',

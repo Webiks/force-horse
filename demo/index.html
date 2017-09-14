@@ -20,8 +20,8 @@
 <force-horse></force-horse>
 
 <script>
-  const instance = document.querySelector('force-horse');
-  instance.setConfig({
+  const viewer = document.querySelector('force-horse');
+  viewer.setConfig({
     'showButtons': true,
     'showLabels': true,
     'showNodeWeight': true,
@@ -38,7 +38,7 @@
       '#friction': 0.5
     }
   });
-  instance.setData({
+  viewer.setData({
     'nodes': [
       {'label': 'Captain Sisko'},
       {'label': 'Major Kira'},

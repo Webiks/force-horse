@@ -4,7 +4,7 @@ describe('Buttons Component', function () {
   let component = document.createElement('force-horse-buttons');
 
   let forceHorse = JSON.stringify({
-    instance: {
+    viewer: {
       config: {
         showButtons: true,
         showFilterButton: true,
@@ -47,7 +47,7 @@ describe('Buttons Component', function () {
   Object.keys(buttonRules).forEach(className => {
     it('should activate click action of ' + className + ' button', function () {
       const spy = jasmine.createSpy('callback');
-      component.forceHorse.instance[buttonRules[className][0]] = spy;
+      component.forceHorse.viewer[buttonRules[className][0]] = spy;
       component.render();
 
       component.querySelector('i.' + className).click();
@@ -57,7 +57,7 @@ describe('Buttons Component', function () {
 
     if (buttonRules[className].length > 1) {
       it('should hide just ' + className + ' button', function () {
-        component.forceHorse.instance.config[buttonRules[className][1]] = false;
+        component.forceHorse.viewer.config[buttonRules[className][1]] = false;
         component.render();
 
         expect(component.querySelectorAll('i.img').length).toEqual(6);
@@ -67,7 +67,7 @@ describe('Buttons Component', function () {
   });
 
   it('should show all buttons', function () {
-    component.forceHorse.instance.config.showButtons = true;
+    component.forceHorse.viewer.config.showButtons = true;
     component.render();
 
     expect(component.querySelectorAll('i.img').length).toEqual(7);
@@ -75,14 +75,14 @@ describe('Buttons Component', function () {
   });
 
   it('should hide all buttons', function () {
-    component.forceHorse.instance.config.showButtons = false;
+    component.forceHorse.viewer.config.showButtons = false;
     component.render();
 
     expect(component.querySelectorAll('i.img').length).toEqual(0);
   });
 
   it('should show img-pause-circle-outline and not img-play-circle-outline', function () {
-    component.forceHorse.instance.fixedNodesMode = false;
+    component.forceHorse.viewer.fixedNodesMode = false;
     component.render();
 
     expect(component.querySelectorAll('.img-play-circle-outline').length).toEqual(0);
@@ -90,7 +90,7 @@ describe('Buttons Component', function () {
   });
 
   it('should show img-play-circle-outline and not img-pause-circle-outline', function () {
-    component.forceHorse.instance.fixedNodesMode = true;
+    component.forceHorse.viewer.fixedNodesMode = true;
     component.render();
 
     expect(component.querySelectorAll('.img-play-circle-outline').length).toEqual(1);
@@ -102,18 +102,18 @@ describe('Buttons Component', function () {
   });
 
   it('should show range input', function () {
-    component.forceHorse.instance.edgesFilteredByWeight.maxEdgeWeight = 2;
+    component.forceHorse.viewer.edgesFilteredByWeight.maxEdgeWeight = 2;
     component.render();
 
     expect(component.querySelectorAll('input[type="range"]').length).toEqual(1);
   });
 
   it('change should call change method on the range input', function () {
-    component.forceHorse.instance.edgesFilteredByWeight.maxEdgeWeight = 2;
+    component.forceHorse.viewer.edgesFilteredByWeight.maxEdgeWeight = 2;
     component.render();
 
     const spy = jasmine.createSpy('callback');
-    component.forceHorse.instance.onEdgesSelectedWeightLevelChange = spy;
+    component.forceHorse.viewer.onEdgesSelectedWeightLevelChange = spy;
 
     const newVal = 1;
     const input = component.querySelector('input[type="range"]');
@@ -124,7 +124,7 @@ describe('Buttons Component', function () {
     input.dispatchEvent(evt);
 
     expect(spy).toHaveBeenCalled();
-    expect(Number(component.forceHorse.instance.edgesFilteredByWeight.selectedWeightLevel)).toEqual(newVal);
+    expect(Number(component.forceHorse.viewer.edgesFilteredByWeight.selectedWeightLevel)).toEqual(newVal);
   });
 
   it('disconnectedCallback should remove all of the DOM', function () {

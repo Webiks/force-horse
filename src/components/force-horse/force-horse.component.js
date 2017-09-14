@@ -1,4 +1,4 @@
-import {ForceHorseViewer} from '../../viewer//force-horse.viewer';
+import {ForceHorseViewer} from '../../viewer/force-horse.viewer';
 import {debugLog} from '../../helpers/debug-logger/debug-logger';
 import {EventEmitter} from '../../helpers/event-emitter/event-emitter';
 
@@ -9,15 +9,15 @@ export class ForceHorse extends HTMLElement {
 
     this.readyEvent = new EventEmitter();
 
-    this.instance = new ForceHorseViewer(this, this.render.bind(this));
-    this.instance.readyEvent.subscribe(() => this.readyEvent.emit(this.instance));
+    this.viewer = new ForceHorseViewer(this, this.render.bind(this));
+    this.viewer.readyEvent.subscribe(() => this.readyEvent.emit(this.viewer));
   }
 
   static get observedAttributes() {
     return ['data', 'config'];
   }
 
-  // Fires when an instance of the element is created.
+  // Fires when an viewer of the element is created.
   connectedCallback() {
     debugLog('ForceHorse:connectedCallback');
 
@@ -32,19 +32,19 @@ export class ForceHorse extends HTMLElement {
   disconnectedCallback() {
     debugLog('ForceHorse:disconnectedCallback');
 
-    // Clear the instance reference on destruction, to prevent memory leak
-    delete this.instance;
+    // Clear the viewer reference on destruction, to prevent memory leak
+    delete this.viewer;
   }
 
   setData(data) {
-    this.instance.setData(data);
-    this.instance.redraw();
+    this.viewer.setData(data);
+    this.viewer.redraw();
   }
 
   setConfig(config) {
-    this.instance.setConfig(config);
-    if (this.instance.data) {
-      this.instance.redraw();
+    this.viewer.setConfig(config);
+    if (this.viewer.data) {
+      this.viewer.redraw();
     }
   }
 

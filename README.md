@@ -77,16 +77,16 @@ Configure options in the component. Defaults to:
 ```
 
 # API
-You can use the API by querying the `force-horse` element, and accessing `instance`.
+You can use the API by querying the `force-horse` element, and accessing `viewer`.
 ```js
 // In JS
-const instance = document.qeurySelector("force-horse").instance;
+const viewer = document.qeurySelector("force-horse").viewer;
 
 // In Angular
 // Template: `<force-horse #fh></force-horse>`
 @ViewChild('fh') forceHorse: ElementRef;
 ngAfterViewInit() {
-  const instance = this.forceHorse.instance;
+  const viewer = this.forceHorse.viewer;
 }
 ```
 
@@ -94,7 +94,7 @@ ngAfterViewInit() {
 
 Outputs are event emitters. You can subscribe and unsubscribe in the following way:
 ```
-const subscription = instance.hoverEvent.subscribe(() => { /* some callback */);
+const subscription = viewer.hoverEvent.subscribe(() => { /* some callback */);
 subscription.unsubscribe();
 ```
 

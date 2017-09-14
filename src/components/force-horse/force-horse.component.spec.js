@@ -1,8 +1,8 @@
 import './force-horse.component';
-import {ForceHorseViewer} from '../../viewer//force-horse.viewer';
+import {ForceHorseViewer} from '../../viewer/force-horse.viewer';
 
 describe('Force Horse Component', function () {
-  let component, instance;
+  let component, viewer;
 
   let data = {
     nodes: [
@@ -30,7 +30,7 @@ describe('Force Horse Component', function () {
     component.connectedCallback();
     component.setAttribute('data', JSON.stringify(data));
     component.render();
-    instance = component.instance;
+    viewer = component.viewer;
   });
 
   it('should have class force-horse', function () {
@@ -41,18 +41,18 @@ describe('Force Horse Component', function () {
     expect(component.querySelectorAll('force-horse-buttons').length).toEqual(1);
   });
 
-  it('should create a forceHorse instance', function () {
-    expect(instance).toBeDefined();
-    expect(instance instanceof ForceHorseViewer).toBeTruthy();
+  it('should create a forceHorse viewer', function () {
+    expect(viewer).toBeDefined();
+    expect(viewer instanceof ForceHorseViewer).toBeTruthy();
   });
 
   // it('should have child svg.graph-svg', function () {
   //   const spy = jasmine.createSpy('readySpy');
-  //   instance.readyEvent.subscribe(() => {
+  //   viewer.readyEvent.subscribe(() => {
   //     expect(component.querySelectorAll('svg.graph-svg').length).toEqual(1);
   //     spy();
   //   });
-  //   instance.redraw();
+  //   viewer.redraw();
   //
   //   expect(spy).toHaveBeenCalled();
   // });
