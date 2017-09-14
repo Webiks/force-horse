@@ -14,7 +14,7 @@ export class ForceHorse extends HTMLElement {
   }
 
   static get observedAttributes() {
-    return ['options'];
+    return ['data', 'config'];
   }
 
   // Fires when an instance of the element is created.
@@ -36,19 +36,30 @@ export class ForceHorse extends HTMLElement {
     delete this.instance;
   }
 
-  setOptions(options) {
-    this.instance.setOptions(options);
+  setData(data) {
+    this.instance.setData(data);
     this.instance.redraw();
+  }
+
+  setConfig(config) {
+    this.instance.setConfig(config);
+    if (this.instance.data) {
+      this.instance.redraw();
+    }
   }
 
   // Fires when an attribute was added, removed, or updated.
   attributeChangedCallback(attributeName, oldValue, newValue, namespace) {
     debugLog('ForceHorse:attributeChangedCallback', attributeName, oldValue, newValue, namespace);
 
+    newValue = typeof newValue === 'string' ? JSON.parse(newValue) : newValue;
+
     switch (attributeName) {
-      case 'options':
-        const options = typeof newValue === 'string' ? JSON.parse(newValue) : newValue;
-        this.setOptions(options);
+      case 'data':
+        this.setData(newValue);
+        break;
+      case 'config':
+        this.setConfig(newValue);
         break;
       default:
         console.warn('No attribute handler changed for', attributeName);

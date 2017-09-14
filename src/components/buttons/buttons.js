@@ -67,6 +67,15 @@ export class FHButtons extends HTMLElement {
       return;
     }
 
+    this.innerHTML = '';
+
+    if(!this.forceHorse.instance.config.showButtons) {
+      this.classList.add('hidden');
+      return;
+    }
+
+    this.classList.remove('hidden');
+
     const instance = this.forceHorse.instance;
 
     let elements = [];
@@ -95,8 +104,6 @@ export class FHButtons extends HTMLElement {
       elements.push(input);
     }
 
-
-    this.innerHTML = '';
     elements.forEach(e => this.appendChild(e));
   }
 }

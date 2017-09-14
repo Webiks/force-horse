@@ -21,12 +21,14 @@ export class ForceHorseProvider {
     this.hoverEvent = new EventEmitter();
     this.selectEvent = new EventEmitter();
     this.filterEvent = new EventEmitter();
+
+    this.setConfig(); // Set default config
   }
 
-  setOptions(options) {
-    debugLog('ForceHorseProvider:setOptions', options);
+  setData(data) {
+    debugLog('ForceHorseProvider:setOptions', data);
 
-    this.options = options;
+    this.data = data;
   }
 
   /**
@@ -35,20 +37,14 @@ export class ForceHorseProvider {
   redraw() {
     debugLog('ForceHorseProvider:redraw');
 
-    const final = (options) => {
-      this.initLayout(options);
-      this.initChargeForce();
-      this.draw();
-      this.onSelectOutside();
-      this.restartForceSimulation();
-      this.requestRender();
+    this.initLayout();
+    this.initChargeForce();
+    this.draw();
+    this.onSelectOutside();
+    this.restartForceSimulation();
+    this.requestRender();
 
-      this.readyEvent.emit();
-    };
-
-    return fetch(FHConfig.CONFIG_FILE_NAME)
-      .then((response) => response.json()).then(final)
-      .catch(() => final({}));
+    this.readyEvent.emit();
   }
 
   /**
@@ -200,17 +196,16 @@ export class ForceHorseProvider {
     debugLog('ForceHorseProvider:processInputData');
 
     // Process input data
-    let data = this.options.data;
-    if (!(data instanceof Array)) {
-      this.options.data = data = ForceHorseHelper.convertFileDataFormat(this.options.data);
+    if (!(this.data instanceof Array)) {
+      this.data = ForceHorseHelper.convertFileDataFormat(this.data);
     }
 
-    this.element.data = data;
+    this.element.data = this.data;
 
-    this.nodeDataArray = data[FHConfig.NODES].data;
+    this.nodeDataArray = this.data[FHConfig.NODES].data;
     this.processNodes();
 
-    this.edgeDataArray = data[FHConfig.EDGES].data;
+    this.edgeDataArray = this.data[FHConfig.EDGES].data;
     this.edgesFilteredByWeight = {
       filteredEdges: [],
       currentWeightLevel: 1,
@@ -241,11 +236,12 @@ export class ForceHorseProvider {
    * (that is, in fact, by an external json file)
    * @param config an external configuration object (typically from a json file)
    */
-  setConfig(config) {
+  setConfig(config = {}) {
     debugLog('ForceHorseProvider:setConfig');
 
     this.config = {
-      showLabels: false,
+      showButtons: true,
+      showLabels: true,
       numOfLabelsToShow: FHConfig.DEFAULT_NUM_OF_LABELS_TO_SHOW,
       showNodeWeight: true,
       showEdgeWeight: true,
@@ -496,16 +492,14 @@ export class ForceHorseProvider {
    * Init force layout & SVG
    * @param config an external configuration object (typically from a json file)
    */
-  initLayout(config) {
-    debugLog('ForceHorseProvider:initLayout', config);
+  initLayout() {
+    debugLog('ForceHorseProvider:initLayout');
 
     this.createInstanceName();
 
     this.processInputData();
 
     this.initNodeFields();
-
-    this.setConfig(config);
 
     this.setForce();
 

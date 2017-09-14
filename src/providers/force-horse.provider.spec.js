@@ -3,27 +3,25 @@ import {ForceHorseProvider} from './force-horse.provider';
 describe('Force Horse Provider', function () {
   let instance, element;
 
-  const options = {
-    data: [
-      {
-        id: 1, data: [
-        {id: 1, label: 'first'},
-        {id: 3, label: 'second'}
-      ]
-      },
-      {
-        id: 2, data: [
-        {sourceID: 1, targetID: 3}
-      ]
-      }
+  const data = [
+    {
+      id: 1, data: [
+      {id: 1, label: 'first'},
+      {id: 3, label: 'second'}
     ]
-  };
+    },
+    {
+      id: 2, data: [
+      {sourceID: 1, targetID: 3}
+    ]
+    }
+  ];
 
   const recreateInstance = function () {
     element = document.createElement('div');
     instance = new ForceHorseProvider(element, () => {
     });
-    instance.setOptions(options);
+    instance.setData(data);
   };
   beforeEach(recreateInstance);
 
@@ -41,8 +39,8 @@ describe('Force Horse Provider', function () {
   describe('processInputData', function () {
     it('should assign nodeDataArray and edgeDataArray', function () {
       instance.processInputData();
-      expect(instance.nodeDataArray).toEqual(options.data[0].data);
-      expect(instance.edgeDataArray).toEqual(options.data[1].data);
+      expect(instance.nodeDataArray).toEqual(data[0].data);
+      expect(instance.edgeDataArray).toEqual(data[1].data);
     });
   });
 
@@ -82,7 +80,7 @@ describe('Force Horse Provider', function () {
   });
 
   describe('setConfig', function () {
-    beforeEach(() => instance.setConfig({}));
+    beforeEach(() => instance.setConfig());
 
     it('should set property config', function () {
       expect(instance.config).toBeDefined();
@@ -92,7 +90,7 @@ describe('Force Horse Provider', function () {
   describe('setForce', function () {
     beforeEach(() => {
       instance.processInputData();
-      instance.setConfig({});
+      instance.setConfig();
       instance.setForce();
     });
 
@@ -104,7 +102,7 @@ describe('Force Horse Provider', function () {
   describe('initLayout', function () {
     beforeEach(recreateInstance);
 
-    const methods = ['createInstanceName', 'processInputData', 'initNodeFields', 'setConfig', 'setForce', 'initCanvas', 'setSVGGroups'];
+    const methods = ['createInstanceName', 'processInputData', 'initNodeFields', 'setForce', 'initCanvas', 'setSVGGroups'];
     methods.forEach(method => {
       it('Should call method ' + method, function () {
         instance[method] = jasmine.createSpy(method);
@@ -123,7 +121,7 @@ describe('Force Horse Provider', function () {
       instance.processInputData();
       instance.initNodeFields();
       instance.setConfig({});
-      expect(typeof instance.getRequiredNodeIconSize({ edgesWeight: 2 })).toEqual("number");
+      expect(typeof instance.getRequiredNodeIconSize({edgesWeight: 2})).toEqual('number');
     });
   });
 

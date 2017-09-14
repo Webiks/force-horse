@@ -24,19 +24,20 @@ Directly from HTML:
 From the template
 ```html
 <!-- Web component -->
-<force-horse options='{"json": "options"}'></force-horse>
-<!-- Angular -->
-<force-horse [attr.options]="options | json"></force-horse>
+<force-horse data='{"nodes": [], "links": []}' config='{"anything": true}'></force-horse>
+<!-- Angular: Note that you have to add CUSTOM_ELEMENTS_SCHEMA -->
+<force-horse [attr.data]="data | json" [attr.config]="config | json"></force-horse>
 ```
 From Javascript:
 ```js
 const forceHorse = document.createElement("force-horse");
-forceHorse.setOptions(options);
+forceHorse.setConfig(someConfig);
+forceHorse.setData(someData);
 someContainer.appendChild(forceHorse);
 ```
 
 
-To be rendered, force-horse must first get `options`, which can be passed as an attribute, or directly using `setOptions`
+To be rendered, force-horse must first get `data`, which can be passed as an attribute, or directly using `setData`
 
 A force-horse element does not have an intrinsic size. It adapts itself to the size that is set by its parent.
 force-horse is implementing CSS **flex-box** display logic.

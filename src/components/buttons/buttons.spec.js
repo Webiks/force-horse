@@ -6,6 +6,7 @@ describe('Buttons Component', function () {
   let forceHorse = JSON.stringify({
     instance: {
       config: {
+        showButtons: true,
         showFilterButton: true,
         showLabelsButton: true,
         showEdgeWeightButton: true,
@@ -63,6 +64,21 @@ describe('Buttons Component', function () {
         expect(component.querySelectorAll('i.' + className).length).toEqual(0);
       });
     }
+  });
+
+  it('should show all buttons', function () {
+    component.forceHorse.instance.config.showButtons = true;
+    component.render();
+
+    expect(component.querySelectorAll('i.img').length).toEqual(7);
+
+  });
+
+  it('should hide all buttons', function () {
+    component.forceHorse.instance.config.showButtons = false;
+    component.render();
+
+    expect(component.querySelectorAll('i.img').length).toEqual(0);
   });
 
   it('should show img-pause-circle-outline and not img-play-circle-outline', function () {

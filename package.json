@@ -8,8 +8,14 @@
     "start": "webpack && webpack-dev-server --progress",
     "test": "karma start ./karma.conf.js",
     "test-ci": "./node_modules/.bin/karma start ./karma.conf.js --single-run",
-    "test-coverage": "karma start ./karma.conf.js --coverage"
+    "test-coverage": "karma start ./karma.conf.js --coverage",
+    "deploy": "webpack && npm publish"
   },
+  "files": [
+    "dist/",
+    "src/",
+    "*.md"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/Webiks/force-horse.git"

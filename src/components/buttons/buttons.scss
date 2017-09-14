@@ -6,6 +6,10 @@
   justify-content: flex-start;
   align-items: center;
 
+  &.hidden {
+    display: none;
+  }
+
   input {
     width: 15%;
     margin: 0 1.5vh;

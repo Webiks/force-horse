@@ -27,7 +27,6 @@ export const FHConfig = {
   DEFAULT_CHARGE_HEAVY: -800,
   CHARGE_DISTANCE_MAX_LIGHT: 200,
   VELOCITY_DECAY_LIGHT: 0.1, // d3 default is 0.4
-  CONFIG_FILE_NAME: 'forceHorse.json',
   LOGGING_KEY_NAME: 'forceHorse',
   LOGGING_ON_VALUE: 'on',
   DBL_CLICK_DELAY_IN_MS: 200,
