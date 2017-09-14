@@ -1,33 +1,64 @@
+const path = require('path');
+
 module.exports = function (config) {
-    config.set({
+  config.set({
+    frameworks: ['jasmine'],
 
-        basePath: './',
+    files: [
+      {pattern: 'src/**/*.spec.js', watched: true}
+    ],
 
-        files: [
-            'bower_components/angular/angular.js',
-            'bower_components/angular-mocks/angular-mocks.js',
-            'bower_components/d3/d3.js',
-            'components/**/*.js',
-            'simple-demo-app/**/*.js'
-        ],
+    preprocessors: {
+      // add webpack as preprocessor
+      'src/**/*.spec.js': ['webpack', 'sourcemap', 'coverage']
+    },
 
-        autoWatch: true,
+    webpack: {
+      devtool: 'inline-source-map',
 
-        frameworks: ['jasmine'],
+      resolve: {
+        extensions: ['.js']
+      },
 
-        browsers: ['Chrome'],
+      module: {
+        rules: [
+          {
+            test: /\.js$/,
+            loaders: ['babel-loader'],
+            exclude: /node_modules/
+          }, {
+            test: /\.html$/,
+            loader: 'null-loader'
+          }, {
+            test: /\.(png|jpe?g|gif|svg|woff|woff2|ttf|eot|ico)$/,
+            loader: 'null-loader'
+          }
+        ]
+      }
+    },
 
-        plugins: [
-            'karma-chrome-launcher',
-            'karma-firefox-launcher',
-            'karma-jasmine',
-            'karma-junit-reporter'
-        ],
+    webpackMiddleware: {
+      stats: 'errors-only'
+    },
 
-        junitReporter: {
-            outputFile: 'test_out/unit.xml',
-            suite: 'unit'
-        }
+    browserConsoleLogOptions: {
+      level: 'log',
+      format: '%b %T: %m',
+      terminal: true
+    },
 
-    });
+    coverageReporter: {
+      type : 'html',
+      dir : 'coverage/'
+    },
+
+    reporters: config.coverage ? ['kjhtml', 'dots', 'coverage'] : ['kjhtml', 'dots'],
+
+    port: 9876,
+    colors: true,
+    logLevel: config.LOG_INFO,
+    autoWatch: true,
+    browsers: ['Chrome'],
+    singleRun: false
+  });
 };

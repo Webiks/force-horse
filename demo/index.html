@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Force Horse</title>
+  <script src="../dist/main.bundle.js"></script>
+  <link rel="stylesheet" href="../dist/style.bundle.css"/>
+  <style>
+    body {
+      margin: 0;
+    }
+
+    force-horse {
+      height: 100vh;
+      width: 100vw;
+    }
+  </style>
+</head>
+<body>
+<force-horse></force-horse>
+
+<script>
+  const viewer = document.querySelector('force-horse');
+  viewer.setConfig({
+    'showButtons': true,
+    'showLabels': true,
+    'showNodeWeight': true,
+    'showEdgeWeight': true,
+    'showFilterButton': true,
+    'showLabelsButton': true,
+    'showNodeWeightButton': true,
+    'showEdgeWeightButton': true,
+    'forceParameters': {
+      '#charge': -350,
+      '#linkStrength': 1,
+      '#gravity': 0.2,
+      '#linkDistance': 10,
+      '#friction': 0.5
+    }
+  });
+  viewer.setData({
+    'nodes': [
+      {'label': 'Captain Sisko'},
+      {'label': 'Major Kira'},
+      {'label': 'Dr Bashir'},
+      {'label': 'Gol Dookat'},
+      {'label': 'Vedek Beriel'},
+      {'label': 'Vedek X'},
+      {'label': 'Garek'}
+    ],
+    'links': [
+      {'source': 0, 'target': 1, 'weight': 3},
+      {'source': 0, 'target': 2, 'weight': 3},
+      {'source': 0, 'target': 3, 'weight': 3},
+      {'source': 1, 'target': 4},
+      {'source': 1, 'target': 5},
+      {'source': 2, 'target': 6},
+      {'source': 3, 'target': 6}
+    ]
+  });
+</script>
+</body>
+</html>

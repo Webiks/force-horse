@@ -1,0 +1,88 @@
+.force-horse-buttons {
+  height: 10vh;
+  padding: 0 10px;
+  color: #d3d3d3;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+
+  &.hidden {
+    display: none;
+  }
+
+  input {
+    width: 15%;
+    margin: 0 1.5vh;
+  }
+
+  i {
+    font-size: 6vh;
+    cursor: pointer;
+
+    &:hover {
+      color: #000;
+    }
+
+    &:active {
+      color: #f00;
+    }
+
+    &.img {
+      background-color: #d3d3d3;
+      display: inline-block;
+      width: 5.5vh;
+      height: 6vh;
+      margin: 0 1.5vh;
+      mask-size: contain;
+      mask-repeat: no-repeat;
+
+      &:hover {
+        background-color: #000;
+      }
+
+      &:active {
+        background-color: #f00;
+      }
+
+      &.img-labels {
+        margin-left: auto;
+      }
+
+      &.img-node-weight {
+        mask-image: url('assets/node-weight.png');
+      }
+
+      &.img-link-weight {
+        mask-image: url('assets/link-weight.png');
+      }
+
+      &.img-orphan-nodes {
+        mask-image: url('assets/orphan-nodes.png');
+      }
+
+      &.img-filter {
+        mask-image: url('assets/filter.png');
+      }
+
+      &.img-home {
+        mask-image: url('assets/home.png');
+      }
+
+      &.img-play-circle-outline {
+        mask-image: url('assets/play-circle-outline.png');
+      }
+
+      &.img-pause-circle-outline {
+        mask-image: url('assets/pause-circle-outline.png');
+      }
+
+      &.img-label-outline {
+        mask-image: url('assets/label-outline.png');
+      }
+
+      &.img-label {
+        mask-image: url('assets/label.png');
+      }
+    }
+  }
+}

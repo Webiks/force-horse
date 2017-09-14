@@ -1,0 +1,23 @@
+language: node_js
+node_js:
+  - 8
+before_script:
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
+script: webpack && npm run test-ci
+
+deploy:
+  - provider: releases
+    api_key:
+      secure: QXZMJz8xt2JK1SuZ5AkVHx6Orb2Ebkb5Lc5YxkrxgWu+xbt6lGAy8mMvj2ytkAu2OuecGtAsnh8tiYVJ6LW7d2fGBDgAjSAL1ZSPi+4GQrddwlTkZ8AfGvCLu9no/+E9G2rpDHixmt+lPUbtCfLbdkQ2WCX4gPKcsUdCHcgZvGb9vGADsMNoDwXM0fGiiBr5FlfcwxH3cL60LX3weJRQMseOXAAxMH9syiu9XHjJNt/Ty/p+xZOCK0NxOzQLp2KYONpuLI86+Hdb+bmgIWlwRHvDa1CgdzXbLl9zqea1fHUxsT9g5GM5jX344Q/SOKsoSdtvb2ddbtsm5IJ23EiiL0muhRjudpyRE48gtkPZUhItB539hrdOHWXtWmNxHu715xU16j4YiyO5J/N6ZThJT8WMcTnEHIJVXSVQTPYTyj6Bl3dQFWUBzyKRO9l2LeueEI2kAEAFa5cd31om/XaQmVNK/CFLz7FR6x7o4/Bvd2aCeI2gQ7eRlJXixYC6px6MdgB7yd5BPQcfDeOeefm5bEqrKWr17OIq//UQEkBmO3OJAKdUN9SNOIjV2DUBwbr7kL1vTosdGzJ0xDSUDmmxrX9SZw7HRY33Whle/GLfloGwo1TVdTgbic1TRO9dxtPhdxd6mY+FAaPFUQBYDNzwnXhxJFEeMKZUDIVqI+MtICA=
+    skip_cleanup: true
+    file: dist
+    on:
+      tags: true
+  - provider: npm
+    email: amitmoryossef@gmail.com
+    api_key:
+      secure: WZml/wR8HFO8PSweGV9/W5GzzK2Jix8AUAi+B2HNUDtEn4YjuHjSY4DQkrkIaRSUNktAIA59TQIhJCUoYu+movuGOr/E9VFBqftYaZb+78y98mK0Z1As07feZUs36o3gFNs0qKhNyrMAXaDgqH75Cp6qL6F9B46iTdXkvVb351BWkzX7/B8w7BnfBLWYj8Q+Tt74wR+b/TuVBjYK7LJLtxWGvIOc23984z8S+yxIRmsZVabyZE+8MHavGyQ1Jg/5/dLKQohjzylVK3mlz1j/WlHSl5M46P6gjhbeGLrmImcANWXJI7G31v4h2wP0AnIWYuBIwuAv4RE/ovWy1jl+MY7Go1jubHBusPMnn6w7UTvDxgRdVfp8JCm9H7iHkfKgBLQGDB2DF9aquqC3H7jrH0KX4sbIJs5f0z24iEkQtXMVpHVtSJqbbMeP1OQSlUW6bJifmYmNS6+e61atulf8Ag9XuBK2GjbLD/Tug40LUnjq9zPa7Z1bJxFOCfFif0VLmNJ12aFQZLuCBaxRC+rupWPDM/WzK+7h+HamQFHgX3UG6uW1s6ARv8ymNNRUD5UJTB3TfMK+E/ygoiTHLzfwULgV8XyPpSnEUdyQDDit2tl6IqTpZFTU2ZsaqNH2ew0lKHUFcXHNlhaAIvlXMbtQyV50WO20QDnUsQzl2D5yhz4=
+    skip_cleanup: true
+    on:
+      tags: true

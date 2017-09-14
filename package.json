@@ -1,55 +1,68 @@
 {
-  "name": "forceHorse",
-  "version": "1.0.0",
-  "description": "Angular wrapper for d3.js force layout",
+  "name": "force-horse",
+  "version": "1.0.1",
+  "description": "A web component wrapper for d3.js force layout",
   "main": "src/index.js",
+  "style": "src/index.scss",
   "scripts": {
-    "postinstall": "bower install",
-    "prestart": "npm install",
-    "start": "http-server ./src -a localhost -p 8000 -c-1",
-    "pretest": "npm install",
-    "test": "karma start karma.conf.js",
-    "test-single-run": "karma start karma.conf.js  --single-run",
-    "preupdate-webdriver": "npm install",
-    "update-webdriver": "webdriver-manager update",
-    "preprotractor": "npm run update-webdriver",
-    "protractor": "protractor e2e-tests/protractor.conf.js",
-    "update-index-async": "node -e \"require('shelljs/global'); sed('-i', /\\/\\/@@NG_LOADER_START@@[\\s\\S]*\\/\\/@@NG_LOADER_END@@/, '//@@NG_LOADER_START@@\\n' + sed(/sourceMappingURL=angular-loader.min.js.map/,'sourceMappingURL=bower_components/angular-loader/angular-loader.min.js.map','app/bower_components/angular-loader/angular-loader.min.js') + '\\n//@@NG_LOADER_END@@', 'app/index-async.html');\"",
-    "git-push-patch": "bower version patch && git push origin master && git push origin --tags"
+    "start": "webpack && webpack-dev-server --progress",
+    "test": "karma start ./karma.conf.js",
+    "test-ci": "./node_modules/.bin/karma start ./karma.conf.js --single-run",
+    "test-coverage": "karma start ./karma.conf.js --coverage",
+    "deploy": "webpack && npm publish"
   },
+  "files": [
+    "dist/",
+    "src/",
+    "*.md"
+  ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/ramtob/ngEcho.git"
+    "url": "https://github.com/Webiks/force-horse.git"
   },
   "keywords": [
-    "angularjs",
+    "force horse",
     "d3js"
   ],
   "author": "Ram Tobolski <ram@webiks.com>",
+  "contributors": [
+    "Amit Moryossef <amitmoryossef@gmail.com>"
+  ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ramtob/ngEcho/issues"
+    "url": "https://github.com/Webiks/force-horse/issues"
   },
-  "homepage": "https://github.com/ramtob/ngEcho",
+  "homepage": "https://github.com/Webiks/force-horse",
   "dependencies": {
-    "lodash": "3.10.1",
-    "bower": "^1.3.1",
-    "http-server": "^0.6.1",
-    "jasmine-core": "^2.3.4",
-    "karma": "~0.12",
-    "karma-chrome-launcher": "^0.1.12",
-    "karma-firefox-launcher": "^0.1.6",
-    "karma-jasmine": "^0.3.5",
-    "karma-junit-reporter": "^0.2.2",
-    "protractor": "^2.1.0",
-    "shelljs": "^0.2.6"
+    "d3": "^4.10.2",
+    "performance-now": "^2.1.0"
   },
   "devDependencies": {
-    "babel-cli": "^6.14.0",
-    "babel-preset-es2015": "^6.14.0",
-    "gulp": "3.9.0",
-    "gulp-jshint": "1.11.2",
-    "gulp-util": "3.0.6",
-    "jshint-stylish": "2.0.1"
+    "autoprefixer": "^7.1.3",
+    "babel": "^6.23.0",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-es2015": "^6.24.1",
+    "copy-webpack-plugin": "^4.0.1",
+    "css-loader": "^0.28.7",
+    "extract-text-webpack-plugin": "^3.0.0",
+    "jasmine": "^2.5.3",
+    "jasmine-core": "^2.8.0",
+    "karma": "^1.5.0",
+    "karma-chrome-launcher": "^2.0.0",
+    "karma-coverage": "^1.1.1",
+    "karma-jasmine": "^1.1.0",
+    "karma-jasmine-html-reporter": "^0.2.2",
+    "karma-sourcemap-loader": "^0.3.7",
+    "karma-webpack": "^2.0.3",
+    "node-sass": "^4.5.3",
+    "postcss-loader": "^2.0.6",
+    "protractor": "^5.1.1",
+    "sass-loader": "^6.0.6",
+    "source-map-loader": "^0.2.1",
+    "sourcemap": "^0.1.0",
+    "url-loader": "^0.5.9",
+    "watchpack": "^1.4.0",
+    "webpack": "^3.5.5"
   }
 }
