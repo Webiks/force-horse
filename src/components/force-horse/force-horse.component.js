@@ -1,4 +1,4 @@
-import {ForceHorseViewer} from '../../providers/force-horse.provider';
+import {ForceHorseViewer} from '../../viewer//force-horse.viewer';
 import {debugLog} from '../../helpers/debug-logger/debug-logger';
 import {EventEmitter} from '../../helpers/event-emitter/event-emitter';
 

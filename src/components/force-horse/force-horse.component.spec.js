@@ -1,5 +1,5 @@
 import './force-horse.component';
-import {ForceHorseViewer} from '../../providers/force-horse.provider';
+import {ForceHorseViewer} from '../../viewer//force-horse.viewer';
 
 describe('Force Horse Component', function () {
   let component, instance;
