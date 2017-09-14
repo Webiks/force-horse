@@ -1,4 +1,4 @@
-import {ForceHorseProvider} from './force-horse.provider';
+import {ForceHorseViewer} from './force-horse.viewer';
 
 describe('Force Horse Provider', function () {
   let instance, element;
@@ -19,7 +19,7 @@ describe('Force Horse Provider', function () {
 
   const recreateInstance = function () {
     element = document.createElement('div');
-    instance = new ForceHorseProvider(element, () => {
+    instance = new ForceHorseViewer(element, () => {
     });
     instance.setData(data);
   };

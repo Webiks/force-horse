@@ -1,5 +1,5 @@
 import './force-horse.component';
-import {ForceHorseProvider} from '../../providers/force-horse.provider';
+import {ForceHorseViewer} from '../../providers/force-horse.provider';
 
 describe('Force Horse Component', function () {
   let component, instance;
@@ -43,7 +43,7 @@ describe('Force Horse Component', function () {
 
   it('should create a forceHorse instance', function () {
     expect(instance).toBeDefined();
-    expect(instance instanceof ForceHorseProvider).toBeTruthy();
+    expect(instance instanceof ForceHorseViewer).toBeTruthy();
   });
 
   // it('should have child svg.graph-svg', function () {

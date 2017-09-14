@@ -36,17 +36,14 @@ forceHorse.setData(someData);
 someContainer.appendChild(forceHorse);
 ```
 
-
 To be rendered, force-horse must first get `data`, which can be passed as an attribute, or directly using `setData`
 
 A force-horse element does not have an intrinsic size. It adapts itself to the size that is set by its parent.
 force-horse is implementing CSS **flex-box** display logic.
 
-#  Options attribute
-
-Parameters are passed through the options attribute. Currently, this object contains only the data property, which holds the graph's data in the following format:
-
-**data**: the graph data (nodes and links):
+# Attributes
+## Data
+The graph's data (nodes and links):
 ```json
   {
 	"nodes": [],
@@ -54,14 +51,49 @@ Parameters are passed through the options attribute. Currently, this object cont
   }
 ```
 
+## Config
+Configure options in the component. Defaults to:
+```json
+{
+  "showButtons": true,
+  "showLabels": true,
+  "numOfLabelsToShow": 10,
+  "showNodeWeight": true,
+  "showEdgeWeight": true,
+  "hideOrphanNodes": false,
+  "showFilterButton": true,
+  "showLabelsButton": true,
+  "showNodeWeightButton": true,
+  "showEdgeWeightButton": true,
+  "showOrphanNodesButton": true,
+  "forceParameters": {
+    "friction": 0.5,
+    "charge": -100,
+    "linkStrength": 1,
+    "gravity": 0.3,
+    "linkDistance": 10
+  }
+}
+```
+
 # API
 You can use the API by querying the `force-horse` element, and accessing `instance`.
+```js
+// In JS
+const instance = document.qeurySelector("force-horse").instance;
+
+// In Angular
+// Template: `<force-horse #fh></force-horse>`
+@ViewChild('fh') forceHorse: ElementRef;
+ngAfterViewInit() {
+  const instance = this.forceHorse.instance;
+}
+```
 
 # Outputs
 
 Outputs are event emitters. You can subscribe and unsubscribe in the following way:
 ```
-const instance = element.instance;
 const subscription = instance.hoverEvent.subscribe(() => { /* some callback */);
 subscription.unsubscribe();
 ```
@@ -76,30 +108,6 @@ These are the current events. PR's and suggestions for more are welcome:
 **dblclick** (`doubleClickEvent`): a node/link is double-clicked upon
 
 **filter** (`filterEvent`): remove the selected nodes/links from the graph
-
-# External Config file
-force-horse supports an external json file, **forceHorse.json**. In this file one can set whether each of the buttons (see below) is displayed or not.
-Also, force layout parameters can be set, and thus to override the parameters that force-horse computes automatically, for a specific implementation.
-
-The config parameters are:
-```js
-{
-  "showLabels": false, //show labels on start
-  "showNodeWeight": false, // show each node weight or uniform size
-  "showEdgeWeight": false, // show each edge weight or uniform size
-  "showFilterButton": true, // show the filter toggle button
-  "showLabelsButton": true, // show the labels toggle button
-  "showNodeWeightButton": true,  // show the nodes weights toggle button
-  "showEdgeWeightButton": true, // show the edges weights toggle button
-  "forceParameters": {
-    "charge": -350,
-    "linkStrength": 1,
-    "gravity": 0.2,
-    "linkDistance": 10,
-    "friction": 0.5
-  }
-}
-```
 
 The forceHorse project contains a complete **demo application**. The demo application is also available on the [plunker](http://embed.plnkr.co/SYmehtaAnQVyMpLJJY2B/?show=preview) site.
 

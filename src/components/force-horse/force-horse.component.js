@@ -1,4 +1,4 @@
-import {ForceHorseProvider} from '../../providers/force-horse.provider';
+import {ForceHorseViewer} from '../../providers/force-horse.provider';
 import {debugLog} from '../../helpers/debug-logger/debug-logger';
 import {EventEmitter} from '../../helpers/event-emitter/event-emitter';
 
@@ -9,7 +9,7 @@ export class ForceHorse extends HTMLElement {
 
     this.readyEvent = new EventEmitter();
 
-    this.instance = new ForceHorseProvider(this, this.render.bind(this));
+    this.instance = new ForceHorseViewer(this, this.render.bind(this));
     this.instance.readyEvent.subscribe(() => this.readyEvent.emit(this.instance));
   }
 

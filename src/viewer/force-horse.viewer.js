@@ -8,9 +8,9 @@ import {debugLog} from '../helpers/debug-logger/debug-logger';
 /**
  * Produces a class-instance for each instance of ForceHorse on a page
  */
-export class ForceHorseProvider {
+export class ForceHorseViewer {
   constructor(element, requestRender) {
-    debugLog('ForceHorseProvider:constructor', element, requestRender);
+    debugLog('ForceHorseViewer:constructor', element, requestRender);
 
     this.element = element;
     this.requestRender = requestRender;
@@ -26,7 +26,7 @@ export class ForceHorseProvider {
   }
 
   setData(data) {
-    debugLog('ForceHorseProvider:setOptions', data);
+    debugLog('ForceHorseViewer:setOptions', data);
 
     this.data = data;
   }
@@ -35,7 +35,7 @@ export class ForceHorseProvider {
    * Draws a new graph, based on the input data
    */
   redraw() {
-    debugLog('ForceHorseProvider:redraw');
+    debugLog('ForceHorseViewer:redraw');
 
     this.initLayout();
     this.initChargeForce();
@@ -51,7 +51,7 @@ export class ForceHorseProvider {
    * Creates a random instance name from the given alphabet
    */
   createInstanceName() {
-    debugLog('ForceHorseProvider:createInstanceName');
+    debugLog('ForceHorseViewer:createInstanceName');
 
     this.instanceName = Array.from(new Array(FHConfig.INSTANCE_NAME_LENGTH))
       .map(() => FHConfig.ALPHABET.charAt(Math.floor(Math.random() * FHConfig.ALPHABET.length)))
@@ -62,7 +62,7 @@ export class ForceHorseProvider {
    * Graph initialization: add auxiliary properties and variables to the nodes array
    */
   processNodes() {
-    debugLog('ForceHorseProvider:processNodes');
+    debugLog('ForceHorseViewer:processNodes');
 
     this.nodesById = {};
     this.nodeDataArray.forEach((node, index) => {
@@ -84,7 +84,7 @@ export class ForceHorseProvider {
    * return the nodes connected by the given edge {source: ..., target: ...}
    */
   getEdgeNodes(edge) {
-    debugLog('ForceHorseProvider:getEdgeNodes', edge);
+    debugLog('ForceHorseViewer:getEdgeNodes', edge);
 
     let sourceNode, targetNode;
     if (typeof edge.source === 'number') {
@@ -106,7 +106,7 @@ export class ForceHorseProvider {
    * remove orphan class from the node
    */
   checkIncrementedNodeIfWasOrphan(nodeToCheck) {
-    debugLog('ForceHorseProvider:checkIncrementedNodeIfWasOrphan', nodeToCheck);
+    debugLog('ForceHorseViewer:checkIncrementedNodeIfWasOrphan', nodeToCheck);
 
     if (nodeToCheck.edgesWeight === 0 && this.elements) {
       this.elements[FHConfig.NODES]
@@ -124,7 +124,7 @@ export class ForceHorseProvider {
    * Called when adding an edge to the graph.
    */
   incrementNodesWeightsForEdge(edge) {
-    debugLog('ForceHorseProvider:incrementNodesWeightsForEdge', edge);
+    debugLog('ForceHorseViewer:incrementNodesWeightsForEdge', edge);
 
     const edgeNodes = this.getEdgeNodes(edge);
 
@@ -140,7 +140,7 @@ export class ForceHorseProvider {
    * Graph initialization: add auxiliary properties and variables to the edges array
    */
   processEdges() {
-    debugLog('ForceHorseProvider:processEdges');
+    debugLog('ForceHorseViewer:processEdges');
 
     this.edgesFromNodes = {};
     this.edgeDataArray.forEach((edge, index) => {
@@ -193,7 +193,7 @@ export class ForceHorseProvider {
    * Process nodes and edges input data
    */
   processInputData() {
-    debugLog('ForceHorseProvider:processInputData');
+    debugLog('ForceHorseViewer:processInputData');
 
     // Process input data
     if (!(this.data instanceof Array)) {
@@ -219,7 +219,7 @@ export class ForceHorseProvider {
    * Some nodes-related fields
    */
   initNodeFields() {
-    debugLog('ForceHorseProvider:initNodeFields');
+    debugLog('ForceHorseViewer:initNodeFields');
 
     // The size (area) of the containing circle
     this.numOfNodes = this.nodeDataArray.length;
@@ -237,7 +237,7 @@ export class ForceHorseProvider {
    * @param config an external configuration object (typically from a json file)
    */
   setConfig(config = {}) {
-    debugLog('ForceHorseProvider:setConfig');
+    debugLog('ForceHorseViewer:setConfig');
 
     this.config = {
       showButtons: true,
@@ -267,7 +267,7 @@ export class ForceHorseProvider {
    * Set the force and friction
    */
   setForce() {
-    debugLog('ForceHorseProvider:setForce');
+    debugLog('ForceHorseViewer:setForce');
 
     // Create a forceLayout instance
     this.force = d3.forceSimulation().stop();
@@ -357,7 +357,7 @@ export class ForceHorseProvider {
    * Cancel current selection
    */
   onContainerClick() {
-    debugLog('ForceHorseProvider:onContainerClick');
+    debugLog('ForceHorseViewer:onContainerClick');
 
     if (this.selectedItems[FHConfig.NODES].size + this.selectedItems[FHConfig.EDGES].size > 0) {
       this.onSelectInside(null, null, null, true);
@@ -370,7 +370,7 @@ export class ForceHorseProvider {
    * TODO - is the element really filtered from memory (and not just the DOM)?
    */
   initCanvas() {
-    debugLog('ForceHorseProvider:initCanvas');
+    debugLog('ForceHorseViewer:initCanvas');
 
     d3.select(this.element)
       .select('div.svgWrapper')
@@ -391,7 +391,7 @@ export class ForceHorseProvider {
    * for nodes and edges (note: the edge group has to be inserted first, so that the nodes will render above the edges).
    */
   setSVGGroups() {
-    debugLog('ForceHorseProvider:setSVGGroups');
+    debugLog('ForceHorseViewer:setSVGGroups');
 
     this.edgeGroup = this.inSvgWrapper.append('g')
       .attr('class', 'edges')
@@ -411,7 +411,7 @@ export class ForceHorseProvider {
    * Update level of details (after pan/zoom)
    */
   levelOfDetails() {
-    debugLog('ForceHorseProvider:levelOfDetails');
+    debugLog('ForceHorseViewer:levelOfDetails');
 
     const view = this.svg.node().getBoundingClientRect(),
       nodesInView = [],
@@ -437,14 +437,14 @@ export class ForceHorseProvider {
     // Set label elements classes, according to these flags
     this.labels.classed('hide-on-current-level', (d) => d.hideOnCurrentLevel);
 
-    debugLog('ForceHorseProvider:levelOfDetails:duration', (now() - startTime).toFixed(3));
+    debugLog('ForceHorseViewer:levelOfDetails:duration', (now() - startTime).toFixed(3));
   }
 
   /**
    * Perform pan/zoom
    */
   onZoom() {
-    debugLog('ForceHorseProvider:onZoom');
+    debugLog('ForceHorseViewer:onZoom');
 
     const trans = d3.event.transform;
 
@@ -457,7 +457,7 @@ export class ForceHorseProvider {
    * end of pan/zoom gesture
    */
   onZoomEnd() {
-    debugLog('ForceHorseProvider:onZoomEnd');
+    debugLog('ForceHorseViewer:onZoomEnd');
 
     this.levelOfDetails();
   };
@@ -493,7 +493,7 @@ export class ForceHorseProvider {
    * @param config an external configuration object (typically from a json file)
    */
   initLayout() {
-    debugLog('ForceHorseProvider:initLayout');
+    debugLog('ForceHorseViewer:initLayout');
 
     this.createInstanceName();
 
@@ -526,7 +526,7 @@ export class ForceHorseProvider {
    * Recalculate (repelling) charge forces to the simulation
    */
   recalcChargeForces() {
-    debugLog('ForceHorseProvider:recalcChargeForces');
+    debugLog('ForceHorseViewer:recalcChargeForces');
 
     let charge, distanceMax;
     const chargeForce = this.force.force('charge');
@@ -547,7 +547,7 @@ export class ForceHorseProvider {
    * Add (repelling) charge forces to the simulation
    */
   initChargeForce() {
-    debugLog('ForceHorseProvider:initChargeForce');
+    debugLog('ForceHorseViewer:initChargeForce');
 
     this.force.force('charge', d3.forceManyBody());
     this.recalcChargeForces();
@@ -560,7 +560,7 @@ export class ForceHorseProvider {
    * @param {boolean} on
    */
   onHoverInside(element, item, on) {
-    debugLog('ForceHorseProvider:onHoverInside', element, item, on);
+    debugLog('ForceHorseViewer:onHoverInside', element, item, on);
 
     d3.select(element).classed('hovered', item.hovered = on);
     this.hoverEvent.emit(item, on);
@@ -571,7 +571,7 @@ export class ForceHorseProvider {
    * @param item data object of the hovered element
    */
   onHoverOutside(item) {
-    debugLog('ForceHorseProvider:onHoverOutside', item);
+    debugLog('ForceHorseViewer:onHoverOutside', item);
 
     const itemType = (item.class === FHConfig.CLASS_NODE ? FHConfig.NODES : FHConfig.EDGES);
     this.elements[itemType]
@@ -583,7 +583,7 @@ export class ForceHorseProvider {
    * Calculates the desired edge width (with or without showing weight)
    */
   getEdgeWidth(edgeData) {
-    debugLog('ForceHorseProvider:getEdgeWidth', edgeData);
+    debugLog('ForceHorseViewer:getEdgeWidth', edgeData);
 
     return FHConfig.DEFAULT_EDGE_WIDTH + (edgeData.weight / 3) + 'px';
   }
@@ -592,7 +592,7 @@ export class ForceHorseProvider {
    * Event handler. called when an element is clicked on
    */
   onClick(item, element) {
-    debugLog('ForceHorseProvider:onClick', item, element);
+    debugLog('ForceHorseViewer:onClick', item, element);
 
     // Ignore the click event at the end of a drag
     if (!d3.event.defaultPrevented) {
@@ -617,7 +617,7 @@ export class ForceHorseProvider {
   }
 
   drawEdges() {
-    debugLog('ForceHorseProvider:drawEdges');
+    debugLog('ForceHorseViewer:drawEdges');
 
     const self = this;
 
@@ -642,7 +642,7 @@ export class ForceHorseProvider {
   }
 
   drawNodes() {
-    debugLog('ForceHorseProvider:drawNodes');
+    debugLog('ForceHorseViewer:drawNodes');
 
     const self = this;
 
@@ -671,7 +671,7 @@ export class ForceHorseProvider {
   }
 
   drawLabels() {
-    debugLog('ForceHorseProvider:drawLabels');
+    debugLog('ForceHorseViewer:drawLabels');
 
     this.labels = this.labelGroup.selectAll('text.label')
       .data(this.nodeDataArray)
@@ -684,7 +684,7 @@ export class ForceHorseProvider {
   }
 
   drawProgressBar() {
-    debugLog('ForceHorseProvider:drawProgressBar');
+    debugLog('ForceHorseViewer:drawProgressBar');
 
     this.progressBar = this.svg
       .append('line')
@@ -699,7 +699,7 @@ export class ForceHorseProvider {
    * Update the force simulation in the DOM
    */
   updateGraphInDOM() {
-    debugLog('ForceHorseProvider:updateGraphInDOM');
+    debugLog('ForceHorseViewer:updateGraphInDOM');
 
     if (isNaN(this.fixAspectRatio)) {
       this.calcFixAspectRatio();
@@ -730,7 +730,7 @@ export class ForceHorseProvider {
    * Fix aspect ratios, when the window resize
    */
   onWindowResize() {
-    debugLog('ForceHorseProvider:onWindowResize');
+    debugLog('ForceHorseViewer:onWindowResize');
 
     this.calcFixAspectRatio();
     this.updateGraphInDOM();
@@ -740,7 +740,7 @@ export class ForceHorseProvider {
    * Set the graph in the DOM: nodes, edges, labels, progress bar
    */
   draw() {
-    debugLog('ForceHorseProvider:draw');
+    debugLog('ForceHorseViewer:draw');
 
     this.elements = new Array(2); // nodes, edges
 
@@ -758,7 +758,7 @@ export class ForceHorseProvider {
    * due to the svg fixAspectRatio="none"
    */
   calcFixAspectRatio() {
-    debugLog('ForceHorseProvider:calcFixAspectRatio');
+    debugLog('ForceHorseViewer:calcFixAspectRatio');
 
     const currentRect = this.svg._groups[0][0].getBoundingClientRect(), // Todo: use selection.node()
       currentHeight = currentRect.height,
@@ -773,7 +773,7 @@ export class ForceHorseProvider {
    * Zoom out the graph, if needed, so that it is fully visible.
    */
   zoomToViewport() {
-    debugLog('ForceHorseProvider:zoomToViewport');
+    debugLog('ForceHorseViewer:zoomToViewport');
 
     let scale, translate;
     const width = FHConfig.INNER_SVG_WIDTH,
@@ -811,7 +811,7 @@ export class ForceHorseProvider {
    * Play unfixes all the nodes
    */
   toggleFixedNodesMode() {
-    debugLog('ForceHorseProvider:toggleFixedNodesMode');
+    debugLog('ForceHorseViewer:toggleFixedNodesMode');
 
     if (this.fixedNodesMode) {
       this.elements[FHConfig.NODES].classed('fixed', (d) => {
@@ -932,7 +932,7 @@ export class ForceHorseProvider {
    * Called when a force-simulation is supposed to start.
    */
   onForceStart() {
-    debugLog('ForceHorseProvider:onForceStart');
+    debugLog('ForceHorseViewer:onForceStart');
 
     this.calcFixAspectRatio();
 
@@ -947,7 +947,7 @@ export class ForceHorseProvider {
    * Restart the force simulation
    */
   restartForceSimulation() {
-    debugLog('ForceHorseProvider:restartForceSimulation');
+    debugLog('ForceHorseViewer:restartForceSimulation');
 
     this.force.alpha(FHConfig.MAX_ALPHA);
     this.onForceStart();
@@ -958,7 +958,7 @@ export class ForceHorseProvider {
    * @param nodeData
    */
   getRequiredNodeIconSize(nodeData) {
-    debugLog('ForceHorseProvider:getRequiredNodeIconSize', nodeData);
+    debugLog('ForceHorseViewer:getRequiredNodeIconSize', nodeData);
 
     return this.nodeIconAreaDefault +
       (this.config.showNodeWeight ? nodeData.edgesWeight * FHConfig.node_size_addition_per_weight_unit : 0);
@@ -984,7 +984,7 @@ export class ForceHorseProvider {
    * Called when filtering an edge from the graph.
    */
   decrementNodesWeightsForFilteredEdge(edge) {
-    debugLog('ForceHorseProvider:decrementNodesWeightsForFilteredEdge', edge);
+    debugLog('ForceHorseViewer:decrementNodesWeightsForFilteredEdge', edge);
 
     const edgeNodes = this.getEdgeNodes(edge);
     edgeNodes.source.edgesWeight -= edge.weight;
@@ -997,7 +997,7 @@ export class ForceHorseProvider {
    * Filter button action: remove selected elements
    */
   onFilterInside() {
-    debugLog('ForceHorseProvider:onFilterInside');
+    debugLog('ForceHorseViewer:onFilterInside');
 
     // Mark the selected items as filtered, and deselect them
     // Also clear the selected-items sets
@@ -1039,7 +1039,7 @@ export class ForceHorseProvider {
    * API: some elements were filtered out, update the graph
    */
   onFilterOutside() {
-    debugLog('ForceHorseProvider:onFilterOutside');
+    debugLog('ForceHorseViewer:onFilterOutside');
 
     // Give the filtered elements the approprite CSS class
     // If a filtered element was selected, mark it as unselected
@@ -1082,7 +1082,7 @@ export class ForceHorseProvider {
    * Cancel current selection
    */
   onContainerClick() {
-    debugLog('ForceHorseProvider:onContainerClick');
+    debugLog('ForceHorseViewer:onContainerClick');
 
     if (this.selectedItems[FHConfig.NODES].size + this.selectedItems[FHConfig.EDGES].size > 0) {
       this.onSelectInside(null, null, null, true);
