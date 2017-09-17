@@ -9,7 +9,7 @@
     "test": "karma start ./karma.conf.js",
     "test-ci": "./node_modules/.bin/karma start ./karma.conf.js --single-run",
     "test-coverage": "karma start ./karma.conf.js --coverage",
-    "deploy": "webpack && npm publish"
+    "deploy": "webpack && npm version patch && npm publish"
   },
   "files": [
     "dist/",
