@@ -110,7 +110,7 @@ These are the current events. PR's and suggestions for more are welcome:
 
 **hover** (`hoverEvent`): a node/link is hovered upon
 
-**select** (`selectEvent`): a node/link is selected (data given: element, data)
+**select** (`selectEvent`): a node/link is selected (data given: currently selected, element, data)
 
 **dblclick** (`doubleClickEvent`): a node/link is double-clicked upon
 

@@ -344,12 +344,12 @@ export class ForceHorseViewer {
       } else {
         this.selectedItems[itemType].delete(item.id);
       }
+
+      return this.selectEvent.emit(this.selectedItems[itemType], element, item);
     }
 
     // In "selectionMode" the unselected nodes are visually marked
     this.svg.classed('selectionMode', this.selectedItems[FHConfig.NODES].size + this.selectedItems[FHConfig.EDGES].size);
-
-    return this.selectEvent.emit(element, item);
   };
 
   /**
