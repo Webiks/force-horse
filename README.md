@@ -46,8 +46,15 @@ force-horse is implementing CSS **flex-box** display logic.
 The graph's data (nodes and links):
 ```json
   {
-	"nodes": [],
-	"links": []
+	"nodes": [{
+	  "id": "string",
+	  "label": "string",
+	  "svg": "string|optional"
+	}],
+	"links": [{
+	  "sourceId": "string",
+	  "targetId": "string"
+	}]
   }
 ```
 
@@ -103,7 +110,7 @@ These are the current events. PR's and suggestions for more are welcome:
 
 **hover** (`hoverEvent`): a node/link is hovered upon
 
-**select** (`selectEvent`): a node/link is selected
+**select** (`selectEvent`): a node/link is selected (data given: element, data)
 
 **dblclick** (`doubleClickEvent`): a node/link is double-clicked upon
 

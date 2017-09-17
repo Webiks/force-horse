@@ -20,8 +20,8 @@
 <force-horse></force-horse>
 
 <script>
-  const viewer = document.querySelector('force-horse');
-  viewer.setConfig({
+  const instance = document.querySelector('force-horse');
+  instance.setConfig({
     'showButtons': true,
     'showLabels': true,
     'showNodeWeight': true,
@@ -38,9 +38,9 @@
       '#friction': 0.5
     }
   });
-  viewer.setData({
+  instance.setData({
     'nodes': [
-      {'label': 'Captain Sisko'},
+      {'label': 'Captain Sisko', 'svg': `<rect id="outer_element" fill="url('#outer_color_5')" x="-18" y="-18" width="36" height="36" rx="2"></rect> <rect id="inner_element" fill="url('#inner_color_5')" x="-14" y="-14" width="28" height="28" rx="2"></rect> <g id="inner1" transform="translate(1.50000, 1.500000)" fill="none"> <rect id="border" x="-10" y="-10" width="16" height="16"></rect> </g>`},
       {'label': 'Major Kira'},
       {'label': 'Dr Bashir'},
       {'label': 'Gol Dookat'},
@@ -58,6 +58,8 @@
       {'source': 3, 'target': 6}
     ]
   });
+
+  instance.viewer.selectEvent.subscribe((...d) => console.log(...d));
 </script>
 </body>
 </html>

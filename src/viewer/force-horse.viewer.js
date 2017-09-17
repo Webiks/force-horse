@@ -349,7 +349,7 @@ export class ForceHorseViewer {
     // In "selectionMode" the unselected nodes are visually marked
     this.svg.classed('selectionMode', this.selectedItems[FHConfig.NODES].size + this.selectedItems[FHConfig.EDGES].size);
 
-    return this.selectEvent.emit();
+    return this.selectEvent.emit(element, item);
   };
 
   /**
@@ -649,9 +649,7 @@ export class ForceHorseViewer {
     this.elements[FHConfig.NODES] = this.nodeGroup.selectAll('.' + FHConfig.CSS_CLASS_NODE)
       .data(this.nodeDataArray)
       .enter()
-      .append('path')
-      // Set node shape & size
-      .attr('d', d3.symbol().type((d) => d.shape).size((d) => this.getRequiredNodeIconSize(d)))
+      .append('g')
       .attr('fill', (d) => d.color)
       .attr('stroke', (d) => d.color)
       .attr('class', FHConfig.CSS_CLASS_NODE)
@@ -668,6 +666,15 @@ export class ForceHorseViewer {
       // Prevent panning when dragging a node
       .on('mousedown', () => d3.event.stopPropagation())
       .call(this.drag);
+
+    this.elements[FHConfig.NODES]._groups[0].forEach(g => {
+      const data = g.__data__;
+      if(data.svg) {
+        d3.select(g).html((d) => d.svg);
+      } else {
+        d3.select(g).append('path').attr('d', d3.symbol().type((d) => d.shape).size((d) => this.getRequiredNodeIconSize(d)));
+      }
+    });
   }
 
   drawLabels() {
