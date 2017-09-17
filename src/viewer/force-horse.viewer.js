@@ -345,7 +345,10 @@ export class ForceHorseViewer {
         this.selectedItems[itemType].delete(item.id);
       }
 
-      return this.selectEvent.emit(this.selectedItems[itemType], element, item);
+      const selectedItems = this.elements[itemType]
+        .filter((d) => this.selectedItems[itemType].has(d.id));
+
+      return this.selectEvent.emit(selectedItems, !clearOldSelection, element, item);
     }
 
     // In "selectionMode" the unselected nodes are visually marked
@@ -669,7 +672,7 @@ export class ForceHorseViewer {
 
     this.elements[FHConfig.NODES]._groups[0].forEach(g => {
       const data = g.__data__;
-      if(data.svg) {
+      if (data.svg) {
         d3.select(g).html((d) => d.svg);
       } else {
         d3.select(g).append('path').attr('d', d3.symbol().type((d) => d.shape).size((d) => this.getRequiredNodeIconSize(d)));
