@@ -116,7 +116,8 @@ These are the current events. PR's and suggestions for more are welcome:
 
 **filter** (`filterEvent`): remove the selected nodes/links from the graph
 
-The forceHorse project contains a complete **demo application**. The demo application is also available on the [plunker](http://embed.plnkr.co/SYmehtaAnQVyMpLJJY2B/?show=preview) site.
+The forceHorse project contains a complete [demo application](https://github.com/Webiks/force-horse-demo).
+You can see it in action [here](http://webiks.com/blog/force-horse-demo/app/)
 
 #### VISUAL INTERFACE
 On activation, force-horse shows the given graph. The graph stabilizes after a short force simulation. Then, if needed, it **zooms** out, so that the whole graph can be seen at a glance.

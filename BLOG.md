@@ -17,6 +17,7 @@ What we love about using Custom Elements, is that all of the main frameworks - A
 
 ##### Integration
 We also made the component much easier to integrate, now creating 2 bundles - one for Javascript and one for CSS - and loading the images as a base64 mask directly inside the CSS, so there is no need when creating a distribution build to copy our assets anymore, just importing our CSS.
+And as per requests from users, we added SVG support, so you can now use your custom SVG elements as nodes.
 
 ##### Tests
 The original AngularJS component did not have many tests, so we could not ensure it was working for every user. Now, we added many unit tests for many use cases, to cover all of the grounds we need to be confidant in the stability of this awesome component.
@@ -25,6 +26,9 @@ For continues integration we now use Travis-CI, to automatically test and deploy
 ##### Standards
 It's 2017, so we ditched the old ES5 syntax, migrating the entire Javascript code base to ES6, taking advantage of the great things it offers.
 Also, we moved from CSS to SCSS, for better style management and versatility.
+
+##### Types
+While the new version was not written using Typescript, we do believe that types are important, and as such we created a typing file for all of the necessary definitions to be much more easily understood without searching the source code.
 
 ##### Usage
 Using Force-Horse is now as simple as using any other element. The new usage guide can be found in the [README](https://github.com/Webiks/force-horse).

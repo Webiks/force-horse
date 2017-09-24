@@ -675,7 +675,7 @@ export class ForceHorseViewer {
       if (data.svg) {
         d3.select(g).html((d) => d.svg);
       } else {
-        d3.select(g).append('path').attr('d', d3.symbol().type((d) => d.shape).size((d) => this.getRequiredNodeIconSize(d)));
+        d3.select(g).append('path').attr('d', d3.symbol().type((d) => d.shape));
       }
     });
   }
@@ -689,7 +689,6 @@ export class ForceHorseViewer {
       .append('text')
       .attr('fill', (d) => d.color)
       .text((d) => d.label)
-      .attr('dx', (d) => (ForceHorseHelper.isHebrewString(d.label) ? -1 : +1) * FHConfig.LABEL_DISPLACEMENT)
       .attr('text-anchor', (d) => (ForceHorseHelper.isHebrewString(d.label) ? 'end' : 'start'));
   }
 
@@ -716,12 +715,17 @@ export class ForceHorseViewer {
     }
 
     // Update nodes
-    this.elements[FHConfig.NODES].attr('transform', (d) => `translate(${d.x}, ${d.y}) scale(${this.fixAspectRatio}, 1)`);
+    this.elements[FHConfig.NODES].attr('transform', (d) => {
+      const scaleSize = this.getRequiredNodeIconSize(d) / this.nodeIconAreaDefault;
+      return `translate(${d.x}, ${d.y}) scale(${this.fixAspectRatio * scaleSize}, ${scaleSize})`;
+    });
 
     // Update labels
     this.labels
       .attr('x', (d) => d.x)
-      .attr('y', (d) => d.y);
+      .attr('y', (d) => d.y)
+      .attr('dx', (d) => (ForceHorseHelper.isHebrewString(d.label) ? -1 : +1) *
+        (FHConfig.LABEL_DISPLACEMENT + 5 * (this.getRequiredNodeIconSize(d) / this.nodeIconAreaDefault)));
 
     // Update edges
     this.elements[FHConfig.EDGES]
@@ -862,8 +866,8 @@ export class ForceHorseViewer {
   updateProgressBar() {
     // Do not update progress bar in fixed nodes mode
     if (!this.fixedNodesMode) {
-      const x2 = FHConfig.INNER_SVG_WIDTH * (1 - (this.force.alpha() - this.force.alphaMin()) / FHConfig.MAX_ALPHA);
-      this.progressBar.attr('x2', x2);
+      const ratio = (1 - (this.force.alpha() - this.force.alphaMin()) / FHConfig.MAX_ALPHA);
+      this.progressBar.attr('x2', (ratio === 1) ? 0 : ratio * FHConfig.INNER_SVG_WIDTH);
     }
   };
 
@@ -1151,23 +1155,12 @@ export class ForceHorseViewer {
   }
 
   /**
-   * Recalculate node icon sizes (e.g. when edges are deleted, or when
-   * the node weight button is toggled)
-   */
-  recalcNodeIconSizes() {
-    this.elements[FHConfig.NODES].attr('d',
-      d3.symbol()
-        .type((d) => d.shape)
-        .size((d) => this.getRequiredNodeIconSize(d)));
-  }
-
-  /**
    * Show or hide node weights
    * Called when the node weight button is clicked on
    */
   onNodeWeightShowHideBtnClick() {
     this.config.showNodeWeight = !this.config.showNodeWeight;
-    this.recalcNodeIconSizes();
+    this.updateGraphInDOM();
   }
 
   /**

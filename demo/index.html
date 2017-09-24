@@ -38,15 +38,18 @@
       '#friction': 0.5
     }
   });
+
+  const svg = `<g id="id_ab89fe6c-9b6c-11e7-b3be-a787c8017b40" transform="translate(-14, -14) scale(0.5)" "<="" g=""> <!--?xml version="1.0" encoding="UTF-8" standalone="yes"?--> <svg width="56" height="56" viewBox="0 0 56 56" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> <title>Square_z2</title> <defs> <linearGradient id="outer_color_41"> <stop offset="0" stop-color="rgba(243,165,48, 1)"></stop> </linearGradient> <linearGradient id="icon_color_41"> <stop offset="0" stop-color="#FFFFFF "></stop> </linearGradient> <linearGradient id="inner_color_41"> <stop offset="0" stop-color="rgba(0,0,0,0)"></stop> </linearGradient> <filter x="-45.0%" y="-45.0%" width="190.0%" height="190.0%" filterUnits="objectBoundingBox" id="selected"> <feMorphology radius="2" operator="dilate" in="SourceAlpha" result="shadowSpreadOuter1"></feMorphology> <feGaussianBlur stdDeviation="4" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur> <feColorMatrix values="0 0 0 0 0.97254902 0 0 0 0 0.909803922 0 0 0 0 0.109803922 0 0 0 1 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix> <feMerge> <feMergeNode in="offsetBlur"></feMergeNode> <feMergeNode in="SourceGraphic"></feMergeNode> </feMerge> </filter> </defs> <g id="Square_z2" fill="none" filter=""> <rect id="outer_element" fill="url('#outer_color_41')" x="10" y="10" width="36" height="36" rx="2"></rect> <rect id="inner_element" fill="url('#inner_color_41')" x="14" y="14" width="28" height="28" rx="2"></rect> <g id="inner1" transform="translate(19.50000, 19.500000)" fill="none"> <rect id="border" x="0" y="0" width="16" height="16"></rect> </g> </g> </svg> </g>`;
+
   instance.setData({
     'nodes': [
-      {'label': 'Captain Sisko', 'svg': `<rect id="outer_element" fill="url('#outer_color_5')" x="-18" y="-18" width="36" height="36" rx="2"></rect> <rect id="inner_element" fill="url('#inner_color_5')" x="-14" y="-14" width="28" height="28" rx="2"></rect> <g id="inner1" transform="translate(1.50000, 1.500000)" fill="none"> <rect id="border" x="-10" y="-10" width="16" height="16"></rect> </g>`},
-      {'label': 'Major Kira'},
-      {'label': 'Dr Bashir'},
-      {'label': 'Gol Dookat'},
-      {'label': 'Vedek Beriel'},
-      {'label': 'Vedek X'},
-      {'label': 'Garek'}
+      {'label': 'Captain Sisko', svg},
+      {'label': 'Major Kira', svg},
+      {'label': 'Dr Bashir', svg},
+      {'label': 'Gol Dookat', svg},
+      {'label': 'Vedek Beriel', svg},
+      {'label': 'Vedek X', svg},
+      {'label': 'Garek', svg}
     ],
     'links': [
       {'source': 0, 'target': 1, 'weight': 3},
