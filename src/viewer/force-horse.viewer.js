@@ -330,6 +330,7 @@ export class ForceHorseViewer {
 
     // Update the DOM element
     if (element) {
+      console.log(element);
       d3.select(element).classed('selected', item.selected = on);
     }
 
@@ -348,11 +349,11 @@ export class ForceHorseViewer {
       const selectedItems = this.elements[itemType]
         .filter((d) => this.selectedItems[itemType].has(d.id));
 
-      return this.selectEvent.emit(selectedItems, !clearOldSelection, element, item);
+      this.selectEvent.emit(selectedItems, !clearOldSelection, element, item);
     }
 
     // In "selectionMode" the unselected nodes are visually marked
-    this.svg.classed('selectionMode', this.selectedItems[FHConfig.NODES].size + this.selectedItems[FHConfig.EDGES].size);
+    this.svg.classed('selectionMode', Boolean(this.selectedItems[FHConfig.NODES].size + this.selectedItems[FHConfig.EDGES].size));
   };
 
   /**
