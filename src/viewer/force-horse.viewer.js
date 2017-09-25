@@ -716,7 +716,7 @@ export class ForceHorseViewer {
 
     // Update nodes
     this.elements[FHConfig.NODES].attr('transform', (d) => {
-      const scaleSize = this.getRequiredNodeIconSize(d) / this.nodeIconAreaDefault;
+      const scaleSize = Math.sqrt(this.getRequiredNodeIconSize(d) / this.nodeIconAreaDefault);
       return `translate(${d.x}, ${d.y}) scale(${this.fixAspectRatio * scaleSize}, ${scaleSize})`;
     });
 
