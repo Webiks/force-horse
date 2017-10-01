@@ -616,6 +616,8 @@ export class ForceHorseViewer {
         }
       }
     }
+    // Prevent bubbling, so that we can separately detect a click on the container
+    d3.event.stopPropagation();
   }
 
   drawEdges() {
