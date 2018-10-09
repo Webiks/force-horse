@@ -4,6 +4,7 @@
   "description": "A web component wrapper for d3.js force layout",
   "main": "src/index.js",
   "style": "src/index.scss",
+  "types": "package.d.ts",
   "scripts": {
     "start": "webpack && webpack-dev-server --progress",
     "test": "karma start ./karma.conf.js",
